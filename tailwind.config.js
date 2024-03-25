@@ -12,6 +12,17 @@ module.exports = {
         chunkfive: ["ChunkFive Ex", "serif"],
         montserrat: ["Montserrat", "sans-serif"],
       },
+      // Customizing colors
+      colors: {
+        "capx-primary-red": "#d43831",
+        "capx-primary-yellow": "#f0c626",
+        "capx-primary-green": "#02ae8c",
+        "capx-primary-blue": "#0070b9",
+        "capx-secondary-purple": "#851d6a",
+        "capx-secondary-gray": "#053749",
+        "capx-secondary-red": "#f53800",
+        "capx-secondary-green": "#05a300",
+      },
     },
   },
   plugins: [],
