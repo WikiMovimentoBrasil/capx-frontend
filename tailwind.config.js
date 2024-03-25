@@ -6,7 +6,13 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      // Customizing fonts
+      fontFamily: {
+        chunkfive: ["ChunkFive Ex", "serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
