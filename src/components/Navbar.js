@@ -1,6 +1,7 @@
 "use client";
 import Image from 'next/image';
 import NextLink from "next/link";
+import { Link } from "react-scroll";
 import capXLogo from "../../public/static/images/capx_logo.png";
 
 // Navbar component has two parts:
@@ -20,6 +21,18 @@ export default function Navbar() {
           />
         </NextLink>
         <div className="flex sm:items-center space-x-12">
+          {/* About button */}
+          <Link
+            activeClass="active"
+            to="section02"
+            spy={true}
+            smooth={true}
+            duration={500}
+            delay={150}
+            className="cursor-pointer hover:underline"
+          >
+            About
+          </Link>
           {/* Login button */}
           <NextLink href="/" className="flex w-fit h-fit bg-capx-secondary-green hover:bg-capx-primary-green text-white px-2 sm:px-8 py-2 rounded-full select-none items-center">
             Login
