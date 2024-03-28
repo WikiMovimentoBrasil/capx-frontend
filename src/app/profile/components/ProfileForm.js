@@ -1,6 +1,7 @@
 import TextArea from "./TextArea";
 import TextInput from "./TextInput";
 import SelectInput from "./SelectInput";
+import MultiSelectInput from "./MultiSelectInput";
 
 export default function ProfileForm() {
   return (
@@ -19,6 +20,12 @@ export default function ProfileForm() {
       <TextInput>Wikimedia developer account</TextInput>
       <SelectInput>Preferred contact method</SelectInput>
       <SelectInput>Region</SelectInput>
+      <MultiSelectInput>Language</MultiSelectInput>
+      <MultiSelectInput>Affiliation</MultiSelectInput>
+      <MultiSelectInput>Wikimedia project</MultiSelectInput>
+      <MultiSelectInput>Area of interest</MultiSelectInput>
+      <MultiSelectInput>Known capacities</MultiSelectInput>
+      <MultiSelectInput>Desired capacities</MultiSelectInput>
     </section>
   )
 }
