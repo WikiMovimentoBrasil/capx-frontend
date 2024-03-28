@@ -46,7 +46,7 @@ export default function Navbar() {
             How it works
           </Link>
           {/* Login button */}
-          <NextLink href="/" className="flex w-fit h-fit bg-capx-secondary-green hover:bg-capx-primary-green text-white px-2 sm:px-8 py-2 rounded-full select-none items-center">
+          <NextLink href="/terms" className="flex w-fit h-fit bg-capx-secondary-green hover:bg-capx-primary-green text-white px-2 sm:px-8 py-2 rounded-full select-none items-center">
             Login
           </NextLink>
         </div>
