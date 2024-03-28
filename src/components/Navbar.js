@@ -33,6 +33,18 @@ export default function Navbar() {
           >
             About
           </Link>
+          {/* How it works button */}
+          <Link
+            activeClass="active"
+            to="section03"
+            spy={true}
+            smooth={true}
+            duration={500}
+            delay={150}
+            className="cursor-pointer hover:underline"
+          >
+            How it works
+          </Link>
           {/* Login button */}
           <NextLink href="/" className="flex w-fit h-fit bg-capx-secondary-green hover:bg-capx-primary-green text-white px-2 sm:px-8 py-2 rounded-full select-none items-center">
             Login
