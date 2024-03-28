@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from "next/link";
-import capXLogo from "../../../public/static/images/capx_logo.png";
+import capXLogo from "../../../public/static/images/capx_logo.svg";
 
 export default function Terms() {
   return (
@@ -11,7 +11,7 @@ export default function Terms() {
             priority={true}
             src={capXLogo}
             alt="Logo do projeto Capacity Exchange"
-            className="w-full sm:w-32"
+            className="w-full sm:w-14"
           />
         </Link>
         <h2 className="w-full mb-4 sm:text-xl">

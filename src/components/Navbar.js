@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import NextLink from "next/link";
 import { Link } from "react-scroll";
-import capXLogo from "../../public/static/images/capx_logo.png";
+import capXLogo from "../../public/static/images/capx_logo.svg";
 
 // Navbar component has two parts:
 // 1. Capacity Exchange Logo on the left.
@@ -17,7 +17,7 @@ export default function Navbar() {
             priority={true}
             src={capXLogo}
             alt="Logo do projeto Capacity Exchange"
-            className="w-full sm:w-48"
+            className="w-full sm:w-16"
           />
         </NextLink>
         <div className="flex sm:items-center space-x-12">
