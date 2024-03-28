@@ -14,7 +14,7 @@ export default function Terms() {
             className="w-full sm:w-32"
           />
         </Link>
-        <h2 className="w-full mb-2 sm:text-xl">
+        <h2 className="w-full mb-4 sm:text-xl">
           Before you log in
         </h2>
         <p className="w-full mb-8">
