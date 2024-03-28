@@ -21,7 +21,14 @@ export default function Navbar({ loggedInUser }) {
           />
         </NextLink>
         {loggedInUser ? (
-          null
+          <div className="flex sm:items-center space-x-12">
+            <NextLink href="/events" className="cursor-pointer hover:underline">
+              Events
+            </NextLink>
+            <NextLink href="/capacities" className="cursor-pointer hover:underline">
+              Capacities
+            </NextLink>
+          </div>
         ) : (
           <div className="flex sm:items-center space-x-12">
             {/* About button */}
