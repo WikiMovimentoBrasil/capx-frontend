@@ -1,6 +1,13 @@
 "use client";
 import Image from 'next/image';
 import NextLink from "next/link";
+import CapXLogo from "../../public/static/images/capx_logo.svg";
+import MobileMenuLightMode from "../../public/static/images/mobile_menu_light_mode.svg";
+import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode.svg";
+import LightModeIcon from "../../public/static/images/light_mode_icon.svg";
+import DarkModeIcon from "../../public/static/images/dark_mode_icon.svg";
+import LanguageMenuLightMode from "../../public/static/images/lang_light_mode_icon.svg";
+import LanguageMenuDarkMode from "../../public/static/images/lang_dark_mode_icon.svg";
 
 export default function Navbar({ darkMode, setDarkMode }) {
   return (
