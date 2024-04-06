@@ -32,6 +32,12 @@ export default function Navbar({ darkMode, setDarkMode }) {
             alt="Button to access the menu."
             className="flex my-auto cursor-pointer"
           />
+          <Image
+            priority={true}
+            src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
+            alt="Button to access the menu."
+            className="flex my-auto cursor-pointer"
+          />
         </div>
       </div>
     </nav>
