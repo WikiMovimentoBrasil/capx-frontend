@@ -25,6 +25,14 @@ export default function Navbar({ darkMode, setDarkMode }) {
             </NextLink>
           </div>
         </div>
+        <div className="flex h-full mr-6 space-x-8">
+          <Image
+            priority={true}
+            src={darkMode ? LanguageMenuDarkMode : LanguageMenuLightMode}
+            alt="Button to access the menu."
+            className="flex my-auto cursor-pointer"
+          />
+        </div>
       </div>
     </nav>
   );
