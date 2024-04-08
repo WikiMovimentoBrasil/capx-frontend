@@ -12,6 +12,9 @@ export default function Section01() {
           className="w-10/12 h-fit"
         />
       </div>
+      <h3 className="w-full h-fit text-2xl font-regular leading-8 mb-8">
+        Connect<br></br>with peers,<br></br>learn and share<br></br>capacity in a platform<br></br>made for and by the<br></br>Wikimedia Movement.
+      </h3>
     </section>
   )
 }
