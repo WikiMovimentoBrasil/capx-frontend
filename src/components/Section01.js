@@ -17,7 +17,7 @@ export default function Section01() {
         Connect<br></br>with peers,<br></br>learn and share<br></br>capacity in a platform<br></br>made for and by the<br></br>Wikimedia Movement.
       </h3>
       <div className="w-full">
-        <h2 className="w-fit bg-capx-primary-green font-extrabold text-xl text-[#F6F6F6] mx-auto px-10 py-4 rounded-full">Coming Soon</h2>
+        <h2 className="w-fit bg-capx-primary-green font-extrabold text-xl sm:text-2xl text-[#F6F6F6] mx-auto px-10 py-4 rounded-full">Coming Soon</h2>
       </div>
     </section>
   )
