@@ -13,7 +13,21 @@
 /* Specifying Montserrat as custom font */
 @font-face {
   font-family: "Montserrat";
+  src: url("../../public/static/fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Montserrat";
   src: url("../../public/static/fonts/Montserrat-Medium.ttf");
   font-weight: 500;
   font-style: medium;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../../public/static/fonts/Montserrat-ExtraBold.ttf");
+  font-weight: 800;
+  font-style: extrabold;
 }
