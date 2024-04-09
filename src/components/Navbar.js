@@ -1,6 +1,7 @@
 "use client";
 import Image from 'next/image';
 import NextLink from "next/link";
+import { Link } from "react-scroll";
 import CapXLogo from "../../public/static/images/capx_logo.svg";
 import MobileMenuLightMode from "../../public/static/images/mobile_menu_light_mode.svg";
 import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode.svg";
@@ -30,6 +31,20 @@ export default function Navbar({ darkMode, setDarkMode }) {
           </div>
         </div>
         <div className="flex h-full mr-6 space-x-14">
+          <div className="flex space-x-12">
+            {/* 'About' button */}
+            <Link
+              activeClass="active"
+              to="section02"
+              spy={true}
+              smooth={true}
+              duration={500}
+              delay={150}
+              className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
+            >
+              About
+            </Link>
+          </div>
           <div className="flex space-x-8">
             <Image
               priority={true}
