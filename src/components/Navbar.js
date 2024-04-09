@@ -16,7 +16,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
   }
 
   return (
-    <nav className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "absolute w-full h-16 m-auto left-0 right-0"}>
+    <nav className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed w-full h-16 m-auto left-0 right-0 z-50"}>
       <div className="flex w-full h-full place-content-between">
         {/* Capacity Exchange Logo */}
         <div className="relative w-24">
