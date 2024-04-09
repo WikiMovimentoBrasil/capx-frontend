@@ -44,6 +44,18 @@ export default function Navbar({ darkMode, setDarkMode }) {
             >
               About
             </Link>
+            {/* 'Contact Us' button */}
+            <Link
+              activeClass="active"
+              to="section03"
+              spy={true}
+              smooth={true}
+              duration={500}
+              delay={150}
+              className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
+            >
+              Contact Us
+            </Link>
           </div>
           <div className="flex space-x-8">
             <Image
