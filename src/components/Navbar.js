@@ -29,27 +29,29 @@ export default function Navbar({ darkMode, setDarkMode }) {
             </NextLink>
           </div>
         </div>
-        <div className="flex h-full mr-6 space-x-8">
-          <Image
-            priority={true}
-            src={darkMode ? LanguageMenuDarkMode : LanguageMenuLightMode}
-            alt="Button to access the menu."
-            className="flex my-auto cursor-pointer"
-          />
-          <button onClick={changeColorMode}>
+        <div className="flex h-full mr-6 space-x-14">
+          <div className="flex space-x-8">
             <Image
               priority={true}
-              src={darkMode ? LightModeIcon : DarkModeIcon}
+              src={darkMode ? LanguageMenuDarkMode : LanguageMenuLightMode}
               alt="Button to access the menu."
               className="flex my-auto cursor-pointer"
             />
-          </button>
-          <Image
-            priority={true}
-            src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
-            alt="Button to access the menu."
-            className="block sm:hidden flex my-auto cursor-pointer"
-          />
+            <button onClick={changeColorMode}>
+              <Image
+                priority={true}
+                src={darkMode ? LightModeIcon : DarkModeIcon}
+                alt="Button to access the menu."
+                className="flex my-auto cursor-pointer"
+              />
+            </button>
+            <Image
+              priority={true}
+              src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
+              alt="Button to access the menu."
+              className="block sm:hidden flex my-auto cursor-pointer"
+            />
+          </div>
         </div>
       </div>
     </nav>
