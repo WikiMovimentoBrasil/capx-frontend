@@ -48,7 +48,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
             priority={true}
             src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
             alt="Button to access the menu."
-            className="flex my-auto cursor-pointer"
+            className="block sm:hidden flex my-auto cursor-pointer"
           />
         </div>
       </div>
