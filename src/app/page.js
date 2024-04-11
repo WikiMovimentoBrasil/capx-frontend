@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Section01 from "@/components/Section01";
 import Section02 from "@/components/Section02";
 import Section03 from "@/components/Section03";
+import BackToTopButton from "@/components/BackToTopButton";
 import { useState } from "react";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       <Section02 darkMode={darkMode}></Section02>
       <Section03 darkMode={darkMode}></Section03>
       <Footer darkMode={darkMode}></Footer>
+      <BackToTopButton darkMode={darkMode} />
     </main>
   );
 }
