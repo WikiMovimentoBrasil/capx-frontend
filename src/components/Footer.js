@@ -29,6 +29,9 @@ export default function Footer({ darkMode }) {
           </Link>
         </div>
       </div>
+      <div className="">
+        <p className="">For and by the Wikimedia Movement</p>
+      </div>
     </section>
   )
 }
