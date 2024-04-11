@@ -1,4 +1,4 @@
-export default function Section03() {
+export default function Section03({ darkMode }) {
   return (
     <section id="section03" className="flex w-full h-fit my-24">
       <div className="w-10/12 h-fit my-auto mx-auto">
