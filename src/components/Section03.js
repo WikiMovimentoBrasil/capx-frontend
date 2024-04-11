@@ -12,15 +12,15 @@ export default function Section03({ darkMode }) {
             className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full border pl-2 py-2 outline-none"}
           />
           <input
-            type="text"
+            type="email"
             placeholder="E-mail"
             className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full border pl-2 py-2 outline-none"}
           />
           <textarea
             type="text"
-            rows="4"
+            rows="5"
             placeholder="Message"
-            className="w-full"
+            className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full border pl-2 py-2 outline-none"}
           />
         </div>
         <div className="flex w-full">
