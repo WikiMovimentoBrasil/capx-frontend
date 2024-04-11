@@ -16,8 +16,10 @@ module.exports = {
       colors: {
         "capx-light-bg": "#FFFFFF",
         "capx-light-box-bg": "#F5F5F5",
+        "capx-light-link": "#0070B9",
         "capx-dark-bg": "#04222F",
         "capx-dark-box-bg": "#053749",
+        "capx-dark-link": "#66C3FF",
         "capx-primary-red": "#d43831",
         "capx-primary-yellow": "#f0c626",
         "capx-primary-green": "#02ae8c",
