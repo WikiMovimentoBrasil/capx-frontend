@@ -1,6 +1,6 @@
 export default function Section01() {
   return (
-    <section className={"flex flex-wrap sm:flex-nowrap w-10/12 h-fit sm:h-screen mx-auto place-content-start py-32 font-montserrat"}>
+    <section id="section01" className={"flex flex-wrap sm:flex-nowrap w-10/12 h-fit sm:h-screen mx-auto place-content-start py-32 font-montserrat"}>
       <div className="sm:w-2/3 sm:grid sm:place-content-center sm:pr-20">
         {/* Title */}
         <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">A space for exchanging knowledge</h1>

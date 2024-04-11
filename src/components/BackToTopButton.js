@@ -5,6 +5,15 @@ import BackToTopIconDarkMode from "../../public/static/images/back_to_top_icon_d
 
 export default function BackToTopButton({ darkMode }) {
   return (
-    <div></div>
+    <Link
+      activeClass="active"
+      to="section01"
+      spy={true}
+      smooth={true}
+      duration={500}
+      delay={150}
+      className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed bottom-10 left-10 cursor-pointer z-50 rounded-full"}
+    >
+    </Link>
   )
 }
