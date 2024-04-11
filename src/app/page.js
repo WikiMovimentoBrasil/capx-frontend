@@ -14,7 +14,7 @@ export default function Home() {
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode}></Navbar>
       <Section01></Section01>
       <Section02 darkMode={darkMode}></Section02>
-      <Section03></Section03>
+      <Section03 darkMode={darkMode}></Section03>
       <Footer darkMode={darkMode}></Footer>
     </main>
   );
