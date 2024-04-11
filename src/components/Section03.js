@@ -5,7 +5,7 @@ export default function Section03() {
         <div>
           <h2 className="font-extrabold text-2xl text-center mb-6">Contact Us</h2>
         </div>
-        <div>
+        <div className="flex flex-wrap w-full bg-capx-light-box-bg px-8 py-10 rounded-3xl space-y-10">
           <input
             type="text"
             placeholder="Name"
