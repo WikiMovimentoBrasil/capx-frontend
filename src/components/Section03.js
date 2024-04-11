@@ -5,7 +5,7 @@ export default function Section03() {
         <div>
           <h2 className="font-extrabold text-2xl text-center mb-6">Contact Us</h2>
         </div>
-        <div className="flex flex-wrap w-full bg-capx-light-box-bg px-8 py-10 rounded-3xl space-y-10">
+        <div className="flex flex-wrap w-full bg-capx-light-box-bg px-8 py-10 rounded-3xl space-y-10 mb-6">
           <input
             type="text"
             placeholder="Name"
@@ -23,8 +23,8 @@ export default function Section03() {
             className="w-full"
           />
         </div>
-        <div>
-          <button>Submit your message</button>
+        <div className="flex w-full">
+          <button className="bg-capx-secondary-purple font-extrabold text-xl text-[#F6F6F6] mx-auto px-8 py-3 rounded-full">Submit your message</button>
         </div>
       </div>
     </section>
