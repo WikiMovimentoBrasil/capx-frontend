@@ -14,7 +14,7 @@ export default function Section03({ darkMode }) {
           <input
             type="text"
             placeholder="E-mail"
-            className="w-full"
+            className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full border pl-2 py-2 outline-none"}
           />
           <textarea
             type="text"
