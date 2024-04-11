@@ -8,21 +8,21 @@ import BackToTopIconDarkMode from "../../public/static/images/back_to_top_icon_d
 export default function BackToTopButton({ darkMode }) {
   return (
     <Link
-      id="bbtbutton"
       activeClass="active"
       to="section01"
       spy={true}
       smooth={true}
       duration={500}
       delay={150}
-      className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "hidden fixed bottom-10 left-2 cursor-pointer z-50 rounded-full"}
     >
-      <Image
-        priority={true}
-        src={darkMode ? BackToTopIconDarkMode : BackToTopIconLightMode}
-        alt="Back to top button."
-        className="max-w-12 p-1"
-      />
+      <div id="bbtbutton" className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "hidden fixed bottom-10 left-2 cursor-pointer z-50 rounded-full"}>
+        <Image
+          priority={true}
+          src={darkMode ? BackToTopIconDarkMode : BackToTopIconLightMode}
+          alt="Back to top button."
+          className="max-w-12 p-1"
+        />
+      </div>
       <Script src={BackToTopButtonScript} />
     </Link>
   )
