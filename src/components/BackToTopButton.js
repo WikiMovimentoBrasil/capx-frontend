@@ -12,8 +12,14 @@ export default function BackToTopButton({ darkMode }) {
       smooth={true}
       duration={500}
       delay={150}
-      className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed bottom-10 left-10 cursor-pointer z-50 rounded-full"}
+      className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed bottom-10 left-2 cursor-pointer z-50 rounded-full"}
     >
+      <Image
+        priority={true}
+        src={darkMode ? BackToTopIconDarkMode : BackToTopIconLightMode}
+        alt="Back to top button."
+        className="max-w-12 p-1"
+      />
     </Link>
   )
 }
