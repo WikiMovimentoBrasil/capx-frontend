@@ -12,6 +12,14 @@ export default function Footer({ darkMode }) {
             Documentation
           </Link>
         </div>
+        <div className="">
+          <Link
+            href="https://github.com/WikiMovimentoBrasil"
+            target="_blank"
+            className={(darkMode ? "text-capx-dark-link border-capx-dark-link " : "text-capx-light-link border-capx-light-link ")}>
+            GitHub
+          </Link>
+        </div>
       </div>
     </section>
   )
