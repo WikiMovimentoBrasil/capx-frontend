@@ -1,4 +1,5 @@
 "use client";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Section01 from "@/components/Section01";
 import Section02 from "@/components/Section02";
@@ -14,6 +15,7 @@ export default function Home() {
       <Section01></Section01>
       <Section02 darkMode={darkMode}></Section02>
       <Section03></Section03>
+      <Footer darkMode={darkMode}></Footer>
     </main>
   );
 }
