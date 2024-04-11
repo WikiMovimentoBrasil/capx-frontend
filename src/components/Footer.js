@@ -20,6 +20,14 @@ export default function Footer({ darkMode }) {
             GitHub
           </Link>
         </div>
+        <div className="">
+          <Link
+            href="https://meta.wikimedia.org/wiki/Capacity_Exchange"
+            target="_blank"
+            className={(darkMode ? "text-capx-dark-link border-capx-dark-link " : "text-capx-light-link border-capx-light-link ")}>
+            Meta-wikimedia
+          </Link>
+        </div>
       </div>
     </section>
   )
