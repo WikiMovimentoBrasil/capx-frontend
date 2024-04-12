@@ -1,10 +1,25 @@
+"use client";
 import Image from "next/image";
+import { useEffect } from "react";
 import { Link } from "react-scroll";
 import BackToTopButtonScript from "../../public/static/script.js";
 import BackToTopIconLightMode from "../../public/static/images/back_to_top_icon_light_mode.svg";
 import BackToTopIconDarkMode from "../../public/static/images/back_to_top_icon_dark_mode.svg";
 
 export default function BackToTopButton({ darkMode }) {
+  useEffect(() => {
+    // Importing and loading script.js
+    const script = document.createElement('script');
+    script.src = BackToTopButtonScript;
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Removing script when component is unmounted
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <Link
       id="bbtbutton"
