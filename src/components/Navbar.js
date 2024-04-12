@@ -69,7 +69,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 priority={true}
                 src={darkMode ? LightModeIcon : DarkModeIcon}
                 alt="Button to access the menu."
-                className="flex my-auto cursor-pointer"
+                className="flex my-auto cursor-pointer w-6 sm:w-7"
               />
             </button>
             <Image
