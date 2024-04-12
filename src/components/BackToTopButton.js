@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Script from "next/script";
 import { Link } from "react-scroll";
 import BackToTopButtonScript from "../../public/static/script.js";
 import BackToTopIconLightMode from "../../public/static/images/back_to_top_icon_light_mode.svg";
@@ -28,7 +27,6 @@ export default function BackToTopButton({ darkMode }) {
         </div>
         <p className="hidden sm:block text-xs text-center">BACK<br></br>TO TOP</p>
       </div>
-      <Script src={BackToTopButtonScript} />
     </Link>
   )
 }
