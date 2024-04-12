@@ -7,7 +7,7 @@ export default function Section01() {
         {/* Title */}
         <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">A space for exchanging<br></br>
           <Typewriter
-            words={[" knowledge"]}
+            words={["capacity", "knowledge", "skills", "services"]}
             loop={0}
             cursor
             cursorStyle='_'

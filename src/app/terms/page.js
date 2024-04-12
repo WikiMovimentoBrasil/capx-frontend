@@ -10,7 +10,7 @@ export default function Terms() {
           <Image
             priority={true}
             src={capXLogo}
-            alt="Logo do projeto Capacity Exchange"
+            alt="Capacity Exchange logo"
             className="w-full sm:w-14"
           />
         </Link>
