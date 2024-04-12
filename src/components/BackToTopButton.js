@@ -26,6 +26,7 @@ export default function BackToTopButton({ darkMode }) {
             className="max-w-12 p-1"
           />
         </div>
+        <p className="hidden sm:block text-xs text-center">BACK<br></br>TO TOP</p>
       </div>
       <Script src={BackToTopButtonScript} />
     </Link>
