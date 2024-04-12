@@ -17,13 +17,15 @@ export default function BackToTopButton({ darkMode }) {
       delay={150}
       className="hidden"
     >
-      <div id="bbtbutton" className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed bottom-10 left-2 cursor-pointer z-50 rounded-full"}>
-        <Image
-          priority={true}
-          src={darkMode ? BackToTopIconDarkMode : BackToTopIconLightMode}
-          alt="Back to top button."
-          className="max-w-12 p-1"
-        />
+      <div className="fixed bottom-10 sm:bottom-20 left-2 sm:left-8 cursor-pointer z-50">
+        <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-fit mx-auto mb-1 rounded-full"}>
+          <Image
+            priority={true}
+            src={darkMode ? BackToTopIconDarkMode : BackToTopIconLightMode}
+            alt="Back to top button."
+            className="max-w-12 p-1"
+          />
+        </div>
       </div>
       <Script src={BackToTopButtonScript} />
     </Link>
