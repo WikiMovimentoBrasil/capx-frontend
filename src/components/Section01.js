@@ -1,4 +1,6 @@
-import { Typewriter } from "react-simple-typewriter"
+import Image from "next/image";
+import { Typewriter } from "react-simple-typewriter";
+import MainImage from "../../public/static/images/main_image.svg";
 
 export default function Section01() {
   return (
@@ -27,7 +29,12 @@ export default function Section01() {
         </div>
       </div>
       {/* Main Image Desktop */}
-      <div className="hidden sm:block w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto bg-capx-light-box-bg mb-8 sm:mb-auto"></div>
-    </section>
+      <div className="hidden sm:block w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto mb-8 sm:mb-auto">
+        <Image
+          src={MainImage}
+          alt="Main image."
+        />
+      </div>
+    </section >
   )
 }
