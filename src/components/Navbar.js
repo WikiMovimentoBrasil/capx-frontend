@@ -44,26 +44,8 @@ export default function Navbar({ darkMode, setDarkMode }) {
             >
               About
             </Link>
-            {/* 'Contact Us' button */}
-            <Link
-              activeClass="active"
-              to="section03"
-              spy={true}
-              smooth={true}
-              duration={500}
-              delay={150}
-              className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
-            >
-              Contact Us
-            </Link>
           </div>
           <div className="flex space-x-8">
-            <Image
-              priority={true}
-              src={darkMode ? LanguageMenuDarkMode : LanguageMenuLightMode}
-              alt="Button to access the menu."
-              className="flex my-auto cursor-pointer"
-            />
             <button onClick={changeColorMode}>
               <Image
                 priority={true}
@@ -72,12 +54,6 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 className="flex my-auto cursor-pointer w-6 sm:w-7"
               />
             </button>
-            <Image
-              priority={true}
-              src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
-              alt="Button to access the menu."
-              className="block sm:hidden flex my-auto cursor-pointer"
-            />
           </div>
         </div>
       </div>
