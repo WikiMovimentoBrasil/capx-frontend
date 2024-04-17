@@ -1,0 +1,28 @@
+name: Deploy via SSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to SSH Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            become capx bash -c 'git -C $HOME/www/js pull origin main'
+            become capx bash -c 'webservice node18 shell -- yarn --cwd $HOME/www/js install'
+            become capx bash -c 'webservice node18 shell -- yarn --cwd $HOME/www/js build'
