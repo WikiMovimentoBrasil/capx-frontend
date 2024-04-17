@@ -18,7 +18,13 @@ export default function Section01() {
             delaySpeed={3000} />
         </h1>
         {/* Main Image Mobile */}
-        <div className="block sm:hidden w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto bg-capx-light-box-bg mb-8 sm:mb-auto"></div>
+        <div className="block sm:hidden w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto mb-8 sm:mb-auto">
+          <Image
+            src={MainImage}
+            alt="Main image."
+            className="px-10"
+          />
+        </div>
         {/* Description */}
         <h3 className="w-full h-fit text-2xl sm:text-3xl font-regular text-center sm:text-left mb-8 sm:mb-14">
           Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.
