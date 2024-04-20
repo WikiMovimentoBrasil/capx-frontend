@@ -1,14 +1,17 @@
 "use client";
 import axios from "axios";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function LoginButton() {
+  const router = useRouter();
   const [loginStarted, setLoginStarted] = useState(false);
 
   const startLogin = async () => {
     setLoginStarted(true);
     try {
       const startLoginResponse = await axios.post("/api/login");
+      router.push(startLoginResponse.data.redirect_url);
     } catch (error) {
       alert("An error occurred when trying to log in.");
       setLoginStarted(false);
