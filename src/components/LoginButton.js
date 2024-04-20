@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { useState } from "react";
 
 export default function LoginButton() {
@@ -6,6 +7,12 @@ export default function LoginButton() {
 
   const startLogin = async () => {
     setLoginStarted(true);
+    try {
+      const startLoginResponse = await axios.post("/api/login");
+    } catch (error) {
+      alert("An error occurred when trying to log in.");
+      setLoginStarted(false);
+    }
   }
 
   return (
