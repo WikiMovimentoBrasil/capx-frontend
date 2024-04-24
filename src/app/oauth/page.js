@@ -9,7 +9,14 @@ export default function OAuth({ searchParams }) {
   useEffect(() => {
     async function finishLogin() {
       try {
-        alert("ok");
+        const oauth_token = localStorage.getItem("oauth_token");
+        const oauth_token_secret = localStorage.getItem("oauth_token_secret");
+        const loginResult = await signIn("credentials", {
+          oauth_token,
+          oauth_token_secret,
+          oauth_verifier,
+          redirect: false
+        });
       } catch {
         alert("An error occurred when trying to log in. You need to start the process over again.");
       }
