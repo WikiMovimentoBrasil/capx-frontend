@@ -25,6 +25,9 @@ export default function OAuth({ searchParams }) {
         } else {
           alert("An error occurred when trying to log in. You need to start the process over again.");
         }
+        
+        localStorage.removeItem("oauth_token");
+        localStorage.removeItem("oauth_token_secret");
       } catch {
         alert("An error occurred when trying to log in. You need to start the process over again.");
       }
