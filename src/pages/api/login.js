@@ -9,7 +9,11 @@ export default async function startLogin(req, res) {
         const { oauth_token, oauth_token_secret } = startLoginResponse.data;
         const redirectURL = process.env.LOGIN_STEP02_URL;
         const redirectURLParams = `?oauth_token=${oauth_token}&oauth_token_secret=${oauth_token_secret}`;
-        res.status(200).json({ redirect_url: redirectURL + redirectURLParams });
+        res.status(200).json({
+          oauth_token,
+          oauth_token_secret,
+          redirect_url: redirectURL + redirectURLParams
+        });
       } else {
         res.status(500);
       }
