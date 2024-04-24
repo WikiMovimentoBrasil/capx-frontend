@@ -8,7 +8,11 @@ export default function OAuth({ searchParams }) {
 
   useEffect(() => {
     async function finishLogin() {
-      return
+      try {
+        alert("ok");
+      } catch {
+        alert("An error occurred when trying to log in. You need to start the process over again.");
+      }
     }
     finishLogin();
   }, []);
