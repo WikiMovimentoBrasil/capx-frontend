@@ -12,6 +12,9 @@ export default function OAuth() {
             className="w-16"
           />
         </div>
+        <div className="flex w-full text-center mb-4">
+          <h1 className="w-full">FINISHING LOGIN</h1>
+        </div>
       </div>
     </section>
   )
