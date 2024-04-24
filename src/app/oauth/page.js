@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 import { useEffect } from "react";
 import CapXLogo from "../../../public/static/images/capx_logo.svg";
 
@@ -29,6 +30,7 @@ export default function OAuth({ searchParams }) {
       <div className="flex flex-wrap w-1/2 mx-auto my-auto">
         <div className="flex w-fit mx-auto mb-4">
           <Image
+            priority={true}
             src={CapXLogo}
             alt="Capacity Exchange logo image."
             className="w-16"
