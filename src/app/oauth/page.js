@@ -18,6 +18,12 @@ export default function OAuth({ searchParams }) {
           oauth_verifier,
           redirect: false
         });
+
+        if (loginResult.status == 200 && loginResult.ok === true && loginResult.error === null) {
+          alert("ok");
+        } else {
+          alert("An error occurred when trying to log in. You need to start the process over again.");
+        }
       } catch {
         alert("An error occurred when trying to log in. You need to start the process over again.");
       }
