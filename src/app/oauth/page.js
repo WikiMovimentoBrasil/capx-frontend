@@ -1,9 +1,18 @@
+"use client"
 import Image from "next/image";
+import { useEffect } from "react";
 import CapXLogo from "../../../public/static/images/capx_logo.svg";
 
 export default function OAuth({ searchParams }) {
   const oauth_verifier = searchParams.oauth_verifier;
-  
+
+  useEffect(() => {
+    async function finishLogin() {
+      return
+    }
+    finishLogin();
+  }, []);
+
   return (
     <section className="flex w-screen h-screen font-montserrat">
       <div className="flex flex-wrap w-1/2 mx-auto my-auto">
