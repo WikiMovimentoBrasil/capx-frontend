@@ -11,6 +11,8 @@ export default function LoginButton() {
     setLoginStarted(true);
     try {
       const startLoginResponse = await axios.post("/api/login");
+      localStorage.setItem("oauth_token", startLoginResponse.data.oauth_token);
+      localStorage.setItem("oauth_token_secret", startLoginResponse.data.oauth_token_secret);
       router.push(startLoginResponse.data.redirect_url);
     } catch (error) {
       alert("An error occurred when trying to log in.");
