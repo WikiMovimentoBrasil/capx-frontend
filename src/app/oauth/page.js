@@ -1,10 +1,11 @@
 "use client"
 import Image from "next/image";
 import { signIn } from "next-auth/react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import CapXLogo from "../../../public/static/images/capx_logo.svg";
 
 export default function OAuth({ searchParams }) {
+  const [loginStatus, setLoginStatus] = useState("FINISHING LOGIN");
   const oauth_verifier = searchParams.oauth_verifier;
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function OAuth({ searchParams }) {
         });
 
         if (loginResult.status == 200 && loginResult.ok === true && loginResult.error === null) {
-          alert("ok");
+          setLoginStatus("SUCCESSFUL LOGIN");
         } else {
           alert("An error occurred when trying to log in. You need to start the process over again.");
         }
@@ -43,7 +44,7 @@ export default function OAuth({ searchParams }) {
           />
         </div>
         <div className="flex w-full text-center mb-4">
-          <h1 className="w-full">FINISHING LOGIN</h1>
+          <h1 className="w-full">{loginStatus}</h1>
         </div>
         <div className="flex w-fit mx-auto">
           <div className="mx-auto animate-spin ease-linear h-8 w-8 rounded-full border-8 border-l-gray-300 border-r-gray-300 border-b-gray-300 border-t-capx-primary-blue"></div>
