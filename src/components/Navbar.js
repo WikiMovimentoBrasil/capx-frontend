@@ -30,7 +30,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
             </NextLink>
           </div>
         </div>
-        <div className="flex h-full mr-6 space-x-14">
+        <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
           <div className="flex space-x-12">
             {/* 'About' button */}
             <Link
@@ -50,7 +50,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
               <Image
                 priority={true}
                 src={darkMode ? LightModeIcon : DarkModeIcon}
-                alt="Button to access the menu."
+                alt="Button to change the color mode."
                 className="flex my-auto cursor-pointer w-6 sm:w-7"
               />
             </button>
