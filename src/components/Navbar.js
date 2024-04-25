@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import NextLink from "next/link";
 import { Link } from "react-scroll";
+import { setCookie } from "@/app/actions";
 import CapXLogo from "../../public/static/images/capx_logo.svg";
 import MobileMenuLightMode from "../../public/static/images/mobile_menu_light_mode.svg";
 import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode.svg";
@@ -13,6 +14,11 @@ import LanguageMenuDarkMode from "../../public/static/images/lang_dark_mode_icon
 export default function Navbar({ darkMode, setDarkMode }) {
   const changeColorMode = async (event, currentDarkModeSelection) => {
     setDarkMode(!currentDarkModeSelection);
+    await setCookie({
+      name: "dark_mode",
+      value: (!currentDarkModeSelection).toString(),
+      path: '/',
+    });
   }
 
   return (
