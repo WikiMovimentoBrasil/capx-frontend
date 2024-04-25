@@ -1,11 +1,13 @@
 import { cookies } from "next/headers";
+import { getServerSession } from "next-auth/next";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 
-export default function Home() {
+export default async function Home() {
   const cookieStore = cookies();
+  const session = await getServerSession();
   const darkMode = cookieStore.get("dark_mode");
 
   return (
-    <ApplicationWrapper darkMode={darkMode}></ApplicationWrapper>
+    <ApplicationWrapper session={session !== null} darkMode={darkMode}></ApplicationWrapper>
   );
 }
