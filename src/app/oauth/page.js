@@ -2,9 +2,11 @@
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import CapXLogo from "../../../public/static/images/capx_logo.svg";
 
 export default function OAuth({ searchParams }) {
+  const router = useRouter();
   const [loginStatus, setLoginStatus] = useState("FINISHING LOGIN");
   const oauth_verifier = searchParams.oauth_verifier;
 
@@ -31,6 +33,7 @@ export default function OAuth({ searchParams }) {
       } catch {
         alert("An error occurred when trying to log in. You need to start the process over again.");
       }
+      router.push("/");
     }
     finishLogin();
   }, []);
