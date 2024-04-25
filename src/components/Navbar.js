@@ -11,8 +11,8 @@ import LanguageMenuLightMode from "../../public/static/images/lang_light_mode_ic
 import LanguageMenuDarkMode from "../../public/static/images/lang_dark_mode_icon.svg";
 
 export default function Navbar({ darkMode, setDarkMode }) {
-  const changeColorMode = (e) => {
-    setDarkMode(prevState => !prevState);
+  const changeColorMode = async (event, currentDarkModeSelection) => {
+    setDarkMode(!currentDarkModeSelection);
   }
 
   return (
@@ -46,7 +46,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
             </Link>
           </div>
           <div className="flex space-x-8">
-            <button onClick={changeColorMode}>
+            <button onClick={(event) => changeColorMode(event, darkMode)}>
               <Image
                 priority={true}
                 src={darkMode ? LightModeIcon : DarkModeIcon}
