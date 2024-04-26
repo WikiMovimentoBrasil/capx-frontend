@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { getServerSession } from "next-auth/next";
+import MainWrapper from "./components/MainWrapper";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
@@ -7,6 +8,6 @@ export default async function ProfilePage() {
   const darkMode = cookieStore.get("dark_mode");
 
   return (
-    <div></div>
+    <MainWrapper session={session !== null} darkMode={darkMode} />
   )
 }
