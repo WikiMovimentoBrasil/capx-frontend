@@ -23,7 +23,28 @@ export const authOptions = {
         return null
       }
     })
-  ]
+  ],
+  // Adding callbacks
+  // https://github.com/nextauthjs/next-auth/discussions/2762
+  session: {
+    jwt: true,
+    maxAge: 30 * 24 * 60 * 60,
+  },
+  jwt: {
+    signingKey: process.env.NEXTAUTH_JTW_SECRET,
+  },
+  callbacks: {
+    async session({ session, token }) {
+      session.user = token.user;
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
+  },
 }
 
 export default NextAuth(authOptions)
