@@ -3,6 +3,7 @@ import { useState } from "react";
 import BaseWrapper from "./BaseWrapper";
 import { useRouter } from 'next/navigation';
 import Section01 from "@/components/Section01";
+import BlankSection from "./BlankSection";
 
 export default function ApplicationWrapper(props) {
   const router = useRouter();
@@ -20,4 +21,9 @@ export default function ApplicationWrapper(props) {
       </BaseWrapper>
     )
   }
+  // Using a 'blank section' to maintain bg color
+  // and avoid 'blink effect' in case of redirect
+  return (
+    <BlankSection darkMode={darkMode} />
+  )
 }
