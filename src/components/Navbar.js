@@ -3,6 +3,8 @@ import Image from 'next/image';
 import NextLink from "next/link";
 import NavbarLinks from "./NavbarLinks";
 import NavbarConfig from "./NavbarConfig";
+import SignInButton from "./SignInButton";
+import SignOutButton from "./SignOutButton";
 import CapXLogo from "../../public/static/images/capx_logo.svg";
 import MobileMenuLightMode from "../../public/static/images/mobile_menu_light_mode.svg";
 import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode.svg";
@@ -28,6 +30,7 @@ export default function Navbar({ session, darkMode, setDarkMode }) {
         <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
           <NavbarLinks session={session} />
           <NavbarConfig darkMode={darkMode} setDarkMode={setDarkMode} />
+          {session ? (<SignOutButton></SignOutButton>) : (<SignInButton></SignInButton>)}          
         </div>
       </div>
     </nav>
