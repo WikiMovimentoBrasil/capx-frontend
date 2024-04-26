@@ -8,6 +8,6 @@ export default async function Home() {
   const darkMode = cookieStore.get("dark_mode");
 
   return (
-    <ApplicationWrapper session={session !== null} darkMode={darkMode}></ApplicationWrapper>
+    <ApplicationWrapper session={session !== null} darkMode={darkMode} />
   );
 }
