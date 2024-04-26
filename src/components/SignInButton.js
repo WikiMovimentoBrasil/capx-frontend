@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 
-export default function LoginButton() {
+export default function SignInButton() {
   const router = useRouter();
   const [loginStarted, setLoginStarted] = useState(false);
 
