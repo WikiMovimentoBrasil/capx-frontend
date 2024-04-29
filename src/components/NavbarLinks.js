@@ -2,29 +2,26 @@ import NextLink from "next/link";
 import { Link } from "react-scroll";
 
 export default function NavbarLinks({ session }) {
+  const menuData = [
+    { title: "My Profile", to: "/profile" },
+    { title: "Skills", to: "/skills" },
+    { title: "Events", to: "/events" },
+  ];
+
   // User is logged in
   if (session) {
     return (
       <div className="flex space-x-12">
-        {/* 'Skills' button */}
-        <NextLink
-          href="/profile"
-          className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
-        >
-          My Profile
-        </NextLink>
-        <NextLink
-          href="/skills"
-          className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
-        >
-          Skills
-        </NextLink>
-        <NextLink
-          href="/events"
-          className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
-        >
-          Events
-        </NextLink>
+        {menuData.map((item, index) => {
+          return (
+            <NextLink
+              href={item.to}
+              className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
+            >
+              {item.title}
+            </NextLink>
+          )
+        })}
       </div>
     )
   }
