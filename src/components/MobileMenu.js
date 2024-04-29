@@ -4,7 +4,7 @@ import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobil
 import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import MobileMenuLinks from "@/components/MobileMenuLinks";
 
-export default function MobileMenu({session, setMobileMenuStatus, darkMode}) {
+export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMobileMenuStatus }) {
   const handleMenuStatus = () => {
     setMobileMenuStatus((prevState) => !prevState);
   };
@@ -20,7 +20,7 @@ export default function MobileMenu({session, setMobileMenuStatus, darkMode}) {
           />
         </a>
       </div>
-      <MobileMenuLinks session={session} />
+      <MobileMenuLinks session={session} handleMenuStatus={handleMenuStatus} />
     </div>
   )
 }
