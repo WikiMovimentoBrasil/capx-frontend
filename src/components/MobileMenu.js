@@ -9,6 +9,21 @@ export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMob
     setMobileMenuStatus((prevState) => !prevState);
   };
 
+  const animationVariants = {
+    initial: {
+      scaleX: 0,
+    },
+    animate: {
+      scaleX: 1,
+      ease: [0.12, 0, 0.39, 0]
+    },
+    exit: {
+      scaleX: 0,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+
+
   return (
     <div className={(darkMode ? "bg-capx-dark-box-bg text-capx-light-bg " : "bg-capx-light-box-bg text-capx-dark-bg ") + "fixed w-screen h-screen pb-10 origin-top-right z-50"}>
       <div className="flex flex-row-reverse w-10/12 mx-auto mt-6 mb-8">
