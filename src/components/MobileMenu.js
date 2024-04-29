@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import MobileMenuLinks from "@/components/MobileMenuLinks";
@@ -25,7 +26,13 @@ export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMob
 
 
   return (
-    <div className={(darkMode ? "bg-capx-dark-box-bg text-capx-light-bg " : "bg-capx-light-box-bg text-capx-dark-bg ") + "fixed w-screen h-screen pb-10 origin-top-right z-50"}>
+    <motion.div
+      variants={animationVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className={(darkMode ? "bg-capx-dark-box-bg text-capx-light-bg " : "bg-capx-light-box-bg text-capx-dark-bg ") + "fixed w-screen h-screen pb-10 origin-top-right z-50"}
+    >
       <div className="flex flex-row-reverse w-10/12 mx-auto mt-6 mb-8">
         <a onClick={handleMenuStatus}>
           <Image
@@ -36,6 +43,6 @@ export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMob
         </a>
       </div>
       <MobileMenuLinks session={session} handleMenuStatus={handleMenuStatus} />
-    </div>
+    </motion.div>
   )
 }
