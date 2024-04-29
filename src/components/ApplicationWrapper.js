@@ -17,7 +17,7 @@ export default function ApplicationWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <Section01></Section01>
-      <Section02></Section02>
+      <Section02 darkMode={darkMode}></Section02>
     </BaseWrapper>
   )
 }
