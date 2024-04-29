@@ -2,6 +2,7 @@
 import { useState } from "react";
 import BaseWrapper from "./BaseWrapper";
 import Section01 from "@/components/Section01";
+import Section02 from "./Section02";
 
 export default function ApplicationWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
@@ -16,6 +17,7 @@ export default function ApplicationWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <Section01></Section01>
+      <Section02></Section02>
     </BaseWrapper>
   )
 }
