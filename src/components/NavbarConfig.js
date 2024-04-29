@@ -7,7 +7,7 @@ import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode
 import LanguageMenuLightMode from "../../public/static/images/lang_light_mode_icon.svg";
 import LanguageMenuDarkMode from "../../public/static/images/lang_dark_mode_icon.svg";
 
-export default function NavbarConfig({ darkMode, setDarkMode }) {
+export default function NavbarConfig({ darkMode, setDarkMode, setMobileMenuStatus }) {
   const changeColorMode = async (event, currentDarkModeSelection) => {
     setDarkMode(!currentDarkModeSelection);
     await setCookie({
@@ -16,6 +16,10 @@ export default function NavbarConfig({ darkMode, setDarkMode }) {
       path: '/',
     });
   }
+
+  const handleMenuStatus = () => {
+    setMobileMenuStatus((prevState) => !prevState);
+  };
 
   return (
     <div className="flex space-x-8">
@@ -29,7 +33,7 @@ export default function NavbarConfig({ darkMode, setDarkMode }) {
         />
       </button>
       {/* Mobile menu icon */}
-      <button>
+      <button onClick={handleMenuStatus}>
         <Image
           priority={true}
           src={darkMode ? MobileMenuDarkMode : MobileMenuLightMode}
