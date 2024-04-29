@@ -11,12 +11,12 @@ export default function NavbarLinks({ session }) {
   // User is logged in
   if (session) {
     return (
-      <div className="flex space-x-12">
+      <div className="hidden sm:flex space-x-12">
         {menuData.map((item, index) => {
           return (
             <NextLink
               href={item.to}
-              className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
+              className="flex my-auto cursor-pointer hover:border-b hover:border-current"
             >
               {item.title}
             </NextLink>
