@@ -38,7 +38,7 @@ export default function Navbar({ session, darkMode, setDarkMode, mobileMenuStatu
           <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
             <NavbarLinks session={session} />
             <NavbarConfig darkMode={darkMode} setDarkMode={setDarkMode} setMobileMenuStatus={setMobileMenuStatus} />
-            {session ? (<SignOutButton></SignOutButton>) : (<SignInButton></SignInButton>)}
+            <div className="hidden sm:flex">{session ? (<SignOutButton></SignOutButton>) : (<SignInButton></SignInButton>)}</div>
           </div>
         </div>
       </nav>
