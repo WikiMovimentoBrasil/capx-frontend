@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 
-export default function SignInButton({ message }) {
+export default function SignInButton({ message, bigSizeButton }) {
   const router = useRouter();
   const [loginStarted, setLoginStarted] = useState(false);
 
@@ -23,9 +23,9 @@ export default function SignInButton({ message }) {
   return (
     <button onClick={startLogin} className="flex w-fit h-fit my-auto bg-capx-secondary-purple text-[#F6F6F6] px-4 sm:px-5 py-2 rounded-full">
       {loginStarted ?
-        <div className="animate-spin ease-linear h-6 w-6 rounded-full border-4 border-l-white border-r-white border-b-white border-t-capx-primary-green"></div>
+        <div className={(bigSizeButton ? "w-8 h-8 border-8 " : "h-6 w-6 border-4 ") + "animate-spin ease-linear rounded-full border-l-white border-r-white border-b-white border-t-capx-primary-green"}></div>
         :
-        {message}
+        <div className={bigSizeButton ? ("text-xl sm:text-2xl px-5 sm:px-6") : (null)}>{message}</div>
       }
     </button>
   )
