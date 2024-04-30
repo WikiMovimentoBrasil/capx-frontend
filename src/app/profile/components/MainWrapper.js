@@ -11,7 +11,7 @@ export default function MainWrapper(props) {
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
 
   if (status === "loading") {
-    pageContent = (<LoadingSection />)
+    pageContent = (<LoadingSection darkMode={darkMode} />)
   }
 
   return (
