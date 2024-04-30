@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import BaseWrapper from "@/components/BaseWrapper";
+import LoadingSection from "./LoadingSection";
 
 export default function MainWrapper(props) {
   let pageContent;
@@ -10,7 +11,7 @@ export default function MainWrapper(props) {
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
 
   if (status === "loading") {
-    pageContent = (<div></div>)
+    pageContent = (<LoadingSection />)
   }
 
   return (
