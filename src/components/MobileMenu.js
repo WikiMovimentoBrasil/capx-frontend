@@ -1,9 +1,11 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import SignInButton from "@/components/SignInButton";
+import SignOutButton from "@/components/SignOutButton";
+import MobileMenuLinks from "@/components/MobileMenuLinks";
 import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
-import MobileMenuLinks from "@/components/MobileMenuLinks";
 
 export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMobileMenuStatus }) {
   const handleMenuStatus = () => {
@@ -43,6 +45,9 @@ export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMob
         </a>
       </div>
       <MobileMenuLinks session={session} handleMenuStatus={handleMenuStatus} />
+      <div className="flex flex-wrap w-10/12 mx-auto">
+        {session ? (<SignOutButton></SignOutButton>) : (<SignInButton></SignInButton>)}
+      </div>
     </motion.div>
   )
 }

@@ -15,7 +15,7 @@ export default function MobileMenuLinks({ session, handleMenuStatus }) {
   // User is logged in
   if (session) {
     return (
-      <div className="flex flex-wrap w-10/12 text-2xl mx-auto space-y-4">
+      <div className="flex flex-wrap w-10/12 text-2xl mx-auto space-y-4 mb-8">
         {menuDataLoggedIn.map((item, index) => {
           return (
             <NextLink
@@ -31,7 +31,7 @@ export default function MobileMenuLinks({ session, handleMenuStatus }) {
   }
 
   return (
-    <div className="flex flex-wrap w-10/12 text-2xl mx-auto space-y-4">
+    <div className="flex flex-wrap w-10/12 text-2xl mx-auto space-y-4 mb-8">
       {menuDataNotLoggedIn.map((item, index) => {
         return (
           <Link
