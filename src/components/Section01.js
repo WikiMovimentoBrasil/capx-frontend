@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Typewriter } from "react-simple-typewriter";
 import MainImage from "../../public/static/images/main_image.svg";
+import SignInButton from "./SignInButton";
 
 export default function Section01() {
   return (
@@ -30,8 +31,8 @@ export default function Section01() {
           Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.
         </h3>
         {/* Coming Soon */}
-        <div className="w-full">
-          <h2 className="w-fit bg-capx-secondary-purple font-extrabold text-xl sm:text-2xl text-[#F6F6F6] mx-auto px-10 py-4 rounded-full">Coming Soon</h2>
+        <div className="grid place-content-center sm:place-content-start w-full">
+          <SignInButton message="Join the Capacity Exchange!" bigSizeButton={true} />
         </div>
       </div>
       {/* Main Image Desktop */}
