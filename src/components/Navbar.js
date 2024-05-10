@@ -22,10 +22,10 @@ export default function Navbar({ session, darkMode, setDarkMode, mobileMenuStatu
         }
       </AnimatePresence>
       <nav className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "fixed w-full h-16 m-auto left-0 right-0 z-40"}>
-        <div className="flex w-full h-full place-content-between">
+        <div className="flex w-full sm:w-10/12 h-full place-content-between mx-auto">
           {/* Capacity Exchange Logo */}
-          <div className="relative w-24">
-            <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "flex w-fit h-fit rounded-full p-4"}>
+          <div className="relative w-12 my-auto ml-4 sm:ml-0">
+            <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "flex w-fit h-fit rounded-full"}>
               <NextLink href="/">
                 <Image
                   priority={true}
