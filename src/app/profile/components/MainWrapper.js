@@ -36,7 +36,10 @@ export default function MainWrapper(props) {
 
   if (status === "authenticated") {
     if (Object.keys(userData).length > 0) {
-      pageContent = (<UserProfile darkMode={darkMode} userData={userData} />)
+      pageContent = (<UserProfile darkMode={darkMode} userData={userData} />);
+    }
+    else {
+      pageContent = (<LoadingSection darkMode={darkMode} />);
     }
   }
 
