@@ -16,6 +16,7 @@ export default function NavbarLinks({ session }) {
           return (
             <NextLink
               href={item.to}
+              key={item.title.toLowerCase().replace(/\s/g, '')}
               className="flex my-auto cursor-pointer hover:border-b hover:border-current"
             >
               {item.title}
