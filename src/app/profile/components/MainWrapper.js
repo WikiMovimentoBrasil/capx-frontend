@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import UserProfile from "./UserProfile";
 import LoadingSection from "./LoadingSection";
 import BaseWrapper from "@/components/BaseWrapper";
 
@@ -31,6 +32,12 @@ export default function MainWrapper(props) {
 
   if (status === "loading") {
     pageContent = (<LoadingSection darkMode={darkMode} />)
+  }
+
+  if (status === "authenticated") {
+    if (Object.keys(userData).length > 0) {
+      pageContent = (<UserProfile darkMode={darkMode} userData={userData} />)
+    }
   }
 
   return (
