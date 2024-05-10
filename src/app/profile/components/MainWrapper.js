@@ -8,6 +8,7 @@ import BaseWrapper from "@/components/BaseWrapper";
 export default function MainWrapper(props) {
   let pageContent;
   const { status, data } = useSession();
+  const [userData, setUserData] = useState({});
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
 
@@ -22,6 +23,7 @@ export default function MainWrapper(props) {
             'Authorization': `Token ${data.user.token}`,
           }
         });
+        setUserData(queryResponse.data);
       }
       getUserData();
     }
