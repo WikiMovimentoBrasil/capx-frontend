@@ -14,6 +14,7 @@ export const authOptions = {
         if (loginResponse.status == 200) {
           const user = {
             username: loginResponse.data.username,
+            id: loginResponse.data.id,
             token: loginResponse.data.token,
             first_login: (loginResponse.data.first_name === null ? true : false)
           }
