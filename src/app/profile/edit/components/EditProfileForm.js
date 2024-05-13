@@ -1,9 +1,11 @@
 "use client";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 
 export default function EditProfileForm(props) {
+  const router = useRouter();
   const { status, data } = useSession();
   const [userData, setUserData] = useState({});
 
@@ -34,7 +36,9 @@ export default function EditProfileForm(props) {
             'Authorization': `Token ${data.user.token}`,
           }
         }
-      );
+      ).then(() => {
+        router.push("/profile");
+      });
     }
   };
 
