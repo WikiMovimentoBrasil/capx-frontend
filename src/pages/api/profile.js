@@ -13,7 +13,13 @@ export default async function userProfile(req, res) {
     if (req.method === "POST") {
       const postBody = req.body;
       const userId = postBody.user.id;
-      res.status(200);
+
+      const queryResponse = await axios.put(process.env.PROFILE_URL + "/" + userId + "/", postBody, {
+        headers: {
+          'Authorization': req.headers.authorization
+        }
+      })
+      res.status(200).json(queryResponse.data);
     }
     else {
       res.status(405);
