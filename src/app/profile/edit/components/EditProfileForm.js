@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 
 export default function EditProfileForm(props) {
@@ -7,6 +8,14 @@ export default function EditProfileForm(props) {
   const handleSubmit = async (e) => {
     if (status == "authenticated") {
       e.preventDefault();
+      const queryResponse = await axios.post("/api/profile",
+        {},
+        {
+          headers: {
+            'Authorization': `Token ${data.user.token}`,
+          }
+        }
+      );
     }
   };
 
