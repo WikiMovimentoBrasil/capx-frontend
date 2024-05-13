@@ -6,11 +6,18 @@ export default async function userProfile(req, res) {
       headers: {
         'Authorization': req.headers.authorization
       }
-    })
-      .then(response => {
-        response.status(200).json(queryResponse.data);
-      })
-      .catch(response.status(500));
+    });
+    res.status(200).json(queryResponse.data);
   }
-  res.end();
+  else {
+    if (req.method === "POST") {
+      const postBody = req.body;
+      const userId = postBody.user.id;
+      res.status(200);
+    }
+    else {
+      res.status(405);
+    }
+    res.end();
+  }
 }
