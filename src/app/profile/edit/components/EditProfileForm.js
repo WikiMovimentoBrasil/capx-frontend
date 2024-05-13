@@ -8,6 +8,7 @@ export default function EditProfileForm(props) {
   const router = useRouter();
   const { status, data } = useSession();
   const [userData, setUserData] = useState({});
+  const [updatingData, setUpdatingData] = useState(false);
 
   useEffect(() => {
     if (status == "authenticated") {
@@ -27,6 +28,7 @@ export default function EditProfileForm(props) {
   }, [status]);
 
   const handleSubmit = async (e) => {
+    setUpdatingData(true);
     if (status == "authenticated") {
       e.preventDefault();
       const queryResponse = await axios.post("/api/profile",
@@ -36,16 +38,18 @@ export default function EditProfileForm(props) {
             'Authorization': `Token ${data.user.token}`,
           }
         }
-      ).then(() => {
+      ).then(response => {
+        setUpdatingData(false);
         router.push("/profile");
       });
     }
   };
 
+
   return (
     <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
       <form onSubmit={handleSubmit}>
-        <button type="submit">Update</button>
+        <button type="submit" disabled={updatingData}>Update</button>
       </form>
     </section>
   )
