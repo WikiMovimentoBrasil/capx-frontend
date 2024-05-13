@@ -5,11 +5,12 @@ export default async function userProfile(req, res) {
     const queryResponse = await axios.get(process.env.PROFILE_URL + "/" + req.query.userId, {
       headers: {
         'Authorization': req.headers.authorization
-      }});
-    res.status(200).json(queryResponse.data);
-  }
-  else {
-    res.status(405);
+      }
+    })
+      .then(response => {
+        response.status(200).json(queryResponse.data);
+      })
+      .catch(response.status(500));
   }
   res.end();
 }
