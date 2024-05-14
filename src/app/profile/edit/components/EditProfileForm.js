@@ -8,21 +8,25 @@ export default function EditProfileForm(props) {
   const router = useRouter();
   const { status, data } = useSession();
   const [userData, setUserData] = useState({});
+  const [formRules, setFormRules] = useState({});
   const [updatingData, setUpdatingData] = useState(false);
 
   useEffect(() => {
     if (status == "authenticated") {
+      const queryData = {
+        params: { userId: data.user.id },
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+
       async function getUserData() {
-        const queryResponse = await axios.get("/api/profile", {
-          params: {
-            userId: data.user.id,
-          },
-          headers: {
-            'Authorization': `Token ${data.user.token}`,
-          }
-        });
+        const queryResponse = await axios.get("/api/profile", queryData);
         setUserData(queryResponse.data);
       }
+      async function getFormRules() {
+        const queryResponse = await axios.options("/api/profile", queryData);
+        setFormRules(queryResponse.data);
+      }
+      getFormRules();
       getUserData();
     }
   }, [status]);
