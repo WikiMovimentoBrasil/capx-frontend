@@ -38,19 +38,22 @@ export default function EditProfileForm(props) {
             'Authorization': `Token ${data.user.token}`,
           }
         }
-      ).then(response => {
+      ).then(() => {
         setUpdatingData(false);
         router.push("/profile");
       });
     }
   };
 
-
-  return (
-    <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
-      <form onSubmit={handleSubmit}>
-        <button type="submit" disabled={updatingData}>Update</button>
-      </form>
-    </section>
-  )
+  if (status === "authenticated") {
+    if (Object.keys(userData).length > 0) {
+      return (
+        <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
+          <form onSubmit={handleSubmit} className="w-full">
+            <button type="submit" disabled={updatingData}>Update</button>
+          </form>
+        </section>
+      )
+    }
+  }
 }
