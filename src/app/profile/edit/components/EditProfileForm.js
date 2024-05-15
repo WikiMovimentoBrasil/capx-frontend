@@ -33,6 +33,11 @@ export default function EditProfileForm(props) {
     }
   }, [status]);
 
+  const handleTextInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewUserData({ ...newUserData, [name]: value });
+  };
+
   const handleSubmit = async (e) => {
     setUpdatingData(true);
     if (status == "authenticated") {
