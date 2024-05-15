@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import TextInput from "./TextInput";
+import SelectInput from "./SelectInput";
 
 export default function EditProfileForm(props) {
   const router = useRouter();
@@ -47,6 +48,19 @@ export default function EditProfileForm(props) {
         >
           {field.label}
         </TextInput>
+      )
+    }
+    else if (field.type === "choice") {
+      return (
+        <SelectInput
+          id={field.key}
+          key={field.key}
+          data={field.choices.map((option) => ({ value: option.value, label: option.display_name }))}
+          defaultValue={field.choices.map((option) => newUserData[field.key] === option.value ? { value: option.value, label: option.display_name } : null)}
+          onChange={handleSelectInputChange}
+        >
+          {field.label}
+        </SelectInput>
       )
     }
   }
