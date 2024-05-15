@@ -106,6 +106,9 @@ export default function EditProfileForm(props) {
     return (
       <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
         <form onSubmit={handleSubmit} className="w-full">
+          {formFields.map(field => (
+            defineFormComponent(field)
+          ))}
           <button type="submit" disabled={updatingData}>Update</button>
         </form>
       </section>
