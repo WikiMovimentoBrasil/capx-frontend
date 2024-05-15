@@ -7,7 +7,7 @@ import TextInput from "./TextInput";
 import SelectInput from "./SelectInput";
 import SubmitButton from "./SubmitButton";
 
-export default function EditProfileForm(props) {
+export default function EditProfileForm() {
   const router = useRouter();
   const { status, data } = useSession();
   const [currentUserData, setCurrentUserData] = useState({});
@@ -54,6 +54,7 @@ export default function EditProfileForm(props) {
     else if (field.type === "choice") {
       return (
         <SelectInput
+          isUserSelectionLoaded={newUserData[field.key] ?? false}
           id={field.key}
           key={field.key}
           data={field.choices.map((option) => ({ value: option.value, label: option.display_name }))}
