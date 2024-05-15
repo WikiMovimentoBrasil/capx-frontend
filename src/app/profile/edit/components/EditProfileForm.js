@@ -7,8 +7,9 @@ import { useSession } from "next-auth/react";
 export default function EditProfileForm(props) {
   const router = useRouter();
   const { status, data } = useSession();
-  const [userData, setUserData] = useState({});
-  const [formRules, setFormRules] = useState({});
+  const [currentUserData, setCurrentUserData] = useState({});
+  const [newUserData, setNewUserData] = useState({});
+  const [formFields, setFormFields] = useState([]);
   const [updatingData, setUpdatingData] = useState(false);
 
   useEffect(() => {
@@ -20,11 +21,12 @@ export default function EditProfileForm(props) {
 
       async function getUserData() {
         const queryResponse = await axios.get("/api/profile", queryData);
-        setUserData(queryResponse.data);
+        setCurrentUserData(queryResponse.data);
+        setNewUserData(queryResponse.data);
       }
       async function getFormRules() {
         const queryResponse = await axios.options("/api/profile", queryData);
-        setFormRules(queryResponse.data);
+        setFormFields(queryResponse.data);
       }
       getFormRules();
       getUserData();
@@ -36,7 +38,7 @@ export default function EditProfileForm(props) {
     if (status == "authenticated") {
       e.preventDefault();
       const queryResponse = await axios.post("/api/profile",
-        userData,
+        newUserData,
         {
           headers: {
             'Authorization': `Token ${data.user.token}`,
@@ -50,14 +52,12 @@ export default function EditProfileForm(props) {
   };
 
   if (status === "authenticated") {
-    if (Object.keys(userData).length > 0) {
-      return (
-        <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
-          <form onSubmit={handleSubmit} className="w-full">
-            <button type="submit" disabled={updatingData}>Update</button>
-          </form>
-        </section>
-      )
-    }
+    return (
+      <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
+        <form onSubmit={handleSubmit} className="w-full">
+          <button type="submit" disabled={updatingData}>Update</button>
+        </form>
+      </section>
+    )
   }
 }
