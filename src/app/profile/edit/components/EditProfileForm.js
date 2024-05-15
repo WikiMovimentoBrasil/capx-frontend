@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import TextInput from "./TextInput";
 
 export default function EditProfileForm(props) {
   const router = useRouter();
@@ -32,6 +33,21 @@ export default function EditProfileForm(props) {
       getUserData();
     }
   }, [status]);
+
+  const defineFormComponent = (field) => {
+    if (field.type === "string") {
+      return (
+        <TextInput
+          id={field.key}
+          data={newUserData[field.key]}
+          placeholder={""}
+          onChange={handleTextInputChange}
+        >
+          {field.label}
+        </TextInput>
+      )
+    }
+  }
 
   const handleTextInputChange = (e) => {
     const { name, value } = e.target;
