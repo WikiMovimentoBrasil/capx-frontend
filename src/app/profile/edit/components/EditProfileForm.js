@@ -38,6 +38,10 @@ export default function EditProfileForm(props) {
     setNewUserData({ ...newUserData, [name]: value });
   };
 
+  const handleSelectInputChange = (selectedOption, element) => {
+    setNewUserData({ ...newUserData, [element.name]: selectedOption.value });
+  };
+
   const handleSubmit = async (e) => {
     setUpdatingData(true);
     if (status == "authenticated") {
