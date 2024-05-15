@@ -19,20 +19,22 @@ const selectStyle = {
   }),
 };
 
-export default function SelectInput({ id, data, defaultValue, onChange, children }) {
-  return (
-    <div className="w-full space-y-2 mb-8">
-      <label className="ml-1">{children}</label>
-      <Select
-        name={id}
-        isSearchable={true}
-        styles={selectStyle}
-        placeholder={""}
-        className="border-2 rounded-md"
-        options={data}
-        defaultValue={defaultValue}
-        onChange={onChange}
-      />
-    </div>
-  )
+export default function SelectInput({ isUserSelectionLoaded, id, data, defaultValue, onChange, children }) {
+  if (isUserSelectionLoaded) {
+    return (
+      <div className="w-full space-y-2 mb-8">
+        <label className="ml-1">{children}</label>
+        <Select
+          name={id}
+          isSearchable={true}
+          styles={selectStyle}
+          placeholder={""}
+          className="border-2 rounded-md"
+          options={data}
+          defaultValue={defaultValue}
+          onChange={onChange}
+        />
+      </div>
+    )
+  }
 }
