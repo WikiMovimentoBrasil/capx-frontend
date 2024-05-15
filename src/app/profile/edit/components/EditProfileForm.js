@@ -35,39 +35,14 @@ export default function EditProfileForm(props) {
   }, [status]);
 
   const defineFormComponent = (field) => {
-    if (field.type === "string") {
+    if (field.type === "string" || field.type === "url" || field.type === "email") {
       return (
         <TextInput
           id={field.key}
-          data={newUserData[field.key]}
+          data={newUserData[field.key] ?? ""}
           placeholder={""}
           onChange={handleTextInputChange}
-        >
-          {field.label}
-        </TextInput>
-      )
-    }
-    else if (field.type === "url") {
-      return (
-        <TextInput
-          id={field.key}
-          data={newUserData[field.key]}
-          placeholder={""}
-          onChange={handleTextInputChange}
-          type={field.type}
-        >
-          {field.label}
-        </TextInput>
-      )
-    }
-    else if (field.type === "email") {
-      return (
-        <TextInput
-          id={field.key}
-          data={newUserData[field.key]}
-          placeholder={""}
-          onChange={handleTextInputChange}
-          type={field.type}
+          type={field.type === "string" ? "text" : field.type}
         >
           {field.label}
         </TextInput>
