@@ -60,6 +60,19 @@ export default function EditProfileForm(props) {
         </TextInput>
       )
     }
+    else if (field.type === "email") {
+      return (
+        <TextInput
+          id={field.key}
+          data={newUserData[field.key]}
+          placeholder={""}
+          onChange={handleTextInputChange}
+          type={field.type}
+        >
+          {field.label}
+        </TextInput>
+      )
+    }
   }
 
   const handleTextInputChange = (e) => {
