@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import TextInput from "./TextInput";
 import SelectInput from "./SelectInput";
+import SubmitButton from "./SubmitButton";
 
 export default function EditProfileForm(props) {
   const router = useRouter();
@@ -86,7 +87,6 @@ export default function EditProfileForm(props) {
           }
         }
       ).then(() => {
-        setUpdatingData(false);
         router.push("/profile");
       });
     }
@@ -99,7 +99,7 @@ export default function EditProfileForm(props) {
           {formFields.map(field => (
             defineFormComponent(field)
           ))}
-          <button type="submit" disabled={updatingData}>Update</button>
+          <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
     )
