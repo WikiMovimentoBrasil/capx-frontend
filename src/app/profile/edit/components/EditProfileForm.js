@@ -39,6 +39,7 @@ export default function EditProfileForm(props) {
       return (
         <TextInput
           id={field.key}
+          key={field.key}
           data={newUserData[field.key] ?? ""}
           placeholder={""}
           onChange={handleTextInputChange}
