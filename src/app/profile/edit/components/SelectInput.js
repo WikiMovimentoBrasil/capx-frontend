@@ -23,16 +23,16 @@ export default function SelectInput({ isUserSelectionLoaded, id, data, defaultVa
   if (isUserSelectionLoaded) {
     return (
       <div className="w-full space-y-2 mb-8">
-        <label className="ml-1">{children}</label>
+        <label className="ml-2">{children}</label>
         <Select
           name={id}
           isSearchable={true}
           styles={selectStyle}
           placeholder={""}
-          className="border-2 rounded-md"
           options={data}
           defaultValue={defaultValue}
           onChange={onChange}
+          className="border-2 rounded-md"
         />
       </div>
     )
