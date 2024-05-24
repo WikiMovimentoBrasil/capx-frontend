@@ -31,7 +31,7 @@ export default function MainWrapper(props) {
   }, [status]);
 
   if (status === "loading") {
-    pageContent = (<LoadingSection darkMode={darkMode} />)
+    pageContent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE" />)
   }
 
   if (status === "authenticated") {
@@ -39,7 +39,7 @@ export default function MainWrapper(props) {
       pageContent = (<UserProfile darkMode={darkMode} userData={userData} />);
     }
     else {
-      pageContent = (<LoadingSection darkMode={darkMode} />);
+      pageContent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE" />);
     }
   }
 
