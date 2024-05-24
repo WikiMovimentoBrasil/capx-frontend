@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import MainWrapper from "./components/MainWrapper";
 import EditProfileForm from "./components/EditProfileForm";
@@ -14,5 +15,7 @@ export default async function ProfilePage() {
         <EditProfileForm session={session !== null}></EditProfileForm>
       </MainWrapper>
     )
+  } else {
+    redirect('/');
   }
 }
