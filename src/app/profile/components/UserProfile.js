@@ -21,6 +21,28 @@ export default function UserProfile({ darkMode, userData }) {
           <h3>{userData.about}</h3>
           <h3>{userData.wikidata_qid}</h3>
           <h3>{userData.wiki_alt}</h3>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.territory_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.language_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.affiliation_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.wikimedia_project_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <h3>{userData.team}</h3>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.skills_known_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.skills_available_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
+          <div className="flex flex-wrap place-content-center pt-4">
+            {userData.skills_wanted_project_rep?.map((item) => <h3 className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-base px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{item.display_name}</h3>)}
+          </div>
         </div>
       </div>
     </section>
