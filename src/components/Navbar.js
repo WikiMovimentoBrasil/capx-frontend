@@ -9,7 +9,7 @@ import SignOutButton from "./SignOutButton";
 import { AnimatePresence } from "framer-motion";
 import CapXLogo from "../../public/static/images/capx_logo.svg";
 
-export default function Navbar({ session, darkMode, setDarkMode, mobileMenuStatus, setMobileMenuStatus }) {
+export default function Navbar({ session, language, setLanguage, pageContent, setPageContent, darkMode, setDarkMode, mobileMenuStatus, setMobileMenuStatus }) {
   return (
     <>
       <AnimatePresence>
@@ -37,7 +37,7 @@ export default function Navbar({ session, darkMode, setDarkMode, mobileMenuStatu
           </div>
           <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
             <NavbarLinks session={session} />
-            <NavbarConfig darkMode={darkMode} setDarkMode={setDarkMode} setMobileMenuStatus={setMobileMenuStatus} />
+            <NavbarConfig language={language} setLanguage={setLanguage} setPageContent={setPageContent} darkMode={darkMode} setDarkMode={setDarkMode} setMobileMenuStatus={setMobileMenuStatus} />
             <div className="hidden sm:flex">{session ? (<SignOutButton></SignOutButton>) : (<SignInButton message="Login" />)}</div>
           </div>
         </div>
