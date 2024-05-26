@@ -15,5 +15,13 @@
       "description": "Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.",
       "button": "Join the Capacity Exchange!"
     }
+  },
+  "footer": {
+    "links": [
+      {"title": "Documentation", "to": "/"},
+      {"title": "GitHub", "to": "https://github.com/WikiMovimentoBrasil"},
+      {"title": "Meta-wikimedia", "to": "https://meta.wikimedia.org/wiki/Capacity_Exchange"}
+    ],
+    "message": "For and by the Wikimedia Movement"
   }
 }
