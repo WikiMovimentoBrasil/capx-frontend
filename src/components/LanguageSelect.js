@@ -1,4 +1,5 @@
 import axios from "axios";
+import Select from "react-select";
 import { useEffect } from "react";
 import { setCookie } from "@/app/actions";
 
@@ -27,6 +28,13 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
   }, [language]);
 
   return (
-    <div className="my-auto"></div>
+    <div className="my-auto">
+      <Select
+        isSearchable={false}
+        options={options}
+        defaultValue={[{ value: language, label: language }]}
+        onChange={handleSelection}
+      />
+    </div>
   )
 }
