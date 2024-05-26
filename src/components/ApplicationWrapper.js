@@ -22,7 +22,7 @@ export default function ApplicationWrapper(props) {
       mobileMenuStatus={mobileMenuStatus}
       setMobileMenuStatus={setMobileMenuStatus}
     >
-      <Section01></Section01>
+      <Section01 pageContent={pageContent}></Section01>
       <Section02 darkMode={darkMode}></Section02>
     </BaseWrapper>
   )
