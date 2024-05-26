@@ -36,7 +36,7 @@ export default function Navbar({ session, language, setLanguage, pageContent, se
             </div>
           </div>
           <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
-            <NavbarLinks session={session} />
+            <NavbarLinks session={session} pageContent={pageContent} />
             <NavbarConfig language={language} setLanguage={setLanguage} setPageContent={setPageContent} darkMode={darkMode} setDarkMode={setDarkMode} setMobileMenuStatus={setMobileMenuStatus} />
             <div className="hidden sm:flex">{session ? (<SignOutButton></SignOutButton>) : (<SignInButton message="Login" />)}</div>
           </div>
