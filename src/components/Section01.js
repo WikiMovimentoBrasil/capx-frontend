@@ -3,14 +3,14 @@ import { Typewriter } from "react-simple-typewriter";
 import MainImage from "../../public/static/images/main_image.png";
 import SignInButton from "./SignInButton";
 
-export default function Section01() {
+export default function Section01({ pageContent }) {
   return (
     <section id="section01" className={"flex flex-wrap sm:flex-nowrap w-10/12 h-fit sm:h-screen mx-auto place-content-start py-32 font-montserrat"}>
       <div className="sm:w-2/3 sm:grid sm:place-content-center sm:pr-20">
         {/* Title */}
-        <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">A space for exchanging<br></br>
+        <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">{pageContent.home.section01.title.text}<br></br>
           <Typewriter
-            words={["capacity", "knowledge", "skills", "services"]}
+            words={pageContent.home.section01.title.carousel}
             loop={0}
             cursor
             cursorStyle='_'
@@ -28,11 +28,11 @@ export default function Section01() {
         </div>
         {/* Description */}
         <h3 className="w-full h-fit text-2xl sm:text-3xl font-regular text-center sm:text-left mb-8 sm:mb-14">
-          Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.
+          {pageContent.home.section01.description}
         </h3>
         {/* Coming Soon */}
         <div className="grid place-content-center sm:place-content-start w-full">
-          <SignInButton message="Join the Capacity Exchange!" bigSizeButton={true} />
+          <SignInButton message={pageContent.home.section01.button} bigSizeButton={true} />
         </div>
       </div>
       {/* Main Image Desktop */}
