@@ -1,4 +1,11 @@
 {
+  "navbar": {
+    "links": [
+      {"title": "My Profile", "to": "/profile"},
+      {"title": "Skills", "to": "/skills"},
+      {"title": "Events", "to": "/events"}
+    ]
+  },
   "home": {
     "section01" : {
       "title": {
