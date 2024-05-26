@@ -16,7 +16,7 @@ export default function BaseWrapper({ children, session, language, setLanguage, 
         setMobileMenuStatus={setMobileMenuStatus}
       />
       {children}
-      <Footer darkMode={darkMode} />
+      <Footer darkMode={darkMode} pageContent={pageContent} />
     </main>
   )
 }

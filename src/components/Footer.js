@@ -1,11 +1,7 @@
 import Link from "next/link";
 
-export default function Footer({ darkMode }) {
-  const footerLinks = [
-    { "title": "Documentation", "to": "/" },
-    { "title": "GitHub", "to": "https://github.com/WikiMovimentoBrasil" },
-    { "title": "Meta-wikimedia", "to": "https://meta.wikimedia.org/wiki/Capacity_Exchange" }
-  ]
+export default function Footer({ darkMode, pageContent }) {
+  const footerLinks = pageContent.footer.links;
 
   return (
     <section className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "flex flex-wrap sm:flex-nowrap w-full h-fit sm:h-16 px-6 py-14 sm:py-0 sm:place-content-between font-medium text-xl sm:text-lg"}>
@@ -25,7 +21,7 @@ export default function Footer({ darkMode }) {
         })}
       </div>
       <div className="flex w-full sm:w-fit h-full text-base sm:text-lg text-center">
-        <p className="mx-auto my-auto">For and by the Wikimedia Movement</p>
+        <p className="mx-auto my-auto">{pageContent.footer.message}</p>
       </div>
     </section>
   )
