@@ -1,0 +1,12 @@
+{
+  "home": {
+    "section01" : {
+      "title": {
+        "text": "A space for exchanging",
+        "carousel": ["capacity", "knowledge", "skills", "services"]
+      },
+      "description": "Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.",
+      "button": "Join the Capacity Exchange!"
+    }
+  }
+}
