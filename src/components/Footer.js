@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 export default function Footer({ darkMode, pageContent }) {
-  const footerLinks = pageContent.footer.links;
+  const footerLinks = [
+    { "title": pageContent["footer-link-documentation"], "to": "/" },
+    { "title": pageContent["footer-link-github"], "to": "https://github.com/WikiMovimentoBrasil" },
+    { "title": pageContent["footer-link-wikimedia"], "to": "https://meta.wikimedia.org/wiki/Capacity_Exchange" }
+  ]
 
   return (
     <section className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "flex flex-wrap sm:flex-nowrap w-full h-fit sm:h-16 px-6 py-14 sm:py-0 sm:place-content-between font-medium text-xl sm:text-lg"}>
@@ -21,7 +25,7 @@ export default function Footer({ darkMode, pageContent }) {
         })}
       </div>
       <div className="flex w-full sm:w-fit h-full text-base sm:text-lg text-center">
-        <p className="mx-auto my-auto">{pageContent.footer.message}</p>
+        <p className="mx-auto my-auto">{pageContent["footer-message"]}</p>
       </div>
     </section>
   )
