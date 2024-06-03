@@ -1,27 +1,13 @@
 {
-  "navbar": {
-    "links": [
-      {"title": "Meu Perfil", "to": "/profile"},
-      {"title": "Habilidades", "to": "/skills"},
-      {"title": "Eventos", "to": "/events"}
-    ]
-  },
-  "home": {
-    "section01" : {
-      "title": {
-        "text": "Um espaço para trocar",
-        "carousel": ["capacidades", "conhecimentos", "habilidades", "serviços"]
-      },
-      "description": "Conecte-se com colegas, aprenda e compartilhe capacidades em uma plataforma feita para e pelo Movimento Wikimedia.",
-      "button": "Junte-se ao Capacity Exchange!"
-    }
-  },
-  "footer": {
-    "links": [
-      {"title": "Documentação", "to": "/"},
-      {"title": "GitHub", "to": "https://github.com/WikiMovimentoBrasil"},
-      {"title": "Meta-wikimedia", "to": "https://meta.wikimedia.org/wiki/Capacity_Exchange"}
-    ],
-    "message": "Feito para e pelo Movimento Wikimedia"
-  }
+  "navbar-link-profile": "Meu Perfil",
+  "navbar-link-capacities": "Capacidades",
+  "navbar-link-events": "Eventos",
+  "body-home-section01-title-text": "Um espaço para trocar",
+  "body-home-section01-title-carousel": "capacidades, conhecimentos, habilidades, serviços",
+  "body-home-section01-description": "Conecte-se com colegas, aprenda e compartilhe capacidades em uma plataforma feita para e pelo Movimento Wikimedia.",
+  "body-home-section01-button": "Junte-se ao Capacity Exchange!",
+  "footer-link-documentation": "Documentação",
+  "footer-link-github": "GitHub",
+  "footer-link-wikimedia": "Meta-wikimedia",
+  "footer-message": "Feito para e pelo Movimento Wikimedia"
 }
