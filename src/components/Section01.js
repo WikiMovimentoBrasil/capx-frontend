@@ -8,9 +8,9 @@ export default function Section01({ pageContent }) {
     <section id="section01" className={"flex flex-wrap sm:flex-nowrap w-10/12 h-fit sm:h-screen mx-auto place-content-start py-32 font-montserrat"}>
       <div className="sm:w-2/3 sm:grid sm:place-content-center sm:pr-20">
         {/* Title */}
-        <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">{pageContent.home.section01.title.text}<br></br>
+        <h1 className="w-full h-fit font-extrabold text-3xl sm:text-7xl text-center sm:text-left mb-8">{pageContent["body-home-section01-title-text"]}<br></br>
           <Typewriter
-            words={pageContent.home.section01.title.carousel}
+            words={pageContent["body-home-section01-title-carousel"].replace(" ", "").split(",")}
             loop={0}
             cursor
             cursorStyle='_'
@@ -28,11 +28,11 @@ export default function Section01({ pageContent }) {
         </div>
         {/* Description */}
         <h3 className="w-full h-fit text-2xl sm:text-3xl font-regular text-center sm:text-left mb-8 sm:mb-14">
-          {pageContent.home.section01.description}
+          {pageContent["body-home-section01-description"]}
         </h3>
         {/* Coming Soon */}
         <div className="grid place-content-center sm:place-content-start w-full">
-          <SignInButton message={pageContent.home.section01.button} bigSizeButton={true} />
+          <SignInButton message={pageContent["body-home-section01-button"]} bigSizeButton={true} />
         </div>
       </div>
       {/* Main Image Desktop */}
