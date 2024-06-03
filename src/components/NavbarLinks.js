@@ -2,7 +2,11 @@ import NextLink from "next/link";
 import { Link } from "react-scroll";
 
 export default function NavbarLinks({ session, pageContent }) {
-  const menuData = pageContent.navbar.links;
+  const menuData = [
+    { "title": pageContent["navbar-link-profile"], "to": "/profile" },
+    { "title": pageContent["navbar-link-capacities"], "to": "/capacities" },
+    { "title": pageContent["navbar-link-events"], "to": "/events" }
+  ]
 
   // User is logged in
   if (session) {
