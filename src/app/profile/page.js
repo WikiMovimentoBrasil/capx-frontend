@@ -9,7 +9,7 @@ export default async function ProfilePage() {
   const cookieStore = cookies();
   const session = await getServerSession();
   const darkMode = cookieStore.get("dark_mode") === undefined ? "false" : cookieStore.get("dark_mode");
-  const language = cookieStore.get("language") === undefined ? "en-us" : cookieStore.get("language").value;
+  const language = cookieStore.get("language") === undefined ? "en" : cookieStore.get("language").value;
 
   // Loading page content based on selected language
   const filePath = path.join(process.cwd(), 'locales', `${language}.json`);
