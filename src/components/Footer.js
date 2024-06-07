@@ -10,9 +10,12 @@ export default function Footer({ darkMode, pageContent }) {
   return (
     <section className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "flex flex-wrap sm:flex-nowrap w-full h-fit sm:h-16 px-6 py-14 sm:py-0 sm:place-content-between font-medium text-xl sm:text-lg"}>
       <div className="flex flex-wrap w-full sm:w-fit sm:flex-nowrap h-full space-y-8 sm:space-y-0 sm:space-x-10 mb-14 sm:mb-0">
-        {footerLinks.map((link) => {
+        {footerLinks.map((link, index) => {
           return (
-            <div className="flex w-full sm:w-fit text-center sm:text-left">
+            <div
+              key={"footer-link-" + index.toString()}
+              className="flex w-full sm:w-fit text-center sm:text-left"
+            >
               <Link
                 href={link.to}
                 target="_blank"
