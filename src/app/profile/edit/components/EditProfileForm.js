@@ -3,106 +3,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import TextArea from "./TextArea";
 import TextInput from "./TextInput";
-import SelectInput from "./SelectInput";
+import SingleSelectInput from "./SingleSelectInput";
 import SubmitButton from "./SubmitButton";
+import LoadingSection from "../../components/LoadingSection";
+import MultiSelectInput from "./MultiSelectInput";
 
-export default function EditProfileForm() {
-  const router = useRouter();
-  const { status, data } = useSession();
-  const [currentUserData, setCurrentUserData] = useState({});
-  const [newUserData, setNewUserData] = useState({});
-  const [formFields, setFormFields] = useState([]);
-  const [updatingData, setUpdatingData] = useState(false);
-
-  useEffect(() => {
-    if (status == "authenticated") {
-      const queryData = {
-        params: { userId: data.user.id },
-        headers: { 'Authorization': `Token ${data.user.token}` }
-      }
-
-      async function getUserData() {
-        const queryResponse = await axios.get("/api/profile", queryData);
-        setCurrentUserData(queryResponse.data);
-        setNewUserData(queryResponse.data);
-      }
-      async function getFormRules() {
-        const queryResponse = await axios.options("/api/profile", queryData);
-        setFormFields(queryResponse.data);
-      }
-      getFormRules();
-      getUserData();
-    }
-  }, [status]);
-
-  const defineFormComponent = (field) => {
-    if (field.type === "string" || field.type === "url" || field.type === "email") {
-      return (
-        <TextInput
-          id={field.key}
-          key={field.key}
-          data={newUserData[field.key] ?? ""}
-          placeholder={""}
-          onChange={handleTextInputChange}
-          type={field.type === "string" ? "text" : field.type}
-        >
-          {field.label}
-        </TextInput>
-      )
-    }
-    else if (field.type === "choice") {
-      return (
-        <SelectInput
-          isUserSelectionLoaded={newUserData[field.key] ?? false}
-          id={field.key}
-          key={field.key}
-          data={field.choices.map((option) => ({ value: option.value, label: option.display_name }))}
-          defaultValue={field.choices.map((option) => newUserData[field.key] === option.value ? { value: option.value, label: option.display_name } : null)}
-          onChange={handleSelectInputChange}
-        >
-          {field.label}
-        </SelectInput>
-      )
-    }
-  }
-
-  const handleTextInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewUserData({ ...newUserData, [name]: value });
-  };
-
-  const handleSelectInputChange = (selectedOption, element) => {
-    setNewUserData({ ...newUserData, [element.name]: selectedOption.value });
-  };
-
-  const handleSubmit = async (e) => {
-    setUpdatingData(true);
-    if (status == "authenticated") {
-      e.preventDefault();
-      const queryResponse = await axios.post("/api/profile",
-        newUserData,
-        {
-          headers: {
-            'Authorization': `Token ${data.user.token}`,
-          }
-        }
-      ).then(() => {
-        router.push("/profile");
-      });
-    }
-  };
-
-  if (status === "authenticated") {
-    return (
-      <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
-        <form onSubmit={handleSubmit} className="w-full">
-          {formFields.map(field => (
-            defineFormComponent(field)
-          ))}
-          <SubmitButton updatingData={updatingData}>Update</SubmitButton>
-        </form>
-      </section>
-    )
-  }
-}
+export default function EditProfileForm({ session, language, pageContent, darkMode }) {}
