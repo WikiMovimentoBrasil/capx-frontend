@@ -246,6 +246,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Available Capacities
           </MultiSelectInput>
+          {/* Wanted Skills */}
+          <MultiSelectInput
+            id={"skills_wanted"}
+            key={"skills_wanted"}
+            options={Object.entries(myData.skillData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.skills_wanted.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Wanted Capacities
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
