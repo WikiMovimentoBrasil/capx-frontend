@@ -19,7 +19,7 @@ const selectStyle = {
   }),
 };
 
-export default function SelectInput({ isUserSelectionLoaded, id, data, defaultValue, onChange, children }) {
+export default function SingleSelectInput({ children, isUserSelectionLoaded = true, id, data, defaultValue, onChange }) {
   if (isUserSelectionLoaded) {
     return (
       <div className="w-full space-y-2 mb-8">
