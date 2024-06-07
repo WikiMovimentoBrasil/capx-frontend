@@ -7,7 +7,7 @@ export default function UserProfile({ darkMode, userData }) {
       <div className="w-full text-center mb-8 place-content-center">
         <div>
           <Image
-            src={userData.profile_image}
+            src={userData.profile_image ?? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='}
             width={200}
             height={200}
             alt="User Profile Photo"

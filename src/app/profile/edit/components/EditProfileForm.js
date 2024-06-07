@@ -120,7 +120,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"profile_image"}
             key={"profile_image"}
-            data={myData.userData.profile_image ?? ""}
+            data={myData.userData?.profile_image ?? ""}
             placeholder={"e.g. https://upload.wikimedia.org/..."}
             onChange={handleTextInputChange}
             type={"url"}
@@ -132,7 +132,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"display_name"}
             key={"display_name"}
-            data={myData.userData.display_name ?? ""}
+            data={myData.userData?.display_name ?? ""}
             placeholder={"e.g. Name Surname"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -145,7 +145,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
             id={"pronoun"}
             key={"pronoun"}
             data={pronouns.map((option) => option)}
-            defaultValue={pronouns.filter((option) => option.value === myData.userData.pronoun)}
+            defaultValue={pronouns.filter((option) => option.value === myData.userData?.pronoun)}
             onChange={handleSingleSelectInputChange}
           >
             Pronouns
@@ -154,7 +154,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextArea
             id={"about"}
             key={"about"}
-            data={myData.userData.about ?? ""}
+            data={myData.userData?.about ?? ""}
             placeholder={"briefly introduce and describe yourself"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -166,7 +166,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"wikidata_qid"}
             key={"wikidata_qid"}
-            data={myData.userData.wikidata_qid ?? ""}
+            data={myData.userData?.wikidata_qid ?? ""}
             placeholder={"e.g. Q125816201"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -178,7 +178,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"wiki_alt"}
             key={"wiki_alt"}
-            data={myData.userData.wiki_alt ?? ""}
+            data={myData.userData?.wiki_alt ?? ""}
             placeholder={"e.g. Username"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -190,8 +190,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"territory"}
             key={"territory"}
-            options={Object.entries(myData.territoryData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.territory.map((option) => ({ value: option, label: myData.territoryData[option] }))}
+            options={Object.entries(myData.territoryData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.territory?.map((option) => ({ value: option, label: myData.territoryData?.[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Territory
@@ -200,8 +200,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"language"}
             key={"language"}
-            options={Object.entries(myData.languageData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.language.map((option) => ({ value: option, label: myData.languageData[option] }))}
+            options={Object.entries(myData.languageData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.language?.map((option) => ({ value: option, label: myData.languageData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Language
@@ -210,8 +210,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"affiliation"}
             key={"affiliation"}
-            options={Object.entries(myData.affiliationData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.affiliation.map((option) => ({ value: option, label: myData.affiliationData[option] }))}
+            options={Object.entries(myData.affiliationData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.affiliation?.map((option) => ({ value: option, label: myData.affiliationData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Affilitation
@@ -220,8 +220,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"wikimedia_project"}
             key={"wikimedia_project"}
-            options={Object.entries(myData.wikiProjectData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.wikimedia_project.map((option) => ({ value: option, label: myData.wikiProjectData[option] }))}
+            options={Object.entries(myData.wikiProjectData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.wikimedia_project?.map((option) => ({ value: option, label: myData.wikiProjectData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Wikimedia Project
@@ -230,8 +230,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_known"}
             key={"skills_known"}
-            options={Object.entries(myData.skillData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.skills_known.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            options={Object.entries(myData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.skills_known?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Known Capacities
@@ -240,8 +240,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_available"}
             key={"skills_available"}
-            options={myData.userData.skills_known.map((option) => ({ value: option, label: myData.skillData[option] }))}
-            selectedOptions={myData.userData.skills_available.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            options={myData.userData?.skills_known?.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            selectedOptions={myData.userData?.skills_available?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Available Capacities
@@ -250,8 +250,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_wanted"}
             key={"skills_wanted"}
-            options={Object.entries(myData.skillData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData.skills_wanted.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            options={Object.entries(myData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData?.skills_wanted?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Wanted Capacities
@@ -260,7 +260,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"team"}
             key={"team"}
-            data={myData.userData.team ?? ""}
+            data={myData.userData?.team ?? ""}
             placeholder={"e.g. Staff Team"}
             onChange={handleTextInputChange}
             type={"text"}
