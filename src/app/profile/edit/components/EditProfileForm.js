@@ -256,6 +256,18 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Wanted Capacities
           </MultiSelectInput>
+          {/* Team */}
+          <TextInput
+            id={"team"}
+            key={"team"}
+            data={myData.userData.team ?? ""}
+            placeholder={"e.g. Staff Team"}
+            onChange={handleTextInputChange}
+            type={"text"}
+            maxLength={128}
+          >
+            Team
+          </TextInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
