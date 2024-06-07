@@ -162,6 +162,18 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Short Bio
           </TextArea>
+          {/* Wikidata Item */}
+          <TextInput
+            id={"wikidata_qid"}
+            key={"wikidata_qid"}
+            data={myData.userData.wikidata_qid ?? ""}
+            placeholder={"e.g. Q125816201"}
+            onChange={handleTextInputChange}
+            type={"text"}
+            maxLength={10}
+          >
+            Wikidata Item
+          </TextInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
