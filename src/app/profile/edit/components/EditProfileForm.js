@@ -94,4 +94,21 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
     };
     setMyData({ ...myData, userData: newUserData })
   }
+
+  const handleSubmit = async (e) => {
+    setUpdatingData(true);
+    if (status == "authenticated") {
+      e.preventDefault();
+      const queryResponse = await axios.post("/api/profile",
+        myData.userData,
+        {
+          headers: {
+            'Authorization': `Token ${data.user.token}`,
+          }
+        }
+      ).then(() => {
+        router.push("/profile");
+      });
+    }
+  };
 }
