@@ -1,10 +1,20 @@
 import axios from "axios";
 import Select from "react-select";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setCookie } from "@/app/actions";
 
 export default function LanguageSelect({ language, setLanguage, setPageContent }) {
-  const options = process.env.NEXT_PUBLIC_LANGUAGES.split(",").map((lang) => ({ value: lang, label: lang }));
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchLanguages() {
+      const response = await axios.get("/api/language");
+      const languages = response.data;
+      const languageOptions = languages.map((lang) => ({ value: lang, label: lang }));
+      setOptions(languageOptions);
+    }
+    fetchLanguages();
+  }, []);
 
   const handleSelection = async (selectedOption) => {
     setLanguage(selectedOption.value);
@@ -36,5 +46,5 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
         onChange={handleSelection}
       />
     </div>
-  )
+  );
 }
