@@ -216,6 +216,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Affilitation
           </MultiSelectInput>
+          {/* Wikimedia Project */}
+          <MultiSelectInput
+            id={"wikimedia_project"}
+            key={"wikimedia_project"}
+            options={Object.entries(myData.wikiProjectData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.wikimedia_project.map((option) => ({ value: option, label: myData.wikiProjectData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Wikimedia Project
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
