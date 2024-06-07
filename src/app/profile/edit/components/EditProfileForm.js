@@ -150,6 +150,18 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Pronouns
           </SingleSelectInput>
+          {/* Short Bio */}
+          <TextArea
+            id={"about"}
+            key={"about"}
+            data={myData.userData.about ?? ""}
+            placeholder={"briefly introduce and describe yourself"}
+            onChange={handleTextInputChange}
+            type={"text"}
+            maxLength={500}
+          >
+            Short Bio
+          </TextArea>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
