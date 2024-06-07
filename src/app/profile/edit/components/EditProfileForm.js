@@ -174,6 +174,18 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Wikidata Item
           </TextInput>
+          {/* Alternative Wikimedia Account */}
+          <TextInput
+            id={"wiki_alt"}
+            key={"wiki_alt"}
+            data={myData.userData.wiki_alt ?? ""}
+            placeholder={"e.g. Username"}
+            onChange={handleTextInputChange}
+            type={"text"}
+            maxLength={128}
+          >
+            Alternative Wikimedia Account
+          </TextInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
