@@ -14,15 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install SSH key
+      - name: Run deployment script
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          request_pty: true
           script_stop: true
           script: |
-            become capx bash -c 'git -C $HOME/www/js pull origin main'
-            become capx bash -c 'webservice node18 shell -- yarn --cwd $HOME/www/js install'
-            become capx bash -c 'webservice node18 shell -- yarn --cwd $HOME/www/js build'
+            become capx git -C '$HOME/www/js' pull origin main
+            become capx webservice --mem 2G --cpu 1 node18 shell -- yarn --cwd '$HOME/www/js' install
+            become capx webservice --mem 2G --cpu 1 node18 shell -- yarn --cwd '$HOME/www/js' build
