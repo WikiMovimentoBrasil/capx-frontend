@@ -43,8 +43,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
   const [isLoading, setIsLoading] = useState(true);
   const [updatingData, setUpdatingData] = useState(false);
   const [currentUserData, setCurrentUserData] = useState({});
-  const [myData, setMyData] = useState({ userData: null, FormData: null, affiliationData: null });
-  
+  const [myData, setMyData] = useState({ userData: null, FormData: null, territoryData: null, languageData: null, affiliationData: null, wikiProjectData: null, skillData: null });
+
   const pronouns = [
     { value: "he-him", label: "He/Him" },
     { value: "she-her", label: "She/Her" },
@@ -70,4 +70,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
 
     }
   }, [status]);
+
+  const handleTextInputChange = (e, chosenState = null) => {
+    const { name, value } = e.target;
+
+    if (chosenState == null) {
+      const newUserData = {
+        ...myData.userData,
+        [name]: value
+      };
+      setMyData({ ...myData, userData: newUserData });
+    }
+  };
 }
