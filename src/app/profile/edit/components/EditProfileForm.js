@@ -206,6 +206,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Language
           </MultiSelectInput>
+          {/* Affilitation */}
+          <MultiSelectInput
+            id={"affiliation"}
+            key={"affiliation"}
+            options={Object.entries(myData.affiliationData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.affiliation.map((option) => ({ value: option, label: myData.affiliationData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Affilitation
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
