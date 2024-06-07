@@ -128,6 +128,18 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Profile Picture
           </TextInput>
+          {/* Display Name */}
+          <TextInput
+            id={"display_name"}
+            key={"display_name"}
+            data={myData.userData.display_name ?? ""}
+            placeholder={"e.g. Name Surname"}
+            onChange={handleTextInputChange}
+            type={"text"}
+            maxLength={300}
+          >
+            Display Name
+          </TextInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
