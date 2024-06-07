@@ -24,7 +24,12 @@ export default async function ProfilePage() {
         pageContent={pageContent}
         darkMode={darkMode}
       >
-        <EditProfileForm session={session !== null}></EditProfileForm>
+        <EditProfileForm
+          session={session !== null}
+          language={language}
+          pageContent={pageContent}
+          darkMode={darkMode}
+        />
       </MainWrapper>
     )
   } else {
