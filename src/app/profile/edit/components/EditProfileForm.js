@@ -90,7 +90,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
   const handleMultiSelectInputChange = (selectedOptions, element) => {
     const newUserData = {
       ...myData.userData,
-      affiliation: selectedOptions.map(option => option.value)
+      [element.name]: selectedOptions.map(option => option.value)
     };
     setMyData({ ...myData, userData: newUserData })
   }
