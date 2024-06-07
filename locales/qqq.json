@@ -1,0 +1,13 @@
+{
+    "navbar-link-profile": "Link to the user's profile on navigation bar",
+    "navbar-link-capacities": "Link to the capacities page on navigation bar",
+    "navbar-link-events": "Link to the events page on navigation bar",
+    "body-home-section01-title-text": "Text displayed on the first section of the home page. Refers to the purpose of the platform, as a space for exchanging...(blank).",
+    "body-home-section01-title-carousel": "Text displayed on the first section of the home page. Refers to the carousel title, listing the types of exchanges that can be made on the platform.",
+    "body-home-section01-description": "Text displayed on the first section of the home page. Describes the purpose of the platform, inviting users to connect, learn, and share capacities.",
+    "body-home-section01-button": "Button displayed on the first section of the home page. Invites users to join the platform.",
+    "footer-link-documentation": "Link to the documentation page in the footer",
+    "footer-link-github": "Link to the GitHub repository in the footer",
+    "footer-link-wikimedia": "Link to the Meta-Wikimedia page in the footer",
+    "footer-message": "Motto displayed in the footer."
+}

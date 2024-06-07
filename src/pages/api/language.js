@@ -11,7 +11,9 @@ export default async function language(req, res) {
     else {
       const localesDir = path.join(process.cwd(), 'locales');
       const files = fs.readdirSync(localesDir);
-      const languages = files.map(file => path.basename(file, '.json'));
+      const languages = files
+        .filter(file => file !== 'qqq.json') // Ignore file qqq.json
+        .map(file => path.basename(file, '.json'));
       res.status(200).json(languages);
     }
   }
