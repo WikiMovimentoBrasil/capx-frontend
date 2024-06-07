@@ -82,4 +82,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
       setMyData({ ...myData, userData: newUserData });
     }
   };
+
+  const handleSingleSelectInputChange = (selectedOption, element) => {
+    setCurrentUserData({ ...newUserData, [element.name]: selectedOption.value });
+  };
 }
