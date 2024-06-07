@@ -196,6 +196,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Territory
           </MultiSelectInput>
+          {/* Language */}
+          <MultiSelectInput
+            id={"language"}
+            key={"language"}
+            options={Object.entries(myData.languageData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.language.map((option) => ({ value: option, label: myData.languageData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Language
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
