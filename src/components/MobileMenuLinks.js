@@ -19,6 +19,7 @@ export default function MobileMenuLinks({ session, handleMenuStatus }) {
         {menuDataLoggedIn.map((item, index) => {
           return (
             <NextLink
+              key={"menu-link-" + index.toString()}
               href={item.to}
               className="w-full cursor-pointer border-b py-3"
             >
@@ -35,6 +36,7 @@ export default function MobileMenuLinks({ session, handleMenuStatus }) {
       {menuDataNotLoggedIn.map((item, index) => {
         return (
           <Link
+            key={"menu-link-" + index.toString()}
             activeClass="active"
             to={item.to}
             spy={true}
@@ -46,7 +48,6 @@ export default function MobileMenuLinks({ session, handleMenuStatus }) {
             ignoreCancelEvents={false}
             spyThrottle={500}
             onClick={handleMenuStatus}
-            key={"menuLink" + index.toString()}
             className="w-full cursor-pointer border-b py-3"
           >
             {item.title}
