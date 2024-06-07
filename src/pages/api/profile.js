@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function userProfile(req, res) {
   if (req.method === "GET") {
-    const queryResponse = await axios.get(process.env.PROFILE_URL + "/" + req.query.userId, {
+    const queryResponse = await axios.get(process.env.BASE_URL + "/profile/" + req.query.userId, {
       headers: {
         'Authorization': req.headers.authorization
       }
@@ -13,7 +13,7 @@ export default async function userProfile(req, res) {
     const postBody = req.body;
     const userId = postBody.user.id;
 
-    const queryResponse = await axios.put(process.env.PROFILE_URL + "/" + userId + "/", postBody, {
+    const queryResponse = await axios.put(process.env.BASE_URL + "/profile/" + userId + "/", postBody, {
       headers: {
         'Authorization': req.headers.authorization
       }
@@ -21,7 +21,7 @@ export default async function userProfile(req, res) {
     res.status(200).json(queryResponse.data);
   }
   else if (req.method === "OPTIONS") {
-    const queryResponse = await axios.options(process.env.PROFILE_URL + "/" + req.query.userId, {
+    const queryResponse = await axios.options(process.env.BASE_URL + "/profile/" + req.query.userId, {
       headers: {
         'Authorization': req.headers.authorization
       }
