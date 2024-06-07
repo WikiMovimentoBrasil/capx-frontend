@@ -140,6 +140,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Display Name
           </TextInput>
+          {/* Pronouns */}
+          <SingleSelectInput
+            id={"pronoun"}
+            key={"pronoun"}
+            data={pronouns.map((option) => option)}
+            defaultValue={pronouns.filter((option) => option.value === myData.userData.pronoun)}
+            onChange={handleSingleSelectInputChange}
+          >
+            Pronouns
+          </SingleSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
