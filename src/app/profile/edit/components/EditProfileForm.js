@@ -86,4 +86,12 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
   const handleSingleSelectInputChange = (selectedOption, element) => {
     setCurrentUserData({ ...newUserData, [element.name]: selectedOption.value });
   };
+
+  const handleMultiSelectInputChange = (selectedOptions, element) => {
+    const newUserData = {
+      ...myData.userData,
+      affiliation: selectedOptions.map(option => option.value)
+    };
+    setMyData({ ...myData, userData: newUserData })
+  }
 }
