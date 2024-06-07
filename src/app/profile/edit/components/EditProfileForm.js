@@ -111,4 +111,26 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
       });
     }
   };
+
+  if (status === "authenticated") {
+    return (
+      <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
+        <form onSubmit={handleSubmit} className="w-full">
+          {/* Profile Picture */}
+          <TextInput
+            id={"profile_image"}
+            key={"profile_image"}
+            data={myData.userData.profile_image ?? ""}
+            placeholder={"e.g. https://upload.wikimedia.org/..."}
+            onChange={handleTextInputChange}
+            type={"url"}
+            maxLength={200}
+          >
+            Profile Picture
+          </TextInput>
+          <SubmitButton updatingData={updatingData}>Update</SubmitButton>
+        </form>
+      </section>
+    )
+  }
 }
