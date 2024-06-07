@@ -186,6 +186,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Alternative Wikimedia Account
           </TextInput>
+          {/* Territory */}
+          <MultiSelectInput
+            id={"territory"}
+            key={"territory"}
+            options={Object.entries(myData.territoryData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.territory.map((option) => ({ value: option, label: myData.territoryData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Territory
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
