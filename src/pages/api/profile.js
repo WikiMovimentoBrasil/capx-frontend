@@ -28,12 +28,8 @@ export default async function userProfile(req, res) {
     });
     // Removing "user" key/value
     const { user, ...formFields } = queryResponse.data.actions.PUT;
-    // Converting into an array of objects
-    const formFieldsArray = Object.entries(formFields).map(([key, value]) => {
-      return { key, ...value };
-    });
 
-    res.status(200).json(formFieldsArray);
+    res.status(200).json(formFields);
   }
   else {
     res.status(405);
