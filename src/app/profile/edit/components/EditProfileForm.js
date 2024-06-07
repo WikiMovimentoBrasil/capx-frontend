@@ -226,6 +226,16 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           >
             Wikimedia Project
           </MultiSelectInput>
+          {/* Known Skills */}
+          <MultiSelectInput
+            id={"skills_known"}
+            key={"skills_known"}
+            options={Object.entries(myData.skillData).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={myData.userData.skills_known.map((option) => ({ value: option, label: myData.skillData[option] }))}
+            onChange={handleMultiSelectInputChange}
+          >
+            Known Capacities
+          </MultiSelectInput>
           <SubmitButton updatingData={updatingData}>Update</SubmitButton>
         </form>
       </section>
