@@ -40,6 +40,18 @@ const fetchData = async (queryData) => {
 export default function EditProfileForm({ session, language, pageContent, darkMode }) {
   const router = useRouter();
   const { status, data } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [updatingData, setUpdatingData] = useState(false);
+  const [currentUserData, setCurrentUserData] = useState({});
+  const [myData, setMyData] = useState({ userData: null, FormData: null, affiliationData: null });
+  
+  const pronouns = [
+    { value: "he-him", label: "He/Him" },
+    { value: "she-her", label: "She/Her" },
+    { value: "they-them", label: "They/Them" },
+    { value: "not-specified", label: "Not Specified" },
+    { value: "other", label: "Other" }
+  ]
 
   useEffect(() => {
     if (status === "authenticated") {
