@@ -37,4 +37,25 @@ const fetchData = async (queryData) => {
   }
 };
 
-export default function EditProfileForm({ session, language, pageContent, darkMode }) {}
+export default function EditProfileForm({ session, language, pageContent, darkMode }) {
+  const router = useRouter();
+  const { status, data } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      const queryData = {
+        params: { userId: data.user.id },
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+
+      const getData = async (queryData) => {
+        const fetchedData = await fetchData(queryData);
+        setMyData(fetchedData);
+        setIsLoading(false);
+      };
+
+      getData(queryData);
+
+    }
+  }, [status]);
+}
