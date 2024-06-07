@@ -16,7 +16,7 @@ export default function UserProfile({ darkMode, userData }) {
         </div>
         <EditProfileButton />
         <div className="w-full text-xl space-y-4">
-          <h3>Hello, <span className="font-extrabold">{userData.display_name}</span>!</h3>
+          <h3>Hello, <span className="font-extrabold">{(userData.display_name && userData.display_name.trim() !== '') ? userData.display_name : userData.user.username}</span>!</h3>
           <h3>{userData.pronoun}</h3>
           <h3>{userData.about}</h3>
           <h3>{userData.wikidata_qid}</h3>
