@@ -2,21 +2,25 @@ import NextLink from "next/link";
 import { Link } from "react-scroll";
 
 export default function NavbarLinks({ session, pageContent }) {
-  const menuData = [
+  const menuDataLoggedIn = [
     { "title": pageContent["navbar-link-profile"], "to": "/profile" },
     { "title": pageContent["navbar-link-capacities"], "to": "/capacities" },
     { "title": pageContent["navbar-link-events"], "to": "/events" }
   ]
 
+  const menuDataNotLoggedIn = [
+    { title: pageContent["navbar-link-about"], to: "section02" },
+  ];
+
   // User is logged in
   if (session) {
     return (
       <div className="hidden sm:flex space-x-12">
-        {menuData.map((item, index) => {
+        {menuDataLoggedIn.map((item, index) => {
           return (
             <NextLink
+              key={"navbar-link-" + index.toString()}
               href={item.to}
-              key={item.title.toLowerCase().replace(/\s/g, '')}
               className="flex my-auto cursor-pointer hover:border-b hover:border-current"
             >
               {item.title}
@@ -29,18 +33,22 @@ export default function NavbarLinks({ session, pageContent }) {
 
   return (
     <div className="flex space-x-12">
-      {/* 'About' button */}
-      <Link
-        activeClass="active"
-        to="section02"
-        spy={true}
-        smooth={true}
-        duration={500}
-        delay={150}
-        className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
-      >
-        About
-      </Link>
+      {menuDataNotLoggedIn.map((item, index) => {
+        return (
+          <Link
+            key={"navbar-link-" + index.toString()}
+            activeClass="active"
+            to={item.to}
+            spy={true}
+            smooth={true}
+            duration={500}
+            delay={150}
+            className="hidden sm:block flex my-auto cursor-pointer hover:border-b hover:border-current"
+          >
+            {item.title}
+          </Link>
+        )
+      })}
     </div>
   )
 }

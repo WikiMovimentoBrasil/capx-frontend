@@ -16,6 +16,7 @@ export default function Navbar({ session, language, setLanguage, pageContent, se
         {mobileMenuStatus &&
           <MobileMenu
             session={session}
+            pageContent={pageContent}
             darkMode={darkMode}
             mobileMenuStatus={mobileMenuStatus}
             setMobileMenuStatus={setMobileMenuStatus} />
