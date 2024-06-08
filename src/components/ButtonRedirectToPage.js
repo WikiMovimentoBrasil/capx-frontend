@@ -11,12 +11,14 @@ export default function ButtonRedirectToPage({ children, to }) {
   }
 
   return (
-    <button
-      disabled={isButtonLoading}
-      onClick={(e) => handleButtonClick()}
-      className={buttonStyle + " mb-10"}
-    >
-      {isButtonLoading ? (<LoadingSpinner />) : (<Link href={to}>{children}</Link>)}
-    </button>
+    <Link href={to}>
+      <button
+        disabled={isButtonLoading}
+        onClick={(e) => handleButtonClick()}
+        className={buttonStyle + " mb-10"}
+      >
+        {isButtonLoading ? (<LoadingSpinner />) : (<span>{children}</span>)}
+      </button>
+    </Link>
   )
 }
