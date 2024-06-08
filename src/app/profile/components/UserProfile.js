@@ -1,5 +1,5 @@
 import Image from "next/image";
-import EditProfileButton from "./EditProfileButton";
+import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
 export default function UserProfile({ darkMode, userData }) {
   return (
@@ -14,7 +14,9 @@ export default function UserProfile({ darkMode, userData }) {
             className={"mx-auto rounded-full ring-offset-2 ring-8 ring-capx-secondary-purple" + (darkMode ? " ring-offset-capx-dark-box-bg" : " ring-offset-capx-light-box-bg")}
           />
         </div>
-        <EditProfileButton />
+        <ButtonRedirectToPage to={"/profile/edit"}>
+          Edit Profile
+        </ButtonRedirectToPage>
         <div className="w-full text-xl space-y-4">
           <h3>Hello, <span className="font-extrabold">{(userData.display_name && userData.display_name.trim() !== '') ? userData.display_name : userData.user.username}</span>!</h3>
           <h3>{userData.pronoun}</h3>
