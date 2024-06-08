@@ -1,22 +1,25 @@
-"use client";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import Section01 from "@/components/Section01";
-import Section02 from "@/components/Section02";
-import Section03 from "@/components/Section03";
-import BackToTopButton from "@/components/BackToTopButton";
-import { useState } from "react";
+import fs from 'fs';
+import path from 'path';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import ApplicationWrapper from "@/components/ApplicationWrapper";
 
-export default function Home() {
-  const [darkMode, setDarkMode] = useState(false);
+export default async function Home() {
+  const cookieStore = cookies();
+  const session = await getServerSession();
+  const darkMode = cookieStore.get("dark_mode") === undefined ? "false" : cookieStore.get("dark_mode");
+  const language = cookieStore.get("language") === undefined ? "en" : cookieStore.get("language").value;
 
-  return (
-    <main className={(darkMode ? "bg-capx-dark-bg text-capx-light-bg " : "bg-capx-light-bg text-capx-dark-bg ") + " flex flex-wrap flex-col w-full font-montserrat"}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode}></Navbar>
-      <Section01></Section01>
-      <Section02 darkMode={darkMode}></Section02>
-      <Footer darkMode={darkMode}></Footer>
-      <BackToTopButton darkMode={darkMode} />
-    </main>
-  );
+  // Loading page content based on selected language
+  const filePath = path.join(process.cwd(), 'locales', `${language}.json`);
+  const pageContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+  if (session) {
+    redirect('/profile');
+  } else {
+    return (
+      <ApplicationWrapper session={session !== null} language={language} pageContent={pageContent} darkMode={darkMode} />
+    )
+  }
 }
