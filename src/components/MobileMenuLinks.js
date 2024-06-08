@@ -1,15 +1,15 @@
 import NextLink from "next/link";
 import { Link } from "react-scroll";
 
-export default function MobileMenuLinks({ session, handleMenuStatus }) {
+export default function MobileMenuLinks({ session, pageContent, handleMenuStatus }) {
   const menuDataLoggedIn = [
-    { title: "My Profile", to: "/profile" },
-    { title: "Skills", to: "/skills" },
-    { title: "Events", to: "/events" },
-  ];
+    { "title": pageContent["navbar-link-profile"], "to": "/profile" },
+    { "title": pageContent["navbar-link-capacities"], "to": "/capacities" },
+    { "title": pageContent["navbar-link-events"], "to": "/events" }
+  ]
 
   const menuDataNotLoggedIn = [
-    { title: "About", to: "section02" },
+    { title: pageContent["navbar-link-about"], to: "section02" },
   ];
 
   // User is logged in
