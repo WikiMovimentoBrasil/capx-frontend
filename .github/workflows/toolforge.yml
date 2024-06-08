@@ -24,6 +24,7 @@ jobs:
           request_pty: true
           script_stop: true
           script: |
+            become capx git -C '$HOME/www/js' reset --hard origin/main
             become capx git -C '$HOME/www/js' pull origin main
             become capx webservice --mem 2G --cpu 1 node18 shell -- yarn --cwd '$HOME/www/js' install
             become capx webservice --mem 2G --cpu 1 node18 shell -- yarn --cwd '$HOME/www/js' build
