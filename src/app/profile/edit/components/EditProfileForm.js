@@ -12,9 +12,8 @@ import MultiSelectInput from "./MultiSelectInput";
 
 const fetchData = async (queryData) => {
   try {
-    const [userData, formData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
+    const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
       axios.get("/api/profile", queryData),
-      axios.options("/api/profile", queryData),
       axios.get('/api/list/territory', queryData),
       axios.get('/api/list/language', queryData),
       axios.get('/api/list/organizations', queryData),
@@ -24,7 +23,6 @@ const fetchData = async (queryData) => {
 
     return {
       userData: userData.data,
-      formData: formData.data,
       territoryData: territoryData.data,
       languageData: languageData.data,
       affiliationData: affiliationData.data,
@@ -33,7 +31,14 @@ const fetchData = async (queryData) => {
     };
   } catch (error) {
     console.error('Error fetching data:', error);
-    return { userData: null, formData: null, affiliationData: null };
+    return {
+      userData: null,
+      territoryData: null,
+      languageData: null,
+      affiliationData: null,
+      wikiProjectData: null,
+      skillData: null
+    };
   }
 };
 
@@ -43,7 +48,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
   const [isLoading, setIsLoading] = useState(true);
   const [updatingData, setUpdatingData] = useState(false);
   const [currentUserData, setCurrentUserData] = useState({});
-  const [myData, setMyData] = useState({ userData: null, FormData: null, territoryData: null, languageData: null, affiliationData: null, wikiProjectData: null, skillData: null });
+  const [formData, setFormData] = useState({ userData: null, territoryData: null, languageData: null, affiliationData: null, wikiProjectData: null, skillData: null });
 
   const pronouns = [
     { value: "he-him", label: "He/Him" },
@@ -62,7 +67,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
 
       const getData = async (queryData) => {
         const fetchedData = await fetchData(queryData);
-        setMyData(fetchedData);
+        setFormData(fetchedData);
         setIsLoading(false);
       };
 
@@ -76,10 +81,10 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
 
     if (chosenState == null) {
       const newUserData = {
-        ...myData.userData,
+        ...formData.userData,
         [name]: value
       };
-      setMyData({ ...myData, userData: newUserData });
+      setFormData({ ...formData, userData: newUserData });
     }
   };
 
@@ -89,10 +94,10 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
 
   const handleMultiSelectInputChange = (selectedOptions, element) => {
     const newUserData = {
-      ...myData.userData,
+      ...formData.userData,
       [element.name]: selectedOptions.map(option => option.value)
     };
-    setMyData({ ...myData, userData: newUserData })
+    setFormData({ ...formData, userData: newUserData })
   }
 
   const handleSubmit = async (e) => {
@@ -100,7 +105,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
     if (status == "authenticated") {
       e.preventDefault();
       const queryResponse = await axios.post("/api/profile",
-        myData.userData,
+        formData.userData,
         {
           headers: {
             'Authorization': `Token ${data.user.token}`,
@@ -120,7 +125,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"profile_image"}
             key={"profile_image"}
-            data={myData.userData?.profile_image ?? ""}
+            data={formData.userData?.profile_image ?? ""}
             placeholder={"e.g. https://upload.wikimedia.org/..."}
             onChange={handleTextInputChange}
             type={"url"}
@@ -132,7 +137,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"display_name"}
             key={"display_name"}
-            data={myData.userData?.display_name ?? ""}
+            data={formData.userData?.display_name ?? ""}
             placeholder={"e.g. Name Surname"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -145,7 +150,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
             id={"pronoun"}
             key={"pronoun"}
             data={pronouns.map((option) => option)}
-            defaultValue={pronouns.filter((option) => option.value === myData.userData?.pronoun)}
+            defaultValue={pronouns.filter((option) => option.value === formData.userData?.pronoun)}
             onChange={handleSingleSelectInputChange}
           >
             Pronouns
@@ -154,7 +159,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextArea
             id={"about"}
             key={"about"}
-            data={myData.userData?.about ?? ""}
+            data={formData.userData?.about ?? ""}
             placeholder={"briefly introduce and describe yourself"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -166,7 +171,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"wikidata_qid"}
             key={"wikidata_qid"}
-            data={myData.userData?.wikidata_qid ?? ""}
+            data={formData.userData?.wikidata_qid ?? ""}
             placeholder={"e.g. Q125816201"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -178,7 +183,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"wiki_alt"}
             key={"wiki_alt"}
-            data={myData.userData?.wiki_alt ?? ""}
+            data={formData.userData?.wiki_alt ?? ""}
             placeholder={"e.g. Username"}
             onChange={handleTextInputChange}
             type={"text"}
@@ -190,8 +195,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"territory"}
             key={"territory"}
-            options={Object.entries(myData.territoryData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.territory?.map((option) => ({ value: option, label: myData.territoryData?.[option] })) ?? []}
+            options={Object.entries(formData.territoryData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.territory?.map((option) => ({ value: option, label: formData.territoryData?.[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Territory
@@ -200,8 +205,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"language"}
             key={"language"}
-            options={Object.entries(myData.languageData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.language?.map((option) => ({ value: option, label: myData.languageData[option] })) ?? []}
+            options={Object.entries(formData.languageData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.language?.map((option) => ({ value: option, label: formData.languageData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Language
@@ -210,8 +215,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"affiliation"}
             key={"affiliation"}
-            options={Object.entries(myData.affiliationData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.affiliation?.map((option) => ({ value: option, label: myData.affiliationData[option] })) ?? []}
+            options={Object.entries(formData.affiliationData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.affiliation?.map((option) => ({ value: option, label: formData.affiliationData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Affilitation
@@ -220,8 +225,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"wikimedia_project"}
             key={"wikimedia_project"}
-            options={Object.entries(myData.wikiProjectData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.wikimedia_project?.map((option) => ({ value: option, label: myData.wikiProjectData[option] })) ?? []}
+            options={Object.entries(formData.wikiProjectData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.wikimedia_project?.map((option) => ({ value: option, label: formData.wikiProjectData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Wikimedia Project
@@ -230,8 +235,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_known"}
             key={"skills_known"}
-            options={Object.entries(myData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.skills_known?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
+            options={Object.entries(formData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.skills_known?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Known Capacities
@@ -240,8 +245,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_available"}
             key={"skills_available"}
-            options={myData.userData?.skills_known?.map((option) => ({ value: option, label: myData.skillData[option] }))}
-            selectedOptions={myData.userData?.skills_available?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
+            options={formData.userData?.skills_known?.map((option) => ({ value: option, label: formData.skillData[option] }))}
+            selectedOptions={formData.userData?.skills_available?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Available Capacities
@@ -250,8 +255,8 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <MultiSelectInput
             id={"skills_wanted"}
             key={"skills_wanted"}
-            options={Object.entries(myData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-            selectedOptions={myData.userData?.skills_wanted?.map((option) => ({ value: option, label: myData.skillData[option] })) ?? []}
+            options={Object.entries(formData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
+            selectedOptions={formData.userData?.skills_wanted?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
             onChange={handleMultiSelectInputChange}
           >
             Wanted Capacities
@@ -260,7 +265,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
           <TextInput
             id={"team"}
             key={"team"}
-            data={myData.userData?.team ?? ""}
+            data={formData.userData?.team ?? ""}
             placeholder={"e.g. Staff Team"}
             onChange={handleTextInputChange}
             type={"text"}
