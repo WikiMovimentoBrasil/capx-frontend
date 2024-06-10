@@ -1,54 +1,16 @@
 "use client";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from 'next/navigation';
-import { useSession } from "next-auth/react";
 import TextArea from "./TextArea";
 import TextInput from "./TextInput";
 import SingleSelectInput from "./SingleSelectInput";
 import SubmitButton from "./SubmitButton";
-import LoadingSection from "../../components/LoadingSection";
 import MultiSelectInput from "./MultiSelectInput";
 
-const fetchData = async (queryData) => {
-  try {
-    const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
-      axios.get("/api/profile", queryData),
-      axios.get('/api/list/territory', queryData),
-      axios.get('/api/list/language', queryData),
-      axios.get('/api/list/organizations', queryData),
-      axios.get('/api/list/wikimedia_project', queryData),
-      axios.get('/api/list/skills', queryData)
-    ]);
-
-    return {
-      userData: userData.data,
-      territoryData: territoryData.data,
-      languageData: languageData.data,
-      affiliationData: affiliationData.data,
-      wikiProjectData: wikiProjectData.data,
-      skillData: skillData.data
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return {
-      userData: null,
-      territoryData: null,
-      languageData: null,
-      affiliationData: null,
-      wikiProjectData: null,
-      skillData: null
-    };
-  }
-};
-
-export default function EditProfileForm({ session, language, pageContent, darkMode }) {
+export default function EditProfileForm({ session, formData }) {
   const router = useRouter();
-  const { status, data } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
   const [updatingData, setUpdatingData] = useState(false);
-  const [currentUserData, setCurrentUserData] = useState({});
-  const [formData, setFormData] = useState({ userData: null, territoryData: null, languageData: null, affiliationData: null, wikiProjectData: null, skillData: null });
 
   const pronouns = [
     { value: "he-him", label: "He/Him" },
@@ -57,24 +19,6 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
     { value: "not-specified", label: "Not Specified" },
     { value: "other", label: "Other" }
   ]
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      const queryData = {
-        params: { userId: data.user.id },
-        headers: { 'Authorization': `Token ${data.user.token}` }
-      }
-
-      const getData = async (queryData) => {
-        const fetchedData = await fetchData(queryData);
-        setFormData(fetchedData);
-        setIsLoading(false);
-      };
-
-      getData(queryData);
-
-    }
-  }, [status]);
 
   const handleTextInputChange = (e, chosenState = null) => {
     const { name, value } = e.target;
@@ -106,13 +50,13 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
 
   const handleSubmit = async (e) => {
     setUpdatingData(true);
-    if (status == "authenticated") {
+    if (session.sessionStatus == "authenticated") {
       e.preventDefault();
       const queryResponse = await axios.post("/api/profile",
         formData.userData,
         {
           headers: {
-            'Authorization': `Token ${data.user.token}`,
+            'Authorization': `Token ${session.sessionData.user.token}`,
           }
         }
       ).then(() => {
@@ -121,7 +65,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
     }
   };
 
-  if (status === "authenticated") {
+  if (session.sessionStatus === "authenticated") {
     if (formData.userData != undefined) {
       return (
         <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
