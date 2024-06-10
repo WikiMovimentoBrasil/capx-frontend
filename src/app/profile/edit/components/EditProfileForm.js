@@ -248,6 +248,9 @@ export default function EditProfileForm({ session, formData, setFormData }) {
             </div>
             <div className="flex items-start space-x-20">
               <SubmitButton updatingData={updatingData}>Update Profile</SubmitButton>
+              <ButtonRedirectToPage to={"/profile"}>
+                Cancel
+              </ButtonRedirectToPage>
             </div>
           </form>
         </section>
