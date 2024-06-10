@@ -44,6 +44,7 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
         options={options}
         defaultValue={[{ value: language, label: language }]}
         onChange={handleSelection}
+        className="text-capx-dark-bg"
       />
     </div>
   );
