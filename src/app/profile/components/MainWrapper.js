@@ -3,8 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import UserProfile from "./UserProfile";
-import LoadingSection from "./LoadingSection";
 import BaseWrapper from "@/components/BaseWrapper";
+import LoadingSection from "@/components/LoadingSection";
 
 const fetchData = async (queryData) => {
   try {
