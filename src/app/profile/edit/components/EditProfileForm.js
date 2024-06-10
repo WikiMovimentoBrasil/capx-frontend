@@ -7,6 +7,8 @@ import TextInput from "./TextInput";
 import SingleSelectInput from "./SingleSelectInput";
 import SubmitButton from "./SubmitButton";
 import MultiSelectInput from "./MultiSelectInput";
+import TextDoubleInput from "./TextDoubleInput";
+import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
 export default function EditProfileForm({ session, formData, setFormData }) {
   const router = useRouter();
@@ -222,7 +224,31 @@ export default function EditProfileForm({ session, formData, setFormData }) {
             >
               Team
             </TextInput>
-            <SubmitButton updatingData={updatingData}>Update</SubmitButton>
+            <div className="grid grid-cols-2 gap-10 mb-8">
+              <TextDoubleInput
+                field={"contact"}
+                formData={formData}
+                setFormData={setFormData}
+                placeholderDisplayName={"eg. E-mail, Talk Page, Strategy Forum, Telegram, Whatsapp"}
+                placeholderValue={"eg. name@email.com, url, your username"}
+                maxLength={200}
+              >
+                Contact
+              </TextDoubleInput>
+              <TextDoubleInput
+                field={"social"}
+                formData={formData}
+                setFormData={setFormData}
+                placeholderDisplayName={"eg. Facebook, Instagram, Linkedin, Mastodon"}
+                placeholderValue={"Your username"}
+                maxLength={200}
+              >
+                Social Media
+              </TextDoubleInput>
+            </div>
+            <div className="flex items-start space-x-20">
+              <SubmitButton updatingData={updatingData}>Update Profile</SubmitButton>
+            </div>
           </form>
         </section>
       )
