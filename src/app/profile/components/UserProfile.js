@@ -26,6 +26,17 @@ export default function UserProfile({ darkMode, profileData }) {
             Edit Profile
           </ButtonRedirectToPage>
         </div>
+        <div className="grid place-items-center space-y-10 mb-14">
+          <div className="space-y-2">
+            <h3>Hello, <span className="font-extrabold">{(profileData.userData.display_name && profileData.userData.display_name.trim() !== '') ? profileData.userData.display_name : profileData.userData.user.username}</span>!</h3>
+            {profileData.userData.pronoun ? (<h3 className="text-base">[{pronouns.map((option) => option.value === profileData.userData.pronoun ? option.label : null)}]</h3>) : (null)}
+          </div>
+          <div className="space-y-8">
+            {profileData.userData.about ? (<h3>{profileData.userData.about}</h3>) : (null)}
+            {profileData.userData.wikidata_qid ? (<h3>Your Wikidata Item is <span className="font-extrabold">{profileData.userData.wikidata_qid}</span>.</h3>) : (null)}
+            {profileData.userData.wiki_alt ? (<h3>Your alternative Wikimedia Account is <span className="font-extrabold">{profileData.userData.wiki_alt}</span>.</h3>) : (null)}
+          </div>
+        </div>
       </ContentBoxSingleColumn>
     </section>
   )
