@@ -1,4 +1,5 @@
 {
+    "navbar-link-about": "Link to the second section of the landing page, which provides information about the CapX project",
     "navbar-link-profile": "Link to the user's profile on navigation bar",
     "navbar-link-capacities": "Link to the capacities page on navigation bar",
     "navbar-link-events": "Link to the events page on navigation bar",
@@ -10,4 +11,4 @@
     "footer-link-github": "Link to the GitHub repository in the footer",
     "footer-link-wikimedia": "Link to the Meta-Wikimedia page in the footer",
     "footer-message": "Motto displayed in the footer."
-}
+  }

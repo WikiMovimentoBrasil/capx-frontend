@@ -32,7 +32,7 @@ export default function SingleSelectInput({ children, isUserSelectionLoaded = tr
           options={data}
           defaultValue={defaultValue}
           onChange={onChange}
-          className="border-2 rounded-md"
+          className="text-capx-dark-bg border-2 rounded-md"
         />
       </div>
     )

@@ -7,7 +7,7 @@ import MobileMenuLinks from "@/components/MobileMenuLinks";
 import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
 
-export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMobileMenuStatus }) {
+export default function MobileMenu({ session, pageContent, darkMode, mobileMenuStatus, setMobileMenuStatus }) {
   const handleMenuStatus = () => {
     setMobileMenuStatus((prevState) => !prevState);
   };
@@ -44,7 +44,7 @@ export default function MobileMenu({ session, darkMode, mobileMenuStatus, setMob
           />
         </a>
       </div>
-      <MobileMenuLinks session={session} handleMenuStatus={handleMenuStatus} />
+      <MobileMenuLinks session={session} pageContent={pageContent} handleMenuStatus={handleMenuStatus} />
       <div className="flex flex-wrap w-10/12 mx-auto">
         {session ? (<SignOutButton></SignOutButton>) : (<SignInButton message="Login" />)}
       </div>
