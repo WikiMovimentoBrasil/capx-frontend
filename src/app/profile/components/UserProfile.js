@@ -38,14 +38,14 @@ export default function UserProfile({ darkMode, profileData }) {
           </div>
         </div>
         <div className="space-y-10 mb-10">
-          {profileData.userData.contact.length > 0 ? (
+          {profileData.userData.contact !== null && profileData.userData.contact.length > 0 ? (
             <div className="flex flex-wrap place-content-center pt-4">
               <h2 className="w-full text-center font-extrabold mb-6">Your Contact</h2>
               {profileData.userData.contact?.map((item, index) => item.display_name !== "" ? (<h3 key={"contact" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2"><span className="font-extrabold">{item.display_name}</span> | {item.value}</h3>) : (null))}
             </div>
           ) : (null)
           }
-          {profileData.userData.social.length > 0 ? (
+          {profileData.userData.social !== null && profileData.userData.social.length > 0 ? (
             <div className="flex flex-wrap place-content-center pt-4">
               <h2 className="w-full text-center font-extrabold mb-6">Your Social Media</h2>
               {profileData.userData.social?.map((item, index) => item.display_name !== "" ? (<h3 key={"social" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2"><span className="font-extrabold">{item.display_name}</span> | {item.value}</h3>) : (null))}
