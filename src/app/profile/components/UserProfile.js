@@ -37,6 +37,36 @@ export default function UserProfile({ darkMode, profileData }) {
             {profileData.userData.wiki_alt ? (<h3>Your alternative Wikimedia Account is <span className="font-extrabold">{profileData.userData.wiki_alt}</span>.</h3>) : (null)}
           </div>
         </div>
+        <div className="space-y-14">
+          {profileData.userData.territory.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Your Territories</h2>
+              {profileData.userData.territory?.map((item, index) => <h3 key={"territory" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.territoryData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+          {profileData.userData.language.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Your Languages</h2>
+              {profileData.userData.language?.map((item, index) => <h3 key={"language" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.languageData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+          {profileData.userData.affiliation.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6 font-extrabold mb-6">Your Affiliations</h2>
+              {profileData.userData.affiliation?.map((item, index) => <h3 key={"affiliation" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.affiliationData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+          {profileData.userData.wikimedia_project.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Your Wikimedia Projects</h2>
+              {profileData.userData.wikimedia_project?.map((item, index) => <h3 key={"wikimedia_project" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.wikiProjectData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+        </div>
       </ContentBoxSingleColumn>
     </section>
   )
