@@ -8,7 +8,7 @@ import SingleSelectInput from "./SingleSelectInput";
 import SubmitButton from "./SubmitButton";
 import MultiSelectInput from "./MultiSelectInput";
 
-export default function EditProfileForm({ session, formData }) {
+export default function EditProfileForm({ session, formData, setFormData }) {
   const router = useRouter();
   const [updatingData, setUpdatingData] = useState(false);
 
