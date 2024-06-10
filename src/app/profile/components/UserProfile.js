@@ -17,10 +17,10 @@ export default function UserProfile({ darkMode, profileData }) {
         <div>
           <Image
             src={profileData.userData.profile_image ?? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='}
-            width={200}
-            height={200}
+            width={192}
+            height={192}
             alt="User Profile Photo"
-            className={"mx-auto rounded-full ring-offset-4 ring-8 ring-capx-secondary-purple" + (darkMode ? " ring-offset-capx-dark-box-bg" : " ring-offset-capx-light-box-bg")}
+            className={"w-48 h-48 mx-auto rounded-full ring-offset-4 ring-8 ring-capx-secondary-purple" + (darkMode ? " ring-offset-capx-dark-box-bg" : " ring-offset-capx-light-box-bg")}
           />
           <ButtonRedirectToPage to={"/profile/edit"}>
             Edit Profile
