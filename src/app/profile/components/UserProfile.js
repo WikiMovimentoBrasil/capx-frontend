@@ -67,6 +67,29 @@ export default function UserProfile({ darkMode, profileData }) {
           ) : (null)
           }
         </div>
+        <div className="space-y-14">
+          {profileData.userData.skills_known.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Known Skills</h2>
+              {profileData.userData.skills_known?.map((item, index) => <h3 key={"skills_known" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.skillData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+          {profileData.userData.skills_available.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Available Skills</h2>
+              {profileData.userData.skills_available?.map((item, index) => <h3 key={"skills_available" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.skillData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+          {profileData.userData.skills_wanted.length > 0 ? (
+            <div className="flex flex-wrap place-content-center pt-4">
+              <h2 className="w-full text-center font-extrabold mb-6">Wanted Skills</h2>
+              {profileData.userData.skills_wanted?.map((item, index) => <h3 key={"skills_wanted" + index.toString()} className="bg-capx-secondary-purple text-[#F6F6F6] tracking-widest text-xs sm:text-sm px-4 sm:px-5 py-3 rounded-full mb-2 mr-2">{profileData.skillData[item]}</h3>)}
+            </div>
+          ) : (null)
+          }
+        </div>
       </ContentBoxSingleColumn>
     </section>
   )
