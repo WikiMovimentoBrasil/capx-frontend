@@ -89,7 +89,11 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
   };
 
   const handleSingleSelectInputChange = (selectedOption, element) => {
-    setCurrentUserData({ ...newUserData, [element.name]: selectedOption.value });
+    const newUserData = {
+      ...formData.userData,
+      [element.name]: selectedOption.value
+    };
+    setFormData({ ...formData, userData: newUserData });
   };
 
   const handleMultiSelectInputChange = (selectedOptions, element) => {
@@ -97,7 +101,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
       ...formData.userData,
       [element.name]: selectedOptions.map(option => option.value)
     };
-    setFormData({ ...formData, userData: newUserData })
+    setFormData({ ...formData, userData: newUserData });
   }
 
   const handleSubmit = async (e) => {
@@ -150,7 +154,7 @@ export default function EditProfileForm({ session, language, pageContent, darkMo
             id={"pronoun"}
             key={"pronoun"}
             data={pronouns.map((option) => option)}
-            defaultValue={pronouns.filter((option) => option.value === formData.userData?.pronoun)}
+            defaultValue={pronouns.find((option) => option.value === formData.userData?.pronoun)}
             onChange={handleSingleSelectInputChange}
           >
             Pronouns

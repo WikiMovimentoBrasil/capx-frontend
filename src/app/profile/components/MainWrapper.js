@@ -41,7 +41,6 @@ const fetchData = async (queryData) => {
 export default function MainWrapper(props) {
   let pageComponent;
   const { status, data } = useSession();
-  const [userData, setUserData] = useState({});
   const [language, setLanguage] = useState(props.language);
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
