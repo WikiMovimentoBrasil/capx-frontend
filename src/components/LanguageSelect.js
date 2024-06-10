@@ -5,6 +5,7 @@ import { setCookie } from "@/app/actions";
 
 export default function LanguageSelect({ language, setLanguage, setPageContent }) {
   const [options, setOptions] = useState([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     async function fetchLanguages() {
@@ -14,6 +15,7 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
       setOptions(languageOptions);
     }
     fetchLanguages();
+    setIsClient(true);
   }, []);
 
   const handleSelection = async (selectedOption) => {
@@ -37,9 +39,15 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
     getTranslatedContent();
   }, [language]);
 
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="my-auto">
       <Select
+        name={"language"}
+        instanceId={"language"}
         isSearchable={false}
         options={options}
         defaultValue={[{ value: language, label: language }]}

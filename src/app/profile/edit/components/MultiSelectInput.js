@@ -29,6 +29,7 @@ export default function MultiSelectInput({ children, isUserSelectionLoaded = tru
         <Select
           isMulti
           name={id}
+          instanceId={id}
           isSearchable={true}
           styles={multiSelectStyle}
           placeholder={""}
