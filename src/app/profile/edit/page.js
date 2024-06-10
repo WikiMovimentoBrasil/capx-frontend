@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import MainWrapper from "./components/MainWrapper";
-import EditProfileForm from "./components/EditProfileForm";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
@@ -23,14 +22,7 @@ export default async function ProfilePage() {
         language={language}
         pageContent={pageContent}
         darkMode={darkMode}
-      >
-        <EditProfileForm
-          session={session !== null}
-          language={language}
-          pageContent={pageContent}
-          darkMode={darkMode}
-        />
-      </MainWrapper>
+      />
     )
   } else {
     redirect('/');

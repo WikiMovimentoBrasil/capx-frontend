@@ -5,7 +5,7 @@ export default function TextInput({ children, id, data, placeholder, onChange, t
       <input
         type={type}
         placeholder={placeholder}
-        className="w-full h-12 pl-4 border-2 rounded-md"
+        className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
         id={id}
         name={id}
         value={data}

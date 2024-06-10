@@ -6,7 +6,7 @@ export default function TextArea({ children, id, data, placeholder, onChange, ty
         type={type}
         rows="4"
         placeholder={placeholder}
-        className="w-full p-4 border-2 rounded-md resize-none"
+        className="w-full text-capx-dark-bg p-4 border-2 rounded-md resize-none"
         id={id}
         name={id}
         value={data}

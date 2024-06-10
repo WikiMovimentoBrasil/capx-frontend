@@ -10,7 +10,7 @@ import MultiSelectInput from "./MultiSelectInput";
 import TextDoubleInput from "./TextDoubleInput";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
-export default function EditProfileForm({ session, formData, setFormData }) {
+export default function EditProfileForm({ darkMode, session, formData, setFormData }) {
   const router = useRouter();
   const [updatingData, setUpdatingData] = useState(false);
 
@@ -227,6 +227,7 @@ export default function EditProfileForm({ session, formData, setFormData }) {
             <div className="grid grid-cols-2 gap-10 mb-8">
               <TextDoubleInput
                 field={"contact"}
+                darkMode={darkMode}
                 formData={formData}
                 setFormData={setFormData}
                 placeholderDisplayName={"eg. E-mail, Talk Page, Strategy Forum, Telegram, Whatsapp"}
@@ -237,6 +238,7 @@ export default function EditProfileForm({ session, formData, setFormData }) {
               </TextDoubleInput>
               <TextDoubleInput
                 field={"social"}
+                darkMode={darkMode}
                 formData={formData}
                 setFormData={setFormData}
                 placeholderDisplayName={"eg. Facebook, Instagram, Linkedin, Mastodon"}

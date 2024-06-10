@@ -1,4 +1,4 @@
-export default function TextDoubleInput({ children, placeholderDisplayName, placeholderValue, formData, setFormData, field, type = "text", maxLength = 10 }) {
+export default function TextDoubleInput({ children, darkMode, placeholderDisplayName, placeholderValue, formData, setFormData, field, type = "text", maxLength = 10 }) {
   const handleFieldChange = (index, subField, value) => {
     const updatedField = formData.userData[field].map((item, i) =>
       i === index ? { ...item, [subField]: value } : item
@@ -41,7 +41,7 @@ export default function TextDoubleInput({ children, placeholderDisplayName, plac
     return (
       <div className="w-10/12 sm:w-full space-y-2">
         <label className="w-full ml-2">{children}</label>
-        <div className="w-full bg-capx-light-box-bg p-8 rounded-lg space-y-4">
+        <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full text-capx-dark-bg p-8 rounded-lg space-y-4"}>
           {formData.userData[field].map((item, index) => (
             <div key={index} className="grid grid-cols-2 gap-10">
               <input

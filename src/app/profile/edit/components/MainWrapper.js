@@ -70,7 +70,7 @@ export default function MainWrapper(props) {
 
   if (status === "authenticated") {
     if (formData.userData != undefined) {
-      pageComponent = (<EditProfileForm session={{sessionStatus: status, sessionData: data}} formData={formData} setFormData={setFormData} />);
+      pageComponent = (<EditProfileForm darkMode={darkMode} session={{sessionStatus: status, sessionData: data}} formData={formData} setFormData={setFormData} />);
     }
     else {
       pageComponent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE DATA FOR EDITING" />);

@@ -37,7 +37,7 @@ export default function MultiSelectInput({ children, isUserSelectionLoaded = tru
           onChange={onChange}
           noOptionsMessage={() => "No more options to select."}
           components={animatedComponents}
-          className="border-2 rounded-md"
+          className="text-capx-dark-bg border-2 rounded-md"
         />
       </div>
     )
