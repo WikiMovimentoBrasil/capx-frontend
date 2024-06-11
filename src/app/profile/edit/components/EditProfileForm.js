@@ -224,7 +224,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             >
               Team
             </TextInput>
-            <div className="grid grid-cols-2 gap-10 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 w-full gap-10 mb-8">
               <TextDoubleInput
                 field={"contact"}
                 darkMode={darkMode}
