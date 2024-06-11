@@ -6,7 +6,6 @@ const animatedComponents = makeAnimated();
 const multiSelectStyle = {
   control: (base, state) => ({
     ...base,
-    height: '48px',
     paddingLeft: '4px',
     color: 'rgb(30 41 59)',
     border: state.isFocused ? 0 : 0,
