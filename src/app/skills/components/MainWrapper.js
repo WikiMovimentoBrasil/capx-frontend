@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
 export default function MainWrapper(props) {
@@ -14,5 +15,19 @@ export default function MainWrapper(props) {
     return <LoadingSection darkMode={darkMode} message="SKILLS" />
   }
 
-  return <div></div>
+  return (
+    <BaseWrapper
+      session={props.session}
+      language={language}
+      setLanguage={setLanguage}
+      pageContent={pageContent}
+      setPageContent={setPageContent}
+      darkMode={darkMode}
+      setDarkMode={setDarkMode}
+      mobileMenuStatus={mobileMenuStatus}
+      setMobileMenuStatus={setMobileMenuStatus}
+    >
+      <div className="grid place-content-center min-w-full min-h-screen"></div>
+    </BaseWrapper>
+  )
 }
