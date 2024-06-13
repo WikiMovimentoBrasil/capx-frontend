@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
@@ -12,7 +13,7 @@ export default function MainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="SKILLS" />
+    return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
   }
 
   return (
@@ -27,7 +28,9 @@ export default function MainWrapper(props) {
       mobileMenuStatus={mobileMenuStatus}
       setMobileMenuStatus={setMobileMenuStatus}
     >
-      <div className="grid place-content-center min-w-full min-h-screen"></div>
+      <CapacitySection>
+        <h1>something</h1>
+      </CapacitySection>
     </BaseWrapper>
   )
 }
