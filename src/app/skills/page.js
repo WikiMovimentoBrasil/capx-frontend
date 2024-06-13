@@ -3,6 +3,7 @@ import path from 'path';
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
+import MainWrapper from "./components/MainWrapper";
 
 export default async function SkillPage() {
   const cookieStore = cookies();
@@ -16,7 +17,7 @@ export default async function SkillPage() {
 
   if (session) {
     return (
-      <div></div>
+      <MainWrapper session={session !== null} language={language} pageContent={pageContent} darkMode={darkMode} />
     )
   } else {
     redirect('/');
