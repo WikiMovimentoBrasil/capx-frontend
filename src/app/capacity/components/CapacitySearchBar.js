@@ -48,13 +48,23 @@ export default function CapacitySearchBar() {
 
   return (
     <div className="w-full">
-      <input
-        type="text"
-        value={query}
-        onChange={handleInputChange}
-        className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
-        placeholder="Search for a capacity."
-      />
+      <div className="relative">
+        <input
+          type="text"
+          value={query}
+          onChange={handleInputChange}
+          className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
+          placeholder="Search for a capacity."
+        />
+        {query && (
+          <button
+            onClick={handleClearSearch}
+            className="absolute text-base font-extrabold text-capx-secondary-purple hover:text-gray-400 right-6 top-1/2 transform -translate-y-1/2"
+          >
+            x
+          </button>
+        )}
+      </div>
       {query && filteredCapacityNameList.length > 0 && (
         <ul className="max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
           {filteredCapacityNameList.map((option) => (
