@@ -30,7 +30,7 @@ export default function MainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacitySearchBar pageContent={pageContent} />
+        <CapacitySearchBar session={{ status, data }} pageContent={pageContent} />
       </CapacitySection>
     </BaseWrapper>
   )

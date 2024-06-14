@@ -1,26 +1,30 @@
 "use client"
+import axios from "axios";
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ pageContent }) {
+export default function CapacitySearchBar({ session, pageContent }) {
   const [query, setQuery] = useState('');
   const [capacityNameList, setCapacityNameList] = useState([]);
   const [capacityCodeList, setCapacityCodeList] = useState([]);
   const [filteredCapacityNameList, setFilteredCapacityNameList] = useState([]);
 
   useEffect(() => {
-    const fetchCapacityList = async () => {
-      try {
-        const response = await fetch('/api/capacity');
-        const data = await response.json();
-        setCapacityCodeList(data.codes);
-        setCapacityNameList(data.names);
-        setFilteredCapacityNameList(data.names);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
+    try {
+      if (session.status === "authenticated") {
+        const fetchCapacityList = async (queryData) => {
+          const queryResponse = await axios.get('/api/capacity', queryData);
+          setCapacityCodeList(queryResponse.data.codes);
+          setCapacityNameList(queryResponse.data.names);
+          setFilteredCapacityNameList(queryResponse.data.names);
+        };
+        const queryData = {
+          headers: { 'Authorization': `Token ${session.data.user.token}` }
+        }
+        fetchCapacityList(queryData);
       }
-    };
-
-    fetchCapacityList();
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
   }, []);
 
   const handleInputChange = (e) => {
