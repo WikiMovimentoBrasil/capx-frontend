@@ -41,5 +41,15 @@ export default function CapacitySearchBar() {
     setFilteredCapacityNameList([]);
   };
 
-  return <div></div>
+  return (
+    <div className="w-full">
+      <input
+        type="text"
+        value={query}
+        onChange={handleInputChange}
+        className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
+        placeholder="Search for a capacity."
+      />
+    </div>
+  )
 }
