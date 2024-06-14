@@ -4,6 +4,7 @@ import { useState } from 'react';
 export default function CapacitySearchBar() {
   const [query, setQuery] = useState('');
   const [capacityList, setCapacityList] = useState([]);
+  const [capacityCodeList, setCapacityCodeList] = useState([]);
   const [filteredCapacityList, setFilteredCapacityList] = useState([]);
   
   const handleInputChange = (e) => {
@@ -15,6 +16,13 @@ export default function CapacitySearchBar() {
       option.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCapacityList(filtered);
+  };
+
+  const handleOptionClick = (option) => {
+    const index = capacityList.indexOf(option);
+    const code = capacityCodeList[index];
+    setQuery(option);
+    setFilteredCapacityList([]);
   };
   
   return <div></div>
