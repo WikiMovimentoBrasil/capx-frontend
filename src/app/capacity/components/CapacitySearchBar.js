@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar() {
+export default function CapacitySearchBar({ pageContent }) {
   const [query, setQuery] = useState('');
   const [capacityNameList, setCapacityNameList] = useState([]);
   const [capacityCodeList, setCapacityCodeList] = useState([]);
@@ -47,14 +47,14 @@ export default function CapacitySearchBar() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full text-capx-dark-bg">
       <div className="relative">
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
-          placeholder="Search for a capacity."
+          placeholder={pageContent["body-capacity-searchbar-placeholder"]}
         />
         {query && (
           <button

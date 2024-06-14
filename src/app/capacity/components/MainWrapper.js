@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
+import CapacitySearchBar from "./CapacitySearchBar";
 import LoadingSection from "@/components/LoadingSection";
 
 export default function MainWrapper(props) {
@@ -29,7 +30,7 @@ export default function MainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <h1>something</h1>
+        <CapacitySearchBar pageContent={pageContent} />
       </CapacitySection>
     </BaseWrapper>
   )
