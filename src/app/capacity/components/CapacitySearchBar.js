@@ -5,7 +5,7 @@ export default function CapacitySearchBar() {
   const [query, setQuery] = useState('');
   const [capacityNameList, setCapacityNameList] = useState([]);
   const [capacityCodeList, setCapacityCodeList] = useState([]);
-  const [filteredCapacityList, setFilteredCapacityNameList] = useState([]);
+  const [filteredCapacityNameList, setFilteredCapacityNameList] = useState([]);
 
   useEffect(() => {
     const fetchCapacityList = async () => {
@@ -50,6 +50,19 @@ export default function CapacitySearchBar() {
         className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
         placeholder="Search for a capacity."
       />
+      {query && filteredCapacityNameList.length > 0 && (
+        <ul className="max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
+          {filteredCapacityNameList.map((option) => (
+            <li
+              key={option}
+              onClick={() => handleOptionClick(option)}
+              className="p-2 cursor-pointer hover:bg-blue-200"
+            >
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
