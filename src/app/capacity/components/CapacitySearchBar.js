@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function CapacitySearchBar() {
   const [query, setQuery] = useState('');
-  const [capacityList, setCapacityList] = useState([]);
+  const [capacityNameList, setCapacityNameList] = useState([]);
   const [capacityCodeList, setCapacityCodeList] = useState([]);
   const [filteredCapacityList, setFilteredCapacityList] = useState([]);
   
@@ -12,14 +12,14 @@ export default function CapacitySearchBar() {
     setQuery(value);
 
     // Filtering options based on the query
-    const filtered = capacityList.filter((option) =>
+    const filtered = capacityNameList.filter((option) =>
       option.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCapacityList(filtered);
   };
 
   const handleOptionClick = (option) => {
-    const index = capacityList.indexOf(option);
+    const index = capacityNameList.indexOf(option);
     const code = capacityCodeList[index];
     setQuery(option);
     setFilteredCapacityList([]);
