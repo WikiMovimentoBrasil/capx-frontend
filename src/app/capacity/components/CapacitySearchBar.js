@@ -41,6 +41,11 @@ export default function CapacitySearchBar() {
     setFilteredCapacityNameList([]);
   };
 
+  const handleClearSearch = () => {
+    setQuery('');
+    setFilteredCapacityNameList(capacityNameList);
+  };
+
   return (
     <div className="w-full">
       <input
