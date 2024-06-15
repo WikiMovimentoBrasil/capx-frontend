@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
@@ -12,6 +13,24 @@ export default function MainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
+  const [capacityList, setCapacityList] = useState({});
+
+  useEffect(() => {
+    try {
+      if (status === "authenticated") {
+        const fetchCapacityList = async (queryData) => {
+          const queryResponse = await axios.get('/api/capacity', queryData);
+          setCapacityList(queryResponse.data);
+        };
+        const queryData = {
+          headers: { 'Authorization': `Token ${data.user.token}` }
+        }
+        fetchCapacityList(queryData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }, [status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
@@ -30,7 +49,7 @@ export default function MainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacitySearchBar session={{ status, data }} pageContent={pageContent} />
+        <CapacitySearchBar capacityList={capacityList} pageContent={pageContent} />
       </CapacitySection>
     </BaseWrapper>
   )
