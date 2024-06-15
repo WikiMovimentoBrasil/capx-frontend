@@ -51,7 +51,7 @@ export default function MainWrapper(props) {
     >
       <CapacitySection>
         <CapacitySearchBar capacityList={capacityList} pageContent={pageContent} />
-        <CapacityList></CapacityList>
+        <CapacityList capacityList={capacityList}></CapacityList>
       </CapacitySection>
     </BaseWrapper>
   )
