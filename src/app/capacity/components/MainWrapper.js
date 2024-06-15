@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import CapacityList from "./CapacityList";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
@@ -50,6 +51,7 @@ export default function MainWrapper(props) {
     >
       <CapacitySection>
         <CapacitySearchBar capacityList={capacityList} pageContent={pageContent} />
+        <CapacityList></CapacityList>
       </CapacitySection>
     </BaseWrapper>
   )
