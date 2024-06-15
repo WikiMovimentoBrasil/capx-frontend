@@ -41,6 +41,7 @@ export default function CapacitySearchBar({ capacityList, pageContent }) {
       <div className="w-full text-capx-dark-bg">
         <div className="relative">
           <input
+            value={""}
             type="text"
             className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
             placeholder={pageContent["body-capacity-searchbar-placeholder"]}
@@ -52,7 +53,7 @@ export default function CapacitySearchBar({ capacityList, pageContent }) {
   }
 
   return (
-    <div className="w-full text-capx-dark-bg">
+    <div className="relative w-full text-capx-dark-bg">
       <div className="relative">
         <input
           type="text"
@@ -71,7 +72,7 @@ export default function CapacitySearchBar({ capacityList, pageContent }) {
         )}
       </div>
       {query && filteredCapacityNameList.length > 0 && (
-        <ul className="max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
+        <ul className="absolute w-full max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
           {filteredCapacityNameList.map((option) => (
             <li
               key={option}
