@@ -53,8 +53,10 @@ export default function MainWrapper(props) {
       <CapacitySection>
         <CapacitySearchBar capacityList={capacityList} setSelectedCapacity={setSelectedCapacity} pageContent={pageContent} />
         {selectedCapacity.code === "" ? (
-          <CapacityList capacityList={capacityList}></CapacityList>
-        ) : (null)}
+          <CapacityList capacityList={capacityList} setSelectedCapacity={setSelectedCapacity}></CapacityList>
+        ) : (
+          <h1>{selectedCapacity.name} [{selectedCapacity.code}]</h1>
+        )}
       </CapacitySection>
     </BaseWrapper>
   )
