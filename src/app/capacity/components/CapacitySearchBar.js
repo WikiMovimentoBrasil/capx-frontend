@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ capacityList, pageContent }) {
+export default function CapacitySearchBar({ capacityList, setSelectedCapacity, pageContent }) {
   const [query, setQuery] = useState("");
   const [capacityNameList, setCapacityNameList] = useState([]);
   const [capacityCodeList, setCapacityCodeList] = useState([]);
@@ -27,12 +27,15 @@ export default function CapacitySearchBar({ capacityList, pageContent }) {
   const handleOptionClick = (option) => {
     const index = capacityNameList.indexOf(option);
     const code = capacityCodeList[index];
+    const name = capacityNameList[index];
+    setSelectedCapacity({ code: code, name: name })
     setQuery(option);
     setFilteredCapacityNameList([]);
   };
 
   const handleClearSearch = () => {
-    setQuery('');
+    setQuery("");
+    setSelectedCapacity({ code: "", name: "" })
     setFilteredCapacityNameList(capacityNameList);
   };
 
