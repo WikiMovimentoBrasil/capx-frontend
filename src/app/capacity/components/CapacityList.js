@@ -1,9 +1,11 @@
-export default function CapacityList({ capacityList, setSelectedCapacity }) {
+export default function CapacityList({ capacityList, setSelectedCapacity, setSearchBarQuery, setSearchBarResultList }) {
   const handleOptionClick = (option) => {
     const index = capacityList.names.indexOf(option);
     const code = capacityList.codes[index];
     const name = capacityList.names[index];
-    setSelectedCapacity({ code: code, name: name })
+    setSelectedCapacity({ code: code, name: name });
+    setSearchBarQuery(option);
+    setSearchBarResultList([]);
   };
 
   if (Object.keys(capacityList).length > 0) {
