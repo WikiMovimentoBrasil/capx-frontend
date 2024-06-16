@@ -3,13 +3,9 @@ import { useState, useEffect } from 'react';
 
 export default function CapacitySearchBar({ capacityList, setSelectedCapacity, pageContent }) {
   const [query, setQuery] = useState("");
-  const [capacityNameList, setCapacityNameList] = useState([]);
-  const [capacityCodeList, setCapacityCodeList] = useState([]);
   const [filteredCapacityNameList, setFilteredCapacityNameList] = useState([]);
 
   useEffect(() => {
-    setCapacityCodeList(capacityList.codes);
-    setCapacityNameList(capacityList.names);
     setFilteredCapacityNameList(capacityList.names);
   }, [capacityList]);
 
@@ -18,16 +14,16 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
     setQuery(value);
 
     // Filtering options based on the query
-    const filtered = capacityNameList.filter((option) =>
+    const filtered = capacityList.names.filter((option) =>
       option.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCapacityNameList(filtered);
   };
 
   const handleOptionClick = (option) => {
-    const index = capacityNameList.indexOf(option);
-    const code = capacityCodeList[index];
-    const name = capacityNameList[index];
+    const index = capacityList.names.indexOf(option);
+    const code = capacityList.codes[index];
+    const name = capacityList.names[index];
     setSelectedCapacity({ code: code, name: name })
     setQuery(option);
     setFilteredCapacityNameList([]);
@@ -36,10 +32,10 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
   const handleClearSearch = () => {
     setQuery("");
     setSelectedCapacity({ code: "", name: "" })
-    setFilteredCapacityNameList(capacityNameList);
+    setFilteredCapacityNameList(capacityList.names);
   };
 
-  if (capacityCodeList === undefined || capacityNameList === undefined) {
+  if (capacityList.codes === undefined || capacityList.names === undefined) {
     return (
       <div className="w-full text-capx-dark-bg">
         <div className="relative">
