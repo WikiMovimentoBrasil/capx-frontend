@@ -1,8 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ capacityList, setSelectedCapacity, pageContent }) {
-  const [query, setQuery] = useState("");
+export default function CapacitySearchBar({ capacityList, setSelectedCapacity, searchBarQuery, setSearchBarQuery, pageContent }) {
   const [filteredCapacityNameList, setFilteredCapacityNameList] = useState([]);
 
   useEffect(() => {
@@ -11,7 +10,7 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
 
   const handleInputChange = (e) => {
     const value = e.target.value;
-    setQuery(value);
+    setSearchBarQuery(value);
 
     // Filtering options based on the query
     const filtered = capacityList.names.filter((option) =>
@@ -25,12 +24,12 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
     const code = capacityList.codes[index];
     const name = capacityList.names[index];
     setSelectedCapacity({ code: code, name: name })
-    setQuery(option);
+    setSearchBarQuery(option);
     setFilteredCapacityNameList([]);
   };
 
   const handleClearSearch = () => {
-    setQuery("");
+    setSearchBarQuery("");
     setSelectedCapacity({ code: "", name: "" })
     setFilteredCapacityNameList(capacityList.names);
   };
@@ -56,12 +55,12 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
       <div className="relative">
         <input
           type="text"
-          value={query}
+          value={searchBarQuery}
           onChange={handleInputChange}
           className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
           placeholder={pageContent["body-capacity-searchbar-placeholder"]}
         />
-        {query && (
+        {searchBarQuery && (
           <button
             onClick={handleClearSearch}
             className="absolute text-base font-extrabold text-capx-secondary-purple hover:text-gray-400 right-6 top-1/2 transform -translate-y-1/2"
@@ -70,7 +69,7 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, p
           </button>
         )}
       </div>
-      {query && filteredCapacityNameList.length > 0 && (
+      {searchBarQuery && filteredCapacityNameList.length > 0 && (
         <ul className="absolute w-full max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
           {filteredCapacityNameList.map((option) => (
             <li
