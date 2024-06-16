@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CapacityList from "./CapacityList";
 import { useSession } from "next-auth/react";
+import CapacityProfile from "./CapacityProfile";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
 import CapacitySearchBar from "./CapacitySearchBar";
@@ -55,6 +56,7 @@ export default function MainWrapper(props) {
       <CapacitySection>
         <CapacitySearchBar
           capacityList={capacityList}
+          selectedCapacity={selectedCapacity}
           setSelectedCapacity={setSelectedCapacity}
           searchBarQuery={searchBarQuery}
           setSearchBarQuery={setSearchBarQuery}
@@ -70,7 +72,12 @@ export default function MainWrapper(props) {
             setSearchBarResultList={setSearchBarResultList}
           />
         ) : (
-          <h1>{selectedCapacity.name} [{selectedCapacity.code}]</h1>
+          <CapacityProfile
+            capacityList={capacityList}
+            selectedCapacity={selectedCapacity}
+            setSelectedCapacity={setSelectedCapacity}
+            setSearchBarQuery={setSearchBarQuery}
+            setSearchBarResultList={setSearchBarResultList} />
         )}
       </CapacitySection>
     </BaseWrapper>
