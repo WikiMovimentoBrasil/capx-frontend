@@ -16,6 +16,8 @@ export default function MainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState({});
   const [selectedCapacity, setSelectedCapacity] = useState({ code: "", name: "" });
+  const [searchBarQuery, setSearchBarQuery] = useState("");
+  const [searchBarResultList, setSearchBarResultList] = useState([]);
 
   useEffect(() => {
     try {
@@ -51,7 +53,15 @@ export default function MainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacitySearchBar capacityList={capacityList} setSelectedCapacity={setSelectedCapacity} pageContent={pageContent} />
+        <CapacitySearchBar
+          capacityList={capacityList}
+          setSelectedCapacity={setSelectedCapacity}
+          searchBarQuery={searchBarQuery}
+          setSearchBarQuery={setSearchBarQuery}
+          searchBarResultList={searchBarResultList}
+          setSearchBarResultList={setSearchBarResultList}
+          pageContent={pageContent}
+        />
         {selectedCapacity.code === "" ? (
           <CapacityList capacityList={capacityList} setSelectedCapacity={setSelectedCapacity}></CapacityList>
         ) : (

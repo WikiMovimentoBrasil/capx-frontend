@@ -1,11 +1,9 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ capacityList, setSelectedCapacity, searchBarQuery, setSearchBarQuery, pageContent }) {
-  const [filteredCapacityNameList, setFilteredCapacityNameList] = useState([]);
-
+export default function CapacitySearchBar({ capacityList, setSelectedCapacity, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
   useEffect(() => {
-    setFilteredCapacityNameList(capacityList.names);
+    setSearchBarResultList(capacityList.names);
   }, [capacityList]);
 
   const handleInputChange = (e) => {
@@ -16,7 +14,7 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, s
     const filtered = capacityList.names.filter((option) =>
       option.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredCapacityNameList(filtered);
+    setSearchBarResultList(filtered);
   };
 
   const handleOptionClick = (option) => {
@@ -25,13 +23,13 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, s
     const name = capacityList.names[index];
     setSelectedCapacity({ code: code, name: name })
     setSearchBarQuery(option);
-    setFilteredCapacityNameList([]);
+    setSearchBarResultList([]);
   };
 
   const handleClearSearch = () => {
     setSearchBarQuery("");
     setSelectedCapacity({ code: "", name: "" })
-    setFilteredCapacityNameList(capacityList.names);
+    setSearchBarResultList(capacityList.names);
   };
 
   if (capacityList.codes === undefined || capacityList.names === undefined) {
@@ -69,9 +67,9 @@ export default function CapacitySearchBar({ capacityList, setSelectedCapacity, s
           </button>
         )}
       </div>
-      {searchBarQuery && filteredCapacityNameList.length > 0 && (
+      {searchBarQuery && searchBarResultList.length > 0 && (
         <ul className="absolute w-full max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
-          {filteredCapacityNameList.map((option) => (
+          {searchBarResultList.map((option) => (
             <li
               key={option}
               onClick={() => handleOptionClick(option)}
