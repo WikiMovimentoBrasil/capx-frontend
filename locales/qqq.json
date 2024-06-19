@@ -7,6 +7,7 @@
     "body-home-section01-title-carousel": "Text displayed on the first section of the home page. Refers to the carousel title, listing the types of exchanges that can be made on the platform.",
     "body-home-section01-description": "Text displayed on the first section of the home page. Describes the purpose of the platform, inviting users to connect, learn, and share capacities.",
     "body-home-section01-button": "Button displayed on the first section of the home page. Invites users to join the platform.",
+    "body-capacity-searchbar-placeholder": "Initial text of the search bar of the page responsible for listing capabilities. Provides a short instruction for the user.",
     "footer-link-documentation": "Link to the documentation page in the footer",
     "footer-link-github": "Link to the GitHub repository in the footer",
     "footer-link-wikimedia": "Link to the Meta-Wikimedia page in the footer",

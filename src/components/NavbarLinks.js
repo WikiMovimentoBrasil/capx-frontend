@@ -4,7 +4,7 @@ import { Link } from "react-scroll";
 export default function NavbarLinks({ session, pageContent }) {
   const menuDataLoggedIn = [
     { title: pageContent["navbar-link-profile"], to: "/profile", active: true },
-    { title: pageContent["navbar-link-capacities"], to: "/capacities", active: false },
+    { title: pageContent["navbar-link-capacities"], to: "/capacity", active: true },
     { title: pageContent["navbar-link-events"], to: "/events", active: false }
   ]
 

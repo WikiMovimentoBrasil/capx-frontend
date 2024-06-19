@@ -6,7 +6,6 @@ const animatedComponents = makeAnimated();
 const multiSelectStyle = {
   control: (base, state) => ({
     ...base,
-    height: '48px',
     paddingLeft: '4px',
     color: 'rgb(30 41 59)',
     border: state.isFocused ? 0 : 0,
@@ -29,6 +28,7 @@ export default function MultiSelectInput({ children, isUserSelectionLoaded = tru
         <Select
           isMulti
           name={id}
+          instanceId={id}
           isSearchable={true}
           styles={multiSelectStyle}
           placeholder={""}

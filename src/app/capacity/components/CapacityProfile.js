@@ -1,0 +1,1 @@
+export default function capacityProfile({ selectedCapacity, setSelectedCapacity, setSearchBarQuery, setSearchBarResultList }) {}

@@ -39,11 +39,11 @@ export default function TextDoubleInput({ children, darkMode, placeholderDisplay
 
   if (formData.userData[field] !== null) {
     return (
-      <div className="w-10/12 sm:w-full space-y-2">
+      <div className="w-full space-y-2">
         <label className="w-full ml-2">{children}</label>
         <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full text-capx-dark-bg p-8 rounded-lg space-y-4"}>
           {formData.userData[field].map((item, index) => (
-            <div key={index} className="grid grid-cols-2 gap-10">
+            <div key={index} className="grid grid-cols-2 gap-4 sm:gap-10">
               <input
                 type={type}
                 placeholder={placeholderDisplayName}

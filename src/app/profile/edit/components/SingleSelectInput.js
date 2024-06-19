@@ -26,6 +26,7 @@ export default function SingleSelectInput({ children, isUserSelectionLoaded = tr
         <label className="ml-2">{children}</label>
         <Select
           name={id}
+          instanceId={id}
           isSearchable={true}
           styles={selectStyle}
           placeholder={""}
