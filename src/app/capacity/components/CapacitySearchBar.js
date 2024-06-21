@@ -2,8 +2,12 @@
 import { useState, useEffect } from 'react';
 
 export default function CapacitySearchBar({ capacityList, selectedCapacity, setSelectedCapacity, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
+  const [capacityNames, setCapacityNames] = useState([]);
+
   useEffect(() => {
-    setSearchBarResultList(capacityList.names);
+    const names = capacityList.map((capacity) => capacity.name)
+    setCapacityNames(names);
+    setSearchBarResultList(names);
   }, [capacityList]);
 
   const handleInputChange = (e) => {
@@ -11,28 +15,28 @@ export default function CapacitySearchBar({ capacityList, selectedCapacity, setS
     setSearchBarQuery(value);
 
     // Filtering options based on the query
-    const filtered = capacityList.names.filter((option) =>
+    const filtered = capacityNames.filter((option) =>
       option.toLowerCase().includes(value.toLowerCase())
     );
     setSearchBarResultList(filtered);
   };
 
   const handleOptionClick = (option) => {
-    const index = capacityList.names.indexOf(option);
-    const code = capacityList.codes[index];
-    const name = capacityList.names[index];
-    setSelectedCapacity({ code: code, name: name })
+    const clickedCapacity = capacityList.filter((capacity) =>
+      capacity.name.toLowerCase() === option.toLowerCase()
+    );
+    setSelectedCapacity(clickedCapacity)
     setSearchBarQuery(option);
     setSearchBarResultList([]);
   };
 
   const handleClearSearch = () => {
     setSearchBarQuery("");
-    setSelectedCapacity({ code: "", name: "" })
-    setSearchBarResultList(capacityList.names);
+    setSelectedCapacity({ code: "", wd_code: "", name: "" })
+    setSearchBarResultList(capacityNames);
   };
 
-  if (capacityList.codes === undefined || capacityList.names === undefined) {
+  if (capacityList.length === 0) {
     return (
       <div className="w-full text-capx-dark-bg">
         <div className="relative">
