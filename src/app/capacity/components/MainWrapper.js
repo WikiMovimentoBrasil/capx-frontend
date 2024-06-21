@@ -15,8 +15,8 @@ export default function MainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
-  const [capacityList, setCapacityList] = useState({});
-  const [selectedCapacity, setSelectedCapacity] = useState({ code: "", name: "" });
+  const [capacityList, setCapacityList] = useState([]);
+  const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
@@ -25,7 +25,7 @@ export default function MainWrapper(props) {
       if (status === "authenticated") {
         const fetchCapacityList = async (queryData) => {
           const queryResponse = await axios.get('/api/capacity', queryData);
-          setCapacityList(queryResponse.data);
+          setCapacityList(queryResponse.data.data);
         };
         const queryData = {
           headers: { 'Authorization': `Token ${data.user.token}` }
