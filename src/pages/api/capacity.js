@@ -9,21 +9,27 @@ export default async function capacity(req, res) {
           'Authorization': req.headers.authorization
         }
       });
-      const codes = Object.values(codesResponse.data);
+
+      const codes = Object.entries(codesResponse.data).map(([key, value]) => ({
+        code: Number(key),
+        wd_code: value
+      }));
 
       //Fetching names based on codes
-      const wdCodeList = codes.map((code) => "wd:" + code.toString());
+      const wdCodeList = codes.map((code) => "wd:" + code.wd_code.toString());
       const queryTextPart01 = "SELECT ?item ?itemLabel WHERE {VALUES ?item {";
       const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language 'pt-br,pt,en'.}}";
-      const namesResponse = await axios.get('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=' + queryTextPart01 + wdCodeList.join(" ") + queryTextPart02);
+      const namesResponse = await axios.get(process.env.WIKIDATA_BASE_URL + queryTextPart01 + wdCodeList.join(" ") + queryTextPart02);
       const names = namesResponse.data.results.bindings.map((wdItem) => wdItem.itemLabel.value);
 
-      res.status(200).json(
-        {
-          codes: codes,
-          names: names
-        }
-      );
+      const codesWithNames = codes.map((item, index) => ({
+        ...item,
+        name: names[index]
+      }));
+
+      res.status(200).json({
+        data: codesWithNames
+      });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch data." });
     }
