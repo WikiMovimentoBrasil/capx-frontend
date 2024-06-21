@@ -75,7 +75,7 @@ export default function CapacitySearchBar({ capacityList, selectedCapacity, setS
         )}
       </div>
       {searchBarQuery && searchBarResultList.length > 0 && (
-        <ul className="absolute w-full max-h-40 bg-white mt-2 border border-gray-200 rounded overflow-y-auto">
+        <ul className="absolute w-full max-h-40 bg-gray-50 mt-2 border border-gray-200 rounded overflow-y-auto">
           {searchBarResultList.map((option) => (
             <li
               key={option}
