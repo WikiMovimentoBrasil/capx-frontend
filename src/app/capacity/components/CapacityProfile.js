@@ -9,39 +9,39 @@ export default function CapacityProfile({ selectedCapacity, selectedCapacityData
       <div className="space-y-14">
         {selectedCapacityData.wanted?.length > 0 ? (
           <CapacityUserList
-            title={"Users who want to learn this capacity"}
+            title={pageContent["body-capacity-wanted-user-list-title"]}
             data={selectedCapacityData.wanted}
             fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityUserList
-            title={"Users who want to learn this capacity"}
-            noUserMessage={"There are no users to display in this category."}
+            title={pageContent["body-capacity-wanted-user-list-title"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
           />
         )}
         {selectedCapacityData.known?.length > 0 ? (
           <CapacityUserList
-            title={"Users who know about this capacity"}
+            title={pageContent["body-capacity-known-user-list-title"]}
             data={selectedCapacityData.known}
             fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityUserList
-            title={"Users who know about this capacity"}
-            noUserMessage={"There are no users to display in this category."}
+            title={pageContent["body-capacity-known-user-list-title"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
           />
         )
         }
         {selectedCapacityData.available?.length > 0 ? (
           <CapacityUserList
-            title={"Users who know about this capacity and are available to work with it"}
+            title={pageContent["body-capacity-available-user-list-title"]}
             data={selectedCapacityData.available}
             fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityUserList
-            title={"Users who know about this capacity and are available to work with it"}
-            noUserMessage={"There are no users to display in this category."}
+            title={pageContent["body-capacity-available-user-list-title"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
           />
         )
         }
