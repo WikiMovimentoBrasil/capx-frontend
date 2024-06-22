@@ -13,6 +13,7 @@ export default function CapacityUserPreview({ userId, fetchUserData }) {
       <Link href={"/profile/" + userId}>
         <img src={userData.profile_image} className="rounded-full cursor-pointer" />
       </Link>
+      <p className="text-xs text-center mt-2">{userData.display_name}</p>
     </div>
   )
 }
