@@ -1,6 +1,14 @@
 import CapacityUserList from "./CapacityUserList";
 
 export default function CapacityProfile({ darkMode, selectedCapacity, selectedCapacityData, pageContent, fetchUserData }) {
+  const skeletonItems = (
+    <div className="space-y-4">
+      <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-2/6 h-8 rounded-lg animate-pulse"}></div>
+      <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "grid grid-cols-10 w-full min-h-40 p-8 rounded-lg animate-pulse"}>
+      </div>
+    </div>
+  )
+
   return (
     <div className="w-full space-y-8 pt-10">
       <div>
