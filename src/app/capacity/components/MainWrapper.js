@@ -103,6 +103,7 @@ export default function MainWrapper(props) {
           />
         ) : (
           <CapacityProfile
+            darkMode={darkMode}
             selectedCapacity={selectedCapacity}
             selectedCapacityData={selectedCapacityData}
             pageContent={pageContent}
