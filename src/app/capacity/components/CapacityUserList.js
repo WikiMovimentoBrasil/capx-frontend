@@ -1,0 +1,1 @@
+export default function CapacityUserList({ pageContent, data }) { }
