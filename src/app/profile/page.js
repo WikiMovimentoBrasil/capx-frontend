@@ -17,7 +17,7 @@ export default async function ProfilePage() {
 
   if (session) {
     return (
-      <MainWrapper session={session !== null} language={language} pageContent={pageContent} darkMode={darkMode} />
+      <MainWrapper session={session !== null} language={language} darkMode={darkMode} pageContent={pageContent} userId={undefined} />
     )
   } else {
     redirect('/');

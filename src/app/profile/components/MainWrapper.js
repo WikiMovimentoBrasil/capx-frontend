@@ -6,10 +6,10 @@ import UserProfile from "./UserProfile";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
-const fetchData = async (queryData) => {
+const fetchData = async (queryData, userId) => {
   try {
     const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
-      axios.get("/api/profile", queryData),
+      axios.get(userId === undefined ? "/api/profile" : "/api/users", queryData),
       axios.get('/api/list/territory', queryData),
       axios.get('/api/list/language', queryData),
       axios.get('/api/list/organizations', queryData),
@@ -50,12 +50,12 @@ export default function MainWrapper(props) {
   useEffect(() => {
     if (status === "authenticated") {
       const queryData = {
-        params: { userId: data.user.id },
+        params: { userId: props.userId === undefined ? data.user.id : props.userId },
         headers: { 'Authorization': `Token ${data.user.token}` }
       }
 
       const getData = async (queryData) => {
-        const fetchedData = await fetchData(queryData);
+        const fetchedData = await fetchData(queryData, props.userId);
         setProfileData(fetchedData);
       };
 
