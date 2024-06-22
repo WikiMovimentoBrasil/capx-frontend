@@ -20,7 +20,12 @@ export default function CapacityProfile({ selectedCapacity, selectedCapacityData
             data={selectedCapacityData.known}
             fetchUserData={fetchUserData}
           />
-        ) : (null)
+        ) : (
+          <CapacityUserList
+            title={"Users who know about this capacity"}
+            noUserMessage={"There are no users to display in this category."}
+          />
+        )
         }
         {selectedCapacityData.available?.length > 0 ? (
           <CapacityUserList
