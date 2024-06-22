@@ -51,6 +51,24 @@ export default function CapacityProfile({ darkMode, selectedCapacity, selectedCa
             />
           )
         )}
+        {selectedCapacityData === undefined ? (
+          skeletonItems
+        ) : (
+          selectedCapacityData.available?.length > 0 ? (
+            <CapacityUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-available-user-list-title"]}
+              data={selectedCapacityData.available}
+              fetchUserData={fetchUserData}
+            />
+          ) : (
+            <CapacityUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-available-user-list-title"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            />
+          )
+        )}
       </div>
     </div>
   )
