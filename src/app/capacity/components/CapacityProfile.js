@@ -9,11 +9,19 @@ export default function CapacityProfile({ selectedCapacity, selectedCapacityData
       <div className="space-y-14">
         {selectedCapacityData.wanted?.length > 0 ? (
           <CapacityUserList
-            title={"Users that want to learn this capacity"}
+            title={"Users who want to learn this capacity"}
             data={selectedCapacityData.wanted}
             fetchUserData={fetchUserData}
           />
         ) : (null)}
+        {selectedCapacityData.known?.length > 0 ? (
+          <CapacityUserList
+            title={"Users who know this capacity"}
+            data={selectedCapacityData.known}
+            fetchUserData={fetchUserData}
+          />
+        ) : (null)
+        }
       </div>
     </div>
   )
