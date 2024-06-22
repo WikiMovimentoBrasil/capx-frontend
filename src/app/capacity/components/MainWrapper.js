@@ -15,7 +15,7 @@ export default function MainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
-  const [capacityList, setCapacityList] = useState([]);
+  const [capacityList, setCapacityList] = useState(undefined);
   const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
   const [selectedCapacityData, setSelectedCapacityData] = useState({});
   const [searchBarQuery, setSearchBarQuery] = useState("");
@@ -100,6 +100,7 @@ export default function MainWrapper(props) {
         />
         {selectedCapacity.code === "" ? (
           <CapacityList
+            darkMode={darkMode}
             capacityList={capacityList}
             setSelectedCapacity={setSelectedCapacity}
             setSearchBarQuery={setSearchBarQuery}
