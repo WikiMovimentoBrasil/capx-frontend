@@ -1,1 +1,1 @@
-export default function capacityProfile({ selectedCapacity, setSelectedCapacity, setSearchBarQuery, setSearchBarResultList }) {}
+export default function CapacityProfile({ selectedCapacity, selectedCapacityData, pageContent, fetchUserData }) {}
