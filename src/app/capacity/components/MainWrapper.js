@@ -21,6 +21,19 @@ export default function MainWrapper(props) {
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
+  const fetchUserData = async (userId, setCustomState) => {
+    try {
+      const queryData = {
+        params: { userId: userId },
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+      const queryResponse = await axios.get("/api/profile", queryData);
+      setCustomState(queryResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }
+
   useEffect(() => {
     try {
       if (status === "authenticated") {
