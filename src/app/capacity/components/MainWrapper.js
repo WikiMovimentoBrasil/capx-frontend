@@ -85,6 +85,7 @@ export default function MainWrapper(props) {
     >
       <CapacitySection>
         <CapacitySearchBar
+          darkMode={darkMode}
           capacityList={capacityList}
           selectedCapacity={selectedCapacity}
           setSelectedCapacity={setSelectedCapacity}
