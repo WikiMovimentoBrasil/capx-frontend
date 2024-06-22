@@ -17,6 +17,7 @@ export default function MainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState([]);
   const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
+  const [selectedCapacityData, setSelectedCapacityData] = useState({});
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
@@ -36,6 +37,22 @@ export default function MainWrapper(props) {
       console.error('Failed to fetch data:', error);
     }
   }, [status]);
+
+  useEffect(() => {
+    if (selectedCapacity.code !== "") {
+      const fetchCapacityData = async (queryData) => {
+        const queryResponse = await axios.get("/api/capacity/" + selectedCapacity.code, queryData);
+        setSelectedCapacityData(queryResponse.data);
+      };
+      const queryData = {
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+      fetchCapacityData(queryData);
+    }
+    else {
+      setSelectedCapacityData({});
+    }
+  }, [selectedCapacity]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
@@ -73,11 +90,11 @@ export default function MainWrapper(props) {
           />
         ) : (
           <CapacityProfile
-            capacityList={capacityList}
             selectedCapacity={selectedCapacity}
-            setSelectedCapacity={setSelectedCapacity}
-            setSearchBarQuery={setSearchBarQuery}
-            setSearchBarResultList={setSearchBarResultList} />
+            selectedCapacityData={selectedCapacityData}
+            pageContent={pageContent}
+            fetchUserData={fetchUserData}
+          />
         )}
       </CapacitySection>
     </BaseWrapper>
