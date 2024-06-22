@@ -42,7 +42,10 @@ export default function MainWrapper(props) {
           setCapacityList(queryResponse.data.data);
         };
         const queryData = {
-          headers: { 'Authorization': `Token ${data.user.token}` }
+          params: { language: props.language },
+          headers: { 
+            'Authorization': `Token ${data.user.token}`,
+          }
         }
         fetchCapacityList(queryData);
       }

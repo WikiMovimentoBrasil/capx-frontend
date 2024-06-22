@@ -18,7 +18,7 @@ export default async function capacity(req, res) {
       //Fetching names based on codes
       const wdCodeList = codes.map((code) => "wd:" + code.wd_code.toString());
       const queryTextPart01 = "SELECT ?item ?itemLabel WHERE {VALUES ?item {";
-      const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language 'pt-br,pt,en'.}}";
+      const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language '" + req.query.language + ",en'.}}";
       const namesResponse = await axios.get(process.env.WIKIDATA_BASE_URL + queryTextPart01 + wdCodeList.join(" ") + queryTextPart02);
       const names = namesResponse.data.results.bindings.map((wdItem) => wdItem.itemLabel.value);
 
