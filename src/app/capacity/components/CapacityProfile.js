@@ -33,6 +33,24 @@ export default function CapacityProfile({ darkMode, selectedCapacity, selectedCa
             />
           )
         )}
+        {selectedCapacityData === undefined ? (
+          skeletonItems
+        ) : (
+          selectedCapacityData.known?.length > 0 ? (
+            <CapacityUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-known-user-list-title"]}
+              data={selectedCapacityData.known}
+              fetchUserData={fetchUserData}
+            />
+          ) : (
+            <CapacityUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-known-user-list-title"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            />
+          )
+        )}
       </div>
     </div>
   )
