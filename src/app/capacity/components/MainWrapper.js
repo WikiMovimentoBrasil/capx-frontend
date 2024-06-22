@@ -17,7 +17,7 @@ export default function MainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
   const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
-  const [selectedCapacityData, setSelectedCapacityData] = useState({});
+  const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
@@ -27,7 +27,7 @@ export default function MainWrapper(props) {
         params: { userId: userId },
         headers: { 'Authorization': `Token ${data.user.token}` }
       }
-      const queryResponse = await axios.get("/api/profile", queryData);
+      const queryResponse = await axios.get("/api/users", queryData);
       setCustomState(queryResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -66,7 +66,7 @@ export default function MainWrapper(props) {
       fetchCapacityData(queryData);
     }
     else {
-      setSelectedCapacityData({});
+      setSelectedCapacityData(undefined);
     }
   }, [selectedCapacity]);
 
