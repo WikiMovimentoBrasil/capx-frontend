@@ -5,9 +5,11 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
   const [capacityNames, setCapacityNames] = useState([]);
 
   useEffect(() => {
-    const names = capacityList.map((capacity) => capacity.name)
-    setCapacityNames(names);
-    setSearchBarResultList(names);
+    if (capacityList !== undefined) {
+      const names = capacityList.map((capacity) => capacity.name)
+      setCapacityNames(names);
+      setSearchBarResultList(names);
+    }
   }, [capacityList]);
 
   const handleInputChange = (e) => {
@@ -36,7 +38,7 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
     setSearchBarResultList(capacityNames);
   };
 
-  if (capacityList.length === 0) {
+  if (capacityList === undefined) {
     return (
       <div className="w-full text-capx-dark-bg">
         <div className="relative">
