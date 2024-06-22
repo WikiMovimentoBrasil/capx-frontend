@@ -6,4 +6,10 @@ export default function CapacityUserPreview({ userId, fetchUserData }) {
   useEffect(() => {
     fetchUserData(userId, setUserData);
   }, []);
+
+  return (
+    <div className="w-full h-full rounded-full p-4">
+      <img src={userData.profile_image} className="rounded-full" />
+    </div>
+  )
 }
