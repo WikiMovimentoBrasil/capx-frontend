@@ -10,9 +10,12 @@ export default function CapacityProfile({ darkMode, selectedCapacity, selectedCa
   )
 
   return (
-    <div className="w-full space-y-8 pt-10">
-      <div>
+    <div className="w-full space-y-20 pt-10">
+      <div className="space-y-4">
         <h1 className="text-4xl font-extrabold">{selectedCapacity.name} [<a href={`https://www.wikidata.org/wiki/${selectedCapacity.wd_code}`} target="_blank" className="text-capx-primary-green underline">{selectedCapacity.wd_code}</a>]</h1>
+        <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full px-8 py-4 rounded-lg"}>
+          <p>{selectedCapacity.description}</p>
+        </div>
       </div>
       <div className="space-y-14">
         {selectedCapacityData === undefined ? (
