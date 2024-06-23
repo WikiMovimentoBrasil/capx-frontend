@@ -23,7 +23,7 @@ export default function CapacityUserPreview({ darkMode, userId, fetchUserData })
   return (
     <div className="w-full h-full p-4 space-y-2">
       <Link href={"/profile/" + userId}>
-        <img src={userData.profile_image} className="rounded-full border-2 cursor-pointer" />
+        <img src={userData.profile_image} className={(darkMode ? "hover:border-capx-light-bg " : "hover:border-capx-dark-bg ") + "rounded-full border-2 cursor-pointer hover:border-dotted"} />
       </Link>
       <p className="text-xs text-center">{userData.display_name}</p>
     </div>
