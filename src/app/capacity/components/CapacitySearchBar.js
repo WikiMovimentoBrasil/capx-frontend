@@ -27,7 +27,7 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
     const clickedCapacity = capacityList.filter((capacity) =>
       capacity.name.toLowerCase() === option.toLowerCase()
     );
-    setSelectedCapacity(clickedCapacity)
+    setSelectedCapacity(clickedCapacity[0])
     setSearchBarQuery(option);
     setSearchBarResultList([]);
   };
@@ -61,7 +61,7 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
           type="text"
           value={searchBarQuery}
           onChange={handleInputChange}
-          className={(darkMode ? "text-capx-light-box-bg " : "text-capx-dark-box-bg ") + "w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"}
+          className={"w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"}
           placeholder={pageContent["body-capacity-searchbar-placeholder"]}
           disabled={selectedCapacity.code === "" ? false : true}
         />
