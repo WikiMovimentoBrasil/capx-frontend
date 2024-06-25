@@ -15,20 +15,37 @@ export default function MainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
-  const [capacityList, setCapacityList] = useState({});
-  const [selectedCapacity, setSelectedCapacity] = useState({ code: "", name: "" });
+  const [capacityList, setCapacityList] = useState(undefined);
+  const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
+  const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
+
+  const fetchUserData = async (userId, setCustomState) => {
+    try {
+      const queryData = {
+        params: { userId: userId },
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+      const queryResponse = await axios.get("/api/users", queryData);
+      setCustomState(queryResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }
 
   useEffect(() => {
     try {
       if (status === "authenticated") {
         const fetchCapacityList = async (queryData) => {
           const queryResponse = await axios.get('/api/capacity', queryData);
-          setCapacityList(queryResponse.data);
+          setCapacityList(queryResponse.data.data);
         };
         const queryData = {
-          headers: { 'Authorization': `Token ${data.user.token}` }
+          params: { language: props.language },
+          headers: { 
+            'Authorization': `Token ${data.user.token}`,
+          }
         }
         fetchCapacityList(queryData);
       }
@@ -36,6 +53,22 @@ export default function MainWrapper(props) {
       console.error('Failed to fetch data:', error);
     }
   }, [status]);
+
+  useEffect(() => {
+    if (selectedCapacity.code !== "") {
+      const fetchCapacityData = async (queryData) => {
+        const queryResponse = await axios.get("/api/capacity/" + selectedCapacity.code, queryData);
+        setSelectedCapacityData(queryResponse.data);
+      };
+      const queryData = {
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+      fetchCapacityData(queryData);
+    }
+    else {
+      setSelectedCapacityData(undefined);
+    }
+  }, [selectedCapacity]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
@@ -55,6 +88,7 @@ export default function MainWrapper(props) {
     >
       <CapacitySection>
         <CapacitySearchBar
+          darkMode={darkMode}
           capacityList={capacityList}
           selectedCapacity={selectedCapacity}
           setSelectedCapacity={setSelectedCapacity}
@@ -66,6 +100,7 @@ export default function MainWrapper(props) {
         />
         {selectedCapacity.code === "" ? (
           <CapacityList
+            darkMode={darkMode}
             capacityList={capacityList}
             setSelectedCapacity={setSelectedCapacity}
             setSearchBarQuery={setSearchBarQuery}
@@ -73,11 +108,12 @@ export default function MainWrapper(props) {
           />
         ) : (
           <CapacityProfile
-            capacityList={capacityList}
+            darkMode={darkMode}
             selectedCapacity={selectedCapacity}
-            setSelectedCapacity={setSelectedCapacity}
-            setSearchBarQuery={setSearchBarQuery}
-            setSearchBarResultList={setSearchBarResultList} />
+            selectedCapacityData={selectedCapacityData}
+            pageContent={pageContent}
+            fetchUserData={fetchUserData}
+          />
         )}
       </CapacitySection>
     </BaseWrapper>
