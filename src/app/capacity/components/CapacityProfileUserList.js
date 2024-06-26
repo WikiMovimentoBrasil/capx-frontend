@@ -1,6 +1,6 @@
 import CapacityUserPreview from "./CapacityUserPreview";
 
-export default function CapacityUserList({ darkMode, title, data = undefined, fetchUserData = undefined, noUserMessage = undefined }) {
+export default function CapacityProfileUserList({ darkMode, title, data = undefined, fetchUserData = undefined, noUserMessage = undefined }) {
   return (
     <div>
       <h2 className="text-xl font-extrabold mb-4">{title}</h2>
