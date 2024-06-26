@@ -11,15 +11,26 @@ export default async function getCapacityData(req, res) {
           'Authorization': req.headers.authorization
         }
       });
-      
-      // Error if the requested id does not have a corresponding wikidata code
+
+      // Returning error if the requested id does not have a corresponding wikidata code
       if (codeList.data.hasOwnProperty(id) === false) {
-        res.status(500).json({error: "No wikidata item for this capacity id."});
+        res.status(500).json({ error: "No wikidata item for this capacity id." });
+      }
+
+      // Requesting list of users who have the capacity in their profile
+      let userList = [];
+      if (users === "true") {
+        userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id, {
+          headers: {
+            'Authorization': req.headers.authorization
+          }
+        });
       }
 
       const capacityCodes = {
         code: id,
         wd_code: codeList.data[id],
+        users: userList.data
       }
 
       // Requesting data from wikidata
@@ -33,7 +44,7 @@ export default async function getCapacityData(req, res) {
         description: wikidataResponse.data.results.bindings[0].itemDescription.value
       }
 
-      res.status(200).json({...capacityCodes, ...capacityData});
+      res.status(200).json({ ...capacityCodes, ...capacityData });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch data." });
     }
