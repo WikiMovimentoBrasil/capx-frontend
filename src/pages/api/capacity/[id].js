@@ -18,14 +18,11 @@ export default async function getCapacityData(req, res) {
       }
 
       // Requesting list of users who have the capacity in their profile
-      let userList = [];
-      if (users === "true") {
-        userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id, {
-          headers: {
-            'Authorization': req.headers.authorization
-          }
-        });
-      }
+      const userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id, {
+        headers: {
+          'Authorization': req.headers.authorization
+        }
+      });
 
       const capacityCodes = {
         code: id,
