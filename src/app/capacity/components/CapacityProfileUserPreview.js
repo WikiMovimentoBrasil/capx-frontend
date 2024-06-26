@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function CapacityUserPreview({ darkMode, userId, fetchUserData }) {
+export default function CapacityProfileUserPreview({ darkMode, userId, fetchUserData }) {
   const [userData, setUserData] = useState(undefined);
 
   useEffect(() => {
