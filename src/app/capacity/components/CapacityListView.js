@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function CapacityList({ darkMode, capacityList }) {
+export default function CapacityListView({ darkMode, capacityList }) {
   if (capacityList === undefined) {
     const skeletonItems = Array.from({ length: 10 });
     return (

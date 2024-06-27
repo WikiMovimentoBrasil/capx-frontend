@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import CapacityList from "./CapacityList";
+import CapacityListView from "./CapacityListView";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
@@ -58,7 +58,7 @@ export default function CapacityListMainWrapper(props) {
           capacityList={capacityList}
           pageContent={pageContent}
         />
-        <CapacityList
+        <CapacityListView
           darkMode={darkMode}
           capacityList={capacityList}
         />
