@@ -1,10 +1,6 @@
-export default function CapacityList({ darkMode, capacityList, setSelectedCapacity, setSearchBarQuery, setSearchBarResultList }) {
-  const handleOptionClick = (option) => {
-    setSelectedCapacity(option);
-    setSearchBarQuery(option.name);
-    setSearchBarResultList([]);
-  };
+import Link from "next/link";
 
+export default function CapacityList({ darkMode, capacityList }) {
   if (capacityList === undefined) {
     const skeletonItems = Array.from({ length: 10 });
     return (
@@ -33,9 +29,11 @@ export default function CapacityList({ darkMode, capacityList, setSelectedCapaci
         {capacityList.map((capacity, index) => (
           <li
             key={"capacity-" + index.toString()}
-            onClick={() => handleOptionClick(capacity)}
-            className="w-fit py-1 px-3 cursor-pointer hover:bg-capx-secondary-purple hover:text-white">
-            {capacity.name}
+            className="w-fit py-1 px-3 cursor-pointer hover:bg-capx-secondary-purple hover:text-white"
+          >
+            <Link href={"/capacity/" + capacity.code}>
+              {capacity.name}
+            </Link>
           </li>
         ))}
       </ul>
