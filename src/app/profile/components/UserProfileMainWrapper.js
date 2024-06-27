@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import UserProfile from "./UserProfile";
+import UserProfileView from "./UserProfileView";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
@@ -68,7 +68,7 @@ export default function UserProfileMainWrapper(props) {
       mobileMenuStatus={mobileMenuStatus}
       setMobileMenuStatus={setMobileMenuStatus}
     >
-      <UserProfile
+      <UserProfileView
         darkMode={darkMode}
         profileData={profileData}
       />
