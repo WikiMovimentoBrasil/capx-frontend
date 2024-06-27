@@ -11,6 +11,12 @@ export default function UserProfile({ darkMode, profileData }) {
     { value: "other", label: "Other" }
   ]
 
+  if (profileData === undefined) {
+    return (
+      <div></div>
+    )
+  }
+
   return (
     <section className={"w-10/12 sm:w-8/12 mx-auto py-32 place-content-start"}>
       <ContentBoxSingleColumn>
