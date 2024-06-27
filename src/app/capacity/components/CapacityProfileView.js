@@ -1,6 +1,6 @@
 import CapacityProfileUserList from "./CapacityProfileUserList";
 
-export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent, fetchUserData }) {
+export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent }) {
   if (selectedCapacityData === undefined) {
     return (
       <div className="w-full space-y-20 pt-10">
@@ -45,7 +45,6 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-wanted-user-list-title"]}
             data={selectedCapacityData.users.wanted}
-            fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityProfileUserList
@@ -59,7 +58,6 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-known-user-list-title"]}
             data={selectedCapacityData.users.known}
-            fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityProfileUserList
@@ -73,7 +71,6 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-available-user-list-title"]}
             data={selectedCapacityData.users.available}
-            fetchUserData={fetchUserData}
           />
         ) : (
           <CapacityProfileUserList

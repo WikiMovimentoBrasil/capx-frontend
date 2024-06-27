@@ -31,19 +31,6 @@ export default function CapacityProfileMainWrapper(props) {
     }
   }, [status]);
 
-  const fetchUserData = async (userId, setCustomState) => {
-    try {
-      const queryData = {
-        params: { userId: userId },
-        headers: { 'Authorization': `Token ${data.user.token}` }
-      }
-      const queryResponse = await axios.get("/api/users", queryData);
-      setCustomState(queryResponse.data);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-    }
-  }
-
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
   }
@@ -65,7 +52,6 @@ export default function CapacityProfileMainWrapper(props) {
           darkMode={darkMode}
           selectedCapacityData={selectedCapacityData}
           pageContent={pageContent}
-          fetchUserData={fetchUserData}
         />
       </CapacitySection>
     </BaseWrapper>
