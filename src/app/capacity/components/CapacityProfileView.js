@@ -1,7 +1,8 @@
 import Link from "next/link";
+import CapacityProfileNoUser from "./CapacityProfileNoUser";
 import CapacityProfileUserList from "./CapacityProfileUserList";
 
-export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent }) {
+export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent, userId }) {
   if (selectedCapacityData === undefined) {
     return (
       <div className="w-full space-y-20 pt-10">
@@ -55,9 +56,10 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-wanted-user-list-title"]}
             data={selectedCapacityData.users.wanted}
+            userId={userId}
           />
         ) : (
-          <CapacityProfileUserList
+          <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-wanted-user-list-title"]}
             noUserMessage={pageContent["body-capacity-user-list-fallback"]}
@@ -68,9 +70,10 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-known-user-list-title"]}
             data={selectedCapacityData.users.known}
+            userId={userId}
           />
         ) : (
-          <CapacityProfileUserList
+          <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-known-user-list-title"]}
             noUserMessage={pageContent["body-capacity-user-list-fallback"]}
@@ -81,9 +84,10 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             darkMode={darkMode}
             title={pageContent["body-capacity-available-user-list-title"]}
             data={selectedCapacityData.users.available}
+            userId={userId}
           />
         ) : (
-          <CapacityProfileUserList
+          <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-available-user-list-title"]}
             noUserMessage={pageContent["body-capacity-user-list-fallback"]}

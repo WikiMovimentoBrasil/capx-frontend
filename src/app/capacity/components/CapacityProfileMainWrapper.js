@@ -66,6 +66,7 @@ export default function CapacityProfileMainWrapper(props) {
           darkMode={darkMode}
           selectedCapacityData={selectedCapacityData}
           pageContent={pageContent}
+          userId={data.user.id}
         />
       </CapacitySection>
     </BaseWrapper>
