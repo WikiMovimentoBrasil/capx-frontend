@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
-import CapacitySearchBar from "./CapacitySearchBar";
+import CapacityListSearchBar from "./CapacityListSearchBar";
 import LoadingSection from "@/components/LoadingSection";
 
 export default function CapacityListMainWrapper(props) {
@@ -53,7 +53,7 @@ export default function CapacityListMainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacitySearchBar
+        <CapacityListSearchBar
           darkMode={darkMode}
           capacityList={capacityList}
           pageContent={pageContent}

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ darkMode, capacityList, pageContent }) {
+export default function CapacityListSearchBar({ darkMode, capacityList, pageContent }) {
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
