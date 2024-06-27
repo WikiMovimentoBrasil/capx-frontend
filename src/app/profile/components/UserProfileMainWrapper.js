@@ -6,38 +6,6 @@ import UserProfile from "./UserProfile";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
-const fetchData = async (queryData, userId) => {
-  try {
-    const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
-      axios.get(userId === undefined ? "/api/profile" : "/api/users", queryData),
-      axios.get('/api/list/territory', queryData),
-      axios.get('/api/list/language', queryData),
-      axios.get('/api/list/organizations', queryData),
-      axios.get('/api/list/wikimedia_project', queryData),
-      axios.get('/api/list/skills', queryData)
-    ]);
-
-    return {
-      userData: userData.data,
-      territoryData: territoryData.data,
-      languageData: languageData.data,
-      affiliationData: affiliationData.data,
-      wikiProjectData: wikiProjectData.data,
-      skillData: skillData.data
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return {
-      userData: null,
-      territoryData: null,
-      languageData: null,
-      affiliationData: null,
-      wikiProjectData: null,
-      skillData: null
-    };
-  }
-};
-
 export default function UserProfileMainWrapper(props) {
   let pageComponent;
   const { status, data } = useSession();
@@ -45,7 +13,39 @@ export default function UserProfileMainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
-  const [profileData, setProfileData] = useState({ userData: null, territoryData: null, languageData: null, affiliationData: null, wikiProjectData: null, skillData: null });
+  const [profileData, setProfileData] = useState(undefined);
+
+  const getUserData = async (queryData) => {
+    try {
+      const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
+        axios.get("/api/profile", queryData),
+        axios.get('/api/list/territory', queryData),
+        axios.get('/api/list/language', queryData),
+        axios.get('/api/list/organizations', queryData),
+        axios.get('/api/list/wikimedia_project', queryData),
+        axios.get('/api/list/skills', queryData)
+      ]);
+
+      setProfileData({
+        userData: userData.data,
+        territoryData: territoryData.data,
+        languageData: languageData.data,
+        affiliationData: affiliationData.data,
+        wikiProjectData: wikiProjectData.data,
+        skillData: skillData.data
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return {
+        userData: null,
+        territoryData: null,
+        languageData: null,
+        affiliationData: null,
+        wikiProjectData: null,
+        skillData: null
+      };
+    }
+  };
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -53,14 +53,7 @@ export default function UserProfileMainWrapper(props) {
         params: { userId: props.userId === undefined ? data.user.id : props.userId },
         headers: { 'Authorization': `Token ${data.user.token}` }
       }
-
-      const getData = async (queryData) => {
-        const fetchedData = await fetchData(queryData, props.userId);
-        setProfileData(fetchedData);
-      };
-
-      getData(queryData);
-
+      getUserData(queryData);
     }
   }, [status]);
 
@@ -69,7 +62,7 @@ export default function UserProfileMainWrapper(props) {
   }
 
   if (status === "authenticated") {
-    if (profileData.userData != undefined) {
+    if (profileData?.userData != undefined) {
       pageComponent = (<UserProfile darkMode={darkMode} profileData={profileData} />);
     }
     else {
