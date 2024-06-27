@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ darkMode, capacityList, selectedCapacity, setSelectedCapacity, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
+export default function CapacitySearchBar({ darkMode, capacityList, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
   const [capacityNames, setCapacityNames] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
 
   const handleClearSearch = () => {
     setSearchBarQuery("");
-    setSelectedCapacity({ code: "", wd_code: "", name: "" })
     setSearchBarResultList(capacityNames);
   };
 
@@ -54,7 +53,6 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
           onChange={handleInputChange}
           className={"w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"}
           placeholder={pageContent["body-capacity-searchbar-placeholder"]}
-          disabled={selectedCapacity.code === "" ? false : true}
         />
         {searchBarQuery && (
           <button
