@@ -25,7 +25,7 @@ export default function CapacityListMainWrapper(props) {
       if (status === "authenticated") {
         const getCapacityList = async (queryData) => {
           const queryResponse = await axios.get('/api/capacity', queryData);
-          setCapacityList(queryResponse.data.data);
+          setCapacityList(queryResponse.data);
         };
         const queryData = {
           params: { language: props.language },

@@ -32,9 +32,7 @@ export default async function capacity(req, res) {
           ...organizedData[index]
         }));
 
-        res.status(200).json({
-          data: codesWithNamesAndDescriptions
-        });
+        res.status(200).json(codesWithNamesAndDescriptions);
       } else {
         res.status(500);
       }
