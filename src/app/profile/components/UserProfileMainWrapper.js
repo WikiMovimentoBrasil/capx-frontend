@@ -38,7 +38,7 @@ const fetchData = async (queryData, userId) => {
   }
 };
 
-export default function MainWrapper(props) {
+export default function UserProfileMainWrapper(props) {
   let pageComponent;
   const { status, data } = useSession();
   const [language, setLanguage] = useState(props.language);
