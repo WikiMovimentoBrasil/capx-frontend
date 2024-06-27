@@ -71,9 +71,6 @@ export default function CapacityListMainWrapper(props) {
         <CapacityList
           darkMode={darkMode}
           capacityList={capacityList}
-          setSelectedCapacity={setSelectedCapacity}
-          setSearchBarQuery={setSearchBarQuery}
-          setSearchBarResultList={setSearchBarResultList}
         />
       </CapacitySection>
     </BaseWrapper>
