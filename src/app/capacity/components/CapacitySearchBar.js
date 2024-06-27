@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import { useState, useEffect } from 'react';
 
 export default function CapacitySearchBar({ darkMode, capacityList, pageContent }) {
@@ -67,12 +68,11 @@ export default function CapacitySearchBar({ darkMode, capacityList, pageContent 
       {searchBarQuery && searchBarResultList.length > 0 && (
         <ul className="absolute w-full max-h-40 bg-gray-50 mt-2 border border-gray-200 rounded overflow-y-auto">
           {searchBarResultList.map((option, index) => (
-            <li
-              key={index}
-              className="p-2 cursor-pointer hover:bg-blue-200"
-            >
-              {option.name}
-            </li>
+            <Link key={index} href={"/capacity/" + option.code}>
+              <li className="p-2 cursor-pointer hover:bg-blue-200">
+                {option.name}
+              </li>
+            </Link>
           ))}
         </ul>
       )}
