@@ -34,15 +34,7 @@ export default function UserProfileMainWrapper(props) {
         skillData: skillData.data
       });
     } catch (error) {
-      console.error('Error fetching data:', error);
-      return {
-        userData: null,
-        territoryData: null,
-        languageData: null,
-        affiliationData: null,
-        wikiProjectData: null,
-        skillData: null
-      };
+      console.error('Failed to fetch data:', error);
     }
   };
 
