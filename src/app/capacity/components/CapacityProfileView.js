@@ -52,12 +52,21 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
       </div>
       <div className="space-y-14">
         {selectedCapacityData.users.wanted?.length > 0 ? (
-          <CapacityProfileUserList
-            darkMode={darkMode}
-            title={pageContent["body-capacity-wanted-user-list-title"]}
-            data={selectedCapacityData.users.wanted}
-            userId={userId}
-          />
+          // If there is only one person and it is the user himself
+          selectedCapacityData.users.wanted.length === 1 && selectedCapacityData.users.wanted[0].id === userId ? (
+            <CapacityProfileNoUser
+              darkMode={darkMode}
+              title={pageContent["body-capacity-wanted-user-list-title"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            />
+          ) : (
+            <CapacityProfileUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-wanted-user-list-title"]}
+              data={selectedCapacityData.users.wanted}
+              userId={userId}
+            />
+          )
         ) : (
           <CapacityProfileNoUser
             darkMode={darkMode}
@@ -66,12 +75,21 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           />
         )}
         {selectedCapacityData.users.known?.length > 0 ? (
-          <CapacityProfileUserList
-            darkMode={darkMode}
-            title={pageContent["body-capacity-known-user-list-title"]}
-            data={selectedCapacityData.users.known}
-            userId={userId}
-          />
+          // If there is only one person and it is the user himself
+          selectedCapacityData.users.known.length === 1 && selectedCapacityData.users.known[0].id === userId ? (
+            <CapacityProfileNoUser
+              darkMode={darkMode}
+              title={pageContent["body-capacity-known-user-list-title"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            />
+          ) : (
+            <CapacityProfileUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-known-user-list-title"]}
+              data={selectedCapacityData.users.known}
+              userId={userId}
+            />
+          )
         ) : (
           <CapacityProfileNoUser
             darkMode={darkMode}
@@ -80,12 +98,21 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           />
         )}
         {selectedCapacityData.users.available?.length > 0 ? (
-          <CapacityProfileUserList
-            darkMode={darkMode}
-            title={pageContent["body-capacity-available-user-list-title"]}
-            data={selectedCapacityData.users.available}
-            userId={userId}
-          />
+          // If there is only one person and it is the user himself
+          selectedCapacityData.users.available.length === 1 && selectedCapacityData.users.available[0].id === userId ? (
+            <CapacityProfileNoUser
+              darkMode={darkMode}
+              title={pageContent["body-capacity-available-user-list-title"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            />
+          ) : (
+            <CapacityProfileUserList
+              darkMode={darkMode}
+              title={pageContent["body-capacity-available-user-list-title"]}
+              data={selectedCapacityData.users.available}
+              userId={userId}
+            />
+          )
         ) : (
           <CapacityProfileNoUser
             darkMode={darkMode}
