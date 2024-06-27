@@ -15,21 +15,35 @@ export default function CapacityProfileMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
 
+  const getCapacityData = async (queryData) => {
+    const queryResponse = await axios.get("/api/capacity/" + props.selectedCapacityId, queryData);
+    setSelectedCapacityData(queryResponse.data);
+  };
+
   useEffect(() => {
     if (status === "authenticated") {
-      const fetchCapacityData = async (queryData) => {
-        const queryResponse = await axios.get("/api/capacity/" + props.selectedCapacityId, queryData);
-        setSelectedCapacityData(queryResponse.data);
-      };
       const queryData = {
         params: { language: props.language },
         headers: {
           'Authorization': `Token ${data.user.token}`,
         }
       }
-      fetchCapacityData(queryData);
+      getCapacityData(queryData);
     }
   }, [status]);
+
+  useEffect(() => {
+    setSelectedCapacityData(undefined);
+    if (status === "authenticated") {
+      const queryData = {
+        params: { language: language },
+        headers: {
+          'Authorization': `Token ${data.user.token}`,
+        }
+      }
+      getCapacityData(queryData);
+    }
+  }, [language]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
