@@ -23,7 +23,7 @@ export default function CapacityListMainWrapper(props) {
   useEffect(() => {
     try {
       if (status === "authenticated") {
-        const fetchCapacityList = async (queryData) => {
+        const getCapacityList = async (queryData) => {
           const queryResponse = await axios.get('/api/capacity', queryData);
           setCapacityList(queryResponse.data.data);
         };
@@ -33,28 +33,12 @@ export default function CapacityListMainWrapper(props) {
             'Authorization': `Token ${data.user.token}`,
           }
         }
-        fetchCapacityList(queryData);
+        getCapacityList(queryData);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   }, [status]);
-
-  useEffect(() => {
-    if (selectedCapacity.code !== "") {
-      const fetchCapacityData = async (queryData) => {
-        const queryResponse = await axios.get("/api/capacity/" + selectedCapacity.code, queryData);
-        setSelectedCapacityData(queryResponse.data);
-      };
-      const queryData = {
-        headers: { 'Authorization': `Token ${data.user.token}` }
-      }
-      fetchCapacityData(queryData);
-    }
-    else {
-      setSelectedCapacityData(undefined);
-    }
-  }, [selectedCapacity]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
