@@ -1,14 +1,13 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ darkMode, capacityList, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
-  const [capacityNames, setCapacityNames] = useState([]);
+export default function CapacitySearchBar({ darkMode, capacityList, pageContent }) {
+  const [searchBarQuery, setSearchBarQuery] = useState("");
+  const [searchBarResultList, setSearchBarResultList] = useState([]);
 
   useEffect(() => {
     if (capacityList !== undefined) {
-      const names = capacityList.map((capacity) => capacity.name)
-      setCapacityNames(names);
-      setSearchBarResultList(names);
+      setSearchBarResultList(capacityList);
     }
   }, [capacityList]);
 
@@ -17,15 +16,15 @@ export default function CapacitySearchBar({ darkMode, capacityList, searchBarQue
     setSearchBarQuery(value);
 
     // Filtering options based on the query
-    const filtered = capacityNames.filter((option) =>
-      option.toLowerCase().includes(value.toLowerCase())
+    const filtered = capacityList.filter((capacity) =>
+      capacity.name.toLowerCase().includes(value.toLowerCase())
     );
     setSearchBarResultList(filtered);
   };
 
   const handleClearSearch = () => {
     setSearchBarQuery("");
-    setSearchBarResultList(capacityNames);
+    setSearchBarResultList(capacityList);
   };
 
   if (capacityList === undefined) {
@@ -67,12 +66,12 @@ export default function CapacitySearchBar({ darkMode, capacityList, searchBarQue
       </div>
       {searchBarQuery && searchBarResultList.length > 0 && (
         <ul className="absolute w-full max-h-40 bg-gray-50 mt-2 border border-gray-200 rounded overflow-y-auto">
-          {searchBarResultList.map((option) => (
+          {searchBarResultList.map((option, index) => (
             <li
-              key={option}
+              key={index}
               className="p-2 cursor-pointer hover:bg-blue-200"
             >
-              {option}
+              {option.name}
             </li>
           ))}
         </ul>
