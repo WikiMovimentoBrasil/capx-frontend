@@ -15,10 +15,6 @@ export default function CapacityListMainWrapper(props) {
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
-  const [selectedCapacity, setSelectedCapacity] = useState({ code: "", wd_code: "", name: "" });
-  const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
-  const [searchBarQuery, setSearchBarQuery] = useState("");
-  const [searchBarResultList, setSearchBarResultList] = useState([]);
 
   useEffect(() => {
     try {
@@ -60,12 +56,6 @@ export default function CapacityListMainWrapper(props) {
         <CapacitySearchBar
           darkMode={darkMode}
           capacityList={capacityList}
-          selectedCapacity={selectedCapacity}
-          setSelectedCapacity={setSelectedCapacity}
-          searchBarQuery={searchBarQuery}
-          setSearchBarQuery={setSearchBarQuery}
-          searchBarResultList={searchBarResultList}
-          setSearchBarResultList={setSearchBarResultList}
           pageContent={pageContent}
         />
         <CapacityList
