@@ -7,7 +7,6 @@ import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
 export default function UserProfileMainWrapper(props) {
-  let pageComponent;
   const { status, data } = useSession();
   const [language, setLanguage] = useState(props.language);
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
@@ -58,16 +57,7 @@ export default function UserProfileMainWrapper(props) {
   }, [status]);
 
   if (status === "loading") {
-    pageComponent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE" />)
-  }
-
-  if (status === "authenticated") {
-    if (profileData?.userData != undefined) {
-      pageComponent = (<UserProfile darkMode={darkMode} profileData={profileData} />);
-    }
-    else {
-      pageComponent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE" />);
-    }
+    return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
   }
 
   return (
@@ -82,7 +72,10 @@ export default function UserProfileMainWrapper(props) {
       mobileMenuStatus={mobileMenuStatus}
       setMobileMenuStatus={setMobileMenuStatus}
     >
-      {pageComponent}
+      <UserProfile
+        darkMode={darkMode}
+        profileData={profileData}
+      />
     </BaseWrapper>
   )
 }
