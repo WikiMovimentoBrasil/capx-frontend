@@ -32,7 +32,7 @@ export default function CapacityProfileMainWrapper(props) {
   }, [status]);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
+    return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
   }
 
   return (

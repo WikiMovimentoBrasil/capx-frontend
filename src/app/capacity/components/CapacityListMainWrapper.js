@@ -1,9 +1,8 @@
 "use client";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import CapacityList from "./CapacityList";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import CapacityProfileView from "./CapacityProfileView";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
 import CapacitySearchBar from "./CapacitySearchBar";
@@ -43,7 +42,7 @@ export default function CapacityListMainWrapper(props) {
         };
         const queryData = {
           params: { language: props.language },
-          headers: { 
+          headers: {
             'Authorization': `Token ${data.user.token}`,
           }
         }
@@ -98,23 +97,13 @@ export default function CapacityListMainWrapper(props) {
           setSearchBarResultList={setSearchBarResultList}
           pageContent={pageContent}
         />
-        {selectedCapacity.code === "" ? (
-          <CapacityList
-            darkMode={darkMode}
-            capacityList={capacityList}
-            setSelectedCapacity={setSelectedCapacity}
-            setSearchBarQuery={setSearchBarQuery}
-            setSearchBarResultList={setSearchBarResultList}
-          />
-        ) : (
-          <CapacityProfile
-            darkMode={darkMode}
-            selectedCapacity={selectedCapacity}
-            selectedCapacityData={selectedCapacityData}
-            pageContent={pageContent}
-            fetchUserData={fetchUserData}
-          />
-        )}
+        <CapacityList
+          darkMode={darkMode}
+          capacityList={capacityList}
+          setSelectedCapacity={setSelectedCapacity}
+          setSearchBarQuery={setSearchBarQuery}
+          setSearchBarResultList={setSearchBarResultList}
+        />
       </CapacitySection>
     </BaseWrapper>
   )
