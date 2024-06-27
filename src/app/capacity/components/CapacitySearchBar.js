@@ -23,15 +23,6 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
     setSearchBarResultList(filtered);
   };
 
-  const handleOptionClick = (option) => {
-    const clickedCapacity = capacityList.filter((capacity) =>
-      capacity.name.toLowerCase() === option.toLowerCase()
-    );
-    setSelectedCapacity(clickedCapacity[0])
-    setSearchBarQuery(option);
-    setSearchBarResultList([]);
-  };
-
   const handleClearSearch = () => {
     setSearchBarQuery("");
     setSelectedCapacity({ code: "", wd_code: "", name: "" })
@@ -81,7 +72,6 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
           {searchBarResultList.map((option) => (
             <li
               key={option}
-              onClick={() => handleOptionClick(option)}
               className="p-2 cursor-pointer hover:bg-blue-200"
             >
               {option}
