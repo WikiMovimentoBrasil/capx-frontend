@@ -16,13 +16,14 @@ export default function CapacityListMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
 
+  const getCapacityList = async (queryData) => {
+    const queryResponse = await axios.get('/api/capacity', queryData);
+    setCapacityList(queryResponse.data);
+  };
+
   useEffect(() => {
     try {
       if (status === "authenticated") {
-        const getCapacityList = async (queryData) => {
-          const queryResponse = await axios.get('/api/capacity', queryData);
-          setCapacityList(queryResponse.data);
-        };
         const queryData = {
           params: { language: props.language },
           headers: {
@@ -35,6 +36,23 @@ export default function CapacityListMainWrapper(props) {
       console.error('Failed to fetch data:', error);
     }
   }, [status]);
+
+  useEffect(() => {
+    setCapacityList(undefined);
+    try {
+      if (status === "authenticated") {
+        const queryData = {
+          params: { language: language },
+          headers: {
+            'Authorization': `Token ${data.user.token}`,
+          }
+        }
+        getCapacityList(queryData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }, [language]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
