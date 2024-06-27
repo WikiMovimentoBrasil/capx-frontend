@@ -40,11 +40,15 @@ export default function UserProfileMainWrapper(props) {
 
   useEffect(() => {
     if (status === "authenticated") {
-      const queryData = {
-        params: { userId: props.userId === undefined ? data.user.id : props.userId },
-        headers: { 'Authorization': `Token ${data.user.token}` }
+      try {
+        const queryData = {
+          params: { userId: props.userId === undefined ? data.user.id : props.userId },
+          headers: { 'Authorization': `Token ${data.user.token}` }
+        }
+        getUserData(queryData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
       }
-      getUserData(queryData);
     }
   }, [status]);
 
