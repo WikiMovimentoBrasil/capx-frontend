@@ -12,7 +12,7 @@ export default function UserProfileMainWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
-  const [profileData, setProfileData] = useState(undefined);
+  const [userProfileData, setUserProfileData] = useState(undefined);
 
   const getUserData = async (queryData) => {
     try {
@@ -25,7 +25,7 @@ export default function UserProfileMainWrapper(props) {
         axios.get('/api/list/skills', queryData)
       ]);
 
-      setProfileData({
+      setUserProfileData({
         userData: userData.data,
         territoryData: territoryData.data,
         languageData: languageData.data,
@@ -70,7 +70,7 @@ export default function UserProfileMainWrapper(props) {
     >
       <UserProfileView
         darkMode={darkMode}
-        profileData={profileData}
+        userProfileData={userProfileData}
       />
     </BaseWrapper>
   )
