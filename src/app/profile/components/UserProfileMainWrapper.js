@@ -42,7 +42,7 @@ export default function UserProfileMainWrapper(props) {
     if (status === "authenticated") {
       try {
         const queryData = {
-          params: { 
+          params: {
             userId: props.userId === undefined ? data.user.id : props.userId,
             language: props.language
           },
@@ -74,6 +74,7 @@ export default function UserProfileMainWrapper(props) {
       <UserProfileView
         darkMode={darkMode}
         userProfileData={userProfileData}
+        showEditButton={props.userId === undefined ? true : false}
       />
     </BaseWrapper>
   )
