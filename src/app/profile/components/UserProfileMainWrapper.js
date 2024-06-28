@@ -22,7 +22,7 @@ export default function UserProfileMainWrapper(props) {
         axios.get('/api/list/language', queryData),
         axios.get('/api/list/organizations', queryData),
         axios.get('/api/list/wikimedia_project', queryData),
-        axios.get('/api/list/skills', queryData)
+        axios.get('/api/capacity', queryData)
       ]);
 
       setUserProfileData({
@@ -42,7 +42,10 @@ export default function UserProfileMainWrapper(props) {
     if (status === "authenticated") {
       try {
         const queryData = {
-          params: { userId: props.userId === undefined ? data.user.id : props.userId },
+          params: { 
+            userId: props.userId === undefined ? data.user.id : props.userId,
+            language: props.language
+          },
           headers: { 'Authorization': `Token ${data.user.token}` }
         }
         getUserData(queryData);
