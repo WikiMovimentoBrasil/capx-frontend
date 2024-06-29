@@ -37,7 +37,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
     <div className="w-full space-y-20 pt-10">
       <div className="space-y-6">
         <div className="flex justify-between">
-          <h1 className="text-4xl font-extrabold">{selectedCapacityData.name} [<a href={`https://www.wikidata.org/wiki/${selectedCapacityData.wd_code}`} target="_blank" className="text-capx-primary-green underline">{selectedCapacityData.wd_code}</a>]</h1>
+          <h1 className="text-4xl font-extrabold leading-tight">{selectedCapacityData.name} [<a href={`https://www.wikidata.org/wiki/${selectedCapacityData.wd_code}`} target="_blank" className="text-capx-primary-green underline">{selectedCapacityData.wd_code}</a>]</h1>
           <Link href={"/capacity"}>
             <div className="border-2 rounded-full p-2">
               <svg className={"w-6 h-6 " + (darkMode ? "text-capx-primary-yellow" : "text-capx-primary-red")} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           </Link>
         </div>
         <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full px-8 py-4 rounded-lg"}>
-          <p>{selectedCapacityData.description}</p>
+          <p className="text-xl sm:text-base">{selectedCapacityData.description}</p>
         </div>
       </div>
       <div className="space-y-14">
