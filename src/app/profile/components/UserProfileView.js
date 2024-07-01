@@ -42,6 +42,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
         {/* Profile Image & Edit Profile Button */}
         <div className="relative w-fit mx-auto">
           <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
+          {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
         </div>
       </div>
     </section>
