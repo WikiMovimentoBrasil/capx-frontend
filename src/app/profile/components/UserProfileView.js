@@ -37,6 +37,13 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
   }
 
   return (
-    <section className={"w-10/12 sm:w-8/12 mx-auto py-36"}></section>
+    <section className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center py-36 space-y-20"}>
+      <div className="w-full sm:w-8/12 mx-auto space-y-14">
+        {/* Profile Image & Edit Profile Button */}
+        <div className="relative w-fit mx-auto">
+          <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
+        </div>
+      </div>
+    </section>
   )
 }
