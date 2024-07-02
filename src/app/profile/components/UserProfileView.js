@@ -44,6 +44,21 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
           {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
         </div>
+        {/* Display Name */}
+        <div className="grid place-items-center space-y-6 sm:space-y-4">
+          <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0">
+            {/* Display Name */}
+            <h3 className="w-full sm:w-fit text-3xl">
+              <span className="font-extrabold">
+                {userProfileData.userData.display_name ?
+                  (userProfileData.userData.display_name)
+                  :
+                  (userProfileData.userData.user.username)
+                }
+              </span>
+            </h3>
+          </div>
+        </div>
       </div>
     </section>
   )
