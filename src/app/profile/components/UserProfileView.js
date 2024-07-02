@@ -7,7 +7,7 @@ import UserProfileViewSkeleton from "./UserProfileViewSkeleton";
 import UserProfileViewBoxTitle from "./UserProfileViewBoxTitle";
 import UserProfileViewCapacityBox from "./UserProfileViewCapacityBox";
 
-export default function UserProfileView({ darkMode, userProfileData, showEditButton }) {
+export default function UserProfileView({ darkMode, userProfileData, showEditButton, pageContent }) {
   const [wantedCapacities, setWantedCapacities] = useState(undefined);
   const [knownCapacities, setKnownCapacities] = useState(undefined);
   const [availableCapacities, setAvailableCapacities] = useState(undefined);
@@ -15,11 +15,11 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
   const [contactCount, setContactCount] = useState(undefined);
 
   const pronouns = [
-    { value: "he-him", label: "He/Him" },
-    { value: "she-her", label: "She/Her" },
-    { value: "they-them", label: "They/Them" },
-    { value: "not-specified", label: "Not Specified" },
-    { value: "other", label: "Other" }
+    { value: "he-him", label: pageContent["body-profile-gender-hehim"] },
+    { value: "she-her", label: pageContent["body-profile-gender-sheher"] },
+    { value: "they-them", label: pageContent["body-profile-gender-theythem"] },
+    { value: "not-specified", label: pageContent["body-profile-gender-notespecified"] },
+    { value: "other", label: pageContent["body-profile-gender-other"] }
   ]
 
   useEffect(() => {
@@ -46,7 +46,11 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           {/* Profile Image & Edit Profile Button */}
           <div>
             <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
-            {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
+            {showEditButton ? (
+              <UserProfileEditButton to={"/profile/edit"}>
+                {pageContent["body-profile-edit-button"]}
+              </UserProfileEditButton>
+            ) : (null)}
           </div>
           {/* Display Name & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
           <div className="space-y-6 sm:space-y-4">
@@ -66,7 +70,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 {userProfileData.userData.pronoun ?
                   (<h3 className="text-base">{pronouns.map((option) => option.value === userProfileData.userData.pronoun ? option.label : null)}</h3>)
                   :
-                  (<h3 className="text-base">Not Specified</h3>)
+                  (<h3 className="text-base">{pageContent["body-profile-gender-notespecified"]}</h3>)
                 }
               </div>
             </div>
@@ -81,7 +85,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             {userProfileData.userData.wikidata_qid ? (
               <UserProfileViewTextBox
                 darkMode={darkMode}
-                title={"Wikidata Item"}
+                title={pageContent["body-profile-box-title-wikidata-item"]}
                 info={userProfileData.userData.wikidata_qid ?? ""}
               />
             ) : (null)}
@@ -89,7 +93,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             {userProfileData.userData.wiki_alt ? (
               <UserProfileViewTextBox
                 darkMode={darkMode}
-                title={"Alternative Wikimedia Account"}
+                title={pageContent["body-profile-box-title-alt-wiki-acc"]}
                 info={userProfileData.userData.wiki_alt ?? ""}
               />
             ) : (null)}
@@ -99,7 +103,9 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
         {contactCount?.length === 0 && socialMediaCount?.length === 0 ? (null) : (
           // Section: Exchange
           <section className="space-y-6 sm:space-y-4">
-            <UserProfileViewBoxTitle>Contact and Social Media</UserProfileViewBoxTitle>
+            <UserProfileViewBoxTitle>
+              {pageContent["body-profile-section-title-contact-social"]}
+            </UserProfileViewBoxTitle>
             {/* Contact */}
             {userProfileData.userData.contact?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
               <UserProfileViewTextBox
@@ -124,7 +130,9 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
         <section className="space-y-14 sm:space-y-14">
           {userProfileData.userData.territory.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Territory</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-territory"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewTagBox
                 darkMode={darkMode}
                 data={userProfileData.userData.territory}
@@ -135,7 +143,9 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           )}
           {userProfileData.userData.language.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Language</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-language"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewTagBox
                 darkMode={darkMode}
                 data={userProfileData.userData.language}
@@ -146,7 +156,9 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           )}
           {userProfileData.userData.affiliation.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Affiliation</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-affiliation"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewTagBox
                 darkMode={darkMode}
                 data={userProfileData.userData.affiliation}
@@ -157,7 +169,9 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           )}
           {userProfileData.userData.wikimedia_project.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Wikimedia Project</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-wikimedia-project"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewTagBox
                 darkMode={darkMode}
                 data={userProfileData.userData.wikimedia_project}
@@ -171,19 +185,25 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
         <section className="space-y-14 sm:space-y-14">
           {userProfileData.userData.skills_wanted.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Wanted Capacities</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-wanted-capacity"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewCapacityBox darkMode={darkMode} data={wantedCapacities} endpoint={"capacity"} />
             </div>
           )}
           {userProfileData.userData.skills_known.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Known Capacities</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-known-capacity"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewCapacityBox darkMode={darkMode} data={knownCapacities} endpoint={"capacity"} />
             </div>
           )}
           {userProfileData.userData.skills_available.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
-              <UserProfileViewBoxTitle>Available Capacities</UserProfileViewBoxTitle>
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-available-capacity"]}
+              </UserProfileViewBoxTitle>
               <UserProfileViewCapacityBox darkMode={darkMode} data={availableCapacities} endpoint={"capacity"} />
             </div>
           )}

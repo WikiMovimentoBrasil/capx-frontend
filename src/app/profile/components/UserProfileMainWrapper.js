@@ -75,6 +75,7 @@ export default function UserProfileMainWrapper(props) {
         darkMode={darkMode}
         userProfileData={userProfileData}
         showEditButton={props.userId === undefined ? true : false}
+        pageContent={pageContent}
       />
     </BaseWrapper>
   )
