@@ -91,6 +91,22 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             />
           ) : (null)}
         </div>
+        {/* Contact & Social Media */}
+        {/* Checking if there is data to render */}
+        {contactCount?.length === 0 && socialMediaCount?.length === 0 ? (null) : (
+          <div className="place-items-center space-y-6 sm:space-y-4">
+            <UserProfileViewBoxTitle>Contact and Social Media</UserProfileViewBoxTitle>
+            {/* Contact */}
+            {userProfileData.userData.contact?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
+              <UserProfileViewBox
+                key={index}
+                darkMode={darkMode}
+                title={item.display_name}
+                info={item.value ?? ""}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
