@@ -16,6 +16,17 @@ export default async function getTagData(req, res) {
       res.status(500).json({ error: "No item for this tag id." });
     }
 
+    try {
+      // Requesting the list of users who have the tag in their profile
+      const userList = await axios.get(process.env.BASE_URL + `/tags/${category}/${id}`, {
+        headers: {
+          'Authorization': req.headers.authorization
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to request data." });
+    }
+
     res.status(200);
   }
   else {
