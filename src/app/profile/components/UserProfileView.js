@@ -176,7 +176,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 darkMode={darkMode}
                 data={userProfileData.userData.wikimedia_project}
                 tagList={userProfileData.wikiProjectData}
-                endpoint={"tag/affiliation"}
+                endpoint={"tag/wikimedia_project"}
               />
             </div>
           )}

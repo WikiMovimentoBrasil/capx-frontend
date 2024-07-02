@@ -10,6 +10,12 @@ export default async function getTagData(req, res) {
         'Authorization': req.headers.authorization
       }
     });
+
+    // Returning error if the requested id does not have a corresponding tag code
+    if (codeList.data.hasOwnProperty(id) === false) {
+      res.status(500).json({ error: "No item for this tag id." });
+    }
+
     res.status(200);
   }
   else {
