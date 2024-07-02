@@ -3,6 +3,7 @@ import path from 'path';
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
+import TagProfileMainWrapper from "../../components/TagProfileMainWrapper";
 
 export default async function TagPage() {
   const cookieStore = cookies();
@@ -20,7 +21,13 @@ export default async function TagPage() {
 
   if (session) {
     return (
-      <div>{selectedTagId}</div>
+      <TagProfileMainWrapper
+        session={session !== null}
+        language={language}
+        darkMode={darkMode}
+        pageContent={pageContent}
+        selectedTagId={selectedTagId}
+      />
     )
   } else {
     redirect('/');
