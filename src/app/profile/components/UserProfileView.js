@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import UserProfileImage from "./UserProfileImage";
 import UserProfileViewTextBox from "./UserProfileViewTextBox";
 import UserProfileEditButton from "./UserProfileEditButton";
+import UserProfileViewTagBox from "./UserProfileViewTagBox";
 import UserProfileViewSkeleton from "./UserProfileViewSkeleton";
 import UserProfileViewBoxTitle from "./UserProfileViewBoxTitle";
-import UserProfileViewTagBox from "./UserProfileViewTagBox";
+import UserProfileViewCapacityBox from "./UserProfileViewCapacityBox";
 
 export default function UserProfileView({ darkMode, userProfileData, showEditButton }) {
   const [wantedCapacities, setWantedCapacities] = useState(undefined);
@@ -39,7 +40,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
 
   return (
     <main className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center py-36 space-y-20"}>
-      <div className="w-full sm:w-8/12 mx-auto space-y-24">
+      <div className="w-full sm:w-8/12 mx-auto space-y-28">
         {/* Section: Personal */}
         <section className="space-y-14 sm:space-y-16">
           {/* Profile Image & Edit Profile Button */}
@@ -120,23 +121,23 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           </section>
         )}
         {/* Section: Capacity */}
-        <section className="space-y-6 sm:space-y-4">
+        <section className="space-y-14 sm:space-y-14">
           {userProfileData.userData.skills_wanted.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
               <UserProfileViewBoxTitle>Wanted Capacities</UserProfileViewBoxTitle>
-              <UserProfileViewTagBox darkMode={darkMode} data={wantedCapacities} endpoint={"capacity"} />
+              <UserProfileViewCapacityBox darkMode={darkMode} data={wantedCapacities} endpoint={"capacity"} />
             </div>
           )}
           {userProfileData.userData.skills_known.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
               <UserProfileViewBoxTitle>Known Capacities</UserProfileViewBoxTitle>
-              <UserProfileViewTagBox darkMode={darkMode} data={knownCapacities} endpoint={"capacity"} />
+              <UserProfileViewCapacityBox darkMode={darkMode} data={knownCapacities} endpoint={"capacity"} />
             </div>
           )}
           {userProfileData.userData.skills_available.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
               <UserProfileViewBoxTitle>Available Capacities</UserProfileViewBoxTitle>
-              <UserProfileViewTagBox darkMode={darkMode} data={availableCapacities} endpoint={"capacity"} />
+              <UserProfileViewCapacityBox darkMode={darkMode} data={availableCapacities} endpoint={"capacity"} />
             </div>
           )}
         </section>
