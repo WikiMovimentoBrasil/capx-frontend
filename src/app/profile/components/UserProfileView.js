@@ -155,6 +155,17 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               />
             </div>
           )}
+          {userProfileData.userData.wikimedia_project.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Wikimedia Project</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox
+                darkMode={darkMode}
+                data={userProfileData.userData.wikimedia_project}
+                tagList={userProfileData.wikiProjectData}
+                endpoint={"tag/affiliation"}
+              />
+            </div>
+          )}
         </section>
         {/* Section: Capacity */}
         <section className="space-y-14 sm:space-y-14">
