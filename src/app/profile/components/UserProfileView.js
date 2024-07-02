@@ -105,6 +105,14 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 info={item.value ?? ""}
               />
             ))}
+            {userProfileData.userData.social?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
+              <UserProfileViewBox
+                key={index}
+                darkMode={darkMode}
+                title={item.display_name}
+                info={item.value ?? ""}
+              />
+            ))}
           </div>
         )}
       </div>
