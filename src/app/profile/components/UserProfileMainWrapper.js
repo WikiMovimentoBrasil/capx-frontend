@@ -40,20 +40,31 @@ export default function UserProfileMainWrapper(props) {
 
   useEffect(() => {
     if (status === "authenticated") {
-      try {
-        const queryData = {
-          params: {
-            userId: props.userId === undefined ? data.user.id : props.userId,
-            language: props.language
-          },
-          headers: { 'Authorization': `Token ${data.user.token}` }
-        }
-        getUserData(queryData);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
+      const queryData = {
+        params: {
+          userId: props.userId === undefined ? data.user.id : props.userId,
+          language: props.language
+        },
+        headers: { 'Authorization': `Token ${data.user.token}` }
       }
+      getUserData(queryData);
     }
   }, [status]);
+
+  // If the language is changed
+  useEffect(() => {
+    setUserProfileData(undefined);
+    if (status === "authenticated") {
+      const queryData = {
+        params: {
+          userId: props.userId === undefined ? data.user.id : props.userId,
+          language: language
+        },
+        headers: { 'Authorization': `Token ${data.user.token}` }
+      }
+      getUserData(queryData);
+    }
+  }, [language]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="PROFILE DATA" />
