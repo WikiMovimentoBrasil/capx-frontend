@@ -56,7 +56,7 @@ export default function UserProfileMainWrapper(props) {
   }, [status]);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
+    return <LoadingSection darkMode={darkMode} message="PROFILE DATA" />
   }
 
   return (
