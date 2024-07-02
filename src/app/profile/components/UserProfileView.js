@@ -120,6 +120,20 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             ))}
           </section>
         )}
+        {/* Section: Community */}
+        <section className="space-y-14 sm:space-y-14">
+          {userProfileData.userData.territory.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Territory</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox
+                darkMode={darkMode}
+                data={userProfileData.userData.territory}
+                tagList={userProfileData.territoryData}
+                endpoint={"tag/territory"}
+              />
+            </div>
+          )}
+        </section>
         {/* Section: Capacity */}
         <section className="space-y-14 sm:space-y-14">
           {userProfileData.userData.skills_wanted.length === 0 ? (null) : (
