@@ -44,7 +44,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
           {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
         </div>
-        {/* Display Name */}
+        {/* Display Name & Pronoun */}
         <div className="grid place-items-center space-y-6 sm:space-y-4">
           <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0">
             {/* Display Name */}
@@ -57,6 +57,14 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 }
               </span>
             </h3>
+            {/* Pronoun */}
+            <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-fit px-4 py-2 mx-auto my-auto rounded-lg"}>
+              {userProfileData.userData.pronoun ?
+                (<h3 className="text-base">{pronouns.map((option) => option.value === userProfileData.userData.pronoun ? option.label : null)}</h3>)
+                :
+                (<h3 className="text-base">Not Specified</h3>)
+              }
+            </div>
           </div>
         </div>
       </div>
