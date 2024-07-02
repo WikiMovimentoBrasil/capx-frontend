@@ -1,11 +1,13 @@
 "use client";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection"
 
 export default function TagProfileMainWrapper(props) {
+  const router = useRouter();
   const { status, data } = useSession();
   const [language, setLanguage] = useState(props.language);
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
@@ -19,6 +21,7 @@ export default function TagProfileMainWrapper(props) {
       setSelectedTagData(queryResponse.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
+      router.push("/profile");
     }
   };
 
