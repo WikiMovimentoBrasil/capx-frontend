@@ -40,11 +40,11 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
     <section className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center py-36 space-y-20"}>
       <div className="w-full sm:w-8/12 mx-auto space-y-14">
         {/* Profile Image & Edit Profile Button */}
-        <div className="relative w-fit mx-auto">
+        <div className="grid place-items-center">
           <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
           {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
         </div>
-        {/* Display Name & Pronoun & About & Wikidata Item */}
+        {/* Display Name & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
         <div className="grid place-items-center space-y-6 sm:space-y-4">
           <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0">
             {/* Display Name */}
