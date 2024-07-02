@@ -81,6 +81,14 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               info={userProfileData.userData.wikidata_qid ?? ""}
             />
           ) : (null)}
+          {/* Alternative Wikimedia Account */}
+          {userProfileData.userData.wiki_alt ? (
+            <UserProfileViewBox
+              darkMode={darkMode}
+              title={"Alternative Wikimedia Account"}
+              info={userProfileData.userData.wiki_alt ?? ""}
+            />
+          ) : (null)}
         </div>
       </div>
     </section>
