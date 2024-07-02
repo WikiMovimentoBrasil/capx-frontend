@@ -66,6 +66,15 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               }
             </div>
           </div>
+          {/* About */}
+          {userProfileData.userData.about ?
+            (<UserProfileViewBox
+              darkMode={darkMode}
+              info={userProfileData.userData.about ?? ""}
+            />)
+            :
+            (null)
+          }
         </div>
       </div>
     </section>
