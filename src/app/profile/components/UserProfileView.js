@@ -144,6 +144,17 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               />
             </div>
           )}
+          {userProfileData.userData.affiliation.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Affiliation</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox
+                darkMode={darkMode}
+                data={userProfileData.userData.affiliation}
+                tagList={userProfileData.affiliationData}
+                endpoint={"tag/affiliation"}
+              />
+            </div>
+          )}
         </section>
         {/* Section: Capacity */}
         <section className="space-y-14 sm:space-y-14">
