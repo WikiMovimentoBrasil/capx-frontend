@@ -1,4 +1,4 @@
-export default function CapacityProfileNoUser({ darkMode, title, noUserMessage = undefined }) {
+export default function TagProfileNoUserBox({ darkMode, title, noUserMessage = undefined }) {
   return (
     <div>
       <h2 className="text-xl font-extrabold mb-4">{title}</h2>
