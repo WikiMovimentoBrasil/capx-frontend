@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import UserProfileImage from "./UserProfileImage";
 import UserProfileViewTextBox from "./UserProfileViewTextBox";
 import UserProfileEditButton from "./UserProfileEditButton";
 import UserProfileViewSkeleton from "./UserProfileViewSkeleton";
 import UserProfileViewBoxTitle from "./UserProfileViewBoxTitle";
+import UserProfileViewTagBox from "./UserProfileViewTagBox";
 
 export default function UserProfileView({ darkMode, userProfileData, showEditButton }) {
   const [wantedCapacities, setWantedCapacities] = useState(undefined);
@@ -97,7 +97,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
         {/* Checking if there is data to render */}
         {contactCount?.length === 0 && socialMediaCount?.length === 0 ? (null) : (
           // Section: Exchange
-          <section className="place-items-center space-y-6 sm:space-y-4">
+          <section className="space-y-6 sm:space-y-4">
             <UserProfileViewBoxTitle>Contact and Social Media</UserProfileViewBoxTitle>
             {/* Contact */}
             {userProfileData.userData.contact?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
@@ -119,6 +119,15 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             ))}
           </section>
         )}
+        {/* Section: Capacity */}
+        <section className="space-y-6 sm:space-y-4">
+          {userProfileData.userData.skills_wanted.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Wanted Capacities</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox darkMode={darkMode} data={wantedCapacities} endpoint={"capacity"} />
+            </div>
+          )}
+        </section>
       </div>
     </main>
   )
