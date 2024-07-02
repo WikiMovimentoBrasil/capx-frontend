@@ -3,8 +3,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import TagProfileView from "./TagProfileView";
 import BaseWrapper from "@/components/BaseWrapper";
-import LoadingSection from "@/components/LoadingSection"
+import LoadingSection from "@/components/LoadingSection";
 
 export default function TagProfileMainWrapper(props) {
   const router = useRouter();
@@ -55,6 +56,11 @@ export default function TagProfileMainWrapper(props) {
       mobileMenuStatus={mobileMenuStatus}
       setMobileMenuStatus={setMobileMenuStatus}
     >
+      <TagProfileView
+        darkMode={darkMode}
+        selectedTagData={selectedTagData}
+        pageContent={pageContent}
+      />
     </BaseWrapper>
   )
 }
