@@ -133,6 +133,17 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               />
             </div>
           )}
+          {userProfileData.userData.language.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Language</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox
+                darkMode={darkMode}
+                data={userProfileData.userData.language}
+                tagList={userProfileData.languageData}
+                endpoint={"tag/language"}
+              />
+            </div>
+          )}
         </section>
         {/* Section: Capacity */}
         <section className="space-y-14 sm:space-y-14">
