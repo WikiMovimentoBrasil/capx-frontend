@@ -1,3 +1,4 @@
+import TagProfileUserList from "./TagProfileUserList";
 import TagProfileNoUserBox from "./TagProfileNoUserBox";
 import TagProfileViewSkeleton from "./TagProfileViewSkeleton";
 
@@ -24,7 +25,12 @@ export default function TagProfileView({ darkMode, selectedTagData, pageContent,
             noUserMessage={pageContent["body-tag-user-list-fallback-message"]}
           />
         ) : (
-          <div></div>
+          <TagProfileUserList
+            darkMode={darkMode}
+            title={pageContent["body-tag-user-list-title"]}
+            data={selectedTagData.users}
+            userId={userId}
+          />
         )
       )}
     </section>
