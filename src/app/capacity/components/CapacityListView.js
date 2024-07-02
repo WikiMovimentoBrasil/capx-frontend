@@ -29,7 +29,7 @@ export default function CapacityListView({ darkMode, capacityList }) {
         {capacityList.map((capacity, index) => (
           <li
             key={"capacity-" + index.toString()}
-            className="w-fit py-1 px-3 cursor-pointer hover:bg-capx-secondary-purple hover:text-white"
+            className="w-fit py-2 px-4 cursor-pointer hover:bg-capx-secondary-purple hover:rounded-lg hover:text-white"
           >
             <Link href={"/capacity/" + capacity.code}>
               {capacity.name}
