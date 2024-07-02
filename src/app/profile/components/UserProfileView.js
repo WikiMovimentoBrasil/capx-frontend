@@ -44,7 +44,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
           {showEditButton ? (<UserProfileEditButton to={"/profile/edit"}>Edit Profile</UserProfileEditButton>) : (null)}
         </div>
-        {/* Display Name & Pronoun */}
+        {/* Display Name & Pronoun & About & Wikidata Item */}
         <div className="grid place-items-center space-y-6 sm:space-y-4">
           <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0">
             {/* Display Name */}
@@ -67,14 +67,20 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             </div>
           </div>
           {/* About */}
-          {userProfileData.userData.about ?
-            (<UserProfileViewBox
+          {userProfileData.userData.about ? (
+            <UserProfileViewBox
               darkMode={darkMode}
               info={userProfileData.userData.about ?? ""}
-            />)
-            :
-            (null)
-          }
+            />
+          ) : (null)}
+          {/* Wikidata Item */}
+          {userProfileData.userData.wikidata_qid ? (
+            <UserProfileViewBox
+              darkMode={darkMode}
+              title={"Wikidata Item"}
+              info={userProfileData.userData.wikidata_qid ?? ""}
+            />
+          ) : (null)}
         </div>
       </div>
     </section>
