@@ -22,6 +22,20 @@ export default function TagProfileMainWrapper(props) {
     }
   };
 
+  useEffect(() => {
+    if (status === "authenticated") {
+      const queryData = {
+        params: {
+          category: props.selectedTagCategory
+        },
+        headers: {
+          'Authorization': `Token ${data.user.token}`,
+        }
+      }
+      getTagData(queryData);
+    }
+  }, [status]);
+
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="TAG DATA" />
   }
