@@ -60,6 +60,7 @@ export default function TagProfileMainWrapper(props) {
         darkMode={darkMode}
         selectedTagData={selectedTagData}
         pageContent={pageContent}
+        userId={data.user.id}
       />
     </BaseWrapper>
   )

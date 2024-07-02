@@ -1,7 +1,7 @@
 import TagProfileNoUserBox from "./TagProfileNoUserBox";
 import TagProfileViewSkeleton from "./TagProfileViewSkeleton";
 
-export default function TagProfileView({ darkMode, selectedTagData, pageContent }) {
+export default function TagProfileView({ darkMode, selectedTagData, pageContent, userId }) {
   if (selectedTagData === undefined) {
     return <TagProfileViewSkeleton darkMode={darkMode} />
   }
@@ -15,7 +15,18 @@ export default function TagProfileView({ darkMode, selectedTagData, pageContent 
           title={pageContent["body-tag-user-list-title"]}
           noUserMessage={pageContent["body-tag-user-list-fallback-message"]}
         />
-      ) : (null)}
+      ) : (
+        // Checking if there is only one person and it is the user himself
+        selectedTagData.users.length === 1 && selectedTagData.users[0].id === userId ? (
+          <TagProfileNoUserBox
+            darkMode={darkMode}
+            title={pageContent["body-tag-user-list-title"]}
+            noUserMessage={pageContent["body-tag-user-list-fallback-message"]}
+          />
+        ) : (
+          <div></div>
+        )
+      )}
     </section>
   )
 }
