@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import UserProfileImage from "./UserProfileImage";
-import UserProfileViewBox from "./UserProfileViewBox";
+import UserProfileViewTextBox from "./UserProfileViewTextBox";
 import UserProfileEditButton from "./UserProfileEditButton";
 import UserProfileViewSkeleton from "./UserProfileViewSkeleton";
 import UserProfileViewBoxTitle from "./UserProfileViewBoxTitle";
@@ -41,7 +41,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
     <main className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center py-36 space-y-20"}>
       <div className="w-full sm:w-8/12 mx-auto space-y-24">
         {/* Section: Personal */}
-        <section className="space-y-14">
+        <section className="space-y-14 sm:space-y-16">
           {/* Profile Image & Edit Profile Button */}
           <div>
             <UserProfileImage darkMode={darkMode} imageUrl={userProfileData.userData.profile_image} />
@@ -71,14 +71,14 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             </div>
             {/* About */}
             {userProfileData.userData.about ? (
-              <UserProfileViewBox
+              <UserProfileViewTextBox
                 darkMode={darkMode}
                 info={userProfileData.userData.about ?? ""}
               />
             ) : (null)}
             {/* Wikidata Item */}
             {userProfileData.userData.wikidata_qid ? (
-              <UserProfileViewBox
+              <UserProfileViewTextBox
                 darkMode={darkMode}
                 title={"Wikidata Item"}
                 info={userProfileData.userData.wikidata_qid ?? ""}
@@ -86,7 +86,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             ) : (null)}
             {/* Alternative Wikimedia Account */}
             {userProfileData.userData.wiki_alt ? (
-              <UserProfileViewBox
+              <UserProfileViewTextBox
                 darkMode={darkMode}
                 title={"Alternative Wikimedia Account"}
                 info={userProfileData.userData.wiki_alt ?? ""}
@@ -94,29 +94,30 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
             ) : (null)}
           </div>
         </section>
-        {/* Contact & Social Media */}
         {/* Checking if there is data to render */}
         {contactCount?.length === 0 && socialMediaCount?.length === 0 ? (null) : (
-          <div className="place-items-center space-y-6 sm:space-y-4">
+          // Section: Exchange
+          <section className="place-items-center space-y-6 sm:space-y-4">
             <UserProfileViewBoxTitle>Contact and Social Media</UserProfileViewBoxTitle>
             {/* Contact */}
             {userProfileData.userData.contact?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
-              <UserProfileViewBox
+              <UserProfileViewTextBox
                 key={index}
                 darkMode={darkMode}
                 title={item.display_name}
                 info={item.value ?? ""}
               />
             ))}
+            {/* Social Media */}
             {userProfileData.userData.social?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
-              <UserProfileViewBox
+              <UserProfileViewTextBox
                 key={index}
                 darkMode={darkMode}
                 title={item.display_name}
                 info={item.value ?? ""}
               />
             ))}
-          </div>
+          </section>
         )}
       </div>
     </main>
