@@ -17,7 +17,9 @@ export default async function TagPage() {
 
   // Tag ID
   const pathname = headers().get("x-pathname") || "";
-  const selectedTagId = pathname.split("/").slice(-1)[0];
+  const splitPathname = pathname.split("/")
+  const selectedTagCategory = splitPathname.slice(-2)[0];
+  const selectedTagId = splitPathname.slice(-1)[0];
 
   if (session) {
     return (
@@ -26,6 +28,7 @@ export default async function TagPage() {
         language={language}
         darkMode={darkMode}
         pageContent={pageContent}
+        selectedTagCategory={selectedTagCategory}
         selectedTagId={selectedTagId}
       />
     )
