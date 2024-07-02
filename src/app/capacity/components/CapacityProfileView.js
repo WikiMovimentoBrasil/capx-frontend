@@ -57,7 +57,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             <CapacityProfileNoUser
               darkMode={darkMode}
               title={pageContent["body-capacity-wanted-user-list-title"]}
-              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
             />
           ) : (
             <CapacityProfileUserList
@@ -71,7 +71,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-wanted-user-list-title"]}
-            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
           />
         )}
         {selectedCapacityData.users.known?.length > 0 ? (
@@ -80,7 +80,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             <CapacityProfileNoUser
               darkMode={darkMode}
               title={pageContent["body-capacity-known-user-list-title"]}
-              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
             />
           ) : (
             <CapacityProfileUserList
@@ -94,7 +94,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-known-user-list-title"]}
-            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
           />
         )}
         {selectedCapacityData.users.available?.length > 0 ? (
@@ -103,7 +103,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             <CapacityProfileNoUser
               darkMode={darkMode}
               title={pageContent["body-capacity-available-user-list-title"]}
-              noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+              noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
             />
           ) : (
             <CapacityProfileUserList
@@ -117,7 +117,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
           <CapacityProfileNoUser
             darkMode={darkMode}
             title={pageContent["body-capacity-available-user-list-title"]}
-            noUserMessage={pageContent["body-capacity-user-list-fallback"]}
+            noUserMessage={pageContent["body-capacity-user-list-fallback-message"]}
           />
         )}
       </div>
