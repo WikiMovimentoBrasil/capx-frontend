@@ -127,6 +127,12 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               <UserProfileViewTagBox darkMode={darkMode} data={wantedCapacities} endpoint={"capacity"} />
             </div>
           )}
+          {userProfileData.userData.skills_known.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>Known Capacities</UserProfileViewBoxTitle>
+              <UserProfileViewTagBox darkMode={darkMode} data={knownCapacities} endpoint={"capacity"} />
+            </div>
+          )}
         </section>
       </div>
     </main>
