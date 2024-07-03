@@ -35,7 +35,7 @@ export default async function getCapacityData(req, res) {
       const queryTextPart01 = "SELECT ?item ?itemLabel ?itemDescription WHERE {VALUES ?item {";
       const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language '" + language + ",en'.}}";
 
-      const wikidataResponse = await axios.get(process.env.WIKIDATA_BASE_URL + queryTextPart01 + capWikidataCode + queryTextPart02);
+      const wikidataResponse = await axios.get('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=' + queryTextPart01 + capWikidataCode + queryTextPart02);
       const capacityData = {
         name: wikidataResponse.data.results.bindings[0].itemLabel.value,
         description: wikidataResponse.data.results.bindings[0].itemDescription.value
