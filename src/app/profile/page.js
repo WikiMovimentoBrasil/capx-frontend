@@ -3,7 +3,7 @@ import path from 'path';
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import MainWrapper from "./components/MainWrapper";
+import UserProfileMainWrapper from "./components/UserProfileMainWrapper";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
@@ -17,7 +17,13 @@ export default async function ProfilePage() {
 
   if (session) {
     return (
-      <MainWrapper session={session !== null} language={language} darkMode={darkMode} pageContent={pageContent} userId={undefined} />
+      <UserProfileMainWrapper
+        session={session !== null}
+        language={language}
+        darkMode={darkMode}
+        pageContent={pageContent}
+        userId={undefined}
+      />
     )
   } else {
     redirect('/');

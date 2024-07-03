@@ -1,14 +1,14 @@
 "use client"
+import Link from "next/link";
 import { useState, useEffect } from 'react';
 
-export default function CapacitySearchBar({ darkMode, capacityList, selectedCapacity, setSelectedCapacity, searchBarQuery, setSearchBarQuery, searchBarResultList, setSearchBarResultList, pageContent }) {
-  const [capacityNames, setCapacityNames] = useState([]);
+export default function CapacityListSearchBar({ darkMode, capacityList, pageContent }) {
+  const [searchBarQuery, setSearchBarQuery] = useState("");
+  const [searchBarResultList, setSearchBarResultList] = useState([]);
 
   useEffect(() => {
     if (capacityList !== undefined) {
-      const names = capacityList.map((capacity) => capacity.name)
-      setCapacityNames(names);
-      setSearchBarResultList(names);
+      setSearchBarResultList(capacityList);
     }
   }, [capacityList]);
 
@@ -17,25 +17,15 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
     setSearchBarQuery(value);
 
     // Filtering options based on the query
-    const filtered = capacityNames.filter((option) =>
-      option.toLowerCase().includes(value.toLowerCase())
+    const filtered = capacityList.filter((capacity) =>
+      capacity.name.toLowerCase().includes(value.toLowerCase())
     );
     setSearchBarResultList(filtered);
   };
 
-  const handleOptionClick = (option) => {
-    const clickedCapacity = capacityList.filter((capacity) =>
-      capacity.name.toLowerCase() === option.toLowerCase()
-    );
-    setSelectedCapacity(clickedCapacity[0])
-    setSearchBarQuery(option);
-    setSearchBarResultList([]);
-  };
-
   const handleClearSearch = () => {
     setSearchBarQuery("");
-    setSelectedCapacity({ code: "", wd_code: "", name: "" })
-    setSearchBarResultList(capacityNames);
+    setSearchBarResultList(capacityList);
   };
 
   if (capacityList === undefined) {
@@ -63,7 +53,6 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
           onChange={handleInputChange}
           className={"w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"}
           placeholder={pageContent["body-capacity-searchbar-placeholder"]}
-          disabled={selectedCapacity.code === "" ? false : true}
         />
         {searchBarQuery && (
           <button
@@ -78,14 +67,12 @@ export default function CapacitySearchBar({ darkMode, capacityList, selectedCapa
       </div>
       {searchBarQuery && searchBarResultList.length > 0 && (
         <ul className="absolute w-full max-h-40 bg-gray-50 mt-2 border border-gray-200 rounded overflow-y-auto">
-          {searchBarResultList.map((option) => (
-            <li
-              key={option}
-              onClick={() => handleOptionClick(option)}
-              className="p-2 cursor-pointer hover:bg-blue-200"
-            >
-              {option}
-            </li>
+          {searchBarResultList.map((option, index) => (
+            <Link key={index} href={"/capacity/" + option.code}>
+              <li className="p-2 cursor-pointer hover:bg-blue-200">
+                {option.name}
+              </li>
+            </Link>
           ))}
         </ul>
       )}

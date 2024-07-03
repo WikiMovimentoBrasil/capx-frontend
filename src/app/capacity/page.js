@@ -3,7 +3,7 @@ import path from 'path';
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import MainWrapper from "./components/MainWrapper";
+import CapacityListMainWrapper from "./components/CapacityListMainWrapper";
 
 export default async function CapacityPage() {
   const cookieStore = cookies();
@@ -17,7 +17,12 @@ export default async function CapacityPage() {
 
   if (session) {
     return (
-      <MainWrapper session={session !== null} language={language} pageContent={pageContent} darkMode={darkMode} />
+      <CapacityListMainWrapper
+        session={session !== null}
+        language={language}
+        darkMode={darkMode}
+        pageContent={pageContent}
+      />
     )
   } else {
     redirect('/');

@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function CapacityUserPreview({ darkMode, userId, fetchUserData }) {
-  const [userData, setUserData] = useState(undefined);
+export default function TagProfileUserPreview({ darkMode, userData }) {
+  const [data, setData] = useState(undefined);
 
   useEffect(() => {
-    fetchUserData(userId, setUserData);
+    setData(userData)
   }, []);
 
-  if (userData === undefined) {
+  if (data === undefined) {
     return (
       <div className="w-full h-full rounded-full p-4 space-y-2 animate-pulse">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/White_square_50%25_transparency.svg/240px-White_square_50%25_transparency.svg.png" className="rounded-full border-2" />
@@ -22,10 +22,10 @@ export default function CapacityUserPreview({ darkMode, userId, fetchUserData })
 
   return (
     <div className="w-full h-full p-4 space-y-2">
-      <Link href={"/profile/" + userId}>
-        <img src={userData.profile_image} className={(darkMode ? "hover:border-capx-light-bg " : "hover:border-capx-dark-bg ") + "rounded-full border-2 cursor-pointer hover:border-dotted"} />
+      <Link href={"/profile/" + data.id}>
+        <img src={data.profile_image} className={(darkMode ? "hover:border-capx-light-bg " : "hover:border-capx-dark-bg ") + "rounded-full border-2 cursor-pointer hover:border-dotted"} />
       </Link>
-      <p className="text-xs text-center">{userData.display_name}</p>
+      <p className="text-xs text-center">{data.display_name}</p>
     </div>
   )
 }
