@@ -20,7 +20,7 @@ export default function UserProfileMainWrapper(props) {
         axios.get("/api/profile", queryData),
         axios.get('/api/list/territory', queryData),
         axios.get('/api/list/language', queryData),
-        axios.get('/api/list/organizations', queryData),
+        axios.get('/api/list/affiliation', queryData),
         axios.get('/api/list/wikimedia_project', queryData),
         axios.get('/api/capacity', queryData)
       ]);
