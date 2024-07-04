@@ -17,22 +17,27 @@ export default async function capacity(req, res) {
 
       //Fetching names based on codes
       const wdCodeList = codes.map((code) => "wd:" + code.wd_code.toString());
-      const queryTextPart01 = "SELECT ?item ?itemLabel ?itemDescription WHERE {VALUES ?item {";
+      const queryTextPart01 = "SELECT ?item ?itemLabel WHERE {VALUES ?item {";
       const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language '" + req.query.language + ",en'.}}";
 
       const wikidataResponse = await axios.get('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=' + queryTextPart01 + wdCodeList.join(" ") + queryTextPart02);
       const organizedData = wikidataResponse.data.results.bindings.map((wdItem) => {
-        return { name: wdItem.itemLabel.value, description: wdItem.itemDescription.value }
+        return {
+          wd_code: wdItem.item.value.split("/").slice(-1)[0],
+          name: wdItem.itemLabel.value,
+        }
       });
 
       // Checking if the size of the data list matches the code list
       if (codes.length === organizedData.length) {
-        const codesWithNamesAndDescriptions = codes.map((item, index) => ({
-          ...item,
-          ...organizedData[index]
-        }));
+        // Merging arrays by 'wd_code' key because
+        // Wikidata do not return data in the same order
+        const codesWithNames = codes.map(obj1 => {
+          const obj2 = organizedData.find(obj2 => obj2.wd_code === obj1.wd_code);
+          return { ...obj1, ...obj2 };
+        });
 
-        res.status(200).json(codesWithNamesAndDescriptions);
+        res.status(200).json(codesWithNames);
       } else {
         res.status(500);
       }
