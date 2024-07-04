@@ -30,7 +30,8 @@ export default async function capacity(req, res) {
 
       // Checking if the size of the data list matches the code list
       if (codes.length === organizedData.length) {
-        // Merging arrays by 'wd_code' key
+        // Merging arrays by 'wd_code' key because
+        // Wikidata do not return data in the same order
         const codesWithNames = codes.map(obj1 => {
           const obj2 = organizedData.find(obj2 => obj2.wd_code === obj1.wd_code);
           return { ...obj1, ...obj2 };
