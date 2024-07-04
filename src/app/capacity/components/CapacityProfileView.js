@@ -46,9 +46,11 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
             </div>
           </Link>
         </div>
-        <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full px-8 py-4 rounded-lg"}>
-          <p className="text-xl sm:text-base">{selectedCapacityData.description}</p>
-        </div>
+        {selectedCapacityData.description ? (
+          <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full px-8 py-4 rounded-lg"}>
+            <p className="text-xl sm:text-base">{selectedCapacityData.description}</p>
+          </div>
+        ) : (null)}
       </div>
       <div className="space-y-14">
         {selectedCapacityData.users.wanted?.length > 0 ? (
