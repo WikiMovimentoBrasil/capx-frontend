@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Borichèt"
+		]
+	},
+	"navbar-link-about": "A propòsit",
+	"navbar-link-profile": "Mè profil",
+	"navbar-link-capacities": "Capassità",
+	"navbar-link-events": "Eveniment",
+	"body-home-section01-title-text": "Në spassi për ëscangé",
+	"body-home-section01-title-carousel": "capassità, conossense, abilità, servissi",
+	"body-home-section01-description": "Coleghesse con dij par, amprende e partagé le capassità su na piataforma fàita da e për ël Moviment Wikimedia.",
+	"body-home-section01-button": "Ch'as gionza a lë scambi ëd capassità!",
+	"body-profile-gender-hehim": "Chiel/Chila",
+	"body-profile-gender-sheher": "Chiel/Chila",
+	"body-profile-gender-theythem": "Lor/Lor",
+	"body-profile-gender-notespecified": "Nen ëspessificà",
+	"body-profile-gender-other": "Àutr",
+	"body-profile-edit-button": "Modifiché ël profil",
+	"body-profile-box-title-wikidata-item": "Element ëd Wikidata",
+	"body-profile-box-title-alt-wiki-acc": "Cont Wikimedia alternativ",
+	"body-profile-section-title-contact-social": "Contat e mojen sossiaj",
+	"body-profile-section-title-territory": "Teritòri",
+	"body-profile-section-title-language": "Lenga",
+	"body-profile-section-title-affiliation": "Afiliassion",
+	"body-profile-section-title-wikimedia-project": "Proget Wikimedia",
+	"body-profile-section-title-wanted-capacity": "Capassità arsercà",
+	"body-profile-section-title-known-capacity": "Capassità conossùe",
+	"body-profile-section-title-available-capacity": "Capassità disponìbij",
+	"body-capacity-searchbar-placeholder": "Ch'a buta ël nòm ëd la capassità ch'a veul sërché.",
+	"body-capacity-wanted-user-list-title": "Utent ch'a veulo amprende costa capassità:",
+	"body-capacity-known-user-list-title": "Utent ch'a na san ëd costa capassità:",
+	"body-capacity-available-user-list-title": "Utent ch'a na san ëd costa capassità e a son disponibij e fornì dij servissi con chila:",
+	"body-capacity-user-list-fallback-message": "A-i é gnun utent da smon-e an costa categorìa.",
+	"body-tag-user-list-title": "Utent con costa tichëtta an sò profil:",
+	"body-tag-user-list-fallback-message": "A-i é gnun utent con costa tichëtta an sò profil.",
+	"footer-link-documentation": "Documentassion",
+	"footer-link-wikimedia": "Meta-wikimedia",
+	"footer-message": "Da e për ël moviment Wikimedia"
+}

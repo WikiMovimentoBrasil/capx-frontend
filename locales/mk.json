@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bjankuloski06"
+		]
+	},
+	"navbar-link-about": "За нас",
+	"navbar-link-profile": "Мојот профил",
+	"navbar-link-capacities": "Капацитети",
+	"navbar-link-events": "Настани",
+	"body-home-section01-title-text": "Простор за размена",
+	"body-home-section01-title-carousel": "капацитет, знаење, вештини, услуги",
+	"body-home-section01-description": "Поврзете се со колегите, учете и споделувајте капацитет на подлогата направена за Викимедииното движење",
+	"body-home-section01-button": "Приклучете се во Размената на капацитети!",
+	"body-capacity-searchbar-placeholder": "Внесете име на способноста што сакате да ја најдете.",
+	"body-capacity-wanted-user-list-title": "Корисници кои сакаат да го научат овој капацитет",
+	"body-capacity-known-user-list-title": "Корисници што сакаат да знаат за овој капацитет",
+	"body-capacity-available-user-list-title": "Корисници што знаат за овој капацитет и стојат на располагање да даваат услуги со него",
+	"body-capacity-user-list-fallback-message": "Нема корисници во оваа категорија.",
+	"footer-link-documentation": "Документација",
+	"footer-link-wikimedia": "Мета-викимедија",
+	"footer-message": "За и од Викимедииното движење"
+}

@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"Omotecho"
+		]
+	},
+	"navbar-link-about": "解説",
+	"navbar-link-profile": "自分のプロフィール",
+	"navbar-link-capacities": "技能",
+	"navbar-link-events": "イベント",
+	"body-home-section01-title-text": "交流の場",
+	"body-home-section01-title-carousel": "能力、知識、スキル、サービス",
+	"body-home-section01-description": "仲間とつながり、学び、能力を共有するには、ウィキメディア運動が私たちのために作ったプラットフォームに集まりましょう。",
+	"body-profile-gender-hehim": "彼/彼を・に",
+	"body-profile-gender-sheher": "彼女/彼女を・に",
+	"body-profile-gender-theythem": "その人/その人を・に",
+	"body-profile-gender-notespecified": "無指定",
+	"body-profile-gender-other": "その他",
+	"body-capacity-available-user-list-title": "この技能に詳しくて手伝ってくれる人の一覧：",
+	"body-capacity-user-list-fallback-message": "このカテゴリには表示する利用者がいません。",
+	"body-tag-user-list-title": "利用者でプロフィールにこのタグを貼った人はいません。",
+	"body-tag-user-list-fallback-message": "プロフィールにこのタグを貼った利用者はいません。",
+	"footer-link-documentation": "解説文書",
+	"footer-link-wikimedia": "メタウィキ",
+	"footer-message": "ウィキメディア運動そのものに有益な自助"
+}

@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80",
+			"YaronSh"
+		]
+	},
+	"navbar-link-about": "על אודות",
+	"navbar-link-profile": "הפרופיל שלי",
+	"navbar-link-capacities": "יכולות",
+	"navbar-link-events": "אירועים",
+	"body-home-section01-title-text": "מקום להחלפת רעיונות",
+	"body-home-section01-title-carousel": "יכולת, ידע, מיומנויות, שירותים",
+	"body-home-section01-description": "התחברות לעמיתים, למידה ושיתוף יכולת בפלטפורמה שנוצרה עבור ועל־ידי תנועת ויקימדיה.",
+	"body-home-section01-button": "הצטרפות להחלפת יכולות!",
+	"body-capacity-searchbar-placeholder": "נא להקליד את שם היכולת לחיפוש.",
+	"body-capacity-wanted-user-list-title": "משתמשים שרוצים ללמוד את היכולת הזאת",
+	"body-capacity-known-user-list-title": "משתמשים שיודעים משהו על היכולת הזאת",
+	"body-capacity-available-user-list-title": "משתמשים שיודעים על היכולת הזאת וזמינים לספק בה שירות",
+	"body-capacity-user-list-fallback-message": "אין משתמשים להצגה מהקטגוריה הזאת.",
+	"footer-link-documentation": "תיעוד",
+	"footer-message": "עבור ומאת תנועת ויקימדיה"
+}
