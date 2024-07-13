@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Andrekowacs"
+		]
+	},
+	"body-profile-gender-hehim": "Ele",
+	"body-profile-gender-sheher": "Ela/Dela",
+	"body-profile-gender-theythem": "Eles",
+	"body-profile-gender-notespecified": "Não especificado",
+	"body-profile-box-title-wikidata-item": "Item Wikidata",
+	"body-profile-section-title-contact-social": "Contato e Mídia Social",
+	"body-profile-section-title-wanted-capacity": "Capacidades desejadas",
+	"body-profile-section-title-known-capacity": "Capacidades Conhecidas",
+	"body-profile-section-title-available-capacity": "Capacidades disponíveis",
+	"body-capacity-known-user-list-title": "Usuários que sabem sobre esta capacidade:",
+	"body-capacity-available-user-list-title": "Usuários que conhecem esta capacidade e estão disponíveis para prestar serviços com ela:",
+	"body-tag-user-list-fallback-message": "Não há usuários com esta tag em seus perfis."
+}

@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kly"
+		]
+	},
+	"navbar-link-about": "About",
+	"navbar-link-profile": "我的個人資料",
+	"navbar-link-capacities": "能力",
+	"navbar-link-events": "事件",
+	"body-home-section01-title-text": "一個可用來交流的空間",
+	"body-home-section01-title-carousel": "能力、知識、技能、服務",
+	"body-home-section01-description": "在由維基媒體運動所打造，適用於維基媒體運動的平台裡與同儕交流、學習、分享能力。",
+	"body-home-section01-button": "加入 Capacity Exchange！",
+	"body-profile-gender-hehim": "他",
+	"body-profile-gender-sheher": "她",
+	"body-profile-gender-theythem": "他們",
+	"body-profile-gender-notespecified": "未指定",
+	"body-profile-gender-other": "其他",
+	"body-profile-edit-button": "編輯個人資料",
+	"body-profile-box-title-wikidata-item": "維基數據項目",
+	"body-profile-box-title-alt-wiki-acc": "替代的維基媒體帳號",
+	"body-profile-section-title-contact-social": "聯絡方式與社交媒體",
+	"body-profile-section-title-territory": "領域",
+	"body-profile-section-title-language": "語言",
+	"body-profile-section-title-affiliation": "隸屬",
+	"body-profile-section-title-wikimedia-project": "維基媒體專案",
+	"body-profile-section-title-wanted-capacity": "需求能力",
+	"body-profile-section-title-known-capacity": "已知能力",
+	"body-profile-section-title-available-capacity": "可用能力",
+	"body-capacity-searchbar-placeholder": "輸入您要搜尋的能力名稱。",
+	"body-capacity-wanted-user-list-title": "想要學習此能力的使用者：",
+	"body-capacity-known-user-list-title": "了解此能力的使用者：",
+	"body-capacity-available-user-list-title": "了解此能力並可藉此來提供服務的使用者：",
+	"body-capacity-user-list-fallback-message": "此分類中沒有可顯示的使用者。",
+	"body-tag-user-list-title": "在他們的個人資料裡帶有此標籤的使用者：",
+	"body-tag-user-list-fallback-message": "沒有在個人資料裡帶有此標籤的使用者。",
+	"footer-link-documentation": "文件",
+	"footer-link-wikimedia": "元維基媒體",
+	"footer-message": "由維基媒體運動打造，且用於維基媒體運動"
+}
