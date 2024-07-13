@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useMemo} from "react";
 import { useRouter } from 'next/navigation';
 import TextArea from "./TextArea";
 import TextInput from "./TextInput";
@@ -8,6 +8,7 @@ import SingleSelectInput from "./SingleSelectInput";
 import SubmitButton from "./SubmitButton";
 import MultiSelectInput from "./MultiSelectInput";
 import TextDoubleInput from "./TextDoubleInput";
+import CommonsSelect from "./CommonsSelect";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
 export default function EditProfileForm({ darkMode, session, formData, setFormData }) {
@@ -33,6 +34,59 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
       setFormData({ ...formData, userData: newUserData });
     }
   };
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const loadPictures = async (inputValue, callback) => {
+    if (!inputValue) {
+      callback([]);
+      return;
+    }
+    const encodedInputValue = encodeURIComponent(inputValue);
+    const response = await axios.get(`/api/profile_image?query=${encodedInputValue}`);
+    const images = response.data.map(image => ({ value: image, label: image, thumbnail: null }));
+    callback(images);
+
+    // Asynchronously load thumbnails
+    images.forEach(async (image, index) => {
+      const encodedImageValue = encodeURIComponent(image.value);
+      const thumbnailResponse = await axios.get(`/api/profile_image?thumb=true&title=${encodedImageValue}`);
+      images[index].thumbnail = thumbnailResponse.data.image;
+      const valueResponse = await axios.get(`/api/profile_image?title=${encodedImageValue}`);
+      images[index].value = valueResponse.data.image;
+      callback([...images]); // Trigger re-render with the updated thumbnails
+    });
+  };
+
+  const debouncedLoadPictures = useMemo(() => debounce(loadPictures, 500), []);
+
+  const formatOptionLabel = ({ value, label, thumbnail }) => (
+    <div className="flex items-center">
+      {thumbnail ? (
+        <img src={thumbnail} className="w-8 h-8 rounded-full" alt={label} />
+      ) : (
+        <div className="w-8 h-8 rounded-full bg-gray-200" /> // Placeholder for loading image
+      )}
+      <span className="ml-2">{label}</span>
+    </div>
+  );
+
+  const extractImageName = (url) => {
+    const splitUrl = url.split("/");
+    const fileName = splitUrl[splitUrl.length - 2];
+    const imageName = fileName ? "File:" + fileName.replace(/_/g, " ") : false;
+    return imageName;
+  }
 
   const handleSingleSelectInputChange = (selectedOption, element) => {
     const newUserData = {
@@ -73,17 +127,18 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
         <section className={"flex flex-wrap flex-col w-10/12 h-fit mx-auto place-content-start py-32"}>
           <form onSubmit={handleSubmit} className="w-full">
             {/* Profile Picture */}
-            <TextInput
+            <CommonsSelect
               id={"profile_image"}
-              key={"profile_image"}
-              data={formData.userData?.profile_image ?? ""}
-              placeholder={"e.g. https://upload.wikimedia.org/..."}
-              onChange={handleTextInputChange}
-              type={"url"}
-              maxLength={200}
+              data={formData.userData?.profile_image ? {
+                label: extractImageName(formData.userData.profile_image),
+                thumbnail: formData.userData.profile_image 
+              } : null}
+              onChange={(selectedOption) => handleSingleSelectInputChange(selectedOption, { name: "profile_image" })}
+              loadOptions={debouncedLoadPictures}
+              formatOptionLabel={formatOptionLabel}
             >
               Profile Picture
-            </TextInput>
+            </CommonsSelect>
             {/* Display Name */}
             <TextInput
               id={"display_name"}
