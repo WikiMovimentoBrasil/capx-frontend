@@ -14,7 +14,7 @@ const fetchData = async (queryData) => {
       axios.get('/api/list/language', queryData),
       axios.get('/api/list/affiliation', queryData),
       axios.get('/api/list/wikimedia_project', queryData),
-      axios.get('/api/list/skills', queryData)
+      axios.get('/api/capacity', queryData)
     ]);
 
     return {

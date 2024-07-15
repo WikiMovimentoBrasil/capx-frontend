@@ -101,6 +101,17 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
       ...formData.userData,
       [element.name]: selectedOptions.map(option => option.value)
     };
+  
+    if (element.name === "skills_known") {
+      const previousSkillsKnown = formData.userData.skills_known;
+      const removedSkills = previousSkillsKnown.filter(skill => !newUserData.skills_known.includes(skill));
+      
+      if (removedSkills.length > 0) {
+        const updatedSkillsAvailable = formData.userData.skills_available.filter(skill => !removedSkills.includes(skill));
+        newUserData.skills_available = updatedSkillsAvailable;
+      }
+    }
+  
     setFormData({ ...formData, userData: newUserData });
   }
 
@@ -241,9 +252,12 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             <MultiSelectInput
               id={"skills_known"}
               key={"skills_known"}
-              options={Object.entries(formData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.skills_known?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
-              onChange={handleMultiSelectInputChange}
+              options={formData.skillData?.map((skill) => ({ value: skill.code, label: skill.name }))}
+              selectedOptions={formData.userData?.skills_known?.map((option) => {
+                const skill = formData.skillData.find(skill => skill.code === option);
+                return { value: skill.code, label: skill.name };
+              }) ?? []}
+              onChange={(selectedOptions) => handleMultiSelectInputChange(selectedOptions, { name: "skills_known" })}
             >
               Known Capacities
             </MultiSelectInput>
@@ -251,8 +265,16 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             <MultiSelectInput
               id={"skills_available"}
               key={"skills_available"}
-              options={formData.userData?.skills_known?.map((option) => ({ value: option, label: formData.skillData[option] }))}
-              selectedOptions={formData.userData?.skills_available?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
+              options={
+                formData.userData?.skills_known?.map((knownSkill) => {
+                  const skill = formData.skillData.find(skill => skill.code === knownSkill);
+                  return { value: skill.code, label: skill.name };
+                }) ?? []
+              }
+              selectedOptions={formData.userData?.skills_available?.map((option) => {
+                const skill = formData.skillData.find(skill => skill.code === option);
+                return { value: skill.code, label: skill.name };
+              }) ?? []}
               onChange={handleMultiSelectInputChange}
             >
               Available Capacities
@@ -261,8 +283,11 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             <MultiSelectInput
               id={"skills_wanted"}
               key={"skills_wanted"}
-              options={Object.entries(formData.skillData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.skills_wanted?.map((option) => ({ value: option, label: formData.skillData[option] })) ?? []}
+              options={formData.skillData?.map((skill) => ({ value: skill.code, label: skill.name }))}
+              selectedOptions={formData.userData?.skills_wanted?.map((option) => {
+                const skill = formData.skillData.find(skill => skill.code === option);
+                return { value: skill.code, label: skill.name };
+              }) ?? []}
               onChange={handleMultiSelectInputChange}
             >
               Wanted Capacities
