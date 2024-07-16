@@ -22,35 +22,31 @@ export default function CapacityListMainWrapper(props) {
   };
 
   useEffect(() => {
-    try {
-      if (status === "authenticated") {
-        const queryData = {
-          params: { language: props.language },
-          headers: {
-            'Authorization': `Token ${data.user.token}`,
-          }
+    if (status === "authenticated") {
+      const queryData = {
+        params: { language: props.language },
+        headers: {
+          'Authorization': `Token ${data.user.token}`,
         }
-        getCapacityList(queryData);
       }
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
+      getCapacityList(queryData).catch((error) => 
+        console.error('Failed to fetch data:', error)
+      );
     }
   }, [status]);
 
   useEffect(() => {
     setCapacityList(undefined);
-    try {
-      if (status === "authenticated") {
-        const queryData = {
-          params: { language: language },
-          headers: {
-            'Authorization': `Token ${data.user.token}`,
-          }
+    if (status === "authenticated") {
+      const queryData = {
+        params: { language: language },
+        headers: {
+          'Authorization': `Token ${data.user.token}`,
         }
-        getCapacityList(queryData);
       }
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
+      getCapacityList(queryData).catch((error) =>
+        console.error('Failed to fetch data:', error)
+      );
     }
   }, [language]);
 
