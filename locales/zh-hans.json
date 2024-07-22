@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"Xuanxuan1231"
+		]
+	},
+	"navbar-link-about": "关于",
+	"navbar-link-profile": "我的个人资料",
+	"navbar-link-events": "事件",
+	"body-profile-gender-hehim": "他",
+	"body-profile-gender-sheher": "她",
+	"body-profile-gender-theythem": "他们",
+	"body-profile-gender-notespecified": "未指定",
+	"body-profile-gender-other": "其他",
+	"body-profile-edit-button": "编辑个人资料",
+	"body-profile-section-title-language": "语言",
+	"footer-link-documentation": "文档"
+}
