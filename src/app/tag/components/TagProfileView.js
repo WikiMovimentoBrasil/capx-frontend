@@ -1,6 +1,7 @@
 import TagProfileUserList from "./TagProfileUserList";
 import TagProfileNoUserBox from "./TagProfileNoUserBox";
 import TagProfileViewSkeleton from "./TagProfileViewSkeleton";
+import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
 
 export default function TagProfileView({ darkMode, selectedTagData, pageContent, userId }) {
   if (selectedTagData === undefined) {
@@ -9,7 +10,7 @@ export default function TagProfileView({ darkMode, selectedTagData, pageContent,
 
   return (
     <section className="grid grid-cols-1 w-10/12 sm:w-8/12 min-h-screen py-44 place-content-start mx-auto space-y-20">
-      <h1 className="text-4xl font-extrabold leading-tight">{selectedTagData.name}</h1>
+      <h1 className="text-4xl font-extrabold leading-tight">{capitalizeFirstLetter(selectedTagData.name)}</h1>
       {selectedTagData.users?.length === 0 ? (
         <TagProfileNoUserBox
           darkMode={darkMode}
