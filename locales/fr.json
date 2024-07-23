@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"MacOS Weed"
+		]
+	},
+	"navbar-link-about": "À propos",
+	"navbar-link-profile": "Mon profil",
+	"navbar-link-capacities": "Compétences",
+	"navbar-link-events": "Événements",
+	"body-home-section01-title-text": "Un espace pour échanger sur",
+	"body-home-section01-title-carousel": "la compétence, la connaissance, les aptitudes et les services",
+	"body-home-section01-description": "Connectez-vous avec des pairs, apprenez et partagez votre compétence dans une plateforme pour et par le Mouvement Wikimedia.",
+	"body-home-section01-button": "Rejoignez Capacity Exchange !",
+	"body-profile-gender-hehim": "Il/lui",
+	"body-profile-gender-sheher": "Elle/elle",
+	"body-profile-gender-theythem": "Ils/eux",
+	"body-profile-gender-notespecified": "Non spécifié",
+	"body-profile-gender-other": "Autre",
+	"body-profile-edit-button": "Modifier le profil",
+	"body-profile-box-title-wikidata-item": "Élément Wikidata",
+	"body-profile-box-title-alt-wiki-acc": "Compte Wikimedia alternatif",
+	"body-profile-section-title-contact-social": "Contact et réseaux sociaux",
+	"body-profile-section-title-territory": "Territoire",
+	"body-profile-section-title-language": "Langue",
+	"body-profile-section-title-affiliation": "Affiliation",
+	"body-profile-section-title-wikimedia-project": "Projet Wikimedia",
+	"body-profile-section-title-wanted-capacity": "Compétences souhaitées",
+	"body-profile-section-title-known-capacity": "Compétences connues",
+	"body-profile-section-title-available-capacity": "Compétences disponibles",
+	"body-capacity-searchbar-placeholder": "Saisir la compétence que vous recherchez.",
+	"body-capacity-wanted-user-list-title": "Utilisateurs souhaitant apprendre cette compétence :",
+	"body-capacity-known-user-list-title": "Utilisateurs qui connaissent cette compétence :",
+	"body-capacity-available-user-list-title": "Utilisateurs qui connaissent cette compétence et qui sont disponibles pour offrir leurs services avec :",
+	"body-capacity-user-list-fallback-message": "Il n'y a aucun utilisateur à afficher dans cette catégorie.",
+	"body-tag-user-list-title": "Utilisateurs avec cette étiquette dans leur profil :",
+	"body-tag-user-list-fallback-message": "Il n'y a aucun utilisateur avec cette étiquette dans leur profil.",
+	"footer-link-documentation": "Documentation",
+	"footer-link-wikimedia": "Meta-wikimedia",
+	"footer-message": "Pour et par le Mouvement Wikimedia"
+}
