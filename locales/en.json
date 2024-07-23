@@ -26,7 +26,7 @@
   "body-capacity-searchbar-placeholder": "Type the capacity you want to search.",
   "body-capacity-wanted-user-list-title": "Sharers:",
   "body-capacity-known-user-list-title": "Learners:",
-  "body-capacity-available-user-list-title": "Users who know about this capacity and are available to provide services with it:",
+  "body-capacity-available-user-list-title": "Service providers:",
   "body-capacity-user-list-fallback-message": "There are no users to display in this category.",
   "body-tag-user-list-title": "Users with this tag on their profile:",
   "body-tag-user-list-fallback-message": "There are no users with this tag on their profile.",
