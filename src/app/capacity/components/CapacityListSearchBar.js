@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link";
 import { useState, useEffect } from 'react';
+import { capitalizeFirstLetter } from "./utils";
 
 export default function CapacityListSearchBar({ darkMode, capacityList, pageContent }) {
   const [searchBarQuery, setSearchBarQuery] = useState("");
@@ -70,7 +71,7 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
           {searchBarResultList.map((option, index) => (
             <Link key={index} href={"/capacity/" + option.code}>
               <li className="p-2 cursor-pointer hover:bg-blue-200">
-                {option.name}
+                {capitalizeFirstLetter(option.name)}
               </li>
             </Link>
           ))}

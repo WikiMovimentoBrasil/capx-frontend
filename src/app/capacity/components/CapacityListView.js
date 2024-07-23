@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { capitalizeFirstLetter } from "./utils";
 
 export default function CapacityListView({ darkMode, capacityList }) {
   if (capacityList === undefined) {
@@ -32,7 +33,7 @@ export default function CapacityListView({ darkMode, capacityList }) {
             className="w-fit py-2 px-4 cursor-pointer hover:bg-capx-secondary-purple hover:rounded-lg hover:text-white"
           >
             <Link href={"/capacity/" + capacity.code}>
-              {capacity.name}
+              {capitalizeFirstLetter(capacity.name)}
             </Link>
           </li>
         ))}
