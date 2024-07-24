@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CapacityProfileNoUser from "./CapacityProfileNoUser";
 import CapacityProfileUserList from "./CapacityProfileUserList";
+import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
 
 export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent, userId }) {
   if (selectedCapacityData === undefined) {
@@ -37,7 +38,7 @@ export default function CapacityProfileView({ darkMode, selectedCapacityData, pa
     <div className="w-full space-y-20 pt-10">
       <div className="space-y-6">
         <div className="flex justify-between">
-          <h1 className="text-4xl font-extrabold leading-tight">{selectedCapacityData.name} [<a href={`https://www.wikidata.org/wiki/${selectedCapacityData.wd_code}`} target="_blank" className="text-capx-primary-green underline">{selectedCapacityData.wd_code}</a>]</h1>
+          <h1 className="text-4xl font-extrabold leading-tight">{capitalizeFirstLetter(selectedCapacityData.name)} [<a href={`https://www.wikidata.org/wiki/${selectedCapacityData.wd_code}`} target="_blank" className="text-capx-primary-green underline">{selectedCapacityData.wd_code}</a>]</h1>
           <Link className="my-auto" href={"/capacity"}>
             <div className="border-2 rounded-full p-2">
               <svg className={"w-6 h-6 " + (darkMode ? "text-capx-primary-yellow" : "text-capx-primary-red")} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
