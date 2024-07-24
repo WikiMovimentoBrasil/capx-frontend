@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
 
 export default function UserProfileViewCapacityBox({ darkMode, data, endpoint }) {
   return (
@@ -7,7 +8,7 @@ export default function UserProfileViewCapacityBox({ darkMode, data, endpoint })
         <Link
           key={index} href={`/${endpoint}/${item.code}`}
           className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest text-base sm:text-base px-4 sm:px-5 py-3 rounded-lg">
-          {item.name}
+          {capitalizeFirstLetter(item.name)}
         </Link>
       ))}
     </div>
