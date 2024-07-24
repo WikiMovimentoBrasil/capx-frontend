@@ -39,7 +39,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
   }
 
   return (
-    <main className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center py-36 space-y-20"}>
+    <div className={"grid grid-cols-1 sm:grid-cols-1 w-10/12 sm:w-8/12 h-fit text-xl mx-auto text-center pt-36 pb-16 space-y-20"}>
       <div className="w-full sm:w-8/12 mx-auto space-y-28">
         {/* Section: Personal */}
         <section className="space-y-14 sm:space-y-16">
@@ -209,6 +209,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           )}
         </section>
       </div>
-    </main>
+    </div>
   )
 }
