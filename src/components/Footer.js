@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer({ darkMode, pageContent }) {
   const footerLinks = [
-    { "title": pageContent["footer-link-documentation"], "to": "/" },
-    { "title": pageContent["footer-link-github"], "to": "https://github.com/WikiMovimentoBrasil" },
+    { "title": pageContent["footer-link-documentation"], "to": "https://github.com/WikiMovimentoBrasil/capx-backend/wiki" },
+    { "title": pageContent["footer-link-github"], "to": "https://github.com/WikiMovimentoBrasil/capx-backend" },
     { "title": pageContent["footer-link-wikimedia"], "to": "https://meta.wikimedia.org/wiki/Capacity_Exchange" }
   ]
 
