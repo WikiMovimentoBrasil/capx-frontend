@@ -31,3 +31,13 @@
   font-weight: 800;
   font-style: extrabold;
 }
+
+html, body {
+    height: 100%;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
