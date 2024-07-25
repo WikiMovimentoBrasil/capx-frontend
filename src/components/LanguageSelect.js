@@ -48,11 +48,11 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
       <Select
         name={"language"}
         instanceId={"language"}
-        isSearchable={false}
         options={options}
         defaultValue={[{ value: language, label: language }]}
         onChange={handleSelection}
         className="text-capx-dark-bg"
+        aria-label={setPageContent["aria-language-input"]}
       />
     </div>
   );
