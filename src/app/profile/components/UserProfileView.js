@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import UserProfileImage from "./UserProfileImage";
 import UserProfileViewTextBox from "./UserProfileViewTextBox";
 import UserProfileEditButton from "./UserProfileEditButton";
@@ -56,44 +57,47 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
           <div className="space-y-6 sm:space-y-4">
             <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0 justify-center">
               {/* Display Name */}
-              <h3 className="w-full sm:w-fit text-3xl">
-                <span className="font-extrabold">
-                  {userProfileData.userData.display_name ?
-                    (userProfileData.userData.display_name)
-                    :
-                    (userProfileData.userData.user.username)
-                  }
-                </span>
+              <h3 className={"w-full sm:w-fit text-3xl " + (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ")}>
+                <Link href={"https://meta.wikimedia.org/wiki/User:" + userProfileData.userData.user.username}
+                      className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest px-4 sm:px-5 py-3 rounded-lg">
+                  <span className="font-extrabold">
+                    {userProfileData.userData.user.username ? (userProfileData.userData.user.username) : ""}
+                  </span>
+                </Link>
               </h3>
+            </div>
+            <div className="space-y-6 sm:space-y-4">
               {/* Pronoun */}
-              <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-fit px-4 py-2 mx-auto my-auto rounded-lg"}>
+              <div
+                  className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-fit px-4 py-2 mx-auto my-auto rounded-lg"}>
                 {userProfileData.userData.pronoun ?
-                  (<h3 className="text-base">{pronouns.map((option) => option.value === userProfileData.userData.pronoun ? option.label : null)}</h3>)
-                  :
-                  (<h3 className="text-base">{pageContent["body-profile-gender-notespecified"]}</h3>)
+                    (
+                        <h3 className="text-base">{pronouns.map((option) => option.value === userProfileData.userData.pronoun ? option.label : null)}</h3>)
+                    :
+                    (<h3 className="text-base">{pageContent["body-profile-gender-notespecified"]}</h3>)
                 }
               </div>
             </div>
             {/* About */}
             {userProfileData.userData.about ? (
-              <UserProfileViewTextBox
-                darkMode={darkMode}
-                info={userProfileData.userData.about ?? ""}
-              />
+                <UserProfileViewTextBox
+                    darkMode={darkMode}
+                    info={userProfileData.userData.about ?? ""}
+                />
             ) : (null)}
             {/* Wikidata Item */}
             {userProfileData.userData.wikidata_qid ? (
-              <UserProfileViewTextBox
-                darkMode={darkMode}
-                title={pageContent["body-profile-box-title-wikidata-item"]}
-                info={userProfileData.userData.wikidata_qid ?? ""}
-              />
+                <UserProfileViewTextBox
+                    darkMode={darkMode}
+                    title={pageContent["body-profile-box-title-wikidata-item"]}
+                    info={userProfileData.userData.wikidata_qid ?? ""}
+                />
             ) : (null)}
             {/* Alternative Wikimedia Account */}
             {userProfileData.userData.wiki_alt ? (
-              <UserProfileViewTextBox
-                darkMode={darkMode}
-                title={pageContent["body-profile-box-title-alt-wiki-acc"]}
+                <UserProfileViewTextBox
+                    darkMode={darkMode}
+                    title={pageContent["body-profile-box-title-alt-wiki-acc"]}
                 info={userProfileData.userData.wiki_alt ?? ""}
               />
             ) : (null)}
