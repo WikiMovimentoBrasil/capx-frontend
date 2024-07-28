@@ -7,6 +7,7 @@ import BaseWrapper from "@/components/BaseWrapper";
 import CapacityListSearchBar from "./CapacityListSearchBar";
 import LoadingSection from "@/components/LoadingSection";
 import { TreeView } from '@primer/react';
+import Link from 'next/link';
 
 export default function CapacityListMainWrapper(props) {
   const { status, data } = useSession();
@@ -105,7 +106,9 @@ export default function CapacityListMainWrapper(props) {
                 <TreeView.LeadingVisual>
                   <TreeView.DirectoryIcon />
                 </TreeView.LeadingVisual>
-                {value}
+                <Link href={`/capacity/${key}`}>
+                  {value}
+                </Link>
                 {renderSubTree(key)}
               </TreeView.Item>
             ))
