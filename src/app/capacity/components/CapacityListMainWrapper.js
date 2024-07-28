@@ -133,11 +133,6 @@ export default function CapacityListMainWrapper(props) {
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacityListSearchBar
-          darkMode={darkMode}
-          capacityList={capacityList}
-          pageContent={pageContent}
-        />
         <nav aria-label="Files">
           <ThemeProvider>
             <BaseStyles>
