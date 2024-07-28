@@ -15,9 +15,9 @@ export default function CapacityListMainWrapper(props) {
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
   const [asyncItems, setAsyncItems] = useState({});
   const [expandedItems, setExpandedItems] = useState({});
+  const [loadingStates, setLoadingStates] = useState({});
 
   const getCapacityList = async (queryData) => {
     const queryResponse = await axios.get('/api/capacity', queryData);
@@ -69,8 +69,9 @@ export default function CapacityListMainWrapper(props) {
   }, [language]);
 
   const handleExpandedChange = async (itemId, isExpanded) => {
-    if (isExpanded && !expandedItems[itemId]) {
-      setIsLoading(true);
+    setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));
+    if (isExpanded && !asyncItems[itemId]) {
+      setLoadingStates(prev => ({ ...prev, [itemId]: true }));
       const items = await loadItems(itemId);
       const names = {};
       for (const key in items) {
@@ -79,10 +80,7 @@ export default function CapacityListMainWrapper(props) {
         }
       }
       setAsyncItems(prev => ({ ...prev, [itemId]: names }));
-      setExpandedItems(prev => ({ ...prev, [itemId]: true }));
-      setIsLoading(false);
-    } else if (!isExpanded && expandedItems[itemId]) {
-      setExpandedItems(prev => ({ ...prev, [itemId]: false }));
+      setLoadingStates(prev => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -91,26 +89,29 @@ export default function CapacityListMainWrapper(props) {
   }
 
   const renderSubTree = (itemId) => {
-    let state = 'initial';
-    if (isLoading) {
-      state = 'loading';
-    } else if (asyncItems[itemId] && Object.keys(asyncItems[itemId]).length > 0) {
-      state = 'done';
-    }
+    const isLoading = loadingStates[itemId];
+    const state = isLoading ? 'loading' : 'done';
 
-    if (expandedItems[itemId] && asyncItems[itemId]) {
+    if (expandedItems[itemId]) {
       return (
         <TreeView.SubTree state={state}>
-          {Object.entries(asyncItems[itemId]).map(([key, value]) => (
-            <TreeView.Item 
-              id={`item-${key}`} 
-              key={key}
-              onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
-            >
-              {value}
-              {renderSubTree(key)}
-            </TreeView.Item>
-          ))}
+          {asyncItems[itemId] ? (
+            Object.entries(asyncItems[itemId]).map(([key, value]) => (
+              <TreeView.Item 
+                id={`item-${key}`} 
+                key={key}
+                onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
+              >
+                <TreeView.LeadingVisual>
+                  <TreeView.DirectoryIcon />
+                </TreeView.LeadingVisual>
+                {value}
+                {renderSubTree(key)}
+              </TreeView.Item>
+            ))
+          ) : (
+            <div>Loading...</div>
+          )}
         </TreeView.SubTree>
       );
     }
