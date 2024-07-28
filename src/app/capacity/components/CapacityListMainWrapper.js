@@ -6,7 +6,7 @@ import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
 import CapacityListSearchBar from "./CapacityListSearchBar";
 import LoadingSection from "@/components/LoadingSection";
-import { TreeView } from '@primer/react';
+import { TreeView, ThemeProvider, BaseStyles } from '@primer/react';
 import Link from 'next/link';
 
 export default function CapacityListMainWrapper(props) {
@@ -29,7 +29,6 @@ export default function CapacityListMainWrapper(props) {
     setCapacityList(result);
   };
 
-  // Define const loadItems using API endpoint '/api/capacity/type/' + type
   const loadItems = async (type) => {
     const queryData = {
       headers: {
@@ -140,18 +139,22 @@ export default function CapacityListMainWrapper(props) {
           pageContent={pageContent}
         />
         <nav aria-label="Files">
-          <TreeView aria-label="Files">
-            <TreeView.Item
-              id="async-directory"
-              onExpandedChange={(isExpanded) => handleExpandedChange('0', isExpanded)}
-            >
-              <TreeView.LeadingVisual>
-                <TreeView.DirectoryIcon />
-              </TreeView.LeadingVisual>
-              Directory
-              {renderSubTree('0')}
-            </TreeView.Item>
-          </TreeView>
+          <ThemeProvider>
+            <BaseStyles>
+              <TreeView aria-label="Files">
+                <TreeView.Item
+                  id="async-directory"
+                  onExpandedChange={(isExpanded) => handleExpandedChange('0', isExpanded)}
+                >
+                  <TreeView.LeadingVisual>
+                    <TreeView.DirectoryIcon />
+                  </TreeView.LeadingVisual>
+                  Directory
+                  {renderSubTree('0')}
+                </TreeView.Item>
+              </TreeView>
+            </BaseStyles>
+          </ThemeProvider>
         </nav>
       </CapacitySection>
     </BaseWrapper>
