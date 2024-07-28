@@ -16,7 +16,8 @@ export default function CapacityListMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [asyncItems, setAsyncItems] = useState([]);
+  const [asyncItems, setAsyncItems] = useState({});
+  const [expandedItems, setExpandedItems] = useState({});
 
   const getCapacityList = async (queryData) => {
     const queryResponse = await axios.get('/api/capacity', queryData);
@@ -67,20 +68,21 @@ export default function CapacityListMainWrapper(props) {
     }
   }, [language]);
 
-  const handleExpandedChange = async (isExpanded) => {
-    if (asyncItems.length === 0 && isExpanded) {
+  const handleExpandedChange = async (itemId, isExpanded) => {
+    if (isExpanded && !expandedItems[itemId]) {
       setIsLoading(true);
-      const items = await loadItems('0');
-
+      const items = await loadItems(itemId);
       const names = {};
       for (const key in items) {
         if (capacityList.hasOwnProperty(key)) {
           names[key] = capacityList[key];
         }
       }
-
+      setAsyncItems(prev => ({ ...prev, [itemId]: names }));
+      setExpandedItems(prev => ({ ...prev, [itemId]: true }));
       setIsLoading(false);
-      setAsyncItems(names);
+    } else if (!isExpanded && expandedItems[itemId]) {
+      setExpandedItems(prev => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -88,12 +90,32 @@ export default function CapacityListMainWrapper(props) {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
   }
 
-  let state = 'initial';
-  if (isLoading) {
-    state = 'loading';
-  } else if (asyncItems.length > 0) {
-    state = 'done';
-  }
+  const renderSubTree = (itemId) => {
+    let state = 'initial';
+    if (isLoading) {
+      state = 'loading';
+    } else if (asyncItems[itemId] && Object.keys(asyncItems[itemId]).length > 0) {
+      state = 'done';
+    }
+
+    if (expandedItems[itemId] && asyncItems[itemId]) {
+      return (
+        <TreeView.SubTree state={state}>
+          {Object.entries(asyncItems[itemId]).map(([key, value]) => (
+            <TreeView.Item 
+              id={`item-${key}`} 
+              key={key}
+              onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
+            >
+              {value}
+              {renderSubTree(key)}
+            </TreeView.Item>
+          ))}
+        </TreeView.SubTree>
+      );
+    }
+    return null;
+  };
 
   return (
     <BaseWrapper
@@ -117,19 +139,13 @@ export default function CapacityListMainWrapper(props) {
           <TreeView aria-label="Files">
             <TreeView.Item
               id="async-directory"
-              onExpandedChange={handleExpandedChange}
+              onExpandedChange={(isExpanded) => handleExpandedChange('0', isExpanded)}
             >
               <TreeView.LeadingVisual>
                 <TreeView.DirectoryIcon />
               </TreeView.LeadingVisual>
               Directory
-              <TreeView.SubTree state={state}>
-                {Object.entries(asyncItems).map(([key, value]) => (
-                  <TreeView.Item id={`item-${key}`} key={key}>
-                    {value}
-                  </TreeView.Item>
-                ))}
-              </TreeView.SubTree>
+              {renderSubTree('0')}
             </TreeView.Item>
           </TreeView>
         </nav>
