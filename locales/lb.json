@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Volvox"
+		]
+	},
+	"navbar-link-profile": "Mäi Profil",
+	"navbar-link-events": "Evenementer",
+	"body-profile-edit-button": "Profil änneren",
+	"body-profile-box-title-wikidata-item": "Wikidata-Element",
+	"body-profile-section-title-language": "Sprooch",
+	"body-profile-section-title-wikimedia-project": "Wikimedia-Projet",
+	"footer-link-documentation": "Dokumentatioun",
+	"aria-language-input": "Sicht eng Sprooch eraus",
+	"sign-out-button": "Ofmellen",
+	"sign-in-button": "Umellen"
+}

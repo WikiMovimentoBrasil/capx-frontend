@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"EPorto (WMB)",
 			"MacOS Weed"
 		]
 	},
@@ -37,5 +38,8 @@
 	"body-tag-user-list-fallback-message": "Il n'y a aucun utilisateur avec cette étiquette dans leur profil.",
 	"footer-link-documentation": "Documentation",
 	"footer-link-wikimedia": "Meta-wikimedia",
-	"footer-message": "Pour et par le Mouvement Wikimedia"
+	"footer-message": "Pour et par le Mouvement Wikimedia",
+	"aria-language-input": "Choisissez une langue",
+	"sign-out-button": "Se déconnecter",
+	"sign-in-button": "Se connecter"
 }

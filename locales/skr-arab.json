@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Saraiki"
+		]
+	},
+	"navbar-link-profile": "میݙی پروفائل",
+	"body-profile-gender-other": "ٻیا",
+	"body-profile-edit-button": "پروفائل وچ تبدیلی کرو",
+	"body-profile-section-title-territory": "علاقہ",
+	"body-profile-section-title-language": "زبان",
+	"body-profile-section-title-affiliation": "الحاق",
+	"body-profile-section-title-wikimedia-project": "وکیمیڈیا منصوبہ",
+	"aria-language-input": "زبان چݨو",
+	"sign-out-button": "سائن آؤٹ",
+	"sign-in-button": "سائن ان"
+}

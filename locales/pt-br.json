@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Albertoleoncio",
-			"Andrekowacs"
+			"Andrekowacs",
+			"EPorto (WMB)"
 		]
 	},
 	"navbar-link-about": "Sobre",
@@ -30,13 +31,16 @@
 	"body-profile-section-title-known-capacity": "Capacidades conhecidas",
 	"body-profile-section-title-available-capacity": "Capacidades disponíveis",
 	"body-capacity-searchbar-placeholder": "Digite o nome da capacidade que deseja buscar.",
-	"body-capacity-wanted-user-list-title": "Usuários/as que desejam aprender esta capacidade:",
-	"body-capacity-known-user-list-title": "Usuários/as que sabem sobre esta capacidade:",
-	"body-capacity-available-user-list-title": "Usuários/as que conhecem esta capacidade e estão disponíveis para prestar serviço com ela:",
+	"body-capacity-wanted-user-list-title": "Compartilhadores",
+	"body-capacity-known-user-list-title": "Aprendizes:",
+	"body-capacity-available-user-list-title": "Provedores de serviço:",
 	"body-capacity-user-list-fallback-message": "Não há usuários/as para exibir nesta categoria.",
 	"body-tag-user-list-title": "Usuários/as com essa tag no perfil:",
 	"body-tag-user-list-fallback-message": "Não há usuários/as com essa tag no perfil.",
 	"footer-link-documentation": "Documentação",
 	"footer-link-wikimedia": "Meta-wikimedia",
-	"footer-message": "Feito para e pelo Movimento Wikimedia"
+	"footer-message": "Feito para e pelo Movimento Wikimedia",
+	"aria-language-input": "Escolha um idioma",
+	"sign-out-button": "Sair",
+	"sign-in-button": "Entrar"
 }
