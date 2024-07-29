@@ -134,7 +134,7 @@ export default function CapacityListMainWrapper(props) {
     >
       <CapacitySection>
         <nav aria-label="Files">
-          <ThemeProvider>
+          <ThemeProvider colorMode={darkMode ? "night" : "day"}>
             <BaseStyles>
               <TreeView aria-label="Files">
                 <TreeView.Item
