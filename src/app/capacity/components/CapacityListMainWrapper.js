@@ -72,6 +72,9 @@ export default function CapacityListMainWrapper(props) {
     setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));
     if (isExpanded && !asyncItems[itemId]) {
       setLoadingStates(prev => ({ ...prev, [itemId]: true }));
+      while (!capacityList) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
       const items = await loadItems(itemId);
       const names = {};
       for (const key in items) {
@@ -92,32 +95,29 @@ export default function CapacityListMainWrapper(props) {
     const isLoading = loadingStates[itemId];
     const state = isLoading ? 'loading' : 'done';
 
-    if (expandedItems[itemId]) {
-      return (
-        <TreeView.SubTree state={state}>
-          {asyncItems[itemId] ? (
-            Object.entries(asyncItems[itemId]).map(([key, value]) => (
-              <TreeView.Item 
-                id={`item-${key}`} 
-                key={key}
-                onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
-              >
-                <TreeView.LeadingVisual>
-                  <TreeView.DirectoryIcon />
-                </TreeView.LeadingVisual>
-                <Link href={`/capacity/${key}`}>
-                  {value}
-                </Link>
-                {renderSubTree(key)}
-              </TreeView.Item>
-            ))
-          ) : (
-            <div>Loading...</div>
-          )}
-        </TreeView.SubTree>
-      );
-    }
-    return null;
+    return (
+      <TreeView.SubTree state={state}>
+        {asyncItems[itemId] ? (
+          Object.entries(asyncItems[itemId]).map(([key, value]) => (
+            <TreeView.Item 
+              id={`item-${key}`} 
+              key={key}
+              onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
+            >
+              <TreeView.LeadingVisual>
+                <TreeView.DirectoryIcon />
+              </TreeView.LeadingVisual>
+              <Link href={`/capacity/${key}`}>
+                {value}
+              </Link>
+              {renderSubTree(key)}
+            </TreeView.Item>
+          ))
+        ) : (
+          <div>Loading...</div>
+        )}
+      </TreeView.SubTree>
+    );
   };
 
   return (
