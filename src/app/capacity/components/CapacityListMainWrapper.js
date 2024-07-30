@@ -17,8 +17,8 @@ export default function CapacityListMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [capacityList, setCapacityList] = useState(undefined);
   const [asyncItems, setAsyncItems] = useState({});
-  const [expandedItems, setExpandedItems] = useState({});
-  const [loadingStates, setLoadingStates] = useState({});
+  const [expandedItems, setExpandedItems] = useState({"0": true});
+  const [loadingStates, setLoadingStates] = useState({"0": true});
 
   const getCapacityList = async (queryData) => {
     const queryResponse = await axios.get('/api/capacity', queryData);
@@ -27,6 +27,7 @@ export default function CapacityListMainWrapper(props) {
       return acc;
     }, {});
     setCapacityList(result);
+    setLoadingStates(prev => ({...prev, 0: false}));
   };
 
   const loadItems = async (type) => {
@@ -47,7 +48,7 @@ export default function CapacityListMainWrapper(props) {
           'Authorization': `Token ${data.user.token}`,
         }
       }
-      getCapacityList(queryData).catch((error) => 
+      getCapacityList(queryData).catch((error) =>
         console.error('Failed to fetch data:', error)
       );
     }
@@ -87,6 +88,12 @@ export default function CapacityListMainWrapper(props) {
     }
   };
 
+  useEffect(() => {
+    if (capacityList) {
+      handleExpandedChange("0", true);
+    }
+  }, [capacityList]);
+
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />
   }
@@ -94,30 +101,29 @@ export default function CapacityListMainWrapper(props) {
   const renderSubTree = (itemId) => {
     const isLoading = loadingStates[itemId];
     const state = isLoading ? 'loading' : 'done';
-
-    return (
-      <TreeView.SubTree state={state}>
-        {asyncItems[itemId] ? (
-          Object.entries(asyncItems[itemId]).map(([key, value]) => (
-            <TreeView.Item 
-              id={`item-${key}`} 
-              key={key}
-              onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
-            >
-              <TreeView.LeadingVisual>
-                <TreeView.DirectoryIcon />
-              </TreeView.LeadingVisual>
-              <Link href={`/capacity/${key}`}>
-                {value}
-              </Link>
-              {renderSubTree(key)}
-            </TreeView.Item>
-          ))
-        ) : (
-          <div>Loading...</div>
-        )}
-      </TreeView.SubTree>
-    );
+    let subtree = (
+        <TreeView.SubTree state={state}>
+          {asyncItems[itemId] ? (
+              Object.entries(asyncItems[itemId]).map(([key, value]) => (
+                  <TreeView.Item
+                      id={`item-${key}`}
+                      key={key}
+                      onExpandedChange={(isExpanded) => handleExpandedChange(key, isExpanded)}
+                  >
+                    <TreeView.LeadingVisual>
+                      <TreeView.DirectoryIcon/>
+                    </TreeView.LeadingVisual>
+                    <Link href={`/capacity/${key}`}>
+                      {value}
+                    </Link>
+                    {renderSubTree(key)}
+                  </TreeView.Item>
+              ))
+          ) : (
+              <div>Loading...</div>
+          )}
+        </TreeView.SubTree>);
+    return subtree;
   };
 
   return (
@@ -139,12 +145,14 @@ export default function CapacityListMainWrapper(props) {
               <TreeView aria-label="Files">
                 <TreeView.Item
                   id="async-directory"
+                  expanded={true}
                   onExpandedChange={(isExpanded) => handleExpandedChange('0', isExpanded)}
+                  current={true}
                 >
                   <TreeView.LeadingVisual>
                     <TreeView.DirectoryIcon />
                   </TreeView.LeadingVisual>
-                  Directory
+                  {props.pageContent["capacity-directory"]}
                   {renderSubTree('0')}
                 </TreeView.Item>
               </TreeView>
