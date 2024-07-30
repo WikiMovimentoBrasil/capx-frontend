@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TreeView from '@primer/react'
 import { capitalizeFirstLetter } from "./utils";
 
 export default function CapacityListView({ darkMode, capacityList }) {
