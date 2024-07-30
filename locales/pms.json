@@ -29,13 +29,16 @@
 	"body-profile-section-title-known-capacity": "Capassità conossùe",
 	"body-profile-section-title-available-capacity": "Capassità disponìbij",
 	"body-capacity-searchbar-placeholder": "Ch'a buta ël nòm ëd la capassità ch'a veul sërché.",
-	"body-capacity-wanted-user-list-title": "Utent ch'a veulo amprende costa capassità:",
-	"body-capacity-known-user-list-title": "Utent ch'a na san ëd costa capassità:",
-	"body-capacity-available-user-list-title": "Utent ch'a na san ëd costa capassità e a son disponibij e fornì dij servissi con chila:",
+	"body-capacity-wanted-user-list-title": "Utent ch'a partagio:",
+	"body-capacity-known-user-list-title": "Utent ch'a amprendo:",
+	"body-capacity-available-user-list-title": "Fornidor ëd servissi:",
 	"body-capacity-user-list-fallback-message": "A-i é gnun utent da smon-e an costa categorìa.",
 	"body-tag-user-list-title": "Utent con costa tichëtta an sò profil:",
 	"body-tag-user-list-fallback-message": "A-i é gnun utent con costa tichëtta an sò profil.",
 	"footer-link-documentation": "Documentassion",
 	"footer-link-wikimedia": "Meta-wikimedia",
-	"footer-message": "Da e për ël moviment Wikimedia"
+	"footer-message": "Da e për ël moviment Wikimedia",
+	"aria-language-input": "Serne na lenga",
+	"sign-out-button": "Seurte dal sistema",
+	"sign-in-button": "Intré ant ël sistema"
 }

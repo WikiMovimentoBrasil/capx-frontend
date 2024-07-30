@@ -28,14 +28,17 @@
 	"body-profile-section-title-wanted-capacity": "需求能力",
 	"body-profile-section-title-known-capacity": "已知能力",
 	"body-profile-section-title-available-capacity": "可用能力",
-	"body-capacity-searchbar-placeholder": "輸入您要搜尋的能力名稱。",
-	"body-capacity-wanted-user-list-title": "想要學習此能力的使用者：",
-	"body-capacity-known-user-list-title": "了解此能力的使用者：",
-	"body-capacity-available-user-list-title": "了解此能力並可藉此來提供服務的使用者：",
+	"body-capacity-searchbar-placeholder": "輸入您要搜尋的能力。",
+	"body-capacity-wanted-user-list-title": "分享者：",
+	"body-capacity-known-user-list-title": "學習者：",
+	"body-capacity-available-user-list-title": "服務提供者：",
 	"body-capacity-user-list-fallback-message": "此分類中沒有可顯示的使用者。",
 	"body-tag-user-list-title": "在他們的個人資料裡帶有此標籤的使用者：",
 	"body-tag-user-list-fallback-message": "沒有在個人資料裡帶有此標籤的使用者。",
 	"footer-link-documentation": "文件",
 	"footer-link-wikimedia": "元維基媒體",
-	"footer-message": "由維基媒體運動打造，且用於維基媒體運動"
+	"footer-message": "由維基媒體運動打造，且用於維基媒體運動",
+	"aria-language-input": "選擇語言",
+	"sign-out-button": "登出",
+	"sign-in-button": "登入"
 }

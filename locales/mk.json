@@ -28,14 +28,17 @@
 	"body-profile-section-title-wanted-capacity": "Барани капацитети",
 	"body-profile-section-title-known-capacity": "Владеени капацитети",
 	"body-profile-section-title-available-capacity": "Расположливи капацитети",
-	"body-capacity-searchbar-placeholder": "Внесете име на способноста што сакате да ја најдете.",
-	"body-capacity-wanted-user-list-title": "Корисници кои сакаат да го научат овој капацитет:",
-	"body-capacity-known-user-list-title": "Корисници што сакаат да знаат за овој капацитет:",
-	"body-capacity-available-user-list-title": "Корисници што знаат за овој капацитет и стојат на располагање да даваат услуги со него:",
+	"body-capacity-searchbar-placeholder": "Внесете го капацитетот што сакате да го пребарате.",
+	"body-capacity-wanted-user-list-title": "Споделувачи:",
+	"body-capacity-known-user-list-title": "Ученици:",
+	"body-capacity-available-user-list-title": "Услужници:",
 	"body-capacity-user-list-fallback-message": "Нема корисници во оваа категорија.",
 	"body-tag-user-list-title": "Корисниците со оваа ознака на нивниот профил:",
 	"body-tag-user-list-fallback-message": "Нема корисници со таа ознака на нивниот профил:",
 	"footer-link-documentation": "Документација",
 	"footer-link-wikimedia": "Мета-викимедија",
-	"footer-message": "За и од Викимедииното движење"
+	"footer-message": "За и од Викимедииното движење",
+	"aria-language-input": "Изберете јазик",
+	"sign-out-button": "Одјава",
+	"sign-in-button": "Најава"
 }
