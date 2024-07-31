@@ -53,10 +53,10 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               </UserProfileEditButton>
             ) : (null)}
           </div>
-          {/* Display Name & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
+          {/* Username & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
           <div className="space-y-6 sm:space-y-4">
             <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0 justify-center">
-              {/* Display Name */}
+              {/* Username */}
               <h3 className={"w-full sm:w-fit text-3xl " + (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ")}>
                 <Link href={"https://meta.wikimedia.org/wiki/User:" + userProfileData.userData.user.username}
                       className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest px-4 sm:px-5 py-3 rounded-lg">

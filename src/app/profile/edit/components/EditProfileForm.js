@@ -150,18 +150,6 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             >
               Profile Picture
             </CommonsSelect>
-            {/* Display Name */}
-            <TextInput
-              id={"display_name"}
-              key={"display_name"}
-              data={formData.userData?.display_name ?? ""}
-              placeholder={"e.g. Name Surname"}
-              onChange={handleTextInputChange}
-              type={"text"}
-              maxLength={300}
-            >
-              Display Name
-            </TextInput>
             {/* Pronouns */}
             <SingleSelectInput
               id={"pronoun"}
