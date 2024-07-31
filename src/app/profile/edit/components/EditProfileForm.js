@@ -304,17 +304,6 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
               >
                 Contact
               </TextDoubleInput>
-              <TextDoubleInput
-                field={"social"}
-                darkMode={darkMode}
-                formData={formData}
-                setFormData={setFormData}
-                placeholderDisplayName={"eg. Facebook, Instagram, Linkedin, Mastodon"}
-                placeholderValue={"Your username"}
-                maxLength={200}
-              >
-                Social Media
-              </TextDoubleInput>
             </div>
             <div className="flex items-start space-x-20">
               <SubmitButton updatingData={updatingData}>Update Profile</SubmitButton>

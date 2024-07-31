@@ -119,15 +119,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 info={item.value ?? ""}
               />
             ))}
-            {/* Social Media */}
-            {userProfileData.userData.social?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
-              <UserProfileViewTextBox
-                key={index}
-                darkMode={darkMode}
-                title={item.display_name}
-                info={item.value ?? ""}
-              />
-            ))}
           </section>
         )}
         {/* Section: Community */}
