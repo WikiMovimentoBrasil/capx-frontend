@@ -1,6 +1,6 @@
 {
   "navbar-link-about": "About",
-  "navbar-link-profile": "My Profile",
+  "navbar-link-profile": "My profile",
   "navbar-link-capacities": "Capacity directory",
   "navbar-link-events": "Events",
   "body-home-section01-title-text": "A space for exchanging",
@@ -32,7 +32,7 @@
   "body-tag-user-list-fallback-message": "There are no users with this tag on their profile.",
   "footer-link-documentation": "Documentation",
   "footer-link-github": "GitHub",
-  "footer-link-wikimedia": "Meta-wikimedia",
+  "footer-link-wikimedia": "Meta-Wikimedia",
   "footer-message": "For and by the Wikimedia Movement",
   "aria-language-input": "Choose a language",
   "sign-out-button": "Sign out",
