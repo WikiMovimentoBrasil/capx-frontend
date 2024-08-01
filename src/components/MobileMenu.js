@@ -46,7 +46,7 @@ export default function MobileMenu({ session, pageContent, darkMode, mobileMenuS
       </div>
       <MobileMenuLinks session={session} pageContent={pageContent} handleMenuStatus={handleMenuStatus} />
       <div className="flex flex-wrap w-10/12 mx-auto">
-        {session ? (<SignOutButton></SignOutButton>) : (<SignInButton message="Login" />)}
+        {session ? (<SignOutButton message={pageContent["sign-out-button"]}></SignOutButton>) : (<SignInButton message={pageContent["sign-in-button"]} />)}
       </div>
     </motion.div>
   )
