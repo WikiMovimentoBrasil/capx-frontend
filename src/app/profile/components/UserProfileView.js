@@ -28,7 +28,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
       setWantedCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_wanted.includes(item.code))));
       setKnownCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_known.includes(item.code))));
       setAvailableCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_available.includes(item.code))));
-      setSocialMediaCount(userProfileData.userData.social?.filter((item) => (item.display_name !== "" || item.value !== "")) ?? []);
       setContactCount(userProfileData.userData.contact?.filter((item) => (item.display_name !== "" || item.value !== "")) ?? []);
     }
   }, [userProfileData]);

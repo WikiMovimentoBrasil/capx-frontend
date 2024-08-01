@@ -36,7 +36,7 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
           <input
             value={""}
             type="text"
-            className="w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"
+            className="w-full h-12 text-capx-dark-bg pl-4 rounded-md"
             placeholder={pageContent["body-capacity-searchbar-placeholder"]}
             disabled={true}
           />
@@ -52,7 +52,7 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
           type="text"
           value={searchBarQuery}
           onChange={handleInputChange}
-          className={"w-full h-12 text-capx-dark-bg pl-4 border-2 rounded-md"}
+          className={"w-full h-12 text-capx-dark-bg pl-4 rounded-md"}
           placeholder={pageContent["body-capacity-searchbar-placeholder"]}
         />
         {searchBarQuery && (
