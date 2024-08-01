@@ -15,11 +15,7 @@ export default async function Home() {
   const filePath = path.join(process.cwd(), 'locales', `${language}.json`);
   const pageContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-  if (session) {
-    redirect('/profile');
-  } else {
-    return (
+  return (
       <ApplicationWrapper session={session !== null} language={language} pageContent={pageContent} darkMode={darkMode} />
-    )
-  }
+  )
 }
