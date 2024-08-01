@@ -1,18 +1,45 @@
 {
 	"@metadata": {
 		"authors": [
+			"Huajing",
 			"Xuanxuan1231"
 		]
 	},
 	"navbar-link-about": "关于",
 	"navbar-link-profile": "我的个人资料",
+	"navbar-link-capacities": "能力目录",
 	"navbar-link-events": "事件",
+	"body-home-section01-title-text": "一个用来交流的空间",
+	"body-home-section01-title-carousel": "能力，知识，技能，服务",
+	"body-home-section01-description": "在由维基媒体运动打造、适用于维基媒体运动的平台里，与同侪交流、学习并分享能力",
+	"body-home-section01-button": "加入Capacity Exchange！",
 	"body-profile-gender-hehim": "他",
 	"body-profile-gender-sheher": "她",
 	"body-profile-gender-theythem": "他们",
 	"body-profile-gender-notespecified": "未指定",
 	"body-profile-gender-other": "其他",
 	"body-profile-edit-button": "编辑个人资料",
+	"body-profile-box-title-wikidata-item": "维基数据项目",
+	"body-profile-box-title-alt-wiki-acc": "其他维基媒体账号",
+	"body-profile-section-title-contact-social": "联系方式与社交媒体账户",
+	"body-profile-section-title-territory": "区域",
 	"body-profile-section-title-language": "语言",
-	"footer-link-documentation": "文档"
+	"body-profile-section-title-affiliation": "所属机构",
+	"body-profile-section-title-wikimedia-project": "维基媒体项目",
+	"body-profile-section-title-wanted-capacity": "想获得的能力",
+	"body-profile-section-title-known-capacity": "已知的能力",
+	"body-profile-section-title-available-capacity": "可用的能力",
+	"body-capacity-searchbar-placeholder": "输入您想查找的能力。",
+	"body-capacity-wanted-user-list-title": "分享者：",
+	"body-capacity-known-user-list-title": "学习者；",
+	"body-capacity-available-user-list-title": "服务提供者：",
+	"body-capacity-user-list-fallback-message": "该分类中没有可显示的用户。",
+	"body-tag-user-list-title": "在个人资料中带有此标签的用户：",
+	"body-tag-user-list-fallback-message": "没有用户在个人资料中带有此标签。",
+	"footer-link-documentation": "文档",
+	"footer-link-wikimedia": "元维基媒体",
+	"footer-message": "由维基媒体运动打造，并用于维基媒体运动",
+	"aria-language-input": "选择语言",
+	"sign-out-button": "注销",
+	"sign-in-button": "登录"
 }
