@@ -28,7 +28,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
       setWantedCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_wanted.includes(item.code))));
       setKnownCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_known.includes(item.code))));
       setAvailableCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_available.includes(item.code))));
-      setSocialMediaCount(userProfileData.userData.social?.filter((item) => (item.display_name !== "" || item.value !== "")) ?? []);
       setContactCount(userProfileData.userData.contact?.filter((item) => (item.display_name !== "" || item.value !== "")) ?? []);
     }
   }, [userProfileData]);
@@ -53,10 +52,10 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               </UserProfileEditButton>
             ) : (null)}
           </div>
-          {/* Display Name & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
+          {/* Username & Pronoun & About & Wikidata Item & Aternative Wikimedia Account */}
           <div className="space-y-6 sm:space-y-4">
             <div className="flex-none sm:flex sm:space-x-4 space-y-4 sm:space-y-0 justify-center">
-              {/* Display Name */}
+              {/* Username */}
               <h3 className={"w-full sm:w-fit text-3xl " + (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ")}>
                 <Link href={"https://meta.wikimedia.org/wiki/User:" + userProfileData.userData.user.username}
                       className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest px-4 sm:px-5 py-3 rounded-lg">
@@ -119,15 +118,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 info={item.value ?? ""}
               />
             ))}
-            {/* Social Media */}
-            {userProfileData.userData.social?.map((item, index) => item.display_name === "" || item.value === "" ? (null) : (
-              <UserProfileViewTextBox
-                key={index}
-                darkMode={darkMode}
-                title={item.display_name}
-                info={item.value ?? ""}
-              />
-            ))}
           </section>
         )}
         {/* Section: Community */}
@@ -168,6 +158,17 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
                 data={userProfileData.userData.affiliation}
                 tagList={userProfileData.affiliationData}
                 endpoint={"tag/affiliation"}
+              />
+            </div>
+          )}
+          {userProfileData.userData.team.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-team"]}
+              </UserProfileViewBoxTitle>
+              <UserProfileViewTextBox
+                  darkMode={darkMode}
+                  info={userProfileData.userData.team ?? ""}
               />
             </div>
           )}
