@@ -1,13 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Alien333",
 			"EPorto (WMB)",
 			"MacOS Weed"
 		]
 	},
 	"navbar-link-about": "À propos",
 	"navbar-link-profile": "Mon profil",
-	"navbar-link-capacities": "Compétences",
+	"navbar-link-capacities": "Répertoire des compétences",
 	"navbar-link-events": "Événements",
 	"body-home-section01-title-text": "Un espace pour échanger sur",
 	"body-home-section01-title-carousel": "la compétence, la connaissance, les aptitudes et les services",
@@ -30,9 +31,9 @@
 	"body-profile-section-title-known-capacity": "Compétences connues",
 	"body-profile-section-title-available-capacity": "Compétences disponibles",
 	"body-capacity-searchbar-placeholder": "Saisir la compétence que vous recherchez.",
-	"body-capacity-wanted-user-list-title": "Utilisateurs souhaitant apprendre cette compétence :",
-	"body-capacity-known-user-list-title": "Utilisateurs qui connaissent cette compétence :",
-	"body-capacity-available-user-list-title": "Utilisateurs qui connaissent cette compétence et qui sont disponibles pour offrir leurs services avec :",
+	"body-capacity-wanted-user-list-title": "Partageurs:",
+	"body-capacity-known-user-list-title": "Apprenants:",
+	"body-capacity-available-user-list-title": "Prestataires de services:",
 	"body-capacity-user-list-fallback-message": "Il n'y a aucun utilisateur à afficher dans cette catégorie.",
 	"body-tag-user-list-title": "Utilisateurs avec cette étiquette dans leur profil :",
 	"body-tag-user-list-fallback-message": "Il n'y a aucun utilisateur avec cette étiquette dans leur profil.",

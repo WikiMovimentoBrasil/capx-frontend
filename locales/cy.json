@@ -15,5 +15,8 @@
 	"body-profile-box-title-wikidata-item": "Eitem Wicidata",
 	"body-profile-section-title-territory": "Tiriogaeth",
 	"body-profile-section-title-language": "Iaith",
-	"body-profile-section-title-affiliation": "Cysylltiad"
+	"body-profile-section-title-affiliation": "Cysylltiad",
+	"aria-language-input": "Dewiswch iaith",
+	"sign-out-button": "Allgofnodi",
+	"sign-in-button": "Mewngofnodi"
 }
