@@ -162,6 +162,17 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               />
             </div>
           )}
+          {userProfileData.userData.team.length === 0 ? (null) : (
+            <div className="space-y-6 sm:space-y-4">
+              <UserProfileViewBoxTitle>
+                {pageContent["body-profile-section-title-team"]}
+              </UserProfileViewBoxTitle>
+              <UserProfileViewTextBox
+                  darkMode={darkMode}
+                  info={userProfileData.userData.team ?? ""}
+              />
+            </div>
+          )}
           {userProfileData.userData.wikimedia_project.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
               <UserProfileViewBoxTitle>
