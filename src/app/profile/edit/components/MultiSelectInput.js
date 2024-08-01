@@ -20,7 +20,7 @@ const multiSelectStyle = {
   }),
 };
 
-export default function MultiSelectInput({ children, isUserSelectionLoaded = true, id, options, selectedOptions, onChange }) {
+export default function MultiSelectInput({ children, isUserSelectionLoaded = true, id, options, selectedOptions, onChange , placeholder}) {
   if (isUserSelectionLoaded) {
     return (
       <div className="w-full space-y-2 mb-8">
@@ -31,7 +31,7 @@ export default function MultiSelectInput({ children, isUserSelectionLoaded = tru
           instanceId={id}
           isSearchable={true}
           styles={multiSelectStyle}
-          placeholder={""}
+          placeholder={placeholder}
           options={options}
           value={selectedOptions}
           onChange={onChange}

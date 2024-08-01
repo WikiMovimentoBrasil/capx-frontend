@@ -11,7 +11,7 @@ import TextDoubleInput from "./TextDoubleInput";
 import CommonsSelect from "./CommonsSelect";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
-export default function EditProfileForm({ darkMode, session, formData, setFormData }) {
+export default function EditProfileForm({ darkMode, session, formData, setFormData, pageContent }) {
   const router = useRouter();
   const [updatingData, setUpdatingData] = useState(false);
 
@@ -139,172 +139,191 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
           <form onSubmit={handleSubmit} className="w-full">
             {/* Profile Picture */}
             <CommonsSelect
-              id={"profile_image"}
-              data={formData.userData?.profile_image ? {
-                label: extractImageName(formData.userData.profile_image),
-                thumbnail: formData.userData.profile_image 
-              } : null}
-              onChange={(selectedOption) => handleSingleSelectInputChange(selectedOption, { name: "profile_image" })}
-              loadOptions={debouncedLoadPictures}
-              formatOptionLabel={formatOptionLabel}
+                id={"profile_image"}
+                data={formData.userData?.profile_image ? {
+                  label: extractImageName(formData.userData.profile_image),
+                  thumbnail: formData.userData.profile_image
+                } : null}
+                onChange={(selectedOption) => handleSingleSelectInputChange(selectedOption, {name: "profile_image"})}
+                loadOptions={debouncedLoadPictures}
+                formatOptionLabel={formatOptionLabel}
+                placeholder={pageContent["form-profile-select"]}
             >
-              Profile Picture
+              {pageContent["form-profile-picture"]}
             </CommonsSelect>
             {/* Pronouns */}
             <SingleSelectInput
-              id={"pronoun"}
-              key={"pronoun"}
-              data={pronouns.map((option) => option)}
-              defaultValue={pronouns.find((option) => option.value === formData.userData?.pronoun)}
-              onChange={handleSingleSelectInputChange}
+                id={"pronoun"}
+                key={"pronoun"}
+                data={pronouns.map((option) => option)}
+                defaultValue={pronouns.find((option) => option.value === formData.userData?.pronoun)}
+                onChange={handleSingleSelectInputChange}
             >
-              Pronouns
+              {pageContent["form-profile-pronouns"]}
             </SingleSelectInput>
             {/* Short Bio */}
             <TextArea
-              id={"about"}
-              key={"about"}
-              data={formData.userData?.about ?? ""}
-              placeholder={"briefly introduce and describe yourself"}
-              onChange={handleTextInputChange}
-              type={"text"}
-              maxLength={500}
+                id={"about"}
+                key={"about"}
+                data={formData.userData?.about ?? ""}
+                placeholder={pageContent["form-profile-short-bio-placeholder"]}
+                onChange={handleTextInputChange}
+                type={"text"}
+                maxLength={500}
             >
-              Short Bio
+              {pageContent["form-profile-short-bio"]}
             </TextArea>
             {/* Wikidata Item */}
             <TextInput
-              id={"wikidata_qid"}
-              key={"wikidata_qid"}
-              data={formData.userData?.wikidata_qid ?? ""}
-              placeholder={"e.g. Q125816201"}
-              onChange={handleTextInputChange}
-              type={"text"}
-              maxLength={10}
+                id={"wikidata_qid"}
+                key={"wikidata_qid"}
+                data={formData.userData?.wikidata_qid ?? ""}
+                placeholder={pageContent["form-profile-wikidata-item-placeholder"]}
+                onChange={handleTextInputChange}
+                type={"text"}
+                maxLength={10}
             >
-              Wikidata Item
+              {pageContent["form-profile-wikidata-item"]}
             </TextInput>
             {/* Alternative Wikimedia Account */}
             <TextInput
-              id={"wiki_alt"}
-              key={"wiki_alt"}
-              data={formData.userData?.wiki_alt ?? ""}
-              placeholder={"e.g. Username"}
-              onChange={handleTextInputChange}
-              type={"text"}
-              maxLength={128}
+                id={"wiki_alt"}
+                key={"wiki_alt"}
+                data={formData.userData?.wiki_alt ?? ""}
+                placeholder={pageContent["form-profile-alternative-wikimedia-account-placeholder"]}
+                onChange={handleTextInputChange}
+                type={"text"}
+                maxLength={128}
             >
-              Alternative Wikimedia Account
+              {pageContent["form-profile-alternative-wikimedia-account"]}
             </TextInput>
             {/* Territory */}
             <MultiSelectInput
-              id={"territory"}
-              key={"territory"}
-              options={Object.entries(formData.territoryData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.territory?.map((option) => ({ value: option, label: formData.territoryData?.[option] })) ?? []}
-              onChange={handleMultiSelectInputChange}
+                id={"territory"}
+                key={"territory"}
+                options={Object.entries(formData.territoryData ?? {}).map((option) => ({
+                  value: parseInt(option[0]),
+                  label: option[1]
+                }))}
+                selectedOptions={formData.userData?.territory?.map((option) => ({
+                  value: option,
+                  label: formData.territoryData?.[option]
+                })) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
             >
-              Territory
+              {pageContent["form-profile-territory"]}
             </MultiSelectInput>
             {/* Language */}
             <MultiSelectInput
-              id={"language"}
-              key={"language"}
-              options={Object.entries(formData.languageData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.language?.map((option) => ({ value: option, label: formData.languageData[option] })) ?? []}
-              onChange={handleMultiSelectInputChange}
+                id={"language"}
+                key={"language"}
+                options={Object.entries(formData.languageData ?? {}).map((option) => ({
+                  value: parseInt(option[0]),
+                  label: option[1]
+                }))}
+                selectedOptions={formData.userData?.language?.map((option) => ({
+                  value: option,
+                  label: formData.languageData[option]
+                })) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
             >
-              Language
+              {pageContent["form-profile-languages"]}
             </MultiSelectInput>
             {/* Affilitation */}
             <MultiSelectInput
-              id={"affiliation"}
-              key={"affiliation"}
-              options={Object.entries(formData.affiliationData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.affiliation?.map((option) => ({ value: option, label: formData.affiliationData[option] })) ?? []}
-              onChange={handleMultiSelectInputChange}
+                id={"affiliation"}
+                key={"affiliation"}
+                options={Object.entries(formData.affiliationData ?? {}).map((option) => ({
+                  value: parseInt(option[0]),
+                  label: option[1]
+                }))}
+                selectedOptions={formData.userData?.affiliation?.map((option) => ({
+                  value: option,
+                  label: formData.affiliationData[option]
+                })) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
             >
-              Affilitation
-            </MultiSelectInput>
-            {/* Wikimedia Project */}
-            <MultiSelectInput
-              id={"wikimedia_project"}
-              key={"wikimedia_project"}
-              options={Object.entries(formData.wikiProjectData ?? {}).map((option) => ({ value: parseInt(option[0]), label: option[1] }))}
-              selectedOptions={formData.userData?.wikimedia_project?.map((option) => ({ value: option, label: formData.wikiProjectData[option] })) ?? []}
-              onChange={handleMultiSelectInputChange}
-            >
-              Wikimedia Project
-            </MultiSelectInput>
-            {/* Known Skills */}
-            <MultiSelectInput
-              id={"skills_known"}
-              key={"skills_known"}
-              options={formData.skillData?.map((skill) => ({ value: skill.code, label: skill.name }))}
-              selectedOptions={formData.userData?.skills_known?.map((option) => {
-                const skill = formData.skillData.find(skill => skill.code === option);
-                return { value: skill.code, label: skill.name };
-              }) ?? []}
-              onChange={(selectedOptions) => handleMultiSelectInputChange(selectedOptions, { name: "skills_known" })}
-            >
-              Known Capacities
-            </MultiSelectInput>
-            {/* Available Skills */}
-            <MultiSelectInput
-              id={"skills_available"}
-              key={"skills_available"}
-              options={
-                formData.userData?.skills_known?.map((knownSkill) => {
-                  const skill = formData.skillData.find(skill => skill.code === knownSkill);
-                  return { value: skill.code, label: skill.name };
-                }) ?? []
-              }
-              selectedOptions={formData.userData?.skills_available?.map((option) => {
-                const skill = formData.skillData.find(skill => skill.code === option);
-                return { value: skill.code, label: skill.name };
-              }) ?? []}
-              onChange={handleMultiSelectInputChange}
-            >
-              Available Capacities
-            </MultiSelectInput>
-            {/* Wanted Skills */}
-            <MultiSelectInput
-              id={"skills_wanted"}
-              key={"skills_wanted"}
-              options={formData.skillData?.map((skill) => ({ value: skill.code, label: skill.name }))}
-              selectedOptions={formData.userData?.skills_wanted?.map((option) => {
-                const skill = formData.skillData.find(skill => skill.code === option);
-                return { value: skill.code, label: skill.name };
-              }) ?? []}
-              onChange={handleMultiSelectInputChange}
-            >
-              Wanted Capacities
+              {pageContent["form-profile-affiliation"]}
             </MultiSelectInput>
             {/* Team */}
             <TextInput
-              id={"team"}
-              key={"team"}
-              data={formData.userData?.team ?? ""}
-              placeholder={"e.g. Staff Team"}
-              onChange={handleTextInputChange}
-              type={"text"}
-              maxLength={128}
+                id={"team"}
+                key={"team"}
+                data={formData.userData?.team ?? ""}
+                placeholder={pageContent["form-profile-team-placeholder"]}
+                onChange={handleTextInputChange}
+                type={"text"}
+                maxLength={128}
             >
-              Team
+              {pageContent["form-profile-team"]}
             </TextInput>
-            <div className="grid grid-cols-1 sm:grid-cols-2 w-full gap-10 mb-8">
-              <TextDoubleInput
-                field={"contact"}
-                darkMode={darkMode}
-                formData={formData}
-                setFormData={setFormData}
-                placeholderDisplayName={"eg. E-mail, Talk Page, Strategy Forum, Telegram, Whatsapp"}
-                placeholderValue={"eg. name@email.com, url, your username"}
-                maxLength={200}
-              >
-                Contact
-              </TextDoubleInput>
-            </div>
+            {/* Wikimedia Project */}
+            <MultiSelectInput
+                id={"wikimedia_project"}
+                key={"wikimedia_project"}
+                options={Object.entries(formData.wikiProjectData ?? {}).map((option) => ({
+                  value: parseInt(option[0]),
+                  label: option[1]
+                }))}
+                selectedOptions={formData.userData?.wikimedia_project?.map((option) => ({
+                  value: option,
+                  label: formData.wikiProjectData[option]
+                })) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
+            >
+              {pageContent["form-profile-wikimedia-projects"]}
+            </MultiSelectInput>
+            {/* Known Skills */}
+            <MultiSelectInput
+                id={"skills_known"}
+                key={"skills_known"}
+                options={formData.skillData?.map((skill) => ({value: skill.code, label: skill.name}))}
+                selectedOptions={formData.userData?.skills_known?.map((option) => {
+                  const skill = formData.skillData.find(skill => skill.code === option);
+                  return {value: skill.code, label: skill.name};
+                }) ?? []}
+                onChange={(selectedOptions) => handleMultiSelectInputChange(selectedOptions, {name: "skills_known"})}
+                placeholder = {pageContent["form-profile-select"]}
+            >
+              {pageContent["form-profile-known-capacities"]}
+            </MultiSelectInput>
+            {/* Available Skills */}
+            <MultiSelectInput
+                id={"skills_available"}
+                key={"skills_available"}
+                options={
+                    formData.userData?.skills_known?.map((knownSkill) => {
+                      const skill = formData.skillData.find(skill => skill.code === knownSkill);
+                      return {value: skill.code, label: skill.name};
+                    }) ?? []
+                }
+                selectedOptions={formData.userData?.skills_available?.map((option) => {
+                  const skill = formData.skillData.find(skill => skill.code === option);
+                  return {value: skill.code, label: skill.name};
+                }) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
+            >
+              {pageContent["form-profile-available-capacities"]}
+            </MultiSelectInput>
+            {/* Wanted Skills */}
+            <MultiSelectInput
+                id={"skills_wanted"}
+                key={"skills_wanted"}
+                options={formData.skillData?.map((skill) => ({value: skill.code, label: skill.name}))}
+                selectedOptions={formData.userData?.skills_wanted?.map((option) => {
+                  const skill = formData.skillData.find(skill => skill.code === option);
+                  return {value: skill.code, label: skill.name};
+                }) ?? []}
+                onChange={handleMultiSelectInputChange}
+                placeholder = {pageContent["form-profile-select"]}
+            >
+              {pageContent["form-profile-wanted-capacities"]}
+            </MultiSelectInput>
             <div className="flex items-start space-x-20">
               <SubmitButton updatingData={updatingData}>Update Profile</SubmitButton>
               <ButtonRedirectToPage to={"/profile"}>
