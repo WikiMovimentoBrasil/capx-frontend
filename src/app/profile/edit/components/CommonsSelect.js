@@ -1,9 +1,9 @@
 import AsyncSelect from 'react-select/async';
 
-export default function CommonsSelect({ children, id, data, onChange, placeholder, maxLength, key, loadOptions, formatOptionLabel }) {
+export default function CommonsSelect({ children, darkmode, id, data, onChange, placeholder, maxLength, key, loadOptions, formatOptionLabel }) {
   return (
     <div className="w-full space-y-2 mb-8">
-      <label className="w-full ml-2">{children}</label>
+      <span className="w-full ml-2">{children}</span>
       <AsyncSelect
         rows="4"
         placeholder={placeholder}
@@ -21,7 +21,16 @@ export default function CommonsSelect({ children, id, data, onChange, placeholde
             border: 'none',
             padding: '0px',
             boxShadow: 'none',
+            color: "#757575",
           }),
+          placeholder: (provided, state) => ({
+              ...provided,
+              color: "#757575",
+          }),
+          option: (provided, state) => ({
+              ...provided,
+              color: "#757575",
+          })
         }}   
         cacheOptions={true}
         loadOptions={loadOptions}

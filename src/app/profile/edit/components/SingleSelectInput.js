@@ -23,7 +23,7 @@ export default function SingleSelectInput({ children, isUserSelectionLoaded = tr
   if (isUserSelectionLoaded) {
     return (
       <div className="w-full space-y-2 mb-8">
-        <label className="ml-2">{children}</label>
+        <span className="ml-2">{children}</span>
         <Select
           name={id}
           instanceId={id}
