@@ -126,7 +126,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
     if (session.sessionStatus == "authenticated") {
       e.preventDefault();
       const queryResponse = await axios.post("/api/profile",
-        ...formData.userData,
+        formData.userData,
         {
           headers: {
             'Authorization': `Token ${session.sessionData.user.token}`,
