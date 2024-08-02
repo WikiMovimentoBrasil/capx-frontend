@@ -2,12 +2,18 @@ import axios from "axios";
 
 export default async function userProfile(req, res) {
   if (req.method === "GET") {
-    const queryResponse = await axios.get(process.env.BASE_URL + "/users/" + req.query.userId, {
+    const queryResponse = await axios.get(process.env.BASE_URL + "/users?username=" + req.query.userId, {
       headers: {
         'Authorization': req.headers.authorization
       }
     });
-    res.status(200).json(queryResponse.data);
+
+    if (queryResponse.data.length > 0) {
+      res.status(200).json(queryResponse.data[0]);
+    } else {
+      res.status(200);
+    }
+
   }
   else if (req.method === "POST") {
     const postBody = req.body;
