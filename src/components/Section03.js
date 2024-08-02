@@ -24,7 +24,7 @@ export default function Section03({ darkMode }) {
           />
         </div>
         <div className="flex w-full">
-          <button className="bg-capx-secondary-purple font-extrabold text-xl text-[#F6F6F6] mx-auto px-8 py-3 rounded-full">Submit your message</button>
+          <button className="bg-capx-secondary-purple hover:bg-capx-primary-green font-extrabold text-xl text-[#F6F6F6] hover:text-capx-dark-bg mx-auto px-8 py-3 rounded-full">Submit your message</button>
         </div>
       </div>
     </section>

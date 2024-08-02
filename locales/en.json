@@ -3,6 +3,7 @@
   "navbar-link-profile": "My profile",
   "navbar-link-capacities": "Capacity directory",
   "navbar-link-events": "Events",
+  "navbar-link-homepage": "Homepage",
   "body-home-section01-title-text": "A space for exchanging",
   "body-home-section01-title-carousel": "capacity, knowledge, skills, services",
   "body-home-section01-description": "Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.",
@@ -61,5 +62,6 @@
   "form-profile-available-capacities": "Available capacities",
   "form-profile-wanted-capacities": "Wanted capacities",
   "form-profile-delete-button": "Yes, delete my CapX profile",
-  "form-profile-delete-cancel-button": "No, I want to keep my CapX profile"
+  "form-profile-delete-cancel-button": "No, I want to keep my CapX profile",
+  "no-user-profile": "Oh, no! There are no users with this username registered in CapX"
 }

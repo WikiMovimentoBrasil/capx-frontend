@@ -7,7 +7,7 @@ export default function UserProfileViewCapacityBox({ darkMode, data, endpoint })
       {data?.map((item, index) => (
         <Link
           key={index} href={`/${endpoint}/${item.code}`}
-          className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest text-base sm:text-base px-4 sm:px-5 py-3 rounded-lg">
+          className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-widest text-base sm:text-base px-4 sm:px-5 py-3 rounded-lg">
           {capitalizeFirstLetter(item.name)}
         </Link>
       ))}
