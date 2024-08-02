@@ -7,6 +7,7 @@ import UserProfileViewTagBox from "./UserProfileViewTagBox";
 import UserProfileViewSkeleton from "./UserProfileViewSkeleton";
 import UserProfileViewBoxTitle from "./UserProfileViewBoxTitle";
 import UserProfileViewCapacityBox from "./UserProfileViewCapacityBox";
+import NoUserProfileView from "./NoUserProfileView";
 
 export default function UserProfileView({ darkMode, userProfileData, showEditButton, pageContent }) {
   const [wantedCapacities, setWantedCapacities] = useState(undefined);
@@ -24,7 +25,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
   ]
 
   useEffect(() => {
-    if (userProfileData?.skillData !== undefined && userProfileData?.userData !== undefined) {
+    if (userProfileData?.skillData !== undefined && userProfileData?.userData !== undefined && userProfileData.userData !== "") {
       setWantedCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_wanted.includes(item.code))));
       setKnownCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_known.includes(item.code))));
       setAvailableCapacities(userProfileData.skillData.filter((item) => (userProfileData.userData.skills_available.includes(item.code))));
@@ -35,6 +36,11 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
   if (userProfileData === undefined) {
     return (
       <UserProfileViewSkeleton darkMode={darkMode} />
+    )
+  }
+  if (userProfileData.userData === "") {
+    return (
+      <NoUserProfileView darkMode={darkMode} pageContent={pageContent}/>
     )
   }
 
@@ -58,7 +64,7 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               {/* Username */}
               <h3 className={"w-full sm:w-fit text-3xl " + (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ")}>
                 <Link href={"https://meta.wikimedia.org/wiki/User:" + userProfileData.userData.user.username}
-                      className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest px-4 sm:px-5 py-3 rounded-lg">
+                      className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-widest px-4 sm:px-5 py-3 rounded-lg">
                   <span className="font-extrabold">
                     {userProfileData.userData.user.username ? (userProfileData.userData.user.username) : ""}
                   </span>
