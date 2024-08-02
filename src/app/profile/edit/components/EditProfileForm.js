@@ -12,8 +12,9 @@ import TextDoubleInput from "./TextDoubleInput";
 import CommonsSelect from "./CommonsSelect";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 import Modal from 'react-modal';
+import { signOut } from "next-auth/react";
 
-Modal.setAppElement(document.getElementById("modal"));
+Modal.setAppElement(document.getElementById("root"));
 
 export default function EditProfileForm({ darkMode, session, formData, setFormData, pageContent }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,10 +144,12 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
       e.preventDefault();
       try {
         const queryResponse = await axios.delete("/api/profile",
-            formData.userData,
             {
               headers: {
                 "Authorization": `Token ${session.sessionData.user.token}`
+              },
+              data: {
+                userId: formData.userData.user.id,
               }
             });
         if (queryResponse.status !== 200) {
@@ -157,6 +160,8 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
       } catch (error) {
         console.error("Error deleting profile:", error);
       }
+      await signOut();
+      window.location.href = "/";
     } else {
       alert ("Usernames do not match");
     }
@@ -356,7 +361,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
               </MultiSelectInput>
             </form>
             <div className="flex items-start flex-wrap w-full sm:flex-nowrap">
-              <div class="flex space-x-4 flex-wrap sm:w-fit w-full sm:flex-nowrap justify-between sm:justify-start mb-6">
+              <div className="flex space-x-4 flex-wrap sm:w-fit w-full sm:flex-nowrap justify-between sm:justify-start mb-6">
                 <SubmitButton updatingData={updatingData} form="profile_form">Update
                   Profile</SubmitButton>
                 <ButtonRedirectToPage to={"/profile"}>
@@ -384,7 +389,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
                 >
                   {pageContent["body-profile-delete-warning"]}
                 </TextInput>
-                <div class="flex flex-wrap w-full sm:flex-nowrap justify-center sm:justify-between gap-4 mb-6">
+                <div className="flex flex-wrap w-full sm:flex-nowrap justify-center sm:justify-between gap-4 mb-6">
                   <SimpleButton type="button" onClick={() => setIsModalOpen(false)} bg_color="bg-capx-secondary-grey hover:bg-capx-secondary-dark-grey" text_color="text-[#FFFFFF]">{pageContent["form-profile-delete-cancel-button"]}</SimpleButton>
                   <SimpleButton type="button" onClick={handleDelete} bg_color="bg-capx-primary-red hover:bg-capx-secondary-red">{pageContent["form-profile-delete-button"]}</SimpleButton>
                 </div>
