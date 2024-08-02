@@ -23,6 +23,9 @@
   "body-profile-section-title-wanted-capacity": "Wanted Capacities",
   "body-profile-section-title-known-capacity": "Known Capacities",
   "body-profile-section-title-available-capacity": "Available Capacities",
+  "body-profile-delete-confirmation": "Delete your CapX profile permanently?",
+  "body-profile-delete-warning": "This action can not be undone, but you can always create a new profile in the future. This does not affect your Wikimedia account.",
+  "body-profile-delete-message": "Type your username to confirm:",
   "body-capacity-searchbar-placeholder": "Type the capacity you want to search.",
   "body-capacity-wanted-user-list-title": "Sharers:",
   "body-capacity-known-user-list-title": "Learners:",
@@ -56,5 +59,7 @@
   "form-profile-wikimedia-projects": "Wikimedia projects",
   "form-profile-known-capacities": "Known capacacities",
   "form-profile-available-capacities": "Available capacities",
-  "form-profile-wanted-capacities": "Wanted capacities"
+  "form-profile-wanted-capacities": "Wanted capacities",
+  "form-profile-delete-button": "Yes, delete my CapX profile",
+  "form-profile-delete-cancel-button": "No, I want to keep my CapX profile"
 }

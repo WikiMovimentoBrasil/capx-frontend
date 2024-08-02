@@ -31,6 +31,15 @@ export default async function userProfile(req, res) {
 
     res.status(200).json(formFields);
   }
+  else if (req.method === "DELETE") {
+    const queryResponse = await axios.delete(process.env.BASE_URL + "/profile/" + req.query.userId,{
+      headers: {
+        'Authorization': req.headers.authorization
+      }
+    });
+
+    res.status(200).json(queryResponse.data);
+  }
   else {
     res.status(405);
   }

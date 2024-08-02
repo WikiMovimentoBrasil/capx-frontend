@@ -41,3 +41,7 @@ html, body {
     flex-direction: column;
     justify-content: space-between;
 }
+
+textarea::placeholder, input::placeholder {
+  color: #757575;
+}
