@@ -13,7 +13,7 @@ import CommonsSelect from "./CommonsSelect";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 import Modal from 'react-modal';
 
-Modal.setAppElement("#modal");
+Modal.setAppElement(document.getElementById("modal"));
 
 export default function EditProfileForm({ darkMode, session, formData, setFormData, pageContent }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
