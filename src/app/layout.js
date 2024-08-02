@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <SessionWrapper>
       <html lang="pt-br">
-        <body>{children}</body>
+        <body id="root">{children}</body>
       </html>
     </SessionWrapper>
   );
