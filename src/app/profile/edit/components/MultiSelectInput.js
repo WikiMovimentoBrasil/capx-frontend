@@ -17,6 +17,7 @@ const multiSelectStyle = {
   }),
   placeholder: (styles) => ({
     ...styles,
+    color: "#757575",
   }),
 };
 
@@ -24,7 +25,7 @@ export default function MultiSelectInput({ children, isUserSelectionLoaded = tru
   if (isUserSelectionLoaded) {
     return (
       <div className="w-full space-y-2 mb-8">
-        <label className="ml-2">{children}</label>
+        <span className="ml-2">{children}</span>
         <Select
           isMulti
           name={id}
