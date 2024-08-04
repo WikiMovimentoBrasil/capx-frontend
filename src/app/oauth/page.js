@@ -36,7 +36,7 @@ export default function OAuth({ searchParams }) {
       router.push("/");
     }
     finishLogin();
-  }, []);
+  }, [oauth_verifier, router]);
 
   return (
     <section className="flex w-screen h-screen font-montserrat">

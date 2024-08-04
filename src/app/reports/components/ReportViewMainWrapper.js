@@ -36,7 +36,7 @@ export default function ReportViewMainWrapper(props) {
             }
             getReportData(queryData);
         }
-    }, [status]);
+    }, [data.user.token, props.language, props.reportId, status]);
 
     useEffect(() => {
         if (reportData && data?.user?.username) {

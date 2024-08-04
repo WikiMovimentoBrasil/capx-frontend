@@ -13,6 +13,7 @@ import CommonsSelect from "./CommonsSelect";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 import Modal from 'react-modal';
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 Modal.setAppElement(document.getElementById("root"));
 
@@ -80,7 +81,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
   const formatOptionLabel = ({ value, label, thumbnail }) => (
     <div className="flex items-center">
       {thumbnail ? (
-        <img src={thumbnail} className="w-8 h-8 rounded-full" alt={label} />
+        <Image src={thumbnail} className="w-8 h-8 rounded-full" alt={label} />
       ) : (
         <div className="w-8 h-8 rounded-full bg-gray-200" /> // Placeholder for loading image
       )}

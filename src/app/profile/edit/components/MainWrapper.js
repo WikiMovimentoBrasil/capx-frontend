@@ -62,7 +62,7 @@ export default function MainWrapper(props) {
       getData(queryData);
 
     }
-  }, [status]);
+  }, [data.user.id, data.user.token, status]);
 
   if (status === "loading") {
     pageComponent = (<LoadingSection darkMode={darkMode} message="YOUR PROFILE DATA FOR EDITING" />)
