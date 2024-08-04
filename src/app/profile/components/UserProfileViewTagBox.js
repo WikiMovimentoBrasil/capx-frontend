@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
+import {capitalizeFirstLetter} from "@/components/StringUtils";
 
 export default function UserProfileViewTagBox({ darkMode, data, tagList, endpoint }) {
   return (

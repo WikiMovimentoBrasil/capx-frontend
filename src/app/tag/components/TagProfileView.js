@@ -1,7 +1,7 @@
 import TagProfileUserList from "./TagProfileUserList";
 import TagProfileNoUserBox from "./TagProfileNoUserBox";
 import TagProfileViewSkeleton from "./TagProfileViewSkeleton";
-import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
+import {capitalizeFirstLetter} from "@/components/StringUtils";
 
 export default function TagProfileView({ darkMode, selectedTagData, pageContent, userId }) {
   if (selectedTagData === undefined) {

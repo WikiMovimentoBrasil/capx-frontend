@@ -5,6 +5,7 @@ export default function MobileMenuLinks({ session, pageContent, handleMenuStatus
   const menuDataLoggedIn = [
     { title: pageContent["navbar-link-profile"], to: "/profile", active: true },
     { title: pageContent["navbar-link-capacities"], to: "/capacity", active: true },
+    { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
     { title: pageContent["navbar-link-events"], to: "/events", active: false }
   ]
 
