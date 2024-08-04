@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
 import { useState, useEffect } from 'react';
-import { capitalizeFirstLetter } from "./utils";
+import { capitalizeFirstLetter } from "@/components/StringUtils";
 
 export default function CapacityListSearchBar({ darkMode, capacityList, pageContent }) {
   const [searchBarQuery, setSearchBarQuery] = useState("");

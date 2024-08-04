@@ -3,6 +3,8 @@
   "navbar-link-profile": "My profile",
   "navbar-link-capacities": "Capacity directory",
   "navbar-link-events": "Events",
+  "navbar-link-homepage": "Homepage",
+  "navbar-link-reports": "Reports",
   "body-home-section01-title-text": "A space for exchanging",
   "body-home-section01-title-carousel": "capacity, knowledge, skills, services",
   "body-home-section01-description": "Connect with peers, learn, and share capacity in a platform made for and by the Wikimedia Movement.",
@@ -61,5 +63,17 @@
   "form-profile-available-capacities": "Available capacities",
   "form-profile-wanted-capacities": "Wanted capacities",
   "form-profile-delete-button": "Yes, delete my CapX profile",
-  "form-profile-delete-cancel-button": "No, I want to keep my CapX profile"
+  "form-profile-delete-cancel-button": "No, I want to keep my CapX profile",
+  "form-report-author": "Author",
+  "form-report-title": "Title",
+  "form-report-title-placeholder": "Give your report a short title",
+  "form-report-description": "Description",
+  "form-report-description-placeholder": "Describe what are you reporting",
+  "form-report-date": "Date of creation",
+  "form-report-edit-button": "Edit report",
+  "form-report-update-button": "Update report",
+  "form-report-number": "Report nº",
+  "oh-no-message": "Oh, no!",
+  "no-user-profile": "There are no users with this username registered in CapX",
+  "no-report-rights": "You either do not have permission to update this report or this report does not exists!"
 }

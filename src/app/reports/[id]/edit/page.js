@@ -3,9 +3,9 @@ import path from 'path';
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import UserProfileMainWrapper from "../components/UserProfileMainWrapper";
+import ReportMainWrapper from "@/app/reports/components/ReportMainWrapper";
 
-export default async function ProfilePage() {
+export default async function ReportPage() {
   const cookieStore = cookies();
   const session = await getServerSession();
   const darkMode = cookieStore.get("dark_mode") === undefined ? "false" : cookieStore.get("dark_mode");
@@ -15,18 +15,19 @@ export default async function ProfilePage() {
   const filePath = path.join(process.cwd(), 'locales', `${language}.json`);
   const pageContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-  // User ID
+  // Report ID
   const pathname = headers().get("x-pathname") || "";
-  const userId = pathname.split("/").slice(-1)[0];
+  const reportId = pathname.split("/").slice(-2)[0];
 
   if (session) {
     return (
-      <UserProfileMainWrapper
-          session={session !== null}
-          language={language}
-          darkMode={darkMode}
-          pageContent={pageContent}
-          userId={userId} />
+        <ReportMainWrapper
+            session={session !== null}
+            language={language}
+            pageContent={pageContent}
+            darkMode={darkMode}
+            reportId={reportId}
+        />
     )
   } else {
     redirect('/');

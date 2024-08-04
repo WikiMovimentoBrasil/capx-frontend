@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
+import {capitalizeFirstLetter} from "@/components/StringUtils";
 
 export default function UserProfileViewTagBox({ darkMode, data, tagList, endpoint }) {
   return (
@@ -7,7 +7,7 @@ export default function UserProfileViewTagBox({ darkMode, data, tagList, endpoin
       {data?.map((item, index) => (
         <Link
           key={index} href={`/${endpoint}/${item}`}
-          className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] tracking-widest text-base sm:text-base px-4 sm:px-5 py-3 rounded-lg">
+          className="bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-widest text-base sm:text-base px-4 sm:px-5 py-3 rounded-lg">
           {capitalizeFirstLetter(tagList[item])}
         </Link>
       ))}

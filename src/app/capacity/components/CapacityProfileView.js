@@ -1,7 +1,7 @@
 import Link from "next/link";
 import CapacityProfileNoUser from "./CapacityProfileNoUser";
 import CapacityProfileUserList from "./CapacityProfileUserList";
-import {capitalizeFirstLetter} from "@/app/capacity/components/utils";
+import {capitalizeFirstLetter} from "@/components/StringUtils";
 
 export default function CapacityProfileView({ darkMode, selectedCapacityData, pageContent, userId }) {
   if (selectedCapacityData === undefined) {

@@ -21,7 +21,7 @@ export default function SignInButton({ message, bigSizeButton }) {
   }
 
   return (
-    <button onClick={startLogin} className="flex w-fit h-fit my-auto bg-capx-secondary-purple text-[#F6F6F6] tracking-wider font-extrabold px-4 sm:px-5 py-2 rounded-full">
+    <button onClick={startLogin} className="flex w-fit h-fit my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-wider font-extrabold px-4 sm:px-5 py-2 rounded-full">
       {loginStarted ?
         <div className={(bigSizeButton ? "w-8 h-8 border-8 " : "h-6 w-6 border-4 ") + "animate-spin ease-linear rounded-full border-l-white border-r-white border-b-white border-t-capx-primary-green"}></div>
         :
