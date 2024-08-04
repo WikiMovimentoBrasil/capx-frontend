@@ -53,7 +53,7 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [status]);
+  }, [status, data.user.token, props.language]);
 
   useEffect(() => {
     setCapacityList(undefined);
@@ -68,7 +68,7 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [language]);
+  }, [data.user.token, language, status]);
 
   const handleExpandedChange = async (itemId, isExpanded) => {
     setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));
@@ -93,7 +93,7 @@ export default function CapacityListMainWrapper(props) {
     if (capacityList) {
       handleExpandedChange("0", true);
     }
-  }, [capacityList]);
+  }, [capacityList, handleExpandedChange]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITIES" />

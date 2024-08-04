@@ -38,7 +38,7 @@ export default function TagProfileMainWrapper(props) {
       }
       getTagData(queryData);
     }
-  }, [status]);
+  }, [data.user.token, getTagData, props.selectedTagCategory, status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="TAG DATA" />

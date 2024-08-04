@@ -37,7 +37,7 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
       setPageContent(queryResponse.data);
     }
     getTranslatedContent();
-  }, [language]);
+  }, [language, setPageContent]);
 
   if (!isClient) {
     return null;

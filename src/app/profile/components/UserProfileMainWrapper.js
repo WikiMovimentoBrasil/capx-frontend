@@ -50,7 +50,7 @@ export default function UserProfileMainWrapper(props) {
       }
       getUserData(queryData);
     }
-  }, [status]);
+  }, [status, data.user.token, data.user.username, getUserData, props.language, props.userId]);
   //
   // // If the language is changed
   // useEffect(() => {
