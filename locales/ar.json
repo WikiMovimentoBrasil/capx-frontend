@@ -1,0 +1,37 @@
+{
+	"@metadata": {
+		"authors": [
+			"إزبيكييل",
+			"بهتين شوكت"
+		]
+	},
+	"navbar-link-profile": "ملفي الخاص بي",
+	"navbar-link-capacities": "دليل القدرة",
+	"body-profile-section-title-team": "فريق",
+	"body-profile-delete-confirmation": "هل تريد حذف ملفك الشخصي الخاص بك كابكس بشكل دائم؟",
+	"body-profile-delete-warning": "بليجوز التراجع علي هذا الإجراء ولكن يمكنك دائمًا إنشاء ملف تعريف جديد في المستقبل ولايعطل هذا على حساب ويكيميديا ​​الخاص بك.",
+	"body-profile-delete-message": "اكتب اسم المستخدم الخاص بك للانضمام:",
+	"footer-link-wikimedia": "ميتا ويكيميديا",
+	"form-talk-page": "صفحة حديث",
+	"form-contact": "اتصال بنا",
+	"form-profile-select": "ويحدد",
+	"form-profile-picture": "صورة الملف الشخصي الخاص بك",
+	"form-profile-pronouns": "المصنفات",
+	"form-profile-short-bio": "سيرة ذاتية صغيره",
+	"form-profile-short-bio-placeholder": "قدِّم نفسك واصف نفسك وانجز",
+	"form-profile-wikidata-item": "عنصر ويكي بيانات",
+	"form-profile-wikidata-item-placeholder": "وعلى سبيل المثال. س125816201",
+	"form-profile-alternative-wikimedia-account": " حساب ويكيميديا اخر",
+	"form-profile-alternative-wikimedia-account-placeholder": "ذي مبيقلوها كده اسم المستخدم",
+	"form-profile-territory": "إِقلِيم",
+	"form-profile-languages": "اللغات",
+	"form-profile-affiliation": "الانتماء",
+	"form-profile-team": "فريق",
+	"form-profile-team-placeholder": "مثلا طاقم عمل موضع",
+	"form-profile-wikimedia-projects": "مشاريع ويكيميديا",
+	"form-profile-known-capacities": "القدرات المعروفة",
+	"form-profile-available-capacities": "القدرات المتاحة",
+	"form-profile-wanted-capacities": "القدرات المطلوبة",
+	"form-profile-delete-button": "ثم بعمليه حذف ملف تعريف كابكس الخاص بي",
+	"form-profile-delete-cancel-button": "لا أريد انا الاحتفاظ بملف كابكس الخاص بي"
+}
