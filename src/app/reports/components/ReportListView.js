@@ -34,10 +34,10 @@ export default function ReportListView({darkMode, reportList, pageContent, langu
                 <div className="flex flex-wrap w-full text-sm gap-8 justify-evenly">
                     {reportList?.map((report, index) => (
                         <Link href={"/reports/" + report.id} key={"report-" + report.id}>
-                            <div class="block max-w-sm p-6 rounded-lg bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg space-y-4 py-12">
-                                <h2 class="mb-2 text-2xl font-bold tracking-tight truncate">{capitalizeFirstLetter(report.title)}</h2>
-                                <p class="text-base">{report.author} | {localDate(report.updated_at, language) ?? ""}</p>
-                                <p class="text-base truncate">{report.description}</p>
+                            <div className="block max-w-sm p-6 rounded-lg bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg space-y-4 py-12">
+                                <h2 className="mb-2 text-2xl font-bold tracking-tight truncate">{capitalizeFirstLetter(report.title)}</h2>
+                                <p className="text-base">{report.author} | {localDate(report.updated_at, language) ?? ""}</p>
+                                <p className="text-base truncate">{report.description}</p>
                             </div>
                         </Link>
                     ))}
