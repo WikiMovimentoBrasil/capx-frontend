@@ -31,7 +31,7 @@ export default function CapacityListMainWrapper(props) {
     setLoadingStates(prev => ({...prev, 0: false}));
   };
 
-  const loadItems = async (type) => {
+  const loadItems = useCallback(async (type) => {
     const queryData = {
       headers: {
         'Authorization': `Token ${data.user.token}`,
@@ -39,7 +39,7 @@ export default function CapacityListMainWrapper(props) {
     }
     const queryResponse = await axios.get('/api/capacity/type/' + type, queryData);
     return queryResponse.data;
-  }
+  }, [data?.user?.token])
 
   useEffect(() => {
     if (status === "authenticated") {
