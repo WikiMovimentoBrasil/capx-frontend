@@ -53,7 +53,7 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [status, data.user.token, props.language]);
+  }, [status, data?.user?.token, props.language]);
 
   useEffect(() => {
     setCapacityList(undefined);
@@ -68,7 +68,7 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [data.user.token, language, status]);
+  }, [data?.user?.token, language, status]);
 
   const handleExpandedChange = async (itemId, isExpanded) => {
     setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));

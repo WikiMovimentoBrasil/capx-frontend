@@ -41,7 +41,7 @@ export default function ReportListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [data?.user.token, getReportList, props.language, status]);
+  }, [data?.user?.token, getReportList, props.language, status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="REPORTS" />
