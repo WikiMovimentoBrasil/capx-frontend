@@ -30,7 +30,7 @@ export default function CapacityProfileMainWrapper(props) {
       }
       getCapacityData(queryData);
     }
-  }, [data.user.token, getCapacityData, props.language, status]);
+  }, [data?.user?.token, getCapacityData, props.language, status]);
 
   useEffect(() => {
     setSelectedCapacityData(undefined);
@@ -43,7 +43,7 @@ export default function CapacityProfileMainWrapper(props) {
       }
       getCapacityData(queryData);
     }
-  }, [data.user.token, getCapacityData, language, status]);
+  }, [data?.user?.token, getCapacityData, language, status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
