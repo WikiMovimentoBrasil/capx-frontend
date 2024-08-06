@@ -87,7 +87,7 @@ export default function CapacityListMainWrapper(props) {
       setAsyncItems(prev => ({ ...prev, [itemId]: names }));
       setLoadingStates(prev => ({ ...prev, [itemId]: false }));
     }
-  });
+  }, [asyncItems, capacityList, loadItems]);
 
   useEffect(() => {
     if (capacityList) {
