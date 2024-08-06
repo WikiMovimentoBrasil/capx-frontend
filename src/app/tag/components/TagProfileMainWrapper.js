@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import TagProfileView from "./TagProfileView";
@@ -16,7 +16,7 @@ export default function TagProfileMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [selectedTagData, setSelectedTagData] = useState(undefined);
 
-  const getTagData = async (queryData) => {
+  const getTagData = useCallback(async (queryData) => {
     try {
       const queryResponse = await axios.get(`/api/tag/${props.selectedTagId}`, queryData);
       setSelectedTagData(queryResponse.data);
@@ -24,7 +24,7 @@ export default function TagProfileMainWrapper(props) {
       console.error('Failed to fetch data:', error);
       router.push("/profile");
     }
-  };
+  }, [props.selectedTagId, router]);
 
   useEffect(() => {
     if (status === "authenticated") {

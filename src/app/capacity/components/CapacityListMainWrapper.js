@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import CapacityListView from "./CapacityListView";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
@@ -70,7 +70,7 @@ export default function CapacityListMainWrapper(props) {
     }
   }, [data?.user?.token, language, status]);
 
-  const handleExpandedChange = async (itemId, isExpanded) => {
+  const handleExpandedChange = useCallback(async (itemId, isExpanded) => {
     setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));
     if (isExpanded && !asyncItems[itemId]) {
       setLoadingStates(prev => ({ ...prev, [itemId]: true }));
@@ -87,7 +87,7 @@ export default function CapacityListMainWrapper(props) {
       setAsyncItems(prev => ({ ...prev, [itemId]: names }));
       setLoadingStates(prev => ({ ...prev, [itemId]: false }));
     }
-  };
+  });
 
   useEffect(() => {
     if (capacityList) {
