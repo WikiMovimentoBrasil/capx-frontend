@@ -18,7 +18,7 @@ export default function CapacityProfileMainWrapper(props) {
   const getCapacityData = useCallback(async (queryData) => {
     const queryResponse = await axios.get("/api/capacity/" + props.selectedCapacityId, queryData);
     setSelectedCapacityData(queryResponse.data);
-  });
+  }, [props.selectedCapacityId]);
 
   useEffect(() => {
     if (status === "authenticated") {
