@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import CapacityListView from "./CapacityListView";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
@@ -31,7 +31,7 @@ export default function CapacityListMainWrapper(props) {
     setLoadingStates(prev => ({...prev, 0: false}));
   };
 
-  const loadItems = async (type) => {
+  const loadItems = useCallback(async (type) => {
     const queryData = {
       headers: {
         'Authorization': `Token ${data.user.token}`,
@@ -39,7 +39,7 @@ export default function CapacityListMainWrapper(props) {
     }
     const queryResponse = await axios.get('/api/capacity/type/' + type, queryData);
     return queryResponse.data;
-  }
+  }, [data?.user?.token])
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -53,7 +53,7 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [status, data.user.token, props.language]);
+  }, [status, data?.user?.token, props.language]);
 
   useEffect(() => {
     setCapacityList(undefined);
@@ -68,9 +68,9 @@ export default function CapacityListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [data.user.token, language, status]);
+  }, [data?.user?.token, language, status]);
 
-  const handleExpandedChange = async (itemId, isExpanded) => {
+  const handleExpandedChange = useCallback(async (itemId, isExpanded) => {
     setExpandedItems(prev => ({ ...prev, [itemId]: isExpanded }));
     if (isExpanded && !asyncItems[itemId]) {
       setLoadingStates(prev => ({ ...prev, [itemId]: true }));
@@ -87,7 +87,7 @@ export default function CapacityListMainWrapper(props) {
       setAsyncItems(prev => ({ ...prev, [itemId]: names }));
       setLoadingStates(prev => ({ ...prev, [itemId]: false }));
     }
-  };
+  }, [asyncItems, capacityList, loadItems]);
 
   useEffect(() => {
     if (capacityList) {

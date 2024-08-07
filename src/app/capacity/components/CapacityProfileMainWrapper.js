@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
 import BaseWrapper from "@/components/BaseWrapper";
@@ -15,10 +15,10 @@ export default function CapacityProfileMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
 
-  const getCapacityData = async (queryData) => {
+  const getCapacityData = useCallback(async (queryData) => {
     const queryResponse = await axios.get("/api/capacity/" + props.selectedCapacityId, queryData);
     setSelectedCapacityData(queryResponse.data);
-  };
+  }, [props.selectedCapacityId]);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -30,7 +30,7 @@ export default function CapacityProfileMainWrapper(props) {
       }
       getCapacityData(queryData);
     }
-  }, [data.user.token, getCapacityData, props.language, status]);
+  }, [data?.user?.token, getCapacityData, props.language, status]);
 
   useEffect(() => {
     setSelectedCapacityData(undefined);
@@ -43,7 +43,7 @@ export default function CapacityProfileMainWrapper(props) {
       }
       getCapacityData(queryData);
     }
-  }, [data.user.token, getCapacityData, language, status]);
+  }, [data?.user?.token, getCapacityData, language, status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />

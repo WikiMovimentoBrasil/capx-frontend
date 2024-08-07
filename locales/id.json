@@ -1,0 +1,40 @@
+{
+	"@metadata": {
+		"authors": [
+			"Agam Riyandana",
+			"Leapofod",
+			"Rebeccayoga"
+		]
+	},
+	"navbar-link-profile": "Profil saya",
+	"body-profile-edit-button": "Sunting Profil",
+	"body-profile-section-title-language": "Bahasa",
+	"body-profile-section-title-team": "Tim",
+	"body-profile-section-title-available-capacity": "Kapasitas yang tersedia",
+	"body-profile-delete-confirmation": "Hapus profil CapXmu secara permanen?",
+	"body-profile-delete-warning": "Tindakan ini tidak dapat dibatalkan, tetapi Anda selalu dapat membuat profil baru di masa depan. Ini tidak mempengaruhi akun Wikimedia Anda.",
+	"body-profile-delete-message": "Ketik nama pengguna untuk mengkonfirmasi:",
+	"footer-link-wikimedia": "Meta-Wikimedia",
+	"form-talk-page": "Halaman pembicaraan",
+	"form-contact": "Kontak",
+	"form-profile-select": "Pilih",
+	"form-profile-picture": "Foto profil",
+	"form-profile-pronouns": "Penggantian",
+	"form-profile-short-bio": "Biografi singkat",
+	"form-profile-short-bio-placeholder": "memperkenalkan diri dan menggambarkan diri Anda secara singkat",
+	"form-profile-wikidata-item": "Butir Wikidata",
+	"form-profile-wikidata-item-placeholder": "misalnya. Pembagian",
+	"form-profile-alternative-wikimedia-account": "Akun Wikimedia alternatif",
+	"form-profile-alternative-wikimedia-account-placeholder": "misalnya. Nama pengguna",
+	"form-profile-territory": "Wilayah",
+	"form-profile-languages": "Bahasa",
+	"form-profile-affiliation": "Afiliasi",
+	"form-profile-team": "Tim",
+	"form-profile-team-placeholder": "misalnya. Posisi staf",
+	"form-profile-wikimedia-projects": "Proyek-Proyek Wikimedia",
+	"form-profile-known-capacities": "Kapacitas yang diketahui",
+	"form-profile-available-capacities": "Kapasitas yang tersedia",
+	"form-profile-wanted-capacities": "Kapasitas yang diinginkan",
+	"form-profile-delete-button": "Ya, hapus profil CapX saya",
+	"form-profile-delete-cancel-button": "Tidak, aku ingin menyimpan profil CapXku"
+}
