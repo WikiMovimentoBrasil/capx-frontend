@@ -39,7 +39,7 @@ export default function ReportMainWrapper(props) {
             }
             getReportData(queryData);
         }
-    }, [data.user.token, props.language, props.reportId, status]);
+    }, [data?.user?.token, props.language, props.reportId, status]);
 
     useEffect(() => {
         if (reportData && data?.user?.username) {

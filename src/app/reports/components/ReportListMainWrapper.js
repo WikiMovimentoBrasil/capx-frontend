@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
@@ -15,7 +15,7 @@ export default function ReportListMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [reportList, setReportList] = useState(undefined);
 
-  const getReportList = async (queryData) => {
+  const getReportList = useCallback(async (queryData) => {
     const queryResponse = await axios.get('/api/report', queryData);
     const result = queryResponse.data.map(item => ({
       id: item.id,
@@ -27,7 +27,7 @@ export default function ReportListMainWrapper(props) {
     }));
 
     setReportList(result);
-  };
+  },[language]);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -41,7 +41,7 @@ export default function ReportListMainWrapper(props) {
         console.error('Failed to fetch data:', error)
       );
     }
-  }, [data.user.token, getReportList, props.language, status]);
+  }, [data?.user?.token, getReportList, props.language, status]);
 
   if (status === "loading") {
     return <LoadingSection darkMode={darkMode} message="REPORTS" />
