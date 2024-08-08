@@ -1,4 +1,4 @@
-import MainImage from "../../../../../../public/static/images/main_image.png";
+import MainImage from "../../../../../../public/static/images/main_image.svg";
 import UserProfileImage from "@/app/profile/components/UserProfileImage";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
 
