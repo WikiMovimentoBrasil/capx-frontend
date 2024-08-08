@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Typewriter } from "react-simple-typewriter";
-import MainImage from "../../public/static/images/main_image.png";
+import MainImage from "../../public/static/images/main_image.svg";
 import SignInButton from "./SignInButton";
 
 export default function Section01({ pageContent }) {

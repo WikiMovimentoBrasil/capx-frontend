@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MainImage from "../../../../public/static/images/main_image.png";
+import MainImage from "../../../../public/static/images/main_image.svg";
 import Link from "next/link";
 import UserProfileImage from "./UserProfileImage";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
