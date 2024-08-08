@@ -13,5 +13,10 @@
 	"footer-link-documentation": "Dokumentatioun",
 	"aria-language-input": "Sicht eng Sprooch eraus",
 	"sign-out-button": "Ofmellen",
-	"sign-in-button": "Umellen"
+	"sign-in-button": "Umellen",
+	"form-profile-pronouns": "Pronomen",
+	"form-profile-wikidata-item": "Wikidata-Element",
+	"form-profile-alternative-wikimedia-account-placeholder": "z.&nbsp;B. Benotzernumm",
+	"form-profile-languages": "Sproochen",
+	"form-profile-wikimedia-projects": "Wikimedia-Projet"
 }
