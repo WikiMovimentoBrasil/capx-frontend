@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"GuoPC",
 			"Huajing",
 			"Xuanxuan1231"
 		]
@@ -21,7 +22,6 @@
 	"body-profile-edit-button": "编辑个人资料",
 	"body-profile-box-title-wikidata-item": "维基数据项目",
 	"body-profile-box-title-alt-wiki-acc": "其他维基媒体账号",
-	"body-profile-section-title-contact-social": "联系方式与社交媒体账户",
 	"body-profile-section-title-territory": "区域",
 	"body-profile-section-title-language": "语言",
 	"body-profile-section-title-affiliation": "所属机构",
