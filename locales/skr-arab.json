@@ -5,6 +5,8 @@
 		]
 	},
 	"navbar-link-profile": "میݙی پروفائل",
+	"navbar-link-homepage": "مُکھ پناں",
+	"navbar-link-reports": "رپورٹاں",
 	"body-profile-gender-other": "ٻیا",
 	"body-profile-edit-button": "پروفائل وچ تبدیلی کرو",
 	"body-profile-section-title-territory": "علاقہ",
@@ -20,6 +22,7 @@
 	"form-talk-page": "ڳالھ مہاڑ ورقہ",
 	"form-contact": "رابطہ",
 	"form-profile-select": "چݨو",
+	"form-profile-picture": "پروفائل تصویر",
 	"form-profile-pronouns": "ضمائر",
 	"form-profile-wikidata-item": "وکی ڈیٹا آئٹم",
 	"form-profile-territory": "علاقہ",
@@ -27,6 +30,8 @@
 	"form-profile-affiliation": "الحاق",
 	"form-profile-team": "ٹیم",
 	"form-profile-wikimedia-projects": "وکیمیڈیا منصوبے",
+	"form-report-author": "مصنف",
 	"form-report-title": "عنوان",
-	"form-report-description": "تفصیل"
+	"form-report-description": "تفصیل",
+	"form-report-date": "تخلیق دی تریخ"
 }

@@ -38,6 +38,7 @@ export default function MobileMenu({ session, pageContent, darkMode, mobileMenuS
       <div className="flex flex-row-reverse w-10/12 mx-auto mt-6 mb-8">
         <a onClick={handleMenuStatus}>
           <Image
+            priority={true}
             src={darkMode ? IconCloseMobileMenuDarkMode : IconCloseMobileMenuLightMode}
             alt="Button to close menu."
             className="fill-current h-10 w-10 text-gray-700 cursor-pointer"

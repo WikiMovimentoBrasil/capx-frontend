@@ -74,11 +74,13 @@
 	"form-report-author": "Auteur",
 	"form-report-title": "Titre",
 	"form-report-title-placeholder": "Donnez un titre court à votre rapport",
+	"form-report-description": "Définition",
 	"form-report-description-placeholder": "Décrivez ce que vous rapportez",
 	"form-report-date": "Date de création",
 	"form-report-edit-button": "Modifier le rapport",
 	"form-report-update-button": "Rapport de mise à jour",
 	"form-report-number": "Rapport nº",
 	"oh-no-message": "Oh, non !",
-	"no-user-profile": "Il n' y a pas d' utilisateurs avec ce nom d' utilisateur enregistré dans CapX"
+	"no-user-profile": "Il n' y a pas d' utilisateurs avec ce nom d' utilisateur enregistré dans CapX",
+	"no-report-rights": "Vous n'avez pas la permission de mettre à jour ce rapport ou ce rapport n'existe pas !"
 }
