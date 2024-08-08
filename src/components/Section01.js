@@ -21,6 +21,7 @@ export default function Section01({ pageContent }) {
         {/* Main Image Mobile */}
         <div className="block sm:hidden w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto mb-8 sm:mb-auto">
           <Image
+            priority={true}
             src={MainImage}
             alt="Main image."
             className="px-10"
@@ -38,6 +39,7 @@ export default function Section01({ pageContent }) {
       {/* Main Image Desktop */}
       <div className="hidden sm:block w-full sm:w-1/3 sm:h-fit aspect-square sm:my-auto mb-8 sm:mb-auto">
         <Image
+          priority={true}
           src={MainImage}
           alt="Main image."
         />
