@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"Adamw"
+		]
+	},
+	"navbar-link-profile": "Mi perfil",
+	"navbar-link-homepage": "Página principal",
+	"navbar-link-reports": "Informes",
+	"body-home-section01-title-text": "Un espacio para el intercambio",
+	"body-home-section01-title-carousel": "capacidades, conocimientos, habilidades, servicios",
+	"body-home-section01-description": "Conectarse con colegas, aprender y compartir capacidades en una plataforma hecha para y por el Movimiento Wikimedia.",
+	"body-profile-edit-button": "Editar Perfil",
+	"body-profile-box-title-wikidata-item": "Elemento de Wikidata",
+	"body-profile-box-title-alt-wiki-acc": "Cuenta alternativa de Wikimedia",
+	"body-profile-section-title-territory": "Territorio",
+	"body-profile-section-title-language": "Idioma",
+	"body-profile-section-title-affiliation": "Afiliación",
+	"body-profile-section-title-wikimedia-project": "Proyecto de Wikimedia",
+	"footer-link-documentation": "Documentación",
+	"footer-link-github": "GitHub",
+	"footer-link-wikimedia": "Meta-Wikimedia",
+	"footer-message": "Por y para el Movimiento Wikimedia",
+	"aria-language-input": "Elige un idioma",
+	"sign-out-button": "Cerrar sesión",
+	"form-profile-pronouns": "Pronombres",
+	"form-profile-short-bio": "Biografía corta"
+}
