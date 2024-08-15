@@ -32,8 +32,11 @@
 	"form-profile-team": "ٹیم",
 	"form-profile-wikimedia-projects": "وکیمیڈیا منصوبے",
 	"form-profile-known-capacities": "معلوم صلاحیتاں",
+	"form-profile-available-capacities": "دستیاب صلاحیتاں",
+	"form-profile-wanted-capacities": "مطلوبہ صلاحیتاں",
 	"form-report-author": "مصنف",
 	"form-report-title": "عنوان",
 	"form-report-description": "تفصیل",
-	"form-report-date": "تخلیق دی تریخ"
+	"form-report-date": "تخلیق دی تریخ",
+	"oh-no-message": "اوہو، کو!"
 }
