@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Amire80",
+			"Freddy9",
 			"YaronSh"
 		]
 	},
@@ -36,5 +37,7 @@
 	"body-tag-user-list-title": "משתמשים עם התג הזה בפרופיל שלהם:",
 	"body-tag-user-list-fallback-message": "אין משתמשים שיש להם את התג הזה בפרופיל שלהם.",
 	"footer-link-documentation": "תיעוד",
-	"footer-message": "עבור ומאת תנועת ויקימדיה"
+	"footer-message": "עבור ומאת תנועת ויקימדיה",
+	"form-profile-select": "בחירה",
+	"form-profile-picture": "תמונת פרופיל"
 }

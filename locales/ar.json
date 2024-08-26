@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Mohammed Qays",
 			"إزبيكييل",
 			"بهتين شوكت"
 		]
 	},
-	"navbar-link-profile": "ملفي الخاص بي",
+	"navbar-link-profile": "ملفي الشخصي",
 	"navbar-link-capacities": "دليل القدرة",
 	"body-profile-section-title-team": "فريق",
 	"body-profile-delete-confirmation": "هل تريد حذف ملفك الشخصي الخاص بك كابكس بشكل دائم؟",
@@ -14,7 +15,7 @@
 	"footer-link-wikimedia": "ميتا ويكيميديا",
 	"form-talk-page": "صفحة حديث",
 	"form-contact": "اتصال بنا",
-	"form-profile-select": "ويحدد",
+	"form-profile-select": "اختر",
 	"form-profile-picture": "صورة الملف الشخصي الخاص بك",
 	"form-profile-pronouns": "المصنفات",
 	"form-profile-short-bio": "سيرة ذاتية صغيره",
