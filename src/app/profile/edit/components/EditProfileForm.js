@@ -127,6 +127,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
     setUpdatingData(true);
     if (session.sessionStatus == "authenticated") {
       e.preventDefault();
+      formData.userData.user = session.sessionData.user;
       const queryResponse = await axios.post("/api/profile",
         formData.userData,
         {
@@ -141,6 +142,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
   };
 
   const handleDelete = async (e) => {
+    formData.userData = session.sessionData;
     if (formData.userData.user.username === confirmationUsername && session.sessionStatus == "authenticated") {
       e.preventDefault();
       try {
@@ -363,8 +365,7 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
             </form>
             <div className="flex items-start flex-wrap w-full sm:flex-nowrap">
               <div className="flex space-x-4 flex-wrap sm:w-fit w-full sm:flex-nowrap justify-between sm:justify-start mb-6">
-                <SubmitButton updatingData={updatingData} form="profile_form">Update
-                  Profile</SubmitButton>
+                <SubmitButton updatingData={updatingData} form="profile_form">Update Profile</SubmitButton>
                 <ButtonRedirectToPage to={"/profile"}>
                   Cancel
                 </ButtonRedirectToPage>
@@ -380,19 +381,21 @@ export default function EditProfileForm({ darkMode, session, formData, setFormDa
                   overlayClassName="overlay"
               >
                 <h2 className="w-full text-2xl font-extrabold text-center mb-6">{pageContent["body-profile-delete-confirmation"]}</h2>
-                <TextInput
-                    type="text"
-                    id="delete_profile"
-                    placeholder={pageContent["body-profile-delete-message"]}
-                    data={confirmationUsername}
-                    onChange={(e) => setConfirmationUsername(e.target.value)}
-                    maxLength="200"
-                >
-                  {pageContent["body-profile-delete-warning"]}
-                </TextInput>
+                <form onSubmit={handleDelete} className="w-full" id="delete_profile_form">
+                  <TextInput
+                      type="text"
+                      id="delete_profile"
+                      placeholder={pageContent["body-profile-delete-message"]}
+                      data={confirmationUsername}
+                      onChange={(e) => setConfirmationUsername(e.target.value)}
+                      maxLength="200"
+                  >
+                    {pageContent["body-profile-delete-warning"]}
+                  </TextInput>
+                </form>
                 <div className="flex flex-wrap w-full sm:flex-nowrap justify-center sm:justify-between gap-4 mb-6">
                   <SimpleButton type="button" onClick={() => setIsModalOpen(false)} bg_color="bg-capx-secondary-grey hover:bg-capx-secondary-dark-grey" text_color="text-[#FFFFFF]">{pageContent["form-profile-delete-cancel-button"]}</SimpleButton>
-                  <SimpleButton type="button" onClick={handleDelete} bg_color="bg-capx-primary-red hover:bg-capx-secondary-red">{pageContent["form-profile-delete-button"]}</SimpleButton>
+                  <SubmitButton form="delete_profile_form" bg_color="bg-capx-primary-red hover:bg-capx-secondary-red">{pageContent["form-profile-delete-button"]}</SubmitButton>
                 </div>
               </Modal>
             </div>
