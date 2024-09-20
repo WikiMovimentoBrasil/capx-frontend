@@ -1,22 +1,23 @@
 {
 	"@metadata": {
 		"authors": [
+			"HellojoeAoPS",
 			"Kly"
 		]
 	},
-	"navbar-link-about": "About",
+	"navbar-link-about": "關於",
 	"navbar-link-profile": "我的個人資料",
 	"navbar-link-capacities": "能力目錄",
-	"navbar-link-events": "事件",
+	"navbar-link-events": "活動",
 	"navbar-link-homepage": "首頁",
 	"navbar-link-reports": "報告",
-	"body-home-section01-title-text": "一個可用來交流的空間",
+	"body-home-section01-title-text": "一個交流的空間",
 	"body-home-section01-title-carousel": "能力、知識、技能、服務",
-	"body-home-section01-description": "在由維基媒體運動所打造，適用於維基媒體運動的平台裡與同儕交流、學習、分享能力。",
+	"body-home-section01-description": "在維基媒體運動打造的專屬平台中，與同擠交流、學習、分享能力。",
 	"body-home-section01-button": "加入 Capacity Exchange！",
 	"body-profile-gender-hehim": "他",
 	"body-profile-gender-sheher": "她",
-	"body-profile-gender-theythem": "他們",
+	"body-profile-gender-theythem": "他/她們",
 	"body-profile-gender-notespecified": "未指定",
 	"body-profile-gender-other": "其他",
 	"body-profile-edit-button": "編輯個人資料",
@@ -38,7 +39,7 @@
 	"body-capacity-known-user-list-title": "學習者：",
 	"body-capacity-available-user-list-title": "服務提供者：",
 	"body-capacity-user-list-fallback-message": "此分類中沒有可顯示的使用者。",
-	"body-tag-user-list-title": "在他們的個人資料裡帶有此標籤的使用者：",
+	"body-tag-user-list-title": "在個人資料中有此標籤的使用者：",
 	"body-tag-user-list-fallback-message": "沒有在個人資料裡帶有此標籤的使用者。",
 	"footer-link-documentation": "文件",
 	"footer-link-wikimedia": "元維基媒體",
@@ -77,7 +78,7 @@
 	"form-report-edit-button": "編輯報告",
 	"form-report-update-button": "更新報告",
 	"form-report-number": "報告編號",
-	"oh-no-message": "喔，不！",
+	"oh-no-message": "糟糕！",
 	"no-user-profile": "在 CapX 上沒有註冊這個名稱的使用者",
 	"no-report-rights": "您沒有更新此報告的權限，或是此報告不存在！"
 }

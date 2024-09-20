@@ -14,5 +14,8 @@
 	"body-profile-box-title-wikidata-item": "Элемент Викиданных",
 	"body-profile-section-title-territory": "Территория",
 	"body-profile-section-title-language": "Язык",
-	"footer-link-documentation": "Документация"
+	"footer-link-documentation": "Документация",
+	"form-profile-wikidata-item": "Элемент Викиданных",
+	"form-profile-wikimedia-projects": "Проекты Викимедиа",
+	"form-report-author": "Автор"
 }

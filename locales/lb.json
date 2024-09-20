@@ -6,6 +6,7 @@
 	},
 	"navbar-link-profile": "Mäi Profil",
 	"navbar-link-events": "Evenementer",
+	"navbar-link-homepage": "Haaptsäit",
 	"body-profile-edit-button": "Profil änneren",
 	"body-profile-box-title-wikidata-item": "Wikidata-Element",
 	"body-profile-section-title-language": "Sprooch",
@@ -18,5 +19,8 @@
 	"form-profile-wikidata-item": "Wikidata-Element",
 	"form-profile-alternative-wikimedia-account-placeholder": "z.&nbsp;B. Benotzernumm",
 	"form-profile-languages": "Sproochen",
-	"form-profile-wikimedia-projects": "Wikimedia-Projet"
+	"form-profile-wikimedia-projects": "Wikimedia-Projet",
+	"form-report-author": "Auteur",
+	"form-report-title": "Titel",
+	"form-report-description": "Beschreiwung"
 }

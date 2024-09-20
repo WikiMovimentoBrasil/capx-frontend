@@ -50,7 +50,7 @@ export default function MainWrapper(props) {
   useEffect(() => {
     if (status === "authenticated") {
       const queryData = {
-        params: { userId: data.user.id },
+        params: { userId: data.user.username },
         headers: { 'Authorization': `Token ${data.user.token}` }
       }
 
