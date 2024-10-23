@@ -9,8 +9,8 @@ The Capacity Exchange (CapX) is available in Toolforge at https://capx.toolforge
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -37,11 +37,21 @@ Before you begin, ensure you have met the following requirements:
    ```
 
 3. Install project dependencies:
+
    ```bash
    yarn install
    ```
 
-4. Start the development server:
+4. Rename the `.env.example` file to `.env` and comment the following lines in order to use the development server:
+
+   ```bash
+   LOGIN_STEP01_URL="https://capx-backend.toolforge.org/api/login/social/knox/mediawiki/"
+   LOGIN_STEP02_URL="https://meta.wikimedia.org/wiki/Special:OAuth/authorize"
+   LOGIN_STEP03_URL="https://capx-backend.toolforge.org/api/login/social/knox_user/mediawiki/"
+   BASE_URL="https://capx-backend.toolforge.org"
+   ```
+
+5. Start the development server:
 
    ```bash
    yarn dev
@@ -50,6 +60,7 @@ Before you begin, ensure you have met the following requirements:
 You should now be able to access the project at http://localhost:3000/ in your web browser.
 
 ## Contributing
+
 Contributions are welcome! To contribute to the Capacity Exchange, follow these steps:
 
 1. Fork the repository
@@ -59,4 +70,5 @@ Contributions are welcome! To contribute to the Capacity Exchange, follow these 
 5. Create a pull request on GitHub against the 'dev' branch
 
 ## License
+
 This project is licensed under the GNU AGPLv3 - see the LICENSE file for details.
