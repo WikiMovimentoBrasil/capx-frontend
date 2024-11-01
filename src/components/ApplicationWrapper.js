@@ -3,8 +3,12 @@ import { useState } from "react";
 import BaseWrapper from "./BaseWrapper";
 import Section01 from "@/components/Section01";
 import Section02 from "./Section02";
+import { withErrorBoundary } from "@/components/ErrorBoundary";
 
-export default function ApplicationWrapper(props) {
+const ApplicationWrapperWithErrorBoundary =
+  withErrorBoundary(ApplicationWrapper);
+
+function ApplicationWrapper(props) {
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
   const [language, setLanguage] = useState(props.language);
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
@@ -25,5 +29,7 @@ export default function ApplicationWrapper(props) {
       <Section01 pageContent={pageContent}></Section01>
       <Section02 darkMode={darkMode}></Section02>
     </BaseWrapper>
-  )
+  );
 }
+
+export default ApplicationWrapperWithErrorBoundary;

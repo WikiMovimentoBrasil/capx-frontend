@@ -7,7 +7,6 @@ import BaseWrapper from "@/components/BaseWrapper";
 import LoadingSection from "@/components/LoadingSection";
 
 export default function UserProfileMainWrapper(props) {
-
   const { status, data } = useSession();
   const [language, setLanguage] = useState(props.language);
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
@@ -17,13 +16,20 @@ export default function UserProfileMainWrapper(props) {
 
   const getUserData = useCallback(async (queryData) => {
     try {
-      const [userData, territoryData, languageData, affiliationData, wikiProjectData, skillData] = await Promise.all([
+      const [
+        userData,
+        territoryData,
+        languageData,
+        affiliationData,
+        wikiProjectData,
+        skillData,
+      ] = await Promise.all([
         axios.get("/api/profile", queryData),
-        axios.get('/api/list/territory', queryData),
-        axios.get('/api/list/language', queryData),
-        axios.get('/api/list/affiliation', queryData),
-        axios.get('/api/list/wikimedia_project', queryData),
-        axios.get('/api/capacity', queryData)
+        axios.get("/api/list/territory", queryData),
+        axios.get("/api/list/language", queryData),
+        axios.get("/api/list/affiliation", queryData),
+        axios.get("/api/list/wikimedia_project", queryData),
+        axios.get("/api/capacity", queryData),
       ]);
 
       setUserProfileData({
@@ -32,10 +38,10 @@ export default function UserProfileMainWrapper(props) {
         languageData: languageData.data,
         affiliationData: affiliationData.data,
         wikiProjectData: wikiProjectData.data,
-        skillData: skillData.data
+        skillData: skillData.data,
       });
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error("Failed to fetch data:", error);
     }
   }, []);
 
@@ -43,14 +49,22 @@ export default function UserProfileMainWrapper(props) {
     if (status === "authenticated") {
       const queryData = {
         params: {
-          userId: props.userId === undefined ? data.user.username : props.userId,
-          language: props.language
+          userId:
+            props.userId === undefined ? data.user.username : props.userId,
+          language: props.language,
         },
-        headers: { 'Authorization': `Token ${data.user.token}` }
-      }
+        headers: { Authorization: `Token ${data.user.token}` },
+      };
       getUserData(queryData);
     }
-  }, [status, data?.user?.token, data?.user?.username, getUserData, props.language, props.userId]);
+  }, [
+    status,
+    data?.user?.token,
+    data?.user?.username,
+    getUserData,
+    props.language,
+    props.userId,
+  ]);
   //
   // // If the language is changed
   // useEffect(() => {
@@ -68,27 +82,27 @@ export default function UserProfileMainWrapper(props) {
   // }, [language]);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="PROFILE DATA" />
+    return <LoadingSection darkMode={darkMode} message="PROFILE DATA" />;
   }
 
   return (
-      <BaseWrapper
-          session={props.session}
-          language={language}
-          setLanguage={setLanguage}
-          pageContent={pageContent}
-          setPageContent={setPageContent}
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          mobileMenuStatus={mobileMenuStatus}
-          setMobileMenuStatus={setMobileMenuStatus}
-      >
-        <UserProfileView
-            darkMode={darkMode}
-            userProfileData={userProfileData}
-            showEditButton={props.userId === undefined ? true : false}
-            pageContent={pageContent}
-        />
-      </BaseWrapper>
+    <BaseWrapper
+      session={props.session}
+      language={language}
+      setLanguage={setLanguage}
+      pageContent={pageContent}
+      setPageContent={setPageContent}
+      darkMode={darkMode}
+      setDarkMode={setDarkMode}
+      mobileMenuStatus={mobileMenuStatus}
+      setMobileMenuStatus={setMobileMenuStatus}
+    >
+      <UserProfileView
+        darkMode={darkMode}
+        userProfileData={userProfileData}
+        showEditButton={props.userId === undefined ? true : false}
+        pageContent={pageContent}
+      />
+    </BaseWrapper>
   );
 }
