@@ -6,7 +6,7 @@ export default async function getTagData(req, res) {
 
     try {
       // Requesting list of tag codes (based on chosen category)
-      const codeList = await axios.get(process.env.BASE_URL + `/list/${category}`, {
+      const codeList = await axios.get(process.env.BASE_URL + `/list/${category}/`, {
         headers: {
           'Authorization': req.headers.authorization
         }
@@ -19,7 +19,7 @@ export default async function getTagData(req, res) {
 
       try {
         // Requesting list of users who have the tag in their profile
-        const userList = await axios.get(process.env.BASE_URL + `/tags/${category}/${id}`, {
+        const userList = await axios.get(process.env.BASE_URL + `/tags/${category}/${id}/`, {
           headers: {
             'Authorization': req.headers.authorization
           }
