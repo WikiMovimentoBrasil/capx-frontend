@@ -1,43 +1,38 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { BaseWrapperProps } from "@/types";
+import { ReactNode } from "react";
+import { useSession } from "next-auth/react";
+
+interface BaseWrapperProps {
+  children: ReactNode;
+  darkMode: boolean;
+  setDarkMode: (value: boolean) => void;
+  language: string;
+  setLanguage: (value: string) => void;
+  pageContent: Record<string, string>;
+  setPageContent: (value: Record<string, string>) => void;
+  mobileMenuStatus: boolean;
+  setMobileMenuStatus: (value: boolean) => void;
+  session: boolean;
+}
 
 export default function BaseWrapper({
   children,
-  session,
-  language,
-  setLanguage,
-  pageContent,
-  setPageContent,
   darkMode,
-  setDarkMode,
-  mobileMenuStatus,
-  setMobileMenuStatus,
+  language,
+  pageContent,
 }: BaseWrapperProps) {
+  const { data: session } = useSession();
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <div
-      className={
-        "wrapper min-h-screen " +
-        (darkMode
-          ? "bg-capx-dark-bg text-capx-light-bg "
-          : "bg-capx-light-bg text-capx-dark-bg ")
-      }
+      className={`min-h-screen ${
+        darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+      }`}
     >
-      <Navbar
-        session={session}
-        language={language}
-        setLanguage={setLanguage}
-        pageContent={pageContent}
-        setPageContent={setPageContent}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-        mobileMenuStatus={mobileMenuStatus}
-        setMobileMenuStatus={setMobileMenuStatus}
-      />
-      <main className=" flex flex-wrap flex-col w-full font-montserrat">
-        {children}
-      </main>
-      <Footer darkMode={darkMode} pageContent={pageContent} />
+      <main className="container mx-auto px-4 py-8">{children}</main>
     </div>
   );
 }

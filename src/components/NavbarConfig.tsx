@@ -1,20 +1,42 @@
-import Image from 'next/image';
+import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 import { setCookie } from "@/app/actions";
-import LanguageSelect from "./LanguageSelect";
+import { LanguageSelect } from "./LanguageSelector";
 import LightModeIcon from "../../public/static/images/light_mode_icon.svg";
 import DarkModeIcon from "../../public/static/images/dark_mode_icon.svg";
 import MobileMenuLightMode from "../../public/static/images/mobile_menu_light_mode.svg";
 import MobileMenuDarkMode from "../../public/static/images/mobile_menu_dark_mode.svg";
 
-export default function NavbarConfig({ language, setLanguage, setPageContent, darkMode, setDarkMode, setMobileMenuStatus }) {
-  const changeColorMode = async (event, currentDarkModeSelection) => {
+interface NavbarConfigProps {
+  language: string;
+  setLanguage: Dispatch<SetStateAction<string>>;
+  setPageContent: Dispatch<SetStateAction<Record<string, string>>>;
+  darkMode: boolean;
+  setDarkMode: Dispatch<SetStateAction<boolean>>;
+  setMobileMenuStatus: Dispatch<SetStateAction<boolean>>;
+}
+
+export function NavbarConfig({
+  language,
+  setLanguage,
+  setPageContent,
+  darkMode,
+  setDarkMode,
+  setMobileMenuStatus,
+}: NavbarConfigProps) {
+  const changeColorMode = async (
+    event: React.MouseEvent,
+    currentDarkModeSelection: boolean
+  ) => {
     setDarkMode(!currentDarkModeSelection);
     await setCookie({
       name: "dark_mode",
       value: (!currentDarkModeSelection).toString(),
-      path: '/',
+      /* 
+      TODO: Fix this path if necessary
+      path: "/", */
     });
-  }
+  };
 
   const handleMenuStatus = () => {
     setMobileMenuStatus((prevState) => !prevState);
@@ -22,9 +44,11 @@ export default function NavbarConfig({ language, setLanguage, setPageContent, da
 
   return (
     <div className="flex space-x-8">
-      {/* Language menu */}
-      <LanguageSelect language={language} setLanguage={setLanguage} setPageContent={setPageContent} />
-      {/* Light/Dark mode icon */}
+      <LanguageSelect
+        language={language}
+        setLanguage={setLanguage}
+        setPageContent={setPageContent}
+      />
       <button onClick={(event) => changeColorMode(event, darkMode)}>
         <Image
           priority={true}
@@ -33,7 +57,6 @@ export default function NavbarConfig({ language, setLanguage, setPageContent, da
           className="flex my-auto cursor-pointer w-6 sm:w-7"
         />
       </button>
-      {/* Mobile menu icon */}
       <button onClick={handleMenuStatus}>
         <Image
           priority={true}
@@ -43,5 +66,5 @@ export default function NavbarConfig({ language, setLanguage, setPageContent, da
         />
       </button>
     </div>
-  )
+  );
 }
