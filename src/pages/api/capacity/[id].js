@@ -6,7 +6,7 @@ export default async function getCapacityData(req, res) {
       const { id, language } = req.query;
 
       // Requesting list of wikidata codes
-      const codeList = await axios.get(process.env.BASE_URL + "/list/skills", {
+      const codeList = await axios.get(process.env.BASE_URL + "/list/skills/", {
         headers: {
           'Authorization': req.headers.authorization
         }
@@ -18,7 +18,7 @@ export default async function getCapacityData(req, res) {
       }
 
       // Requesting list of users who have the capacity in their profile
-      const userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id, {
+      const userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id + "/", {
         headers: {
           'Authorization': req.headers.authorization
         }

@@ -4,7 +4,7 @@ export default async function capacity(req, res) {
   if (req.method === "GET") {
     try {
       // Fetching codes
-      const codesResponse = await axios.get(process.env.BASE_URL + "/list/skills", {
+      const codesResponse = await axios.get(process.env.BASE_URL + "/list/skills/", {
         headers: {
           'Authorization': req.headers.authorization
         }
