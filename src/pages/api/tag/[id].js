@@ -6,7 +6,7 @@ export default async function getTagData(req, res) {
 
     try {
       // Requesting list of tag codes (based on chosen category)
-      const codeList = await axios.get(process.env.BASE_URL + `/list_${category}`, {
+      const codeList = await axios.get(process.env.BASE_URL + `/list/${category}`, {
         headers: {
           'Authorization': req.headers.authorization
         }
