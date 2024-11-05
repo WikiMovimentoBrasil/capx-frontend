@@ -6,7 +6,7 @@ export default async function getCapacityData(req, res) {
       const { id, language } = req.query;
 
       // Requesting list of wikidata codes
-      const codeList = await axios.get(process.env.BASE_URL + "/list_skills", {
+      const codeList = await axios.get(process.env.BASE_URL + "/list/skills", {
         headers: {
           'Authorization': req.headers.authorization
         }

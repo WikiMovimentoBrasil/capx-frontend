@@ -9,7 +9,7 @@ export default async function listResources(req, res) {
 }
 
 async function handleGetRequest(req, res) {
-  const resource = "list_" + req.query.resource;
+  const resource = "/list/" + req.query.resource + "/";
   const baseRequestConfig = {
     headers: {
       'Authorization': req.headers.authorization
@@ -17,16 +17,8 @@ async function handleGetRequest(req, res) {
   };
 
   try {
-    const response = await axios.get(process.env.BASE_URL + '/', baseRequestConfig);
-    const acceptedResources = Object.keys(response.data).filter(resource => resource.startsWith("list_"));
-
-    if (acceptedResources.includes(resource)) {
-      const queryResponse = await axios.get(process.env.BASE_URL + "/" + resource, baseRequestConfig);
-      res.status(200).json(queryResponse.data);
-    }
-    else {
-      res.status(400);
-    }
+    const response = await axios.get(process.env.BASE_URL + resource, baseRequestConfig);
+    res.status(200).json(response.data);
   }
   catch (error) {
     console.error("Error occurred:", error);
