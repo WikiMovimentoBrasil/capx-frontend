@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"YeBoy371"
+		]
+	},
+	"navbar-link-about": "소개",
+	"navbar-link-profile": "내 프로필",
+	"navbar-link-events": "행사",
+	"navbar-link-homepage": "홈페이지",
+	"body-home-section01-title-carousel": "능력, 지식, 기술, 서비스",
+	"body-profile-gender-other": "기타",
+	"body-profile-edit-button": "프로필 수정",
+	"body-profile-box-title-wikidata-item": "위키데이터 항목",
+	"body-profile-box-title-alt-wiki-acc": "대체 위키미디어 계정",
+	"body-profile-section-title-wikimedia-project": "위키미디어 프로젝트",
+	"body-profile-delete-confirmation": "CapX 프로필을 영구적으로 삭제하시겠습니까?",
+	"body-capacity-user-list-fallback-message": "이 분류에 표시할 사용자가 없습니다.",
+	"body-tag-user-list-title": "프로필에 이 태그가 있는 사용자:",
+	"body-tag-user-list-fallback-message": "프로필에 이 태그가 있는 사용자가 없습니다.",
+	"aria-language-input": "언어 선택",
+	"sign-out-button": "로그아웃",
+	"sign-in-button": "로그인",
+	"form-talk-page": "토론 문서",
+	"form-profile-select": "선택",
+	"form-profile-picture": "프로필 사진",
+	"form-profile-short-bio-placeholder": "자신에 대해서 간단히 소개하고 설명하세요",
+	"form-profile-wikidata-item": "위키데이터 항목",
+	"form-profile-wikidata-item-placeholder": "예: Q125816201",
+	"form-profile-alternative-wikimedia-account": "대체 위키미디어 계정",
+	"form-profile-wikimedia-projects": "위키미디어 프로젝트",
+	"form-profile-delete-button": "예, 내 CapX 프로필을 삭제합니다.",
+	"form-profile-delete-cancel-button": "아니요, 내 CapX 프로필을 유지하고 싶습니다.",
+	"form-report-author": "저자",
+	"form-report-title": "제목",
+	"form-report-description": "설명",
+	"form-report-date": "생성 날짜",
+	"oh-no-message": "안 돼!"
+}
