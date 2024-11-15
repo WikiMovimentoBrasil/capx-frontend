@@ -4,7 +4,6 @@ import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CapXLogo from "../../../public/static/images/capx_logo.svg";
-import React from "react";
 
 interface OAuthProps {
   searchParams: {
@@ -14,43 +13,61 @@ interface OAuthProps {
 
 export default function OAuth({ searchParams }: OAuthProps) {
   const router = useRouter();
-  const [loginStatus, setLoginStatus] = useState("FINISHING LOGIN");
+  const [loginStatus, setLoginStatus] = useState<string | null>(null);
   const oauth_verifier = searchParams.oauth_verifier;
 
   useEffect(() => {
-    async function finishLogin() {
+    let mounted = true;
+
+    async function handleLogin() {
+      if (!oauth_verifier || !mounted) return;
+
       try {
         const oauth_token = localStorage.getItem("oauth_token");
         const oauth_token_secret = localStorage.getItem("oauth_token_secret");
-        const loginResult = await signIn("credentials", {
+
+        if (!oauth_token || !oauth_token_secret) {
+          throw new Error("Missing OAuth tokens");
+        }
+
+        setLoginStatus("FINISHING LOGIN");
+
+        const result = await signIn("credentials", {
           oauth_token,
           oauth_token_secret,
           oauth_verifier,
           redirect: false,
         });
-        if (
-          loginResult?.status == 200 &&
-          loginResult?.ok === true &&
-          loginResult?.error === null
-        ) {
-          setLoginStatus("SUCCESSFUL LOGIN");
-        } else {
-          alert(
-            "An error occurred when trying to log in. You need to start the process over again."
-          );
-        }
 
-        localStorage.removeItem("oauth_token");
-        localStorage.removeItem("oauth_token_secret");
-      } catch {
-        alert(
-          "An error occurred when trying to log in. You need to start the process over again."
-        );
+        if (mounted) {
+          if (result?.ok) {
+            localStorage.removeItem("oauth_token");
+            localStorage.removeItem("oauth_token_secret");
+            router.replace("/");
+          } else {
+            throw new Error(result?.error || "Authentication failed");
+          }
+        }
+      } catch (error) {
+        if (mounted) {
+          console.error("Login error:", error);
+          setLoginStatus("LOGIN FAILED");
+          setTimeout(() => {
+            router.replace("/");
+          }, 2000);
+        }
       }
-      router.push("/");
     }
-    finishLogin();
+
+    handleLogin();
+    return () => {
+      mounted = false;
+    };
   }, [oauth_verifier, router]);
+
+  if (!loginStatus) {
+    return null;
+  }
 
   return (
     <section className="flex w-screen h-screen font-montserrat">
