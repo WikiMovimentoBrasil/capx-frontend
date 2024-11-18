@@ -20,7 +20,7 @@ export default async function ProfilePage() {
     <UserProfileMainWrapper
       session={true}
       language={language}
-      darkMode={darkMode}
+      darkMode={{ value: darkMode }}
       pageContent={pageContent}
       userId={undefined}
     />
