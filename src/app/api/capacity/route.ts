@@ -3,12 +3,23 @@ import axios from "axios";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const language = searchParams.get("language") || "en";
+  const userId = searchParams.get("userId");
+  const language = searchParams.get("language");
   const authHeader = request.headers.get("authorization");
 
   try {
-    // Fetching codes
-    const codesResponse = await axios.get(
+    // 1. Search of user skills
+    const userSkillsResponse = await axios.get(
+      `${process.env.BASE_URL}/skill/${userId}/`,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+
+    // 2. Search of all skills
+    const skillsResponse = await axios.get(
       `${process.env.BASE_URL}/list/skills/`,
       {
         headers: {
@@ -17,49 +28,72 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const codes = Object.entries(codesResponse.data).map(([key, value]) => ({
+    // 3. Transform data
+    const skills = Object.entries(skillsResponse.data).map(([key, value]) => ({
       code: Number(key),
       wd_code: value,
     }));
 
-    // Fetching names based on codes
-    const wdCodeList = codes.map((code) => "wd:" + code.wd_code?.toString());
-    const queryTextPart01 = "SELECT ?item ?itemLabel WHERE {VALUES ?item {";
-    const queryTextPart02 = `} SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'.}}`;
-
-    const wikidataResponse = await axios.get(
-      "https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=" +
-        queryTextPart01 +
-        wdCodeList.join(" ") +
-        queryTextPart02
-    );
-
-    const organizedData = wikidataResponse.data.results.bindings.map(
-      (wdItem) => ({
-        wd_code: wdItem.item.value.split("/").slice(-1)[0],
-        name: wdItem.itemLabel.value,
-      })
-    );
-
-    // Check if sizes match
-    if (codes.length !== organizedData.length) {
-      return NextResponse.json(
-        { error: "Data size mismatch" },
-        { status: 500 }
-      );
+    // 4. Check if there are skills to search
+    if (skills.length === 0) {
+      return NextResponse.json([]);
     }
 
-    // Merge arrays by 'wd_code'
-    const codesWithNames = codes.map((obj1) => {
-      const obj2 = organizedData.find((obj2) => obj2.wd_code === obj1.wd_code);
-      return { ...obj1, ...obj2 };
+    // 5. Build the query for Wikidata
+    const wdCodes = skills.map((skill) => "wd:" + skill.wd_code);
+    const wikiQuery = [
+      "SELECT ?item ?itemLabel WHERE {",
+      "VALUES ?item {" + wdCodes.join(" ") + "}",
+      `SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'. }`,
+      "}",
+    ].join(" ");
+
+    // 6. Search Wikidata data
+    const wikidataResponse = await axios.get(
+      "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
+      {
+        params: {
+          format: "json",
+          query: wikiQuery,
+        },
+      }
+    );
+
+    // 7. Organize and combine data
+    const wikidata = wikidataResponse.data.results.bindings.map((item) => ({
+      wd_code: item.item.value.split("/").slice(-1)[0],
+      name: item.itemLabel.value,
+    }));
+
+    const combinedData = skills.map((skill) => {
+      const wikidataItem = wikidata.find(
+        (item) => item.wd_code === skill.wd_code
+      );
+      const userSkillData = userSkillsResponse.data.find(
+        (item: any) => item.skill === skill.code
+      );
+
+      return {
+        ...skill,
+        ...wikidataItem,
+        ...userSkillData,
+      };
     });
 
-    return NextResponse.json(codesWithNames);
-  } catch (error) {
+    return NextResponse.json(combinedData);
+  } catch (error: any) {
+    console.error("Error in capacity route:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
+
     return NextResponse.json(
-      { error: "Failed to fetch data" },
-      { status: 500 }
+      {
+        error: "Failed to fetch capacity data",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
     );
   }
 }
