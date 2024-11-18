@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { capitalizeFirstLetter } from "@/components/StringUtils";
+import ReportBugCreateButton from "@/app/reports/components/ReportBugCreateButton";
 
 export default function ReportListView({
   darkMode,
@@ -46,9 +47,14 @@ export default function ReportListView({
   if (Object.keys(reportList).length > 0) {
     return (
       <div className="grid grid-cols-1 gap-8 w-10/12 h-fit text-xl mx-auto text-center sm:w-8/12 pt-36">
-        <h1 className="text-4xl font-extrabold leading-tight">
-          {pageContent["navbar-link-reports"]}
-        </h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-4xl font-extrabold leading-tight">
+            {pageContent["navbar-link-reports"]}
+          </h1>
+          <ReportBugCreateButton>
+            {pageContent["form-report-create-button"]}
+          </ReportBugCreateButton>
+        </div>
         <div className="flex flex-wrap w-full text-sm gap-8 justify-evenly">
           {reportList?.map((report, index) => (
             <Link href={"/reports/" + report.id} key={"report-" + report.id}>
