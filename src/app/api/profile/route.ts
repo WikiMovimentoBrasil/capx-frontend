@@ -6,9 +6,11 @@ export async function GET(request: NextRequest) {
   const userId = searchParams.get("userId");
   const authHeader = request.headers.get("authorization");
 
+  console.log("Fetching user profile with:", { userId, authHeader });
+
   try {
     const response = await axios.get(
-      process.env.BASE_URL + "/users?username=" + userId,
+      `${process.env.BASE_URL}/users/${userId}`,
       {
         headers: {
           Authorization: authHeader,
@@ -16,14 +18,18 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    if (response.data.length > 0) {
-      return NextResponse.json(response.data[0]);
+    if (response.data) {
+      return NextResponse.json(response.data);
     } else {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-  } catch (error) {
+  } catch (error: any) {
+    console.error(
+      "Error fetching user profile:",
+      error.response?.data || error.message
+    );
     return NextResponse.json(
-      { error: "Failed to fetch user profile" },
+      { error: "Failed to fetch user profile", details: error.message },
       { status: 500 }
     );
   }
@@ -36,7 +42,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const response = await axios.put(
-      process.env.BASE_URL + "/profile/" + userId + "/",
+      process.env.BASE_URL + "/profile/" + userId,
       body,
       {
         headers: {
