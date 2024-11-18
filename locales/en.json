@@ -72,6 +72,8 @@
   "form-report-date": "Date of creation",
   "form-report-edit-button": "Edit report",
   "form-report-update-button": "Update report",
+  "form-report-create-button": "Create report",
+  "form-report-cancel-button": "Cancel",
   "form-report-number": "Report nº",
   "oh-no-message": "Oh, no!",
   "no-user-profile": "There are no users with this username registered in CapX",

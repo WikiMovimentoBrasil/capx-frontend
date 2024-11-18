@@ -76,6 +76,7 @@
   "form-report-update-button": "Atualizar relatório",
   "form-report-number": "Relatório número",
   "form-report-create-button": "Criar relatório",
+  "form-report-cancel-button": "Cancelar",
   "oh-no-message": "Ixi!",
   "no-user-profile": "Não há usuários/as com esse nome de usuário/a registrados/as no CapX",
   "no-report-rights": "Você não tem permissão para atualizar esse relatório ou esse relatório não existe!"
