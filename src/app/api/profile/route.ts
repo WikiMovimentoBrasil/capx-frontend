@@ -4,13 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const userId = searchParams.get("userId");
-  const authHeader = request.headers.get("authorization");
+  const username = searchParams.get("username");
 
-  console.log("Fetching user profile with:", { userId, authHeader });
+  const authHeader = request.headers.get("authorization");
 
   try {
     const response = await axios.get(
-      `${process.env.BASE_URL}/users/${userId}`,
+      `${process.env.BASE_URL}/users/${encodeURIComponent(userId || "")}`,
       {
         headers: {
           Authorization: authHeader,
@@ -35,15 +35,27 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
-  const body = await request.json();
+export async function PUT(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
-  const userId = body.user.id;
+  const userId = request.nextUrl.searchParams.get("userId");
+  const searchParams = new URLSearchParams(request.nextUrl.search);
+  const formData = await request.json();
+
+  // Convert body data to URL parameters
+  Object.entries(formData).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      if (Array.isArray(value)) {
+        value.forEach((v) => searchParams.append(key, v));
+      } else {
+        searchParams.set(key, value.toString());
+      }
+    }
+  });
 
   try {
     const response = await axios.put(
-      process.env.BASE_URL + "/profile/" + userId,
-      body,
+      `${process.env.BASE_URL}/profile/${userId}/?${searchParams.toString()}`,
+      null, // No body needed
       {
         headers: {
           Authorization: authHeader,
@@ -60,8 +72,9 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error) {
+    console.error("PUT request error:", error);
     return NextResponse.json(
-      { error: "Failed to update user profile" },
+      { error: "Failed to update user profile." },
       { status: 500 }
     );
   }

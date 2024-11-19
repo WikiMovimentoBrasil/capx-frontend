@@ -8,17 +8,7 @@ export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
 
   try {
-    // 1. Search of user skills
-    const userSkillsResponse = await axios.get(
-      `${process.env.BASE_URL}/skill/${userId}/`,
-      {
-        headers: {
-          Authorization: authHeader,
-        },
-      }
-    );
-
-    // 2. Search of all skills
+    // 1. Search of all skills
     const skillsResponse = await axios.get(
       `${process.env.BASE_URL}/list/skills/`,
       {
@@ -28,18 +18,20 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    // 3. Transform data
+    // 2. Transform data
     const skills = Object.entries(skillsResponse.data).map(([key, value]) => ({
       code: Number(key),
       wd_code: value,
     }));
 
-    // 4. Check if there are skills to search
+    console.log("skills", skills);
+
+    // 3. Check if there are skills to search
     if (skills.length === 0) {
       return NextResponse.json([]);
     }
 
-    // 5. Build the query for Wikidata
+    // 4. Build the query for Wikidata
     const wdCodes = skills.map((skill) => "wd:" + skill.wd_code);
     const wikiQuery = [
       "SELECT ?item ?itemLabel WHERE {",
@@ -48,7 +40,7 @@ export async function GET(request: NextRequest) {
       "}",
     ].join(" ");
 
-    // 6. Search Wikidata data
+    // 5. Search Wikidata data
     const wikidataResponse = await axios.get(
       "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
       {
@@ -59,12 +51,13 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    // 7. Organize and combine data
+    // 6. Organize and combine data
     const wikidata = wikidataResponse.data.results.bindings.map((item) => ({
       wd_code: item.item.value.split("/").slice(-1)[0],
       name: item.itemLabel.value,
     }));
 
+    /* 
     const combinedData = skills.map((skill) => {
       const wikidataItem = wikidata.find(
         (item) => item.wd_code === skill.wd_code
@@ -79,8 +72,9 @@ export async function GET(request: NextRequest) {
         ...userSkillData,
       };
     });
+     */
 
-    return NextResponse.json(combinedData);
+    return NextResponse.json(wikidata);
   } catch (error: any) {
     console.error("Error in capacity route:", {
       message: error.message,
