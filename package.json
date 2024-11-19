@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@primer/react": "^36.25.0",
+    "@tanstack/react-query": "^5.60.6",
+    "@tanstack/react-query-devtools": "^5.60.6",
     "@types/node": "^22.9.0",
     "axios": "^1.6.8",
     "framer-motion": "^11.1.7",
