@@ -1,6 +1,7 @@
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import { Metadata } from "next";
+import Providers from "./provider";
 
 export const metadata: Metadata = {
   title: "CapX - Capacity Exchange",
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <SessionWrapper>
       <html lang="pt-br">
         <body id="root" className="min-h-screen">
-          {children}{" "}
+          <Providers>{children}</Providers>
         </body>
       </html>
     </SessionWrapper>
