@@ -22,7 +22,7 @@ export default async function ProfilePage() {
       language={language}
       darkMode={{ value: darkMode }}
       pageContent={pageContent}
-      userId={undefined}
+      username={undefined}
     />
   );
 }
