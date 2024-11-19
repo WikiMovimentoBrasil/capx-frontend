@@ -1,6 +1,6 @@
-import MainImage from "../../../../../../public/static/images/main_image.svg";
 import UserProfileImage from "@/app/(auth)/profile/components/UserProfileImage";
 import ButtonRedirectToPage from "@/components/ButtonRedirectToPage";
+import MainImage from "@/public/static/images/main_image.svg";
 
 export default function ForbiddenReportEditView({ darkMode, pageContent }) {
   return (
