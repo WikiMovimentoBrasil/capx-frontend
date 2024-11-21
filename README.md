@@ -85,12 +85,15 @@ capx-frontend/
 │ │ │ ├── profile/ # Profile related pages
 │ │ │ ├── capacity/ # Capacity related pages
 │ │ │ └── report/ # Report related pages
+│ │ ├── oauth/ # OAuth page
 │ │ ├── api/ # API routes
 │ │ └── layout.tsx # Root layout
 │ ├── components/ # Shared components
 │ ├── hooks/ # Custom hooks
+│ ├── lib/ # Library of functions
 │ ├── services/ # API services
 │ └── types/ # TypeScript types
+│ ├── middleware.ts # Middleware for authentication
 ├── public/ # Static files
 └── locales/ # i18n files
 ```
@@ -102,7 +105,53 @@ capx-frontend/
 3. Protected routes are grouped under the `(auth)` directory
 4. API requests include authentication tokens in headers
 
+```mermaid
+sequenceDiagram
+    participant User
+    participant NextAuth
+    participant API Routes
+    participant Backend
+
+    User->>NextAuth: Login attempt
+    NextAuth->>Backend: Authenticate credentials
+    Backend->>NextAuth: Return token
+    NextAuth->>User: Set session cookie
+
+    Note over User,Backend: Subsequent Requests
+    User->>API Routes: Request with session
+    API Routes->>Backend: Forward with token
+    Backend->>API Routes: Response
+    API Routes->>User: Protected data
+```
+
 ## Data Flow
+
+The data flow is managed through the following components:
+
+```mermaid
+graph TD
+    A[Global State] --> B[NextAuth Session]
+    A --> C[React Query Cache]
+
+    B --> D[useSession Hook]
+    C --> E[useQuery Hooks]
+
+    F[Local State] --> G[Form State]
+    F --> H[UI State]
+
+    G --> I[useProfileForm]
+    G --> J[useCapacityForm]
+
+    H --> K[Dark Mode]
+    H --> L[Language]
+```
+
+### State Management
+
+1. React Query for server state
+2. Local state managed through hooks
+3. Form state handled by custom form hooks
+4. Session state managed by NextAuth
 
 ### Profile Management
 
@@ -120,19 +169,31 @@ capx-frontend/
    - Available capacities (subset of known)
    - Wanted capacities
 
-### API Structure
+### API Structure and Requests flow
 
 1. API routes are organized by feature:
+
    - `/api/profile` - User profile management
    - `/api/capacity` - Capacity operations
    - `/api/profile_image` - Image handling
+   - `/api/login` - Login operations
 
-### State Management
+2. Requests flow:
 
-1. React Query for server state
-2. Local state managed through hooks
-3. Form state handled by custom form hooks
-4. Session state managed by NextAuth
+```mermaid
+sequenceDiagram
+    participant Component
+    participant Service
+    participant APIRoute
+    participant Backend
+
+    Component->>Service: Call service method
+    Service->>APIRoute: Make request
+    APIRoute->>Backend: Forward request
+    Backend->>APIRoute: Response
+    APIRoute->>Service: Processed response
+    Service->>Component: Final data
+```
 
 ## Key Features
 
