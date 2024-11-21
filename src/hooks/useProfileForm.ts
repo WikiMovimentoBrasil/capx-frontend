@@ -68,6 +68,11 @@ export function useProfileForm(initialData: any, session: any) {
         await axios.put("/api/profile", formData.userData, {
           params: {
             userId: session.sessionData.user.id,
+            username: session.sessionData.user.username,
+            language: session.sessionData.user.language,
+          },
+          headers: {
+            Authorization: `Token ${session.sessionData.user.token}`,
           },
         });
         router.push("/profile");

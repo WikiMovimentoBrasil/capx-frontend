@@ -38,7 +38,8 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const userId = request.nextUrl.searchParams.get("userId");
-  const searchParams = new URLSearchParams(request.nextUrl.search);
+  const username = request.nextUrl.searchParams.get("username");
+  let searchParams = new URLSearchParams(request.nextUrl.search);
   const formData = await request.json();
 
   // Convert body data to URL parameters
@@ -55,7 +56,7 @@ export async function PUT(request: NextRequest) {
   try {
     const response = await axios.put(
       `${process.env.BASE_URL}/profile/${userId}/?${searchParams.toString()}`,
-      null, // No body needed
+      formData,
       {
         headers: {
           Authorization: authHeader,

@@ -9,6 +9,7 @@ interface QueryData {
   headers: {
     Authorization: string;
   };
+  body?: any;
 }
 
 export const profileService = {
@@ -75,12 +76,11 @@ export const profileService = {
     }
   },
 
-  async updateProfile(data: any, token: string) {
+  async updateProfile(queryData: QueryData) {
     try {
-      const response = await axios.post("/api/profile", data, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
+      const response = await axios.put("/api/profile", queryData.body, {
+        params: queryData.params,
+        headers: queryData.headers,
       });
       return response.data;
     } catch (error) {
