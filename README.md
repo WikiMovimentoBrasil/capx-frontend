@@ -72,3 +72,98 @@ Contributions are welcome! To contribute to the Capacity Exchange, follow these 
 ## License
 
 This project is licensed under the GNU AGPLv3 - see the LICENSE file for details.
+
+## Project Structure
+
+The project uses Next.js 14+ App Router and TypeScript for better type safety and modern routing patterns.
+
+capx-frontend/
+├── src/
+│ ├── app/ # App Router directory
+│ │ ├── (auth)/ # Authenticated routes group
+│ │ │ ├── profile/ # Profile related pages
+│ │ │ ├── capacity/ # Capacity related pages
+│ │ │ └── report/ # Report related pages
+│ │ ├── api/ # API routes
+│ │ └── layout.tsx # Root layout
+│ ├── components/ # Shared components
+│ ├── hooks/ # Custom hooks
+│ ├── services/ # API services
+│ └── types/ # TypeScript types
+├── public/ # Static files
+└── locales/ # i18n files
+
+## Authentication Flow
+
+1. User authentication is handled through NextAuth.js
+2. Session management uses server-side session tokens
+3. Protected routes are grouped under the `(auth)` directory
+4. API requests include authentication tokens in headers
+
+## Data Flow
+
+### Profile Management
+
+1. User data is fetched through `profileService`
+2. State management uses custom hooks (`useProfileForm`)
+3. Form updates are handled through controlled components
+4. API requests are processed through Next.js API routes
+
+### Capacity Management
+
+1. Capacities are managed through `capacityService`
+2. State handling uses `useCapacityForm` hook
+3. Capacity data follows a hierarchical structure:
+   - Known capacities
+   - Available capacities (subset of known)
+   - Wanted capacities
+
+### API Structure
+
+1. API routes are organized by feature:
+   - `/api/profile` - User profile management
+   - `/api/capacity` - Capacity operations
+   - `/api/profile_image` - Image handling
+
+### State Management
+
+1. React Query for server state
+2. Local state managed through hooks
+3. Form state handled by custom form hooks
+4. Session state managed by NextAuth
+
+## Key Features
+
+- TypeScript integration for better type safety
+- Modern App Router for improved routing
+- Server and Client Components separation
+- API route handlers with improved error handling
+- Internationalization support
+- Dark mode support
+- Responsive design
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Build for production
+npm run build
+```
+
+## Environment Variables
+
+```env
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+BASE_URL=http://localhost:8000
+```
+
+For more detailed information about specific features, check the documentation in the respective directories.
