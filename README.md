@@ -77,6 +77,7 @@ This project is licensed under the GNU AGPLv3 - see the LICENSE file for details
 
 The project uses Next.js 14+ App Router and TypeScript for better type safety and modern routing patterns.
 
+```
 capx-frontend/
 ├── src/
 │ ├── app/ # App Router directory
@@ -92,6 +93,7 @@ capx-frontend/
 │ └── types/ # TypeScript types
 ├── public/ # Static files
 └── locales/ # i18n files
+```
 
 ## Authentication Flow
 
