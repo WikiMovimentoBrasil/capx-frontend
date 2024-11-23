@@ -190,10 +190,10 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"territory"}
               key={"territory"}
-              options={Object.entries(formData.territoryData ?? {}).map(
+              data={Object.entries(formData.territoryData ?? {}).map(
                 (option) => ({
-                  value: parseInt(option[0]),
-                  label: option[1],
+                  value: option[0],
+                  label: String(option[1]),
                 })
               )}
               selectedOptions={
@@ -215,10 +215,10 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"language"}
               key={"language"}
-              options={Object.entries(formData.languageData ?? {}).map(
+              data={Object.entries(formData.languageData ?? {}).map(
                 (option) => ({
-                  value: parseInt(option[0]),
-                  label: option[1],
+                  value: option[0],
+                  label: String(option[1]),
                 })
               )}
               selectedOptions={
@@ -240,10 +240,10 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"affiliation"}
               key={"affiliation"}
-              options={Object.entries(formData.affiliationData ?? {}).map(
+              data={Object.entries(formData.affiliationData ?? {}).map(
                 (option) => ({
-                  value: parseInt(option[0]),
-                  label: option[1],
+                  value: option[0],
+                  label: String(option[1]),
                 })
               )}
               selectedOptions={
@@ -279,10 +279,10 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"wikimedia_project"}
               key={"wikimedia_project"}
-              options={Object.entries(formData.wikiProjectData ?? {}).map(
+              data={Object.entries(formData.wikiProjectData ?? {}).map(
                 (option) => ({
-                  value: parseInt(option[0]),
-                  label: option[1],
+                  value: option[0],
+                  label: String(option[1]),
                 })
               )}
               selectedOptions={
@@ -291,7 +291,11 @@ export default function EditProfileForm({
                   label: formData.wikiProjectData[option],
                 })) ?? []
               }
-              onChange={handleMultiSelectInputChange}
+              onChange={(selectedOptions) =>
+                handleMultiSelectInputChange(selectedOptions, {
+                  name: "wikimedia_project",
+                })
+              }
               placeholder={pageContent["form-profile-select"]}
             >
               {pageContent["form-profile-wikimedia-projects"]}
@@ -300,7 +304,7 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"skills_known"}
               key={"skills_known"}
-              options={formData.skillData?.map((skill) => ({
+              data={formData.skillData?.map((skill) => ({
                 value: skill.code,
                 label: skill.name,
               }))}
@@ -325,7 +329,7 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"skills_available"}
               key={"skills_available"}
-              options={
+              data={
                 formData.userData?.skills_known?.map((knownSkill) => {
                   const skill = formData.skillData.find(
                     (skill) => skill.code === knownSkill
@@ -341,7 +345,11 @@ export default function EditProfileForm({
                   return { value: skill.code, label: skill.name };
                 }) ?? []
               }
-              onChange={handleMultiSelectInputChange}
+              onChange={(selectedOptions) =>
+                handleMultiSelectInputChange(selectedOptions, {
+                  name: "skills_available",
+                })
+              }
               placeholder={pageContent["form-profile-select"]}
             >
               {pageContent["form-profile-available-capacities"]}
@@ -350,7 +358,7 @@ export default function EditProfileForm({
             <MultiSelectInput
               id={"skills_wanted"}
               key={"skills_wanted"}
-              options={formData.skillData?.map((skill) => ({
+              data={formData.skillData?.map((skill) => ({
                 value: skill.code,
                 label: skill.name,
               }))}
@@ -362,7 +370,11 @@ export default function EditProfileForm({
                   return { value: skill.code, label: skill.name };
                 }) ?? []
               }
-              onChange={handleMultiSelectInputChange}
+              onChange={(selectedOptions) =>
+                handleMultiSelectInputChange(selectedOptions, {
+                  name: "skills_wanted",
+                })
+              }
               placeholder={pageContent["form-profile-select"]}
             >
               {pageContent["form-profile-wanted-capacities"]}
