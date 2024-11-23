@@ -1,6 +1,5 @@
 import Link from "next/link";
-import TreeView from '@primer/react'
-import { capitalizeFirstLetter } from "@/components/StringUtils";
+import { capitalizeFirstLetter } from "@/lib/utils/stringUtils";
 
 export default function CapacityListView({ darkMode, capacityList }) {
   if (capacityList === undefined) {
@@ -10,19 +9,33 @@ export default function CapacityListView({ darkMode, capacityList }) {
         <ul className="space-y-3">
           {skeletonItems.map((_, index) => (
             <li key={index}>
-              <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full h-8 rounded-lg animate-pulse"}></div>
+              <div
+                className={
+                  (darkMode
+                    ? "bg-capx-dark-box-bg "
+                    : "bg-capx-light-box-bg ") +
+                  "w-full h-8 rounded-lg animate-pulse"
+                }
+              ></div>
             </li>
           ))}
         </ul>
         <ul className="space-y-3">
           {skeletonItems.map((_, index) => (
             <li key={index}>
-              <div className={(darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") + "w-full h-8 rounded-lg animate-pulse"}></div>
+              <div
+                className={
+                  (darkMode
+                    ? "bg-capx-dark-box-bg "
+                    : "bg-capx-light-box-bg ") +
+                  "w-full h-8 rounded-lg animate-pulse"
+                }
+              ></div>
             </li>
           ))}
         </ul>
       </div>
-    )
+    );
   }
 
   if (Object.keys(capacityList).length > 0) {
@@ -39,6 +52,6 @@ export default function CapacityListView({ darkMode, capacityList }) {
           </li>
         ))}
       </ul>
-    )
+    );
   }
 }

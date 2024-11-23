@@ -1,9 +1,13 @@
-"use client"
+"use client";
 import Link from "next/link";
-import { useState, useEffect } from 'react';
-import { capitalizeFirstLetter } from "@/components/StringUtils";
+import { useState, useEffect } from "react";
+import { capitalizeFirstLetter } from "@/lib/utils/stringUtils";
 
-export default function CapacityListSearchBar({ darkMode, capacityList, pageContent }) {
+export default function CapacityListSearchBar({
+  darkMode,
+  capacityList,
+  pageContent,
+}) {
   const [searchBarQuery, setSearchBarQuery] = useState("");
   const [searchBarResultList, setSearchBarResultList] = useState([]);
 
@@ -42,7 +46,7 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
           />
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -60,8 +64,27 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
             onClick={handleClearSearch}
             className="absolute text-base font-extrabold text-capx-secondary-purple hover:text-gray-400 right-4 top-1/2 transform -translate-y-1/2"
           >
-            <svg className={"w-6 h-6 " + (darkMode ? "text-capx-primary-yellow" : "text-capx-primary-red")} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18 17.94 6M18 18 6.06 6" />
+            <svg
+              className={
+                "w-6 h-6 " +
+                (darkMode
+                  ? "text-capx-primary-yellow"
+                  : "text-capx-primary-red")
+              }
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18 17.94 6M18 18 6.06 6"
+              />
             </svg>
           </button>
         )}
@@ -78,5 +101,5 @@ export default function CapacityListSearchBar({ darkMode, capacityList, pageCont
         </ul>
       )}
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { capitalizeFirstLetter } from "@/components/StringUtils";
+import { capitalizeFirstLetter } from "@/lib/utils/stringUtils";
 
 export default function ReportListView({
   darkMode,
