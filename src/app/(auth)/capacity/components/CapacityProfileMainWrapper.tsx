@@ -7,7 +7,17 @@ import BaseWrapper from "@/components/BaseWrapper";
 import CapacityProfileView from "./CapacityProfileView";
 import LoadingSection from "@/components/LoadingSection";
 
-export default function CapacityProfileMainWrapper(props) {
+interface CapacityProfileMainWrapperProps {
+  session: boolean;
+  language: string;
+  darkMode: { value: string };
+  pageContent: any;
+  selectedCapacityId: string;
+}
+
+export default function CapacityProfileMainWrapper(
+  props: CapacityProfileMainWrapperProps
+) {
   const { status, data } = useSession();
   const [language, setLanguage] = useState(props.language);
   const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
@@ -15,19 +25,25 @@ export default function CapacityProfileMainWrapper(props) {
   const [pageContent, setPageContent] = useState(props.pageContent);
   const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
 
-  const getCapacityData = useCallback(async (queryData) => {
-    const queryResponse = await axios.get("/api/capacity/" + props.selectedCapacityId, queryData);
-    setSelectedCapacityData(queryResponse.data);
-  }, [props.selectedCapacityId]);
+  const getCapacityData = useCallback(
+    async (queryData) => {
+      const queryResponse = await axios.get(
+        "/api/capacity/" + props.selectedCapacityId,
+        queryData
+      );
+      setSelectedCapacityData(queryResponse.data);
+    },
+    [props.selectedCapacityId]
+  );
 
   useEffect(() => {
     if (status === "authenticated") {
       const queryData = {
         params: { language: props.language },
         headers: {
-          'Authorization': `Token ${data.user.token}`,
-        }
-      }
+          Authorization: `Token ${data.user.token}`,
+        },
+      };
       getCapacityData(queryData);
     }
   }, [data?.user?.token, getCapacityData, props.language, status]);
@@ -38,15 +54,15 @@ export default function CapacityProfileMainWrapper(props) {
       const queryData = {
         params: { language: language },
         headers: {
-          'Authorization': `Token ${data.user.token}`,
-        }
-      }
+          Authorization: `Token ${data.user.token}`,
+        },
+      };
       getCapacityData(queryData);
     }
   }, [data?.user?.token, getCapacityData, language, status]);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />
+    return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />;
   }
 
   return (
@@ -66,9 +82,9 @@ export default function CapacityProfileMainWrapper(props) {
           darkMode={darkMode}
           selectedCapacityData={selectedCapacityData}
           pageContent={pageContent}
-          userId={data.user.id}
+          userId={data?.user?.id}
         />
       </CapacitySection>
     </BaseWrapper>
-  )
+  );
 }
