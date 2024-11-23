@@ -1,21 +1,23 @@
 import axios from "axios";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function getSkillsByType(req, res) {
-  if (req.method === "GET") {
+export async function GET(request: NextRequest) {
+  if (request.method === "GET") {
     try {
-      const capacityId = req.query.id;
-      const response = await axios.get(process.env.BASE_URL + "/skills_by_type/" + capacityId + "/", {
-        headers: {
-          'Authorization': req.headers.authorization
+      const capacityId = request?.nextUrl?.searchParams?.get("id");
+      const response = await axios.get(
+        process.env.BASE_URL + "/skills_by_type/" + capacityId + "/",
+        {
+          headers: {
+            Authorization: request.headers.get("authorization") ?? "",
+          },
         }
-      });
-      res.status(200).json(response.data);
+      );
+      return NextResponse.json(response.data);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch data." });
+      return NextResponse.json({ error: "Failed to fetch data." });
     }
+  } else {
+    return NextResponse.json({ error: "Method not allowed." });
   }
-  else {
-    res.status(405);
-  }
-  res.end();
 }

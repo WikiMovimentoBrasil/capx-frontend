@@ -1,53 +1,63 @@
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-export default async function getCapacityData(req, res) {
-  if (req.method === "GET") {
-    try {
-      const { id, language } = req.query;
+export async function GET(req: NextRequest) {
+  try {
+    const id = req.nextUrl.searchParams.get("id") ?? "";
+    const language = req.nextUrl.searchParams.get("language") ?? "en";
+    const authHeader = req.headers.get("authorization");
 
-      // Requesting list of wikidata codes
-      const codeList = await axios.get(process.env.BASE_URL + "/list/skills/", {
-        headers: {
-          'Authorization': req.headers.authorization
-        }
-      });
-
-      // Returning error if the requested id does not have a corresponding wikidata code
-      if (codeList.data.hasOwnProperty(id) === false) {
-        res.status(500).json({ error: "No wikidata item for this capacity id." });
+    // Get capacity codes
+    const codesResponse = await axios.get(
+      `${process.env.BASE_URL}/list/skills/`,
+      {
+        headers: { Authorization: authHeader ?? "" },
       }
+    );
 
-      // Requesting list of users who have the capacity in their profile
-      const userList = await axios.get(process.env.BASE_URL + "/users_by_skill/" + id + "/", {
-        headers: {
-          'Authorization': req.headers.authorization
-        }
-      });
-
-      const capacityCodes = {
-        code: id,
-        wd_code: codeList.data[id],
-        users: userList.data
-      }
-
-      // Requesting data from wikidata
-      const capWikidataCode = "wd:" + capacityCodes.wd_code.toString();
-      const queryTextPart01 = "SELECT ?item ?itemLabel ?itemDescription WHERE {VALUES ?item {";
-      const queryTextPart02 = "} SERVICE wikibase:label { bd:serviceParam wikibase:language '" + language + ",en'.}}";
-
-      const wikidataResponse = await axios.get('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=' + queryTextPart01 + capWikidataCode + queryTextPart02);
-      const capacityData = {
-        name: wikidataResponse.data.results.bindings[0].itemLabel.value,
-        description: wikidataResponse.data.results.bindings[0].itemDescription ? wikidataResponse.data.results.bindings[0].itemDescription.value : undefined
-      }
-
-      res.status(200).json({ ...capacityCodes, ...capacityData });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch data." });
+    if (!codesResponse.data[id]) {
+      return NextResponse.json(
+        { error: "No wikidata item for this capacity id." },
+        { status: 404 }
+      );
     }
+
+    // Get users with this capacity
+    const usersResponse = await axios.get(
+      `${process.env.BASE_URL}/users_by_skill/${id}/`,
+      { headers: { Authorization: authHeader ?? "" } }
+    );
+
+    // Get Wikidata information
+    const wdCode = codesResponse.data[id];
+    const wikidataResponse = await axios.get(
+      `https://query.wikidata.org/bigdata/namespace/wdq/sparql`,
+      {
+        params: {
+          format: "json",
+          query: `SELECT ?item ?itemLabel ?itemDescription WHERE {
+            VALUES ?item { wd:${wdCode} }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "${language},en". }
+          }`,
+        },
+      }
+    );
+
+    const response = {
+      code: id,
+      wd_code: wdCode,
+      name: wikidataResponse.data.results.bindings[0].itemLabel.value,
+      description:
+        wikidataResponse.data.results.bindings[0].itemDescription?.value,
+      users: usersResponse.data,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error("Error in capacity route:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch capacity data" },
+      { status: 500 }
+    );
   }
-  else {
-    res.status(405);
-  }
-  res.end();
 }
