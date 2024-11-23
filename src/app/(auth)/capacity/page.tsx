@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { loadLocale } from "@/lib/utils/loadLocale";
 import CapacityListMainWrapper from "./components/CapacityListMainWrapper";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Capacities - CapX",
@@ -10,18 +12,21 @@ export const metadata: Metadata = {
 };
 
 export default async function CapacitiesPage() {
+  const session = await getServerSession();
+  if (!session) {
+    redirect("/");
+  }
+
   const cookieStore = cookies();
   const darkMode = cookieStore.get("dark_mode")?.value ?? "false";
   const language = cookieStore.get("language")?.value ?? "en";
-
-  // Loading page content based on selected language
   const pageContent = loadLocale(language);
 
   return (
     <CapacityListMainWrapper
       session={true}
       language={language}
-      darkMode={darkMode}
+      darkMode={{ value: darkMode }}
       pageContent={pageContent}
     />
   );

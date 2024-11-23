@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { loadLocale } from "@/lib/utils/loadLocale";
 import CapacityProfileMainWrapper from "../components/CapacityProfileMainWrapper";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
 
 interface CapacityPageProps {
   params: {
@@ -16,23 +18,23 @@ export const metadata: Metadata = {
 };
 
 export default async function CapacityPage({ params }: CapacityPageProps) {
+  const session = await getServerSession();
+  if (!session) {
+    redirect("/");
+  }
+
   const cookieStore = cookies();
   const darkMode = cookieStore.get("dark_mode")?.value ?? "false";
   const language = cookieStore.get("language")?.value ?? "en";
-
-  // Loading page content based on selected language
   const pageContent = loadLocale(language);
-
-  // Capacity ID
-  const selectedCapacityId = params.id;
 
   return (
     <CapacityProfileMainWrapper
       session={true}
       language={language}
-      darkMode={darkMode}
+      darkMode={{ value: darkMode }}
       pageContent={pageContent}
-      selectedCapacityId={selectedCapacityId}
+      selectedCapacityId={params.id}
     />
   );
 }
