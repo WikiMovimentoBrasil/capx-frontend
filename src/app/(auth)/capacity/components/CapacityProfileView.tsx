@@ -9,7 +9,43 @@ export default function CapacityProfileView({
   pageContent,
   userId,
 }) {
-  if (selectedCapacityData === undefined) {
+  const showUserList = (users: any[], title: string) => {
+    if (!users?.length) {
+      return (
+        <CapacityProfileNoUser
+          darkMode={darkMode}
+          title={title}
+          noUserMessage={
+            pageContent["body-capacity-user-list-fallback-message"]
+          }
+        />
+      );
+    }
+
+    // If only one user and it's the current user, show empty state
+    if (users.length === 1 && users[0].id === userId) {
+      return (
+        <CapacityProfileNoUser
+          darkMode={darkMode}
+          title={title}
+          noUserMessage={
+            pageContent["body-capacity-user-list-fallback-message"]
+          }
+        />
+      );
+    }
+
+    return (
+      <CapacityProfileUserList
+        darkMode={darkMode}
+        title={title}
+        data={users}
+        userId={userId}
+      />
+    );
+  };
+
+  if (!selectedCapacityData) {
     return (
       <div className="w-full space-y-20 pt-10">
         <div className="space-y-6">
@@ -137,89 +173,17 @@ export default function CapacityProfileView({
         ) : null}
       </div>
       <div className="space-y-14">
-        {selectedCapacityData.users.wanted?.length > 0 ? (
-          // If there is only one person and it is the user himself
-          selectedCapacityData.users.wanted.length === 1 &&
-          selectedCapacityData.users.wanted[0].id === userId ? (
-            <CapacityProfileNoUser
-              darkMode={darkMode}
-              title={pageContent["body-capacity-wanted-user-list-title"]}
-              noUserMessage={
-                pageContent["body-capacity-user-list-fallback-message"]
-              }
-            />
-          ) : (
-            <CapacityProfileUserList
-              darkMode={darkMode}
-              title={pageContent["body-capacity-wanted-user-list-title"]}
-              data={selectedCapacityData.users.wanted}
-              userId={userId}
-            />
-          )
-        ) : (
-          <CapacityProfileNoUser
-            darkMode={darkMode}
-            title={pageContent["body-capacity-wanted-user-list-title"]}
-            noUserMessage={
-              pageContent["body-capacity-user-list-fallback-message"]
-            }
-          />
+        {showUserList(
+          selectedCapacityData.users?.wanted,
+          pageContent["body-capacity-wanted-user-list-title"]
         )}
-        {selectedCapacityData.users.known?.length > 0 ? (
-          // If there is only one person and it is the user himself
-          selectedCapacityData.users.known.length === 1 &&
-          selectedCapacityData.users.known[0].id === userId ? (
-            <CapacityProfileNoUser
-              darkMode={darkMode}
-              title={pageContent["body-capacity-known-user-list-title"]}
-              noUserMessage={
-                pageContent["body-capacity-user-list-fallback-message"]
-              }
-            />
-          ) : (
-            <CapacityProfileUserList
-              darkMode={darkMode}
-              title={pageContent["body-capacity-known-user-list-title"]}
-              data={selectedCapacityData.users.known}
-              userId={userId}
-            />
-          )
-        ) : (
-          <CapacityProfileNoUser
-            darkMode={darkMode}
-            title={pageContent["body-capacity-known-user-list-title"]}
-            noUserMessage={
-              pageContent["body-capacity-user-list-fallback-message"]
-            }
-          />
+        {showUserList(
+          selectedCapacityData.users?.known,
+          pageContent["body-capacity-known-user-list-title"]
         )}
-        {selectedCapacityData.users.available?.length > 0 ? (
-          // If there is only one person and it is the user himself
-          selectedCapacityData.users.available.length === 1 &&
-          selectedCapacityData.users.available[0].id === userId ? (
-            <CapacityProfileNoUser
-              darkMode={darkMode}
-              title={pageContent["body-capacity-available-user-list-title"]}
-              noUserMessage={
-                pageContent["body-capacity-user-list-fallback-message"]
-              }
-            />
-          ) : (
-            <CapacityProfileUserList
-              darkMode={darkMode}
-              title={pageContent["body-capacity-available-user-list-title"]}
-              data={selectedCapacityData.users.available}
-              userId={userId}
-            />
-          )
-        ) : (
-          <CapacityProfileNoUser
-            darkMode={darkMode}
-            title={pageContent["body-capacity-available-user-list-title"]}
-            noUserMessage={
-              pageContent["body-capacity-user-list-fallback-message"]
-            }
-          />
+        {showUserList(
+          selectedCapacityData.users?.available,
+          pageContent["body-capacity-available-user-list-title"]
         )}
       </div>
     </div>
