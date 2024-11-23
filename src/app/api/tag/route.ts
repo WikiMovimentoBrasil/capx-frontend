@@ -1,23 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    // Get the category from searchParams
-    const category = request.nextUrl.searchParams.get("category");
-    const id = params.id;
+    const searchParams = request.nextUrl.searchParams;
+    const categoryTag = searchParams.get("category");
+    const tagId = searchParams.get("id") || "";
 
-    if (!category) {
+    if (!categoryTag) {
       return NextResponse.json(
         { error: "Category parameter is required" },
         { status: 400 }
       );
     }
 
-    // Get authorization header
     const authorization = request.headers.get("authorization");
     if (!authorization) {
       return NextResponse.json(
@@ -26,37 +22,25 @@ export async function GET(
       );
     }
 
-    // Requesting list of tag codes (based on chosen category)
-    const codeList = await axios.get(
-      `${process.env.BASE_URL}/list/${category}/`,
-      {
-        headers: {
-          Authorization: authorization,
-        },
-      }
-    );
+    const [codeList, userList] = await Promise.all([
+      axios.get(`${process.env.BASE_URL}/list/${categoryTag}/`, {
+        headers: { Authorization: authorization },
+      }),
+      axios.get(`${process.env.BASE_URL}/tags/${categoryTag}/${tagId}/`, {
+        headers: { Authorization: authorization },
+      }),
+    ]);
 
-    // Returning error if the requested id does not have a corresponding tag code
-    if (!codeList.data.hasOwnProperty(id)) {
+    if (!codeList.data.hasOwnProperty(tagId)) {
       return NextResponse.json(
         { error: "No item for this tag id." },
         { status: 404 }
       );
     }
 
-    // Requesting list of users who have the tag in their profile
-    const userList = await axios.get(
-      `${process.env.BASE_URL}/tags/${category}/${id}/`,
-      {
-        headers: {
-          Authorization: authorization,
-        },
-      }
-    );
-
     const tagData = {
-      code: id,
-      name: codeList.data[id],
+      code: tagId,
+      name: codeList.data[tagId],
       users: userList.data,
     };
 
