@@ -1,23 +1,34 @@
 {
 	"@metadata": {
 		"authors": [
-			"YeBoy371"
+			"YeBoy371",
+			"Ykhwong"
 		]
 	},
 	"navbar-link-about": "소개",
 	"navbar-link-profile": "내 프로필",
 	"navbar-link-events": "행사",
 	"navbar-link-homepage": "홈페이지",
+	"navbar-link-reports": "보고서",
 	"body-home-section01-title-carousel": "능력, 지식, 기술, 서비스",
+	"body-profile-gender-hehim": "그",
+	"body-profile-gender-sheher": "그녀",
+	"body-profile-gender-theythem": "그들",
+	"body-profile-gender-notespecified": "지정되지 않음",
 	"body-profile-gender-other": "기타",
 	"body-profile-edit-button": "프로필 수정",
 	"body-profile-box-title-wikidata-item": "위키데이터 항목",
 	"body-profile-box-title-alt-wiki-acc": "대체 위키미디어 계정",
+	"body-profile-section-title-territory": "지역",
+	"body-profile-section-title-language": "언어",
+	"body-profile-section-title-team": "팀",
 	"body-profile-section-title-wikimedia-project": "위키미디어 프로젝트",
 	"body-profile-delete-confirmation": "CapX 프로필을 영구적으로 삭제하시겠습니까?",
+	"body-capacity-available-user-list-title": "서비스 제공자:",
 	"body-capacity-user-list-fallback-message": "이 분류에 표시할 사용자가 없습니다.",
 	"body-tag-user-list-title": "프로필에 이 태그가 있는 사용자:",
 	"body-tag-user-list-fallback-message": "프로필에 이 태그가 있는 사용자가 없습니다.",
+	"footer-link-documentation": "문서",
 	"aria-language-input": "언어 선택",
 	"sign-out-button": "로그아웃",
 	"sign-in-button": "로그인",
@@ -28,12 +39,19 @@
 	"form-profile-wikidata-item": "위키데이터 항목",
 	"form-profile-wikidata-item-placeholder": "예: Q125816201",
 	"form-profile-alternative-wikimedia-account": "대체 위키미디어 계정",
+	"form-profile-territory": "지역",
+	"form-profile-languages": "언어",
+	"form-profile-team": "팀",
 	"form-profile-wikimedia-projects": "위키미디어 프로젝트",
 	"form-profile-delete-button": "예, 내 CapX 프로필을 삭제합니다.",
 	"form-profile-delete-cancel-button": "아니요, 내 CapX 프로필을 유지하고 싶습니다.",
 	"form-report-author": "저자",
 	"form-report-title": "제목",
 	"form-report-description": "설명",
+	"form-report-description-placeholder": "보고하는 내용을 설명하세요",
 	"form-report-date": "생성 날짜",
-	"oh-no-message": "안 돼!"
+	"form-report-edit-button": "보고서 편집",
+	"form-report-update-button": "보고서 수정",
+	"oh-no-message": "안 돼!",
+	"no-report-rights": "이 보고서를 업데이트할 권한이 없거나 이 보고서가 없습니다!"
 }
