@@ -12,7 +12,7 @@ export default function CapacityProfileUserPreview({ darkMode, userData }) {
   if (data === undefined) {
     return (
       <div className="w-full h-full rounded-full p-4 space-y-2 animate-pulse">
-        <Image src="https://upload.wikimedia.org/wikipedia/commons/c/cd/CapX-icon.svg" className="rounded-full"  alt="CapX logo"/>
+        <Image src="https://upload.wikimedia.org/wikipedia/commons/c/cd/CapX-icon.svg" className="rounded-full"  alt="CapX logo" width={'250'} height={'250'}/>
         <div className="space-y-0.5">
           <div className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full h-4 rounded-lg animate-pulse"}></div>
           <div className={(darkMode ? "bg-capx-dark-bg " : "bg-capx-light-bg ") + "w-full h-4 rounded-lg animate-pulse"}></div>
@@ -24,7 +24,7 @@ export default function CapacityProfileUserPreview({ darkMode, userData }) {
   return (
     <div className="w-full h-full p-4 space-y-2">
       <Link href={"/profile/" + data.id}>
-        <Image src={data.profile_image ? data.profile_image : "https://upload.wikimedia.org/wikipedia/commons/c/cd/CapX-icon.svg"} className={(darkMode ? "hover:border-capx-light-bg " : "hover:border-capx-dark-bg ") + "rounded-full border-2 cursor-pointer hover:border-dotted"}  alt="CapX logo"/>
+        <Image src={data.profile_image ? data.profile_image : "https://upload.wikimedia.org/wikipedia/commons/c/cd/CapX-icon.svg"} className={(darkMode ? "hover:border-capx-light-bg " : "hover:border-capx-dark-bg ") + "rounded-full border-2 cursor-pointer hover:border-dotted"} alt="CapX logo"  width={'250'} height={'250'}/>
       </Link>
       <p className="text-xs text-center">{data.username}</p>
     </div>
