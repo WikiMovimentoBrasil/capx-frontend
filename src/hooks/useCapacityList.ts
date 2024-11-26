@@ -40,22 +40,30 @@ export const useCapacityList = ({
 
       try {
         setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
-        const items = await capacityService.fetchCapacityByType(itemId, {
+        const response = await capacityService.fetchCapacityByType(itemId, {
           params: { language },
           headers: { Authorization: `Token ${token}` },
         });
 
-        if (items && Object.keys(items).length > 0) {
-          setAsyncItems((prev) => ({ ...prev, [itemId]: items }));
+        if (response && typeof response === "object") {
+          setAsyncItems((prev) => ({
+            ...prev,
+            [itemId]: response,
+          }));
+          setExpandedItems((prev) => ({ ...prev, [itemId]: isExpanded }));
         }
       } catch (error) {
-        console.error("Failed to load items:", error);
+        console.error("Failed to load capacity items:", error);
+        setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
+        setAsyncItems((prev) => ({
+          ...prev,
+          [itemId]: {}, // Empty object for failed requests
+        }));
       } finally {
         setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
-        setExpandedItems((prev) => ({ ...prev, [itemId]: isExpanded }));
       }
     },
-    [asyncItems, token, language]
+    [asyncItems, language, token]
   );
 
   const fetchCapacityList = useCallback(async () => {
@@ -82,31 +90,6 @@ export const useCapacityList = ({
     }
   }, [token, language]);
 
-  const loadCapacityItems = useCallback(
-    async (type: string) => {
-      if (!token) return {};
-      try {
-        const response = await fetch(`/api/capacity/type/${type}`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch capacity items: ${response.statusText}`
-          );
-        }
-
-        return await response.json();
-      } catch (error) {
-        console.error("Failed to load capacity items:", error);
-        return {};
-      }
-    },
-    [token, language]
-  );
-
   return {
     capacityList,
     asyncItems,
@@ -114,6 +97,5 @@ export const useCapacityList = ({
     loadingStates,
     fetchCapacityList,
     handleExpandedChange,
-    loadCapacityItems,
   };
 };

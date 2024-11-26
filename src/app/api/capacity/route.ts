@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     const language = req.nextUrl.searchParams.get("language");
     const authHeader = req.headers.get("authorization");
 
+    // Get all skills
     const codesResponse = await axios.get(
       `${process.env.BASE_URL}/list/skills/`,
       {
@@ -13,11 +14,26 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    const codes = Object.entries(codesResponse.data).map(([key, value]) => ({
-      code: Number(key),
-      wd_code: value,
-    }));
+    // Get all skills by type to identify root items
+    const skillsByTypeResponse = await axios.get(
+      `${process.env.BASE_URL}/skills_by_type/0/`,
+      { headers: { Authorization: authHeader } }
+    );
 
+    // Root items are those in skills_by_type/0/
+    const rootSkillIds = Array.isArray(skillsByTypeResponse.data)
+      ? skillsByTypeResponse.data
+      : Object.keys(skillsByTypeResponse.data).map(Number);
+
+    // Filter codes to only include root items
+    const codes = Object.entries(codesResponse.data)
+      .filter(([key]) => rootSkillIds.includes(Number(key)))
+      .map(([key, value]) => ({
+        code: Number(key),
+        wd_code: value,
+      }));
+
+    // Continue with Wikidata query...
     const wdCodeList = codes.map((code) => "wd:" + code.wd_code);
     const queryText = `SELECT ?item ?itemLabel WHERE {VALUES ?item {${wdCodeList.join(
       " "
@@ -34,21 +50,16 @@ export async function GET(req: NextRequest) {
       })
     );
 
-    if (codes.length === organizedData.length) {
-      const codesWithNames = codes.map((obj1) => {
-        const obj2 = organizedData.find(
-          (obj2) => obj2.wd_code === obj1.wd_code
-        );
-        return { ...obj1, ...obj2 };
-      });
+    const codesWithNames = codes.map((obj1) => {
+      const obj2 = organizedData.find((obj2) => obj2.wd_code === obj1.wd_code);
+      return obj2 ? { ...obj1, ...obj2 } : { ...obj1, name: obj1.wd_code };
+    });
 
-      return NextResponse.json(codesWithNames);
-    } else {
-      return NextResponse.json({ error: "Data mismatch." }, { status: 500 });
-    }
+    return NextResponse.json(codesWithNames);
   } catch (error) {
+    console.error("Error details:", error);
     return NextResponse.json(
-      { error: "Failed to fetch data." },
+      { error: "Failed to fetch data.", details: error.message },
       { status: 500 }
     );
   }
