@@ -1,93 +1,55 @@
-import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const userId = searchParams.get("userId");
-  const language = searchParams.get("language");
-  const authHeader = request.headers.get("authorization");
-
+export async function GET(req: NextRequest) {
   try {
-    // 1. Search of all skills
-    const skillsResponse = await axios.get(
+    const language = req.nextUrl.searchParams.get("language");
+    const authHeader = req.headers.get("authorization");
+
+    const codesResponse = await axios.get(
       `${process.env.BASE_URL}/list/skills/`,
       {
-        headers: {
-          Authorization: authHeader,
-        },
+        headers: { Authorization: authHeader },
       }
     );
 
-    // 2. Transform data
-    const skills = Object.entries(skillsResponse.data).map(([key, value]) => ({
+    const codes = Object.entries(codesResponse.data).map(([key, value]) => ({
       code: Number(key),
       wd_code: value,
     }));
 
-    console.log("skills", skills);
+    const wdCodeList = codes.map((code) => "wd:" + code.wd_code);
+    const queryText = `SELECT ?item ?itemLabel WHERE {VALUES ?item {${wdCodeList.join(
+      " "
+    )}} SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'.}}`;
 
-    // 3. Check if there are skills to search
-    if (skills.length === 0) {
-      return NextResponse.json([]);
-    }
-
-    // 4. Build the query for Wikidata
-    const wdCodes = skills.map((skill) => "wd:" + skill.wd_code);
-    const wikiQuery = [
-      "SELECT ?item ?itemLabel WHERE {",
-      "VALUES ?item {" + wdCodes.join(" ") + "}",
-      `SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'. }`,
-      "}",
-    ].join(" ");
-
-    // 5. Search Wikidata data
     const wikidataResponse = await axios.get(
-      "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
-      {
-        params: {
-          format: "json",
-          query: wikiQuery,
-        },
-      }
+      `https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=${queryText}`
     );
 
-    // 6. Organize and combine data
-    const wikidata = wikidataResponse.data.results.bindings.map((item) => ({
-      wd_code: item.item.value.split("/").slice(-1)[0],
-      name: item.itemLabel.value,
-    }));
+    const organizedData = wikidataResponse.data.results.bindings.map(
+      (wdItem) => ({
+        wd_code: wdItem.item.value.split("/").slice(-1)[0],
+        name: wdItem.itemLabel.value,
+      })
+    );
 
-    /* 
-    const combinedData = skills.map((skill) => {
-      const wikidataItem = wikidata.find(
-        (item) => item.wd_code === skill.wd_code
-      );
-      const userSkillData = userSkillsResponse.data.find(
-        (item: any) => item.skill === skill.code
-      );
+    if (codes.length === organizedData.length) {
+      const codesWithNames = codes.map((obj1) => {
+        const obj2 = organizedData.find(
+          (obj2) => obj2.wd_code === obj1.wd_code
+        );
+        return { ...obj1, ...obj2 };
+      });
 
-      return {
-        ...skill,
-        ...wikidataItem,
-        ...userSkillData,
-      };
-    });
-     */
-
-    return NextResponse.json(wikidata);
-  } catch (error: any) {
-    console.error("Error in capacity route:", {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-    });
-
+      return NextResponse.json(codesWithNames);
+    } else {
+      return NextResponse.json({ error: "Data mismatch." }, { status: 500 });
+    }
+  } catch (error) {
     return NextResponse.json(
-      {
-        error: "Failed to fetch capacity data",
-        details: error.response?.data || error.message,
-      },
-      { status: error.response?.status || 500 }
+      { error: "Failed to fetch data." },
+      { status: 500 }
     );
   }
 }

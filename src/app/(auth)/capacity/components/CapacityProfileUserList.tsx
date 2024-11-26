@@ -4,7 +4,7 @@ interface CapacityProfileUserListProps {
   darkMode: boolean;
   title: string;
   data: any;
-  userId: any;
+  userId: string;
 }
 
 export default function CapacityProfileUserList({

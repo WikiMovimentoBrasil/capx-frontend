@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import CapacitySection from "./CapacitySection";
@@ -11,63 +10,77 @@ interface CapacityProfileMainWrapperProps {
   session: boolean;
   language: string;
   darkMode: { value: string };
-  pageContent: any;
+  pageContent: Record<string, string>;
   selectedCapacityId: string;
 }
 
-export default function CapacityProfileMainWrapper(
-  props: CapacityProfileMainWrapperProps
-) {
-  const { status, data } = useSession();
-  const [language, setLanguage] = useState(props.language);
-  const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
+interface CapacityData {
+  code: string;
+  wd_code: string;
+  name: string;
+  description?: string;
+  users: Array<{
+    id: number;
+    username: string;
+    email: string;
+  }>;
+}
+
+export default function CapacityProfileMainWrapper({
+  session,
+  language: initialLanguage,
+  darkMode: initialDarkMode,
+  pageContent: initialPageContent,
+  selectedCapacityId,
+}: CapacityProfileMainWrapperProps) {
+  const { status, data: sessionData } = useSession();
+  const [language, setLanguage] = useState(initialLanguage);
+  const [darkMode, setDarkMode] = useState(initialDarkMode.value === "true");
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
-  const [pageContent, setPageContent] = useState(props.pageContent);
-  const [selectedCapacityData, setSelectedCapacityData] = useState(undefined);
+  const [pageContent, setPageContent] = useState(initialPageContent);
+  const [capacityData, setCapacityData] = useState<CapacityData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getCapacityData = useCallback(
-    async (queryData) => {
-      const queryResponse = await axios.get(
-        "/api/capacity/" + props.selectedCapacityId,
-        queryData
+  const fetchCapacityData = useCallback(async () => {
+    if (!sessionData?.user?.token) return;
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `/api/capacity/${selectedCapacityId}?language=${language}`,
+        {
+          headers: {
+            Authorization: `Token ${sessionData.user.token}`,
+          },
+        }
       );
-      setSelectedCapacityData(queryResponse.data);
-    },
-    [props.selectedCapacityId]
-  );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch capacity data");
+      }
+
+      const data = await response.json();
+      setCapacityData(data);
+    } catch (error) {
+      console.error("Error fetching capacity data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedCapacityId, language, sessionData?.user?.token]);
 
   useEffect(() => {
     if (status === "authenticated") {
-      const queryData = {
-        params: { language: props.language },
-        headers: {
-          Authorization: `Token ${data.user.token}`,
-        },
-      };
-      getCapacityData(queryData);
+      fetchCapacityData();
     }
-  }, [data?.user?.token, getCapacityData, props.language, status]);
+  }, [status, fetchCapacityData]);
 
-  useEffect(() => {
-    setSelectedCapacityData(undefined);
-    if (status === "authenticated") {
-      const queryData = {
-        params: { language: language },
-        headers: {
-          Authorization: `Token ${data.user.token}`,
-        },
-      };
-      getCapacityData(queryData);
-    }
-  }, [data?.user?.token, getCapacityData, language, status]);
-
-  if (status === "loading") {
+  if (status === "loading" || isLoading) {
     return <LoadingSection darkMode={darkMode} message="CAPACITY DATA" />;
   }
 
   return (
     <BaseWrapper
-      session={props.session}
+      session={session}
       language={language}
       setLanguage={setLanguage}
       pageContent={pageContent}
@@ -78,12 +91,14 @@ export default function CapacityProfileMainWrapper(
       setMobileMenuStatus={setMobileMenuStatus}
     >
       <CapacitySection>
-        <CapacityProfileView
-          darkMode={darkMode}
-          selectedCapacityData={selectedCapacityData}
-          pageContent={pageContent}
-          userId={data?.user?.id}
-        />
+        {capacityData && (
+          <CapacityProfileView
+            darkMode={darkMode}
+            selectedCapacityData={capacityData}
+            pageContent={pageContent}
+            userId={sessionData?.user?.id}
+          />
+        )}
       </CapacitySection>
     </BaseWrapper>
   );

@@ -2,7 +2,7 @@ import axios from "axios";
 import { Capacity, CapacityResponse, QueryData } from "@/types/capacity";
 
 export const capacityService = {
-  async fetchCapacities(queryData: QueryData): Promise<Record<string, string>> {
+  async fetchCapacities(queryData: QueryData): Promise<any> {
     try {
       const response = await axios.get("/api/capacity", {
         params: queryData.params,
@@ -21,7 +21,7 @@ export const capacityService = {
   ): Promise<Record<string, string>> {
     try {
       const response = await axios.get(`/api/capacity/type/${type}`, {
-        params: queryData.params,
+        params: { language: queryData.params?.language },
         headers: queryData.headers,
       });
       return response.data;
@@ -48,14 +48,13 @@ export const capacityService = {
   },
 
   async updateCapacities(
-    userId: string,
     data: Partial<Capacity>,
-    token: string
+    queryData: QueryData
   ): Promise<void> {
     try {
       await axios.put(`/api/capacity`, data, {
-        headers: { Authorization: `Token ${token}` },
-        params: { userId },
+        headers: queryData.headers,
+        params: queryData.params,
       });
     } catch (error) {
       console.error("Failed to update capacities:", error);
