@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@primer/react": "^36.25.0",
+    "@tanstack/react-query": "^5.60.6",
+    "@tanstack/react-query-devtools": "^5.60.6",
+    "@types/node": "^22.9.0",
     "axios": "^1.6.8",
     "framer-motion": "^11.1.7",
     "next": "14.1.3",
@@ -20,7 +23,8 @@
     "react-scroll": "^1.9.0",
     "react-select": "^5.8.0",
     "react-simple-typewriter": "^5.0.1",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
