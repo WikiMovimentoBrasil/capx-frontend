@@ -29,8 +29,6 @@ export default function MainWrapper({
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
   const [pageContent, setPageContent] = useState(initialPageContent);
 
-  const queryClient = useQueryClient();
-
   const { data: formData, isLoading } = useQuery({
     queryKey: ["profileData", sessionData?.user?.id, language],
     queryFn: () =>
@@ -45,19 +43,6 @@ export default function MainWrapper({
         },
       }),
     enabled: status === "authenticated" && Boolean(sessionData?.user?.id),
-  });
-
-  const updateProfileMutation = useMutation({
-    mutationFn: (updatedData: any) =>
-      profileService.updateProfile(updatedData, sessionData?.user?.token ?? ""),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profileData"] });
-    },
-  });
-
-  const deleteProfileMutation = useMutation({
-    mutationFn: (userId: string) =>
-      profileService.deleteProfile(userId, sessionData?.user?.token ?? ""),
   });
 
   let pageComponent;
