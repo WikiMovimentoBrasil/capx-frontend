@@ -1,12 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Suleiman the Magnificent Television",
 			"YeBoy371",
 			"Ykhwong"
 		]
 	},
 	"navbar-link-about": "소개",
 	"navbar-link-profile": "내 프로필",
+	"navbar-link-capacities": "용량 디렉터리",
 	"navbar-link-events": "행사",
 	"navbar-link-homepage": "홈페이지",
 	"navbar-link-reports": "보고서",
