@@ -209,16 +209,19 @@ sequenceDiagram
 
 ```bash
 # Install dependencies
-npm install
+yarn install
 
 # Run development server
-npm run dev
+yarn dev
 
 # Type checking
-npm run type-check
+yarn type-check
+
+# Run Storybook
+yarn storybook
 
 # Build for production
-npm run build
+yarn build
 ```
 
 ## Environment Variables
