@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Typewriter } from "react-simple-typewriter";
 import MainImage from "@/public/static/images/main_image.svg";
-import SignInButton from "./SignInButton";
+import AuthButton from "./AuthButton";
 
 export default function Section01({ pageContent }) {
   return (
@@ -43,9 +43,10 @@ export default function Section01({ pageContent }) {
         </h3>
         {/* Coming Soon */}
         <div className="grid place-content-center sm:place-content-start w-full">
-          <SignInButton
+          <AuthButton
             message={pageContent["body-home-section01-button"]}
-            bigSizeButton={true}
+            customClass="w-fit"
+            isSignOut={false}
           />
         </div>
       </div>
