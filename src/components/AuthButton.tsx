@@ -18,10 +18,10 @@ export default function AuthButton({
   const [isLoading, setIsLoading] = useState(false);
 
   const signInClass =
-    "flex w-fit h-fit my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-wider font-extrabold text-xl sm:text-2xl px-4 sm:px-5 py-2 rounded-lg";
+    "flex w-fit h-8 my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 px-4 sm:text-3.5 py-4 sm:px-4 rounded-lg";
 
   const signOutClass =
-    "flex w-fit h-fit my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg tracking-wider font-extrabold text-xl sm:text-2xl px-4 sm:px-5 py-2 rounded-lg";
+    "flex w-fit h-8 my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 px-4 sm:text-3.5 py-4 sm:px-4 rounded-lg";
 
   const buttonClass = isSignOut ? signOutClass : signInClass;
 
@@ -48,11 +48,13 @@ export default function AuthButton({
   };
 
   return (
-    <BaseButton
-      label={message}
-      onClick={handleAuth}
-      disabled={isLoading}
-      customClass={buttonClass}
-    />
+    <div className="flex items-center justify-center flex w-fit h- my-auto">
+      <BaseButton
+        label={message}
+        onClick={handleAuth}
+        disabled={isLoading}
+        customClass={buttonClass}
+      />
+    </div>
   );
 }
