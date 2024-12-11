@@ -1,9 +1,13 @@
 import axios from "axios";
-import Select from "react-select";
 import { useEffect, useState } from "react";
 import { setCookie } from "@/app/actions";
+import BaseSelect from "./BaseSelect";
 
-export default function LanguageSelect({ language, setLanguage, setPageContent }) {
+export default function LanguageSelect({
+  language,
+  setLanguage,
+  setPageContent,
+}) {
   const [options, setOptions] = useState([]);
   const [isClient, setIsClient] = useState(false);
 
@@ -11,7 +15,10 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
     async function fetchLanguages() {
       const response = await axios.get("/api/language");
       const languages = response.data;
-      const languageOptions = languages.map((lang) => ({ value: lang, label: lang }));
+      const languageOptions = languages.map((lang) => ({
+        value: lang,
+        label: lang,
+      }));
       setOptions(languageOptions);
     }
     fetchLanguages();
@@ -23,7 +30,7 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
     await setCookie({
       name: "language",
       value: selectedOption.value,
-      path: '/',
+      path: "/",
     });
   };
 
@@ -32,7 +39,7 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
       const queryResponse = await axios.get("/api/language", {
         params: {
           lang: language,
-        }
+        },
       });
       setPageContent(queryResponse.data);
     }
@@ -44,16 +51,12 @@ export default function LanguageSelect({ language, setLanguage, setPageContent }
   }
 
   return (
-    <div className="my-auto">
-      <Select
-        name={"language"}
-        instanceId={"language"}
-        options={options}
-        defaultValue={[{ value: language, label: language }]}
-        onChange={handleSelection}
-        className="text-capx-dark-bg"
-        aria-label={setPageContent["aria-language-input"]}
-      />
-    </div>
+    <BaseSelect
+      name="language"
+      options={options}
+      defaultValue={{ value: language, label: language }}
+      onChange={handleSelection}
+      ariaLabel={setPageContent["aria-language-input"]}
+    />
   );
 }

@@ -46,8 +46,8 @@ export default function Navbar({
       </AnimatePresence>
       <nav
         className={
-          (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-box-bg ") +
-          "fixed w-full h-16 m-auto left-0 right-0 z-40"
+          (darkMode ? "bg-capx-dark-box-bg " : "bg-capx-light-bg") +
+          "fixed w-full h-24 m-auto left-0 right-0 z-40"
         }
       >
         <div className="flex w-full sm:w-10/12 h-full place-content-between mx-auto">
@@ -69,7 +69,8 @@ export default function Navbar({
             </div>
           </div>
           <div className="flex h-full mr-6 space-x-12 sm:space-x-14">
-            <NavbarLinks session={session} pageContent={pageContent} />
+            {/*             <NavbarLinks session={session} pageContent={pageContent} />
+             */}{" "}
             <NavbarConfig
               language={language}
               setLanguage={setLanguage}
@@ -78,16 +79,14 @@ export default function Navbar({
               setDarkMode={setDarkMode}
               setMobileMenuStatus={setMobileMenuStatus}
             />
-            <div className="hidden sm:flex">
-              {session ? (
-                <AuthButton
-                  message={pageContent["sign-out-button"]}
-                  isSignOut={true}
-                />
-              ) : (
-                <AuthButton message={pageContent["sign-in-button"]} />
-              )}
-            </div>
+            {session ? (
+              <AuthButton
+                message={pageContent["sign-out-button"]}
+                isSignOut={true}
+              />
+            ) : (
+              <AuthButton message={pageContent["sign-in-button"]} />
+            )}
           </div>
         </div>
       </nav>
