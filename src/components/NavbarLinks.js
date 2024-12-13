@@ -4,10 +4,18 @@ import { Link } from "react-scroll";
 export default function NavbarLinks({ session, pageContent }) {
   const menuDataLoggedIn = [
     { title: pageContent["navbar-link-profile"], to: "/profile", active: true },
-    { title: pageContent["navbar-link-capacities"], to: "/capacity", active: true },
-    { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
-    { title: pageContent["navbar-link-events"], to: "/events", active: false }
-  ]
+    {
+      title: pageContent["navbar-link-capacities"],
+      to: "/capacity",
+      active: true,
+    },
+    {
+      title: pageContent["navbar-link-reports"],
+      to: "/reports",
+      active: false,
+    },
+    { title: pageContent["navbar-link-events"], to: "/events", active: false },
+  ];
 
   const menuDataNotLoggedIn = [
     { title: pageContent["navbar-link-about"], to: "section02", active: true },
@@ -27,12 +35,11 @@ export default function NavbarLinks({ session, pageContent }) {
               >
                 {item.title}
               </NextLink>
-            )
-
+            );
           }
         })}
       </div>
-    )
+    );
   }
 
   return (
@@ -52,9 +59,9 @@ export default function NavbarLinks({ session, pageContent }) {
             >
               {item.title}
             </Link>
-          )
+          );
         }
       })}
     </div>
-  )
+  );
 }
