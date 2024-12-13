@@ -1,13 +1,25 @@
 import NextLink from "next/link";
 import { Link } from "react-scroll";
 
-export default function MobileMenuLinks({ session, pageContent, handleMenuStatus }) {
+export default function MobileMenuLinks({
+  session,
+  pageContent,
+  handleMenuStatus,
+}) {
   const menuDataLoggedIn = [
     { title: pageContent["navbar-link-profile"], to: "/profile", active: true },
-    { title: pageContent["navbar-link-capacities"], to: "/capacity", active: true },
-    { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
-    { title: pageContent["navbar-link-events"], to: "/events", active: false }
-  ]
+    {
+      title: pageContent["navbar-link-capacities"],
+      to: "/capacity",
+      active: true,
+    },
+    {
+      title: pageContent["navbar-link-reports"],
+      to: "/reports",
+      active: false,
+    },
+    { title: pageContent["navbar-link-events"], to: "/events", active: false },
+  ];
 
   const menuDataNotLoggedIn = [
     { title: pageContent["navbar-link-about"], to: "section02", active: true },
@@ -27,11 +39,11 @@ export default function MobileMenuLinks({ session, pageContent, handleMenuStatus
               >
                 {item.title}
               </NextLink>
-            )
+            );
           }
         })}
       </div>
-    )
+    );
   }
 
   return (
@@ -56,9 +68,9 @@ export default function MobileMenuLinks({ session, pageContent, handleMenuStatus
             >
               {item.title}
             </Link>
-          )
+          );
         }
       })}
     </div>
-  )
+  );
 }
