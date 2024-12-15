@@ -1,4 +1,5 @@
 "use client"
+import axios from "axios";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
@@ -13,6 +14,16 @@ export default function OAuth({ searchParams }) {
   useEffect(() => {
     async function finishLogin() {
       try {
+        const checkToken = await axios.post("/api/check", { oauth_token: oauth_token });
+        if (checkToken.status !== 200) {
+          if (checkToken.data === "localhost:3000") {
+            window.location.href = "http://localhost:3000";
+            return;
+          } else if (checkToken.data === "capx-test") {
+            window.location.href = "https://capx-test.toolforge.org";
+            return;
+          }
+        }
         const oauth_token = localStorage.getItem("oauth_token");
         const oauth_token_secret = localStorage.getItem("oauth_token_secret");
         const loginResult = await signIn("credentials", {
