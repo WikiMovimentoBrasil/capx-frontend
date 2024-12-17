@@ -17,6 +17,9 @@ const config: StorybookConfig = {
     name: "@storybook/nextjs",
     options: {},
   },
+  features: {
+    experimentalRSC: true,
+  },
   webpackFinal: async (config) => {
     if (config.resolve) {
       config.resolve.alias = {
