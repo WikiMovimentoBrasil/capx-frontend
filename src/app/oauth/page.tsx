@@ -8,6 +8,7 @@ import CapXLogo from "../../../public/static/images/capx_logo.svg";
 interface OAuthProps {
   searchParams: {
     oauth_verifier: string;
+    oauth_token: string;
   };
 }
 
@@ -15,10 +16,41 @@ export default function OAuth({ searchParams }: OAuthProps) {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState<string | null>(null);
   const oauth_verifier = searchParams.oauth_verifier;
+  const oauth_token_request = searchParams.oauth_token;
 
   useEffect(() => {
     let mounted = true;
 
+    async function checkToken() {
+      if (!oauth_token_request || !mounted) return;
+
+      try {
+        const response = await fetch("/api/check/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: oauth_token_request }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result?.ok) {
+            if (result.extra === "localhost:3000" || result.extra === "127.0.0.1:3000") {
+              window.location.href = "http://localhost:3000";
+              return;
+            } else if (result.extra === "capx-test.toolforge.org") {
+              window.location.href = "https://capx-test.toolforge.org";
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Token check error:", error);
+      }
+    handleLogin();
+    }
+    
     async function handleLogin() {
       if (!oauth_verifier || !mounted) return;
 
@@ -59,11 +91,11 @@ export default function OAuth({ searchParams }: OAuthProps) {
       }
     }
 
-    handleLogin();
+    checkToken();
     return () => {
       mounted = false;
     };
-  }, [oauth_verifier, router]);
+  }, [oauth_verifier, oauth_token_request, router]);
 
   if (!loginStatus) {
     return null;
