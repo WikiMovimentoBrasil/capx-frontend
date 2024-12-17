@@ -5,15 +5,22 @@ import MobileMenuLinks from "@/components/MobileMenuLinks";
 import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import AuthButton from "@/components/AuthButton";
+
+interface MobileMenuProps {
+  session: any;
+  pageContent: any;
+  darkMode: boolean;
+  setMobileMenuStatus: (mobileMenuStatus: boolean) => void;
+}
+
 export default function MobileMenu({
   session,
   pageContent,
   darkMode,
-  mobileMenuStatus,
   setMobileMenuStatus,
-}) {
+}: MobileMenuProps) {
   const handleMenuStatus = () => {
-    setMobileMenuStatus((prevState) => !prevState);
+    setMobileMenuStatus(false);
   };
 
   const animationVariants = {
@@ -22,11 +29,17 @@ export default function MobileMenu({
     },
     animate: {
       scaleX: 1,
-      ease: [0.12, 0, 0.39, 0],
+      transition: {
+        duration: 0.2,
+        ease: [0.12, 0, 0.39, 0],
+      },
     },
     exit: {
       scaleX: 0,
-      ease: [0.22, 1, 0.36, 1],
+      transition: {
+        duration: 0.2,
+        ease: [0.22, 1, 0.36, 1],
+      },
     },
   };
 
@@ -36,15 +49,14 @@ export default function MobileMenu({
       initial="initial"
       animate="animate"
       exit="exit"
-      className={
-        (darkMode
-          ? "bg-capx-dark-box-bg text-capx-light-bg "
-          : "bg-capx-light-box-bg text-capx-dark-bg ") +
-        "fixed w-screen h-screen pb-10 origin-top-right z-50"
-      }
+      className={`${
+        darkMode
+          ? "bg-capx-dark-box-bg text-capx-light-bg"
+          : "bg-capx-light-box-bg text-capx-dark-bg"
+      } fixed w-screen h-screen pb-10 origin-top-right z-50`}
     >
       <div className="flex flex-row-reverse w-10/12 mx-auto mt-6 mb-8">
-        <a onClick={handleMenuStatus}>
+        <button onClick={handleMenuStatus}>
           <Image
             priority={true}
             src={
@@ -53,16 +65,16 @@ export default function MobileMenu({
                 : IconCloseMobileMenuLightMode
             }
             alt="Button to close menu."
-            className="fill-current h-10 w-10 text-gray-700 cursor-pointer"
+            className="h-10 w-10 cursor-pointer"
           />
-        </a>
+        </button>
       </div>
       <MobileMenuLinks
         session={session}
         pageContent={pageContent}
         handleMenuStatus={handleMenuStatus}
       />
-      <div className="fle x flex-wrap w-10/12 mx-auto">
+      <div className="flex flex-wrap w-10/12 mx-auto">
         {session ? (
           <AuthButton
             message={pageContent["sign-out-button"]}
