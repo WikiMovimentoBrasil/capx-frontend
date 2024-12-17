@@ -1,9 +1,10 @@
 "use client";
+import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import BaseButton from "./BaseButton";
+import RedirectPopup from "./RedirectionPopup";
 
 interface AuthButtonProps {
   message: string;
@@ -18,6 +19,7 @@ export default function AuthButton({
 }: AuthButtonProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const defaultButtonClass =
     "flex justify-center items-center gap-2 px-8 py-4 rounded-lg bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-lg text-center text-2xl not-italic leading-[normal]";
@@ -30,6 +32,8 @@ export default function AuthButton({
 
     if (isSignOut) {
       await signOut();
+      setShowPopup(false);
+      router.push("/");
       return;
     }
 
@@ -40,6 +44,8 @@ export default function AuthButton({
         "oauth_token_secret",
         startLoginResponse.data.oauth_token_secret
       );
+      setShowPopup(false);
+      setIsLoading(false);
       router.push(startLoginResponse.data.redirect_url);
     } catch (error) {
       alert("An error occurred when trying to log in.");
@@ -47,14 +53,28 @@ export default function AuthButton({
     }
   };
 
+  const handleRedirect = () => {
+    if (isSignOut) {
+      handleAuth();
+    } else {
+      setShowPopup(true);
+    }
+  };
+
   return (
     <div className="flex items-center h-full">
       <BaseButton
         label={message}
-        onClick={handleAuth}
+        onClick={handleRedirect}
         disabled={isLoading}
         customClass={buttonClass}
       />
+      {showPopup && (
+        <RedirectPopup
+          onContinue={handleAuth}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
     </div>
   );
 }
