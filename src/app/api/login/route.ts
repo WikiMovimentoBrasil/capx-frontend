@@ -9,7 +9,8 @@ export async function POST(request) {
     // Request with no body
     if (!body || Object.keys(body).length === 0) {
       const startLoginResponse = await axios.post(
-        process.env.LOGIN_STEP01_URL as string
+        process.env.LOGIN_STEP01_URL as string,
+        { extra: request.headers.get('host') }
       );
 
       if (startLoginResponse.data.oauth_callback_confirmed) {
