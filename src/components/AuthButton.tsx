@@ -8,22 +8,22 @@ import BaseButton from "./BaseButton";
 interface AuthButtonProps {
   message: string;
   isSignOut?: boolean;
+  customClass?: string;
 }
 
 export default function AuthButton({
   message,
   isSignOut = false,
+  customClass,
 }: AuthButtonProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const signInClass =
-    "flex w-fit h-8 my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 px-4 sm:text-3.5 py-4 sm:px-4 rounded-lg";
+  const defaultButtonClass =
+    "flex justify-center items-center gap-2 px-8 py-4 rounded-lg bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-lg text-center text-2xl not-italic leading-[normal]";
 
-  const signOutClass =
-    "flex w-fit h-8 my-auto bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 px-4 sm:text-3.5 py-4 sm:px-4 rounded-lg";
-
-  const buttonClass = isSignOut ? signOutClass : signInClass;
+  const buttonClass =
+    defaultButtonClass + (customClass ? ` ${customClass}` : "");
 
   const handleAuth = async () => {
     setIsLoading(true);
@@ -48,7 +48,7 @@ export default function AuthButton({
   };
 
   return (
-    <div className="flex items-center justify-center flex w-fit h- my-auto">
+    <div className="flex items-center h-full">
       <BaseButton
         label={message}
         onClick={handleAuth}
