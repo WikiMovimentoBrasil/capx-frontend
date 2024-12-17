@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import capXLogo from "@/public/static/images/capx_logo.svg";
-
+import capXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
 export default function Terms() {
   return (
     <main className="flex flex-wrap flex-col w-full h-screen bg-zinc-50 font-montserrat text-capx-secondary-gray">

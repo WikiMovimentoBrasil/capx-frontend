@@ -3,7 +3,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CapXLogo from "../../../public/static/images/capx_logo.svg";
+import CapXLogo from "../../../public/static/images/capx_minimalistic_logo.svg";
 
 interface OAuthProps {
   searchParams: {
