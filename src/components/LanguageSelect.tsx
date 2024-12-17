@@ -3,11 +3,19 @@ import { useEffect, useState } from "react";
 import { setCookie } from "@/app/actions";
 import BaseSelect from "./BaseSelect";
 
+interface LanguageSelectProps {
+  language: string;
+  setLanguage: (language: string) => void;
+  setPageContent: (pageContent: any) => void;
+  isMobile: boolean;
+}
+
 export default function LanguageSelect({
   language,
   setLanguage,
   setPageContent,
-}) {
+  isMobile,
+}: LanguageSelectProps) {
   const [options, setOptions] = useState([]);
   const [isClient, setIsClient] = useState(false);
 
@@ -30,7 +38,9 @@ export default function LanguageSelect({
     await setCookie({
       name: "language",
       value: selectedOption.value,
-      path: "/",
+      options: {
+        path: "/",
+      },
     });
   };
 
@@ -57,6 +67,7 @@ export default function LanguageSelect({
       defaultValue={{ value: language, label: language }}
       onChange={handleSelection}
       ariaLabel={setPageContent["aria-language-input"]}
+      isMobile={isMobile}
     />
   );
 }
