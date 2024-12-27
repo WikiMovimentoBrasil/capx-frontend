@@ -1,27 +1,26 @@
 "use client";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import MobileMenuLinks from "@/components/MobileMenuLinks";
-import IconCloseMobileMenuLightMode from "../../public/static/images/close_mobile_menu_icon_light_mode.svg";
-import IconCloseMobileMenuDarkMode from "../../public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import AuthButton from "@/components/AuthButton";
+import { useApp } from "@/contexts/AppContext";
+import MoveOutIcon from "@/public/static/images/move_item.svg";
 
 interface MobileMenuProps {
   session: any;
   pageContent: any;
-  darkMode: boolean;
-  setMobileMenuStatus: (mobileMenuStatus: boolean) => void;
+  language: string;
+  setLanguage: (language: string) => void;
+  setPageContent: (pageContent: any) => void;
 }
 
 export default function MobileMenu({
   session,
   pageContent,
-  darkMode,
-  setMobileMenuStatus,
+  language,
+  setLanguage,
+  setPageContent,
 }: MobileMenuProps) {
-  const handleMenuStatus = () => {
-    setMobileMenuStatus(false);
-  };
+  const { darkMode, setMobileMenuStatus } = useApp();
 
   const animationVariants = {
     initial: {
@@ -52,36 +51,27 @@ export default function MobileMenu({
       className={`${
         darkMode
           ? "bg-capx-dark-box-bg text-capx-light-bg"
-          : "bg-capx-light-box-bg text-capx-dark-bg"
-      } fixed w-screen h-screen pb-10 origin-top-right z-50`}
+          : "bg-capx-light-bg text-capx-dark-bg"
+      } fixed w-screen pb-10 origin-top-right z-50 mt-16`}
     >
-      <div className="flex flex-row-reverse w-10/12 mx-auto mt-6 mb-8">
-        <button onClick={handleMenuStatus}>
-          <Image
-            priority={true}
-            src={
-              darkMode
-                ? IconCloseMobileMenuDarkMode
-                : IconCloseMobileMenuLightMode
-            }
-            alt="Button to close menu."
-            className="h-10 w-10 cursor-pointer"
-          />
-        </button>
-      </div>
       <MobileMenuLinks
         session={session}
         pageContent={pageContent}
-        handleMenuStatus={handleMenuStatus}
+        handleMenuStatus={() => setMobileMenuStatus(false)}
       />
-      <div className="flex flex-wrap w-10/12 mx-auto">
+      <div className="w-[85%] mx-auto">
         {session ? (
           <AuthButton
             message={pageContent["sign-out-button"]}
             isSignOut={true}
+            imageUrl={MoveOutIcon}
+            customClass="w-full h-[32px] flex items-center px-[6px] py-[8px] rounded-[4px] bg-[var(--Buttons-Default,_#851D6A)] font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-white justify-start pt-4 px-[8px] py-[0]"
           />
         ) : (
-          <AuthButton message={pageContent["sign-in-button"]} />
+          <AuthButton
+            message={pageContent["sign-in-button"]}
+            customClass="w-full flex h-[32px] px-[6px] py-[8px] rounded-[4px] bg-[var(--Buttons-Default,_#851D6A)] font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-white justify-start"
+          />
         )}
       </div>
     </motion.div>
