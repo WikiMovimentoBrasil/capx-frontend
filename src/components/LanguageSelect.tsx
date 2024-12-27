@@ -8,6 +8,8 @@ interface LanguageSelectProps {
   setLanguage: (language: string) => void;
   setPageContent: (pageContent: any) => void;
   isMobile: boolean;
+  darkMode: boolean;
+  className?: string;
 }
 
 export default function LanguageSelect({
@@ -15,6 +17,8 @@ export default function LanguageSelect({
   setLanguage,
   setPageContent,
   isMobile,
+  darkMode,
+  className = "",
 }: LanguageSelectProps) {
   const [options, setOptions] = useState([]);
   const [isClient, setIsClient] = useState(false);
@@ -68,6 +72,8 @@ export default function LanguageSelect({
       onChange={handleSelection}
       ariaLabel={setPageContent["aria-language-input"]}
       isMobile={isMobile}
+      darkMode={darkMode}
+      className={className}
     />
   );
 }

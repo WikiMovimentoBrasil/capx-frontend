@@ -1,5 +1,6 @@
 import Select from "react-select";
 import ArrowDropDownCircle from "../../public/static/images/arrow_drop_down_circle.svg";
+import ArrowDropDownCircleWhite from "../../public/static/images/arrow_drop_down_circle_white.svg";
 import Image from "next/image";
 
 interface Option {
@@ -15,17 +16,67 @@ interface BaseSelectProps {
   className?: string;
   ariaLabel?: string;
   isMobile?: boolean;
+  darkMode?: boolean;
 }
 
-const DropdownIndicator = (isMobile: boolean) => {
-  return (
-    <Image
-      src={ArrowDropDownCircle}
-      alt="dropdown indicator"
-      width={isMobile ? 24 : 40}
-      height={isMobile ? 24 : 40}
-    />
-  );
+const DropdownIndicator = (isMobile: boolean, darkMode: boolean) => (
+  <Image
+    src={darkMode ? ArrowDropDownCircleWhite : ArrowDropDownCircle}
+    alt="dropdown indicator"
+    width={isMobile ? 20 : 40}
+    height={isMobile ? 20 : 40}
+  />
+);
+
+const PADDING = {
+  mobile: {
+    x: "!px-4", // 16px
+    y: "!py-2", // 8px
+  },
+  desktop: {
+    x: "!px-8", // 32px
+    y: "!py-4", // 16px
+  },
+};
+
+const customStyles = {
+  control: (provided: any) => ({
+    ...provided,
+    border: "2px solid #053749",
+    borderRadius: "8px",
+    padding: "8px 16px",
+    boxShadow: "none",
+    "&:hover": {
+      border: "2px solid #053749",
+    },
+    minHeight: "32px",
+  }),
+  option: (provided: any, state: { isSelected: boolean }) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#053749" : "white",
+    color: state.isSelected ? "white" : "#053749",
+    padding: "16px",
+    fontWeight: "bold",
+    "&:hover": {
+      backgroundColor: "#053749",
+      color: "white",
+    },
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    border: "2px solid #053749",
+  }),
+  menuList: (provided: any) => ({
+    ...provided,
+    padding: 0,
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: "#053749",
+    fontWeight: "bold",
+  }),
 };
 
 export default function BaseSelect({
@@ -36,6 +87,7 @@ export default function BaseSelect({
   className,
   ariaLabel,
   isMobile = false,
+  darkMode = false,
 }: BaseSelectProps) {
   return (
     <Select
@@ -46,24 +98,41 @@ export default function BaseSelect({
       onChange={onChange}
       aria-label={ariaLabel}
       components={{
-        DropdownIndicator: () => DropdownIndicator(isMobile),
+        DropdownIndicator: () => DropdownIndicator(isMobile, darkMode),
+        IndicatorSeparator: () => null,
       }}
       className={className}
       unstyled={true}
       classNames={{
         control: () =>
-          "!border-2 !border-solid !border-capx-dark-box-bg !rounded-lg text-capx-dark-box-bg font-extrabold h-8 sm:h-16 flex items-center cursor-pointer m-0 px-4 sm:px-8 text-sm sm:text-2xl",
-        container: () => "h-16 sm:h-8 flex items-center",
-        valueContainer: () => "h-8 sm:h-8 flex items-center",
+          `${
+            isMobile
+              ? `flex !px-3 !py-0 items-center h-8 gap-2`
+              : `flex h-16 px-8 !pl-[32px] !pr-[32px] py-4 justify-center items-center gap-[8px]`
+          }`,
+        container: () => "relative",
+        valueContainer: () => "flex flex-1 items-center justify-center",
         singleValue: () =>
-          "text-capx-dark-box-bg font-extrabold text-sm sm:text-2xl h-8 sm:h-8 flex items-center rounded-lg text-center not-italic leading-6 pr-2",
+          `align-middle
+        ${
+          isMobile
+            ? `text-[14px] font-bold`
+            : `text-center text-[24px] not-italic font-extrabold leading-[normal] flex-1`
+        }`,
         indicatorSeparator: () => "hidden",
-        dropdownIndicator: () => "h-8 sm:h-8 flex items-center",
-        option: (state) =>
-          `text-capx-dark-box-bg ${
-            state.isSelected ? "bg-gray-200" : "bg-white"
-          } hover:bg-gray-100 h-8 sm:h-14 flex items-center px-4 sm:px-8 text-sm sm:text-2xl`,
+        dropdownIndicator: () =>
+          `flex items-center ${
+            isMobile ? "!w-[20px] !h-[20px]" : "!w-[40px] !h-[40px]"
+          }`,
+        option: ({ isSelected }) =>
+          `${
+            isSelected ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
+          } p-4 font-bold hover:bg-[#053749] hover:text-white`,
+        menu: () => "rounded-lg shadow-lg border-2 border-[#053749]",
+        menuList: () => "p-0",
       }}
+      styles={customStyles}
+      isSearchable={false}
     />
   );
 }

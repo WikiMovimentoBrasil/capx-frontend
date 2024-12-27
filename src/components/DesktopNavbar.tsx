@@ -2,9 +2,10 @@ import NextLink from "next/link";
 import Image from "next/image";
 import AuthButton from "./AuthButton";
 import LanguageSelect from "./LanguageSelect";
-import DarkMode from "../../public/static/images/dark_mode.svg";
-import LightMode from "../../public/static/images/light_mode.svg";
-import CapXLogo from "../../public/static/images/capx_logo.svg";
+import CapXLogo from "../../public/static/images/capx_most_detailed_logo.svg";
+import DarkModeButton from "./DarkModeButton";
+import { useApp } from "@/contexts/AppContext";
+import BurgerMenu from "../../public/static/images/burger_menu.svg";
 
 export interface DesktopNavbarProps {
   pageContent: any;
@@ -13,7 +14,6 @@ export interface DesktopNavbarProps {
   setPageContent: (pageContent: any) => void;
   darkMode: boolean;
   setDarkMode: (darkMode: boolean) => void;
-  session: any;
 }
 
 export default function DesktopNavbar({
@@ -23,22 +23,27 @@ export default function DesktopNavbar({
   setPageContent,
   darkMode,
   setDarkMode,
-  session,
 }: DesktopNavbarProps) {
+  const { session } = useApp();
+
   const menuItems = [
-    { title: pageContent["navbar-link-profile"], to: "/profile", active: true },
+    { title: pageContent["navbar-link-home"], to: "/home", active: true },
+    {
+      title: pageContent["navbar-link-profile"],
+      to: "/profile",
+      active: false,
+    },
     {
       title: pageContent["navbar-link-capacities"],
       to: "/capacity",
       active: true,
     },
     { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
-    { title: pageContent["navbar-link-events"], to: "/events", active: false },
   ];
 
   return (
-    <div className="flex flex-wrap w-full h-full justify-between py-6 px-24">
-      <div className="relative my-auto ml-4 sm:ml-0">
+    <div className="flex w-full h-full justify-between py-6 px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto">
+      <div className="flex-none relative my-auto ml-4 sm:ml-0">
         <NextLink href="/">
           <Image
             priority
@@ -46,56 +51,45 @@ export default function DesktopNavbar({
             alt="Capacity Exchange logo"
             width={150}
             height={150}
+            className="w-[150px] h-[150px]"
           />
         </NextLink>
       </div>
+      {session ? (
+        <div className="hidden xl:flex flex-1 items-center justify-end gap-[43px]">
+          {menuItems.map((item, index) => (
+            <NextLink
+              key={"navbar-link-" + index.toString()}
+              href={item.to}
+              className="flex text-center font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] my-auto cursor-pointer hover:border-b hover:border-current"
+            >
+              {item.title}
+            </NextLink>
+          ))}
+        </div>
+      ) : null}
 
-      <div className="flex items-center gap-6">
-        {/* {session && (
-          <div className="hidden sm:flex space-x-12">
-            {menuItems.map(
-              (item, index) =>
-                item.active && (
-                  <NextLink
-                    key={`navbar-link-${index}`}
-                    href={item.to}
-                    className="flex my-auto cursor-pointer hover:border-b hover:border-current"
-                  >
-                    {item.title}
-                  </NextLink>
-                )
-            )}
-          </div>
-        )} */}
-
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="flex items-center cursor-pointer"
-          aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          <Image
-            src={darkMode ? LightMode : DarkMode}
-            width={32}
-            height={32}
-            alt={darkMode ? "Light Mode" : "Dark Mode"}
-          />
-        </button>
+      <div className="flex flex-1 items-center justify-end gap-[24px]">
+        <DarkModeButton />
         <LanguageSelect
           isMobile={false}
           language={language}
           setLanguage={setLanguage}
           setPageContent={setPageContent}
+          darkMode={darkMode}
         />
 
         {session ? (
           <AuthButton
             message={pageContent["sign-out-button"]}
             isSignOut={true}
+            customClass="inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px]"
           />
         ) : (
           <AuthButton
             message={pageContent["sign-in-button"]}
             isSignOut={false}
+            customClass="inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px]"
           />
         )}
       </div>

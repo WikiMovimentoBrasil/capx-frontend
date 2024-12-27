@@ -1,29 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useApp } from "@/contexts/AppContext";
 import BaseWrapper from "./BaseWrapper";
-import Section01 from "@/components/Section01";
-import Section02 from "./Section02";
+import MainSection from "@/components/MainSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import CallToActionSection from "@/components/CallToActionSection";
+import VideoSection from "@/components/VideoSection";
 
-export default function ApplicationWrapper(props) {
-  const [darkMode, setDarkMode] = useState(props.darkMode.value === "true");
-  const [language, setLanguage] = useState(props.language);
-  const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
-  const [pageContent, setPageContent] = useState(props.pageContent);
+interface ApplicationWrapperProps {
+  pageContent: any;
+}
 
+export default function ApplicationWrapper({
+  pageContent,
+}: ApplicationWrapperProps) {
   return (
-    <BaseWrapper
-      session={props.session}
-      language={language}
-      setLanguage={setLanguage}
-      pageContent={pageContent}
-      setPageContent={setPageContent}
-      darkMode={darkMode}
-      setDarkMode={setDarkMode}
-      mobileMenuStatus={mobileMenuStatus}
-      setMobileMenuStatus={setMobileMenuStatus}
-    >
-      <Section01 pageContent={pageContent}></Section01>
-      <Section02 darkMode={darkMode}></Section02>
+    <BaseWrapper>
+      <MainSection pageContent={pageContent} />
+      <FeaturesSection />
+      <VideoSection pageContent={pageContent} />
+      <CallToActionSection pageContent={pageContent} />
     </BaseWrapper>
-  )
+  );
 }
