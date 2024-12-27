@@ -11,34 +11,27 @@ const options: NextAuthOptions = {
       async authorize(credentials: any) {
         try {
           if (
-            !credentials?.oauth_token ||
-            !credentials?.oauth_token_secret ||
-            !credentials?.oauth_verifier
+            !credentials?.token ||
+            !credentials?.id ||
+            !credentials?.username
           ) {
-            throw new Error("Missing required credentials");
+            console.error(
+              "NextAuth authorize - Missing user data in credentials"
+            );
+            throw new Error("Missing user data in credentials");
           }
 
-          const loginResponse = await axios.post(
-            process.env.LOGIN_STEP03_URL!,
-            {
-              oauth_token: credentials.oauth_token,
-              oauth_token_secret: credentials.oauth_token_secret,
-              oauth_verifier: credentials.oauth_verifier,
-            }
-          );
-
-          if (loginResponse.status === 200 && loginResponse.data) {
-            return {
-              username: loginResponse.data.username,
-              id: loginResponse.data.id,
-              token: loginResponse.data.token,
-              first_login: loginResponse.data.first_name === null,
-            };
-          }
-          throw new Error("Invalid response from authentication server");
+          // Aqui não precisamos fazer nova chamada ao backend
+          // pois já temos os dados do usuário
+          return {
+            id: credentials.id,
+            name: credentials.username,
+            token: credentials.token,
+            first_login: credentials.first_login,
+          };
         } catch (error: any) {
-          console.error("Authorization error:", error.message);
-          throw new Error(error.message || "Authentication failed");
+          console.error("NextAuth authorize error:", error);
+          throw error;
         }
       },
     }),
@@ -62,6 +55,7 @@ const options: NextAuthOptions = {
       return token;
     },
   },
+  debug: true,
 };
 
 const handler = NextAuth(options);

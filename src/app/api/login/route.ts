@@ -5,7 +5,6 @@ export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
 
-    console.log("body", body);
     // Request with no body
     if (!body || Object.keys(body).length === 0) {
       const startLoginResponse = await axios.post(
