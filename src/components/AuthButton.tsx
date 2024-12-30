@@ -30,38 +30,32 @@ export default function AuthButton({
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
-  const defaultButtonClass =
-    "flex items-center gap-2 px-8 py-4 rounded-lg bg-capx-secondary-purple hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-lg text-center text-2xl not-italic leading-[normal]";
-
-  const buttonClass = customClass || defaultButtonClass;
-
   const handleAuth = async () => {
     setIsLoading(true);
 
     if (isSignOut) {
-      await signOut();
+      await signOut({ redirect: true, callbackUrl: "/" });
       setShowPopup(false);
-      router.push("/");
       return;
     }
 
     try {
-      const startLoginResponse = await axios.post("/api/login");
-      if (startLoginResponse.data.redirect_url) {
-        localStorage.setItem(
-          "oauth_token",
-          startLoginResponse.data.oauth_token
-        );
+      const response = await axios.post("/api/login");
+
+      if (response.data?.redirect_url) {
+        localStorage.setItem("oauth_token", response.data.oauth_token);
         localStorage.setItem(
           "oauth_token_secret",
-          startLoginResponse.data.oauth_token_secret
+          response.data.oauth_token_secret
         );
-        setShowPopup(false);
-        window.location.href = startLoginResponse.data.redirect_url;
+
+        window.location.href = response.data.redirect_url;
+      } else {
+        throw new Error("No redirect URL received");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("An error occurred when trying to log in.");
+      setShowPopup(false);
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +75,7 @@ export default function AuthButton({
         label={message}
         onClick={handleRedirect}
         disabled={isLoading}
-        customClass={buttonClass}
+        customClass={customClass}
         imageUrl={imageUrl}
         imageAlt={imageAlt}
         imageWidth={imageWidth}
