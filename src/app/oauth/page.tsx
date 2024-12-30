@@ -35,34 +35,24 @@ export default function OAuth({ searchParams }: OAuthProps) {
 
         setLoginStatus("FINISHING LOGIN");
 
-        const response = await axios.post("/api/login/callback", {
+        const result = await signIn("credentials", {
           oauth_token: searchParams.oauth_token,
           oauth_verifier: searchParams.oauth_verifier,
           stored_token: storedToken,
           stored_token_secret: storedTokenSecret,
+          redirect: false,
         });
 
-        if (response.data.success && response.data.user) {
-          const result = await signIn("credentials", {
-            ...response.data.user,
-            redirect: false,
-          });
-
-          if (result?.ok) {
-            setLoginStatus("Login successful!");
-            localStorage.removeItem("oauth_token");
-            localStorage.removeItem("oauth_token_secret");
-            router.push("/home");
-          } else {
-            setLoginStatus("Session initialization failed: " + result?.error);
-          }
+        if (result?.ok) {
+          setLoginStatus("Login successful!");
+          localStorage.removeItem("oauth_token");
+          localStorage.removeItem("oauth_token_secret");
+          router.push("/home");
         } else {
-          setLoginStatus(
-            "Login failed: " + (response.data.error || "Unknown error")
-          );
+          setLoginStatus("Login failed: " + (result?.error || "Unknown error"));
         }
       } catch (error: any) {
-        console.error("Login completion error:", error.response?.data || error);
+        console.error("Login completion error:", error);
         setLoginStatus("An error occurred during login");
       }
     };

@@ -3,32 +3,32 @@ import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
       credentials: {},
       async authorize(credentials: any) {
         try {
-          if (
-            !credentials?.token ||
-            !credentials?.id ||
-            !credentials?.username
-          ) {
-            console.error(
-              "NextAuth authorize - Missing user data in credentials"
-            );
-            throw new Error("Missing user data in credentials");
+          const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+          const response = await axios.post(`${baseUrl}/api/login/callback`, {
+            oauth_token: credentials.oauth_token,
+            oauth_verifier: credentials.oauth_verifier,
+            stored_token: credentials.stored_token,
+            stored_token_secret: credentials.stored_token_secret,
+          });
+
+          if (response.data.success && response.data.user) {
+            return {
+              id: response.data.user.id,
+              name: response.data.user.username,
+              token: response.data.user.token,
+              first_login: response.data.user.first_login,
+            };
           }
 
-          // Aqui não precisamos fazer nova chamada ao backend
-          // pois já temos os dados do usuário
-          return {
-            id: credentials.id,
-            name: credentials.username,
-            token: credentials.token,
-            first_login: credentials.first_login,
-          };
+          throw new Error("Invalid response from server");
         } catch (error: any) {
           console.error("NextAuth authorize error:", error);
           throw error;
@@ -36,9 +36,10 @@ const options: NextAuthOptions = {
       },
     }),
   ],
-  pages: {
-    signIn: "/",
-    error: "/auth/error",
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async signIn({ user }) {
@@ -55,8 +56,11 @@ const options: NextAuthOptions = {
       return token;
     },
   },
-  debug: true,
+  pages: {
+    signIn: "/",
+    error: "/auth/error",
+  },
 };
 
-const handler = NextAuth(options);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
