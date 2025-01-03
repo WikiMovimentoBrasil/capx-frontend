@@ -54,26 +54,25 @@ const customStyles = (darkMode: boolean) => ({
   option: (provided: any, state: { isSelected: boolean }) => ({
     ...provided,
     backgroundColor: state.isSelected ? "#053749" : "white",
-    color: state.isSelected ? "white" : darkMode ? "#FFFFFF" : "#053749",
+    color: state.isSelected ? "white" : "#053749",
     padding: "16px",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: darkMode ? "#FFFFFF" : "#053749",
-      color: darkMode ? "#053749" : "white",
+      backgroundColor: "#053749",
+      color: "#FFFFFF",
     },
   }),
   menu: (provided: any) => ({
     ...provided,
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    border: `2px solid ${darkMode ? "#053749" : "#FFFFFF"}`,
-    color: darkMode ? "#FFFFFF" : "#053749",
-    backgroundColor: darkMode ? "#053749" : "#FFFFFF",
+    border: "2px solid #053749",
+    backgroundColor: "#FFFFFF",
   }),
   menuList: (provided: any) => ({
     ...provided,
     padding: 0,
-    backgroundColor: darkMode ? "#053749" : "#FFFFFF",
+    backgroundColor: "#FFFFFF",
   }),
   singleValue: (provided: any) => ({
     ...provided,

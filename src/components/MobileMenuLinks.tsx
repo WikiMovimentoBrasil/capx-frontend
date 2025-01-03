@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import Image from "next/image";
 import { Link } from "react-scroll";
 import IconDarkMode from "@/public/static/images/dark_mode.svg";
+import IconLightMode from "@/public/static/images/light_mode.svg";
 import ArrowDropDownWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
 import ArrowDropDownBlack from "@/public/static/images/arrow_drop_down_circle.svg";
 import { useState } from "react";
@@ -71,7 +72,7 @@ export default function MobileMenuLinks({
         setDarkMode(!darkMode);
       },
       active: true,
-      image: IconDarkMode,
+      image: darkMode ? IconLightMode : IconDarkMode,
     },
     {
       title: pageContent["navbar-link-profiles"],
@@ -148,6 +149,17 @@ export default function MobileMenuLinks({
                         height={24}
                       />
                     )}
+                    {item.image && isExpanded && !darkMode && (
+                      <Image
+                        src={ArrowDropDownBlack}
+                        alt="Profile menu icon"
+                        width={24}
+                        height={24}
+                        className={`ml-4 transition-transform duration-300 ${
+                          isExpanded ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
                   </button>
                   {isExpanded && (
                     <div className="flex flex-col rounded-b-[4px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
@@ -156,9 +168,13 @@ export default function MobileMenuLinks({
                           key={`submenu-item-${subIndex}`}
                           href={subItem.to || ""}
                           onClick={handleMenuStatus}
-                          className="flex items-center justify-between w-full px-2 py-3 text-capx-dark-text hover:bg-capx-light-bg hover:text-capx-dark-text border-t border-[#053749] pt-2"
+                          className={`flex items-center justify-between w-full px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 ${
+                            darkMode
+                              ? "text-capx-dark-text bg-capx-dark-bg"
+                              : "text-capx-light-text bg-capx-light-bg"
+                          }`}
                         >
-                          <span className="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ">
+                          <span className="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]">
                             {subItem.title}
                           </span>
                           <Image
