@@ -12,6 +12,14 @@ module.exports = {
         chunkfive: ["ChunkFive Ex", "serif"],
         montserrat: ["Montserrat", "sans-serif"],
       },
+      backgroundColor: {
+        "capx-light-bg": "#FFFFFF",
+        "capx-dark-bg": "#04222F",
+      },
+      textColor: {
+        "capx-light-text": "#053749",
+        "capx-dark-text": "#FFFFFF",
+      },
       // Customizing colors
       colors: {
         "capx-light-bg": "#FFFFFF",

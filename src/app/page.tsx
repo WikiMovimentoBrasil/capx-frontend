@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default async function Home() {
   const cookieStore = cookies();
   const session = await getServerSession();
-  const darkMode = cookieStore.get("dark_mode")?.value ?? "false";
   const language = cookieStore.get("language")?.value ?? "en";
 
   // Loading page content based on selected language
@@ -27,7 +26,6 @@ export default async function Home() {
       session={session !== null}
       language={language}
       pageContent={pageContent}
-      darkMode={darkMode}
     />
   );
 }

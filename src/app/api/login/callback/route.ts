@@ -1,0 +1,59 @@
+import { NextResponse } from "next/server";
+import axios from "axios";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    console.log("Received callback payload:", body); // Debug log
+
+    const { oauth_token, oauth_verifier, stored_token, stored_token_secret } =
+      body;
+
+    // Validação mais flexível
+    if (!oauth_token || !oauth_verifier || !stored_token_secret) {
+      console.error("Missing required parameters:", {
+        oauth_token,
+        oauth_verifier,
+        stored_token_secret,
+      });
+      return NextResponse.json(
+        { error: "Missing required parameters" },
+        { status: 400 }
+      );
+    }
+
+    // Faz a chamada para o backend com os parâmetros necessários
+    const response = await axios.post(process.env.LOGIN_STEP03_URL as string, {
+      oauth_token,
+      oauth_verifier,
+      oauth_token_secret: stored_token_secret,
+    });
+
+    if (response.data && response.data.token) {
+      return NextResponse.json({
+        success: true,
+        user: {
+          token: response.data.token,
+          id: response.data.id,
+          username: response.data.username,
+          first_login: response.data.first_name === null,
+        },
+      });
+    }
+
+    console.error("Invalid response from server:", response.data);
+    return NextResponse.json(
+      { error: "Invalid response from server" },
+      { status: 400 }
+    );
+  } catch (error: any) {
+    console.error(
+      "Login callback error:",
+      error.response?.data || error.message
+    );
+    return NextResponse.json(
+      { error: error.response?.data?.error || "Authentication failed" },
+      { status: error.response?.status || 500 }
+    );
+  }
+}

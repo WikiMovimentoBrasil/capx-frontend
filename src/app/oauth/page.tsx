@@ -1,73 +1,64 @@
 "use client";
-import Image from "next/image";
-import { signIn } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import CapXLogo from "../../../public/static/images/capx_logo.svg";
+import Image from "next/image";
+import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
+import axios from "axios";
+import { signIn } from "next-auth/react";
 
 interface OAuthProps {
   searchParams: {
-    oauth_verifier: string;
+    oauth_token?: string;
+    oauth_verifier?: string;
   };
 }
 
 export default function OAuth({ searchParams }: OAuthProps) {
   const router = useRouter();
-  const [loginStatus, setLoginStatus] = useState<string | null>(null);
-  const oauth_verifier = searchParams.oauth_verifier;
+  const [loginStatus, setLoginStatus] = useState<string>("");
 
   useEffect(() => {
-    let mounted = true;
-
-    async function handleLogin() {
-      if (!oauth_verifier || !mounted) return;
+    const completeLogin = async () => {
+      if (!searchParams.oauth_token || !searchParams.oauth_verifier) {
+        setLoginStatus("Missing OAuth parameters");
+        return;
+      }
 
       try {
-        const oauth_token = localStorage.getItem("oauth_token");
-        const oauth_token_secret = localStorage.getItem("oauth_token_secret");
+        const storedToken = localStorage.getItem("oauth_token");
+        const storedTokenSecret = localStorage.getItem("oauth_token_secret");
 
-        if (!oauth_token || !oauth_token_secret) {
-          throw new Error("Missing OAuth tokens");
+        if (!storedToken || !storedTokenSecret) {
+          setLoginStatus("Missing stored OAuth tokens");
+          return;
         }
 
         setLoginStatus("FINISHING LOGIN");
 
         const result = await signIn("credentials", {
-          oauth_token,
-          oauth_token_secret,
-          oauth_verifier,
+          oauth_token: searchParams.oauth_token,
+          oauth_verifier: searchParams.oauth_verifier,
+          stored_token: storedToken,
+          stored_token_secret: storedTokenSecret,
           redirect: false,
         });
 
-        if (mounted) {
-          if (result?.ok) {
-            localStorage.removeItem("oauth_token");
-            localStorage.removeItem("oauth_token_secret");
-            router.replace("/");
-          } else {
-            throw new Error(result?.error || "Authentication failed");
-          }
+        if (result?.ok) {
+          setLoginStatus("Login successful!");
+          localStorage.removeItem("oauth_token");
+          localStorage.removeItem("oauth_token_secret");
+          router.push("/home");
+        } else {
+          setLoginStatus("Login failed: " + (result?.error || "Unknown error"));
         }
-      } catch (error) {
-        if (mounted) {
-          console.error("Login error:", error);
-          setLoginStatus("LOGIN FAILED");
-          setTimeout(() => {
-            router.replace("/");
-          }, 2000);
-        }
+      } catch (error: any) {
+        console.error("Login completion error:", error);
+        setLoginStatus("An error occurred during login");
       }
-    }
-
-    handleLogin();
-    return () => {
-      mounted = false;
     };
-  }, [oauth_verifier, router]);
 
-  if (!loginStatus) {
-    return null;
-  }
+    completeLogin();
+  }, [searchParams.oauth_token, searchParams.oauth_verifier, router]);
 
   return (
     <section className="flex w-screen h-screen font-montserrat">
@@ -81,7 +72,7 @@ export default function OAuth({ searchParams }: OAuthProps) {
           />
         </div>
         <div className="flex w-full text-center mb-4">
-          <h1 className="w-full">{loginStatus}</h1>
+          <h1 className="w-full">{loginStatus || "Processing login..."}</h1>
         </div>
         <div className="flex w-fit mx-auto">
           <div className="mx-auto animate-spin ease-linear h-8 w-8 rounded-full border-8 border-l-gray-300 border-r-gray-300 border-b-gray-300 border-t-capx-primary-blue"></div>

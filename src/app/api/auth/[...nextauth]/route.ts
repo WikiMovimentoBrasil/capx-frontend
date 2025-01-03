@@ -3,49 +3,43 @@ import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
       credentials: {},
       async authorize(credentials: any) {
         try {
-          if (
-            !credentials?.oauth_token ||
-            !credentials?.oauth_token_secret ||
-            !credentials?.oauth_verifier
-          ) {
-            throw new Error("Missing required credentials");
-          }
+          const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+          const response = await axios.post(`${baseUrl}/api/login/callback`, {
+            oauth_token: credentials.oauth_token,
+            oauth_verifier: credentials.oauth_verifier,
+            stored_token: credentials.stored_token,
+            stored_token_secret: credentials.stored_token_secret,
+          });
 
-          const loginResponse = await axios.post(
-            process.env.LOGIN_STEP03_URL!,
-            {
-              oauth_token: credentials.oauth_token,
-              oauth_token_secret: credentials.oauth_token_secret,
-              oauth_verifier: credentials.oauth_verifier,
-            }
-          );
-
-          if (loginResponse.status === 200 && loginResponse.data) {
+          if (response.data.success && response.data.user) {
             return {
-              username: loginResponse.data.username,
-              id: loginResponse.data.id,
-              token: loginResponse.data.token,
-              first_login: loginResponse.data.first_name === null,
+              id: response.data.user.id,
+              name: response.data.user.username,
+              token: response.data.user.token,
+              first_login: response.data.user.first_login,
             };
           }
-          throw new Error("Invalid response from authentication server");
+
+          throw new Error("Invalid response from server");
         } catch (error: any) {
-          console.error("Authorization error:", error.message);
-          throw new Error(error.message || "Authentication failed");
+          console.error("NextAuth authorize error:", error);
+          throw error;
         }
       },
     }),
   ],
-  pages: {
-    signIn: "/",
-    error: "/auth/error",
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async signIn({ user }) {
@@ -62,7 +56,11 @@ const options: NextAuthOptions = {
       return token;
     },
   },
+  pages: {
+    signIn: "/",
+    error: "/auth/error",
+  },
 };
 
-const handler = NextAuth(options);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
