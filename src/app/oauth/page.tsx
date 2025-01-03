@@ -35,22 +35,36 @@ export default function OAuth({ searchParams }: OAuthProps) {
 
         if (response.ok) {
           const result = await response.json();
-          if (result?.ok) {
-            if (result.extra === "localhost:3000" || result.extra === "127.0.0.1:3000") {
-              window.location.href = "http://localhost:3000";
-              return;
-            } else if (result.extra === "capx-test.toolforge.org") {
-              window.location.href = "https://capx-test.toolforge.org";
-              return;
-            }
+          const hostname = `${document.location.hostname}:${document.location.port}`;
+
+          if (!result) {
+            return;
+          }
+
+          result.extra = "capx-test.toolforge.org";
+          if (result.extra === hostname) {
+            console.log("hostname is correct");
+            handleLogin();
+          } else if (
+            result.extra === "localhost:3000" ||
+            result.extra === "127.0.0.1:3000"
+          ) {
+            router.push(
+              `http://localhost:3000/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
+            );
+            return;
+          } else if (result.extra === "capx-test.toolforge.org") {
+            router.push(
+              `https://capx-test.toolforge.org/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
+            );
+            return;
           }
         }
       } catch (error) {
         console.error("Token check error:", error);
       }
-    handleLogin();
     }
-    
+
     async function handleLogin() {
       if (!oauth_verifier || !mounted) return;
 
