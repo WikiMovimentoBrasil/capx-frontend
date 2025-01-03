@@ -2,13 +2,15 @@
 import NextLink from "next/link";
 import Image from "next/image";
 import { Link } from "react-scroll";
-import { useApp } from "@/contexts/AppContext";
 import IconDarkMode from "@/public/static/images/dark_mode.svg";
 import ArrowDropDownWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
 import ArrowDropDownBlack from "@/public/static/images/arrow_drop_down_circle.svg";
 import { useState } from "react";
 import UserProfileIcon from "@/public/static/images/check_box_outline_blank.svg";
+import UserProfileIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import OrgProfileIcon from "@/public/static/images/check_box.svg";
+import OrgProfileIconWhite from "@/public/static/images/check_box_light.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface MenuItem {
   title: string;
@@ -39,19 +41,19 @@ export default function MobileMenuLinks({
   pageContent,
   handleMenuStatus,
 }: MobileMenuLinksProps) {
-  const { darkMode, setDarkMode } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const { darkMode, setDarkMode } = useTheme();
   const subMenuItems: SubMenuItem[] = [
     {
       title: "Organization Profile",
       to: "/organization-profile",
-      image: OrgProfileIcon,
+      image: darkMode ? OrgProfileIconWhite : OrgProfileIcon,
     },
     {
       title: "User Profile",
       to: "/user-profile",
-      image: UserProfileIcon,
+      image: darkMode ? UserProfileIconWhite : UserProfileIcon,
     },
   ];
 
@@ -97,18 +99,26 @@ export default function MobileMenuLinks({
                 >
                   <button
                     onClick={handleProfileClick}
-                    className={`flex items-center justify-between px-2 py-1 rounded-[4px] border border-[#053749] transition-all duration-300 w-[90%] ml-[16px] mr-[16px] ${
-                      isExpanded ? "bg-[#053749]" : "hover:bg-[#053749]/10"
+                    className={`flex items-center justify-between px-2 py-1 rounded-[4px] border transition-all duration-300 w-[90%] ml-[16px] mr-[16px] ${
+                      darkMode
+                        ? "bg-capx-dark-bg text-capx-light-text border-capx-light-text"
+                        : "bg-capx-light-bg text-capx-dark-text border-capx-dark-bg"
                     }`}
                   >
                     <span
                       className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
-                        isExpanded ? "text-white" : "text-[#053749]"
+                        isExpanded
+                          ? darkMode
+                            ? "text-white"
+                            : "text-[#053749]"
+                          : darkMode
+                          ? "text-white"
+                          : "text-[#053749]"
                       }`}
                     >
                       {item.title}
                     </span>
-                    {item.image && isExpanded && (
+                    {item.image && isExpanded && darkMode && (
                       <Image
                         src={ArrowDropDownWhite}
                         alt="Profile menu icon"
@@ -119,7 +129,7 @@ export default function MobileMenuLinks({
                         }`}
                       />
                     )}
-                    {item.image && !isExpanded && (
+                    {item.image && !isExpanded && !darkMode && (
                       <Image
                         src={item.image}
                         alt="Profile menu icon"
@@ -130,6 +140,14 @@ export default function MobileMenuLinks({
                         }`}
                       />
                     )}
+                    {item.image && !isExpanded && darkMode && (
+                      <Image
+                        src={ArrowDropDownWhite}
+                        alt="Profile menu icon"
+                        width={24}
+                        height={24}
+                      />
+                    )}
                   </button>
                   {isExpanded && (
                     <div className="flex flex-col rounded-b-[4px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
@@ -138,7 +156,7 @@ export default function MobileMenuLinks({
                           key={`submenu-item-${subIndex}`}
                           href={subItem.to || ""}
                           onClick={handleMenuStatus}
-                          className="flex items-center justify-between w-full px-2 py-3 text-[#053749] hover:bg-[#053749]/10 border-t border-[#053749] pt-2"
+                          className="flex items-center justify-between w-full px-2 py-3 text-capx-dark-text hover:bg-capx-light-bg hover:text-capx-dark-text border-t border-[#053749] pt-2"
                         >
                           <span className="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ">
                             {subItem.title}
@@ -167,7 +185,9 @@ export default function MobileMenuLinks({
                     }
                   }}
                   className={`w-full cursor-pointer py-3 font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] pl-6 ${
-                    darkMode ? "text-capx-light-bg" : "text-[#053749]"
+                    darkMode
+                      ? "text-capx-light-bg border-capx-light-text"
+                      : "text-[#053749] border-capx-dark-text"
                   }`}
                 >
                   <div className="flex justify-between items-center">
@@ -191,7 +211,9 @@ export default function MobileMenuLinks({
                 key={`mobile-menu-link-${index}`}
                 href={item.to || ""}
                 className={`w-full cursor-pointer py-3 font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] pl-6 ${
-                  darkMode ? "text-capx-light-bg" : "text-[#053749]"
+                  darkMode
+                    ? "text-capx-light-bg border-capx-light-text"
+                    : "text-[#053749] border-capx-dark-text"
                 }`}
                 onClick={handleMenuStatus}
               >

@@ -54,6 +54,7 @@ export default function Navbar({
       setPageContent={setPageContent}
       darkMode={darkMode}
       setDarkMode={setDarkMode}
+      session={session}
     />
   );
 }

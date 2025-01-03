@@ -39,45 +39,48 @@ const PADDING = {
   },
 };
 
-const customStyles = {
+const customStyles = (darkMode: boolean) => ({
   control: (provided: any) => ({
     ...provided,
-    border: "2px solid #053749",
+    border: `2px solid ${darkMode ? "#FFFFFF" : "#053749"}`,
     borderRadius: "8px",
     padding: "8px 16px",
     boxShadow: "none",
     "&:hover": {
-      border: "2px solid #053749",
+      border: `2px solid ${darkMode ? "#FFFFFF" : "#053749"}`,
     },
     minHeight: "32px",
   }),
   option: (provided: any, state: { isSelected: boolean }) => ({
     ...provided,
     backgroundColor: state.isSelected ? "#053749" : "white",
-    color: state.isSelected ? "white" : "#053749",
+    color: state.isSelected ? "white" : darkMode ? "#FFFFFF" : "#053749",
     padding: "16px",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "#053749",
-      color: "white",
+      backgroundColor: darkMode ? "#FFFFFF" : "#053749",
+      color: darkMode ? "#053749" : "white",
     },
   }),
   menu: (provided: any) => ({
     ...provided,
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    border: "2px solid #053749",
+    border: `2px solid ${darkMode ? "#053749" : "#FFFFFF"}`,
+    color: darkMode ? "#FFFFFF" : "#053749",
+    backgroundColor: darkMode ? "#053749" : "#FFFFFF",
   }),
   menuList: (provided: any) => ({
     ...provided,
     padding: 0,
+    backgroundColor: darkMode ? "#053749" : "#FFFFFF",
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: "#053749",
+    color: darkMode ? "#FFFFFF" : "#053749",
     fontWeight: "bold",
   }),
-};
+});
 
 export default function BaseSelect({
   name,
@@ -109,7 +112,8 @@ export default function BaseSelect({
             isMobile
               ? `flex !px-3 !py-0 items-center h-8 gap-2`
               : `flex h-16 px-8 !pl-[32px] !pr-[32px] py-4 justify-center items-center gap-[8px]`
-          }`,
+          }
+          ${darkMode ? "!border-capx-dark-text" : "!border-capx-light-text"}`,
         container: () => "relative",
         valueContainer: () => "flex flex-1 items-center justify-center",
         singleValue: () =>
@@ -123,15 +127,27 @@ export default function BaseSelect({
         dropdownIndicator: () =>
           `flex items-center ${
             isMobile ? "!w-[20px] !h-[20px]" : "!w-[40px] !h-[40px]"
-          }`,
+          }
+          `,
         option: ({ isSelected }) =>
           `${
-            isSelected ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
-          } p-4 font-bold hover:bg-[#053749] hover:text-white`,
-        menu: () => "rounded-lg shadow-lg border-2 border-[#053749]",
+            isSelected
+              ? darkMode
+                ? "bg-capx-dark-bg text-capx-light-text"
+                : "bg-capx-light-bg text-capx-dark-text"
+              : darkMode
+              ? "bg-capx-dark-bg text-capx-light-text"
+              : "bg-capx-light-bg text-capx-dark-text"
+          } p-4 font-bold hover:bg-capx-light-bg hover:text-capx-dark-text`,
+        menu: () =>
+          `rounded-lg shadow-lg border-2 ${
+            darkMode
+              ? "bg-capx-dark-bg text-capx-light-text"
+              : "bg-capx-light-bg text-capx-dark-text"
+          }`,
         menuList: () => "p-0",
       }}
-      styles={customStyles}
+      styles={customStyles(darkMode)}
       isSearchable={false}
     />
   );

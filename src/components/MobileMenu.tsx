@@ -4,55 +4,52 @@ import MobileMenuLinks from "@/components/MobileMenuLinks";
 import AuthButton from "@/components/AuthButton";
 import { useApp } from "@/contexts/AppContext";
 import MoveOutIcon from "@/public/static/images/move_item.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface MobileMenuProps {
   session: any;
   pageContent: any;
-  language: string;
-  setLanguage: (language: string) => void;
-  setPageContent: (pageContent: any) => void;
 }
 
-export default function MobileMenu({
-  session,
-  pageContent,
-  language,
-  setLanguage,
-  setPageContent,
-}: MobileMenuProps) {
-  const { darkMode, setMobileMenuStatus } = useApp();
-
+export default function MobileMenu({ session, pageContent }: MobileMenuProps) {
+  const { darkMode, setDarkMode } = useTheme();
+  const { setMobileMenuStatus } = useApp();
   const animationVariants = {
     initial: {
-      scaleX: 0,
+      scaleY: 0,
+      opacity: 0,
+      transformOrigin: "top",
     },
     animate: {
-      scaleX: 1,
+      scaleY: 1,
+      opacity: 1,
       transition: {
-        duration: 0.2,
-        ease: [0.12, 0, 0.39, 0],
+        duration: 0.3,
+        ease: "easeOut",
       },
     },
     exit: {
-      scaleX: 0,
+      scaleY: 0,
+      opacity: 0,
       transition: {
         duration: 0.2,
-        ease: [0.22, 1, 0.36, 1],
+        ease: "easeIn",
       },
     },
   };
 
   return (
     <motion.div
+      data-testid="mobile-menu"
       variants={animationVariants}
       initial="initial"
       animate="animate"
       exit="exit"
       className={`${
         darkMode
-          ? "bg-capx-dark-box-bg text-capx-light-bg"
-          : "bg-capx-light-bg text-capx-dark-bg"
-      } fixed w-screen pb-10 origin-top-right z-50 mt-16`}
+          ? "bg-capx-dark-bg text-capx-light-bg border-b-capx-light-bg"
+          : "bg-capx-light-bg text-capx-dark-bg border-b-capx-dark-bg"
+      } fixed w-screen pb-10 z-50 mt-16`}
     >
       <MobileMenuLinks
         session={session}

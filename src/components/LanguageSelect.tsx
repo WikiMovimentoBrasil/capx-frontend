@@ -1,15 +1,20 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { setCookie } from "@/app/actions";
 import BaseSelect from "./BaseSelect";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface LanguageSelectProps {
   language: string;
   setLanguage: (language: string) => void;
   setPageContent: (pageContent: any) => void;
   isMobile: boolean;
-  darkMode: boolean;
   className?: string;
+}
+
+interface LanguageOption {
+  value: string;
+  label: string;
 }
 
 export default function LanguageSelect({
@@ -17,52 +22,40 @@ export default function LanguageSelect({
   setLanguage,
   setPageContent,
   isMobile,
-  darkMode,
   className = "",
 }: LanguageSelectProps) {
-  const [options, setOptions] = useState([]);
+  const { darkMode } = useTheme();
+  const { fetchLanguages, fetchTranslations } = useLanguage();
+  const [options, setOptions] = useState<LanguageOption[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    async function fetchLanguages() {
-      const response = await axios.get("/api/language");
-      const languages = response.data;
-      const languageOptions = languages.map((lang) => ({
-        value: lang,
-        label: lang,
-      }));
+    async function loadLanguages() {
+      const languageOptions = await fetchLanguages();
       setOptions(languageOptions);
     }
-    fetchLanguages();
+    loadLanguages();
     setIsClient(true);
-  }, []);
+  }, [fetchLanguages]);
+
+  useEffect(() => {
+    async function loadTranslations() {
+      const translations = await fetchTranslations(language);
+      setPageContent(translations);
+    }
+    loadTranslations();
+  }, [language, setPageContent, fetchTranslations]);
 
   const handleSelection = async (selectedOption) => {
     setLanguage(selectedOption.value);
     await setCookie({
       name: "language",
       value: selectedOption.value,
-      options: {
-        path: "/",
-      },
+      options: { path: "/" },
     });
   };
 
-  useEffect(() => {
-    async function getTranslatedContent() {
-      const queryResponse = await axios.get("/api/language", {
-        params: {
-          lang: language,
-        },
-      });
-      setPageContent(queryResponse.data);
-    }
-    getTranslatedContent();
-  }, [language, setPageContent]);
-
-  if (!isClient) {
-    return null;
-  }
+  if (!isClient) return null;
 
   return (
     <BaseSelect

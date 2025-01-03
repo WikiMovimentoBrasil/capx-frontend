@@ -8,9 +8,11 @@ import AuthButton from "./AuthButton";
 import LanguageSelect from "./LanguageSelect";
 import DarkModeButton from "./DarkModeButton";
 import BurgerMenu from "@/public/static/images/burger_menu.svg";
+import BurgerMenuDarkMode from "@/public/static/images/burger_menu_light.svg";
 import { useApp } from "@/contexts/AppContext";
 import IconCloseMobileMenuLightMode from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface MobileNavbarProps {
   session: any;
@@ -27,11 +29,10 @@ export default function MobileNavbar({
   setLanguage,
   setPageContent,
 }: MobileNavbarProps) {
-  const { isMobile, darkMode, mobileMenuStatus, setMobileMenuStatus } =
-    useApp();
-
+  const { isMobile, mobileMenuStatus, setMobileMenuStatus } = useApp();
+  const { darkMode } = useTheme();
   const navbarClasses = `fixed top-0 left-0 right-0 z-50 mb-16 ${
-    darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
+    darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
   } ${mobileMenuStatus ? "shadow-lg" : ""}`;
 
   if (session) {
@@ -47,6 +48,7 @@ export default function MobileNavbar({
                   alt="Capacity Exchange logo"
                   width={48}
                   height={48}
+                  className="w-[48px] h-[48px] mb-2"
                 />
               </NextLink>
             </div>
@@ -58,7 +60,6 @@ export default function MobileNavbar({
                 language={language}
                 setLanguage={setLanguage}
                 setPageContent={setPageContent}
-                darkMode={darkMode}
               />
 
               <div className="flex items-center">
@@ -78,8 +79,8 @@ export default function MobileNavbar({
                 ) : (
                   <button onClick={() => setMobileMenuStatus(true)}>
                     <Image
-                      src={BurgerMenu}
-                      alt="Burger menu"
+                      src={darkMode ? BurgerMenuDarkMode : BurgerMenu}
+                      alt="Burger Menu"
                       width={32}
                       height={32}
                     />
@@ -91,13 +92,7 @@ export default function MobileNavbar({
         </div>
         <AnimatePresence mode="wait">
           {isMobile && mobileMenuStatus && session && (
-            <MobileMenu
-              session={session}
-              pageContent={pageContent}
-              language={language}
-              setLanguage={setLanguage}
-              setPageContent={setPageContent}
-            />
+            <MobileMenu session={session} pageContent={pageContent} />
           )}
         </AnimatePresence>
       </>
@@ -127,7 +122,6 @@ export default function MobileNavbar({
             language={language}
             setLanguage={setLanguage}
             setPageContent={setPageContent}
-            darkMode={darkMode}
           />
 
           <AuthButton

@@ -21,7 +21,7 @@ export default function BaseWrapper({ children }: BaseWrapperProps) {
         setLanguage={setLanguage}
         setPageContent={setPageContent}
       />
-      <main className="flex-grow mt-16">{children}</main>
+      <main className="flex-grow">{children}</main>
       <Footer darkMode={darkMode} pageContent={pageContent} />
     </div>
   );

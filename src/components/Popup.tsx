@@ -64,17 +64,17 @@ const Popup = ({
                 className="w-full max-w-[300px] h-auto mb-8"
                 priority
               />
-              <h2 className="text-[#053749] text-2xl text-center font-extrabold mb-8 font-[Montserrat]">
+              <h2 className="text-[#053749] text-xl text-center font-extrabold mb-8 font-[Montserrat]">
                 {title}
               </h2>
               <div className="flex flex-row gap-4 w-full">
                 <BaseButton
-                  customClass="flex-1 bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-base py-2 px-4"
+                  customClass="flex-1 bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
                   label={closeButtonLabel}
                   onClick={onCloseTab}
                 />
                 <BaseButton
-                  customClass="flex-1 bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-base py-2 px-4"
+                  customClass="flex-1 bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
                   label={continueButtonLabel}
                   onClick={onContinue}
                 />

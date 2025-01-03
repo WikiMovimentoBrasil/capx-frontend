@@ -1,11 +1,11 @@
 "use client";
-import { useApp } from "@/contexts/AppContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import DarkMode from "@/public/static/images/dark_mode.svg";
 import LightMode from "@/public/static/images/light_mode.svg";
 
 export default function DarkModeButton() {
-  const { darkMode, setDarkMode } = useApp();
+  const { darkMode, setDarkMode } = useTheme();
 
   return (
     <button
@@ -17,7 +17,7 @@ export default function DarkModeButton() {
         src={darkMode ? LightMode : DarkMode}
         width={32}
         height={32}
-        className="w-[32px] h-[32px]"
+        className="w-[28px] h-[28px]"
         alt={darkMode ? "Light Mode" : "Dark Mode"}
       />
     </button>

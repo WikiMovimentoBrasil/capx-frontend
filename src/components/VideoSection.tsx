@@ -2,6 +2,7 @@ import Image from "next/image";
 import TabletIllustration from "@/public/static/images/tablet_illustration.svg";
 import CapxPencilIllustration from "@/public/static/images/capx_pencil_illustration.svg";
 import { useApp } from "@/contexts/AppContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface VideoSectionProps {
   pageContent: any;
@@ -9,18 +10,26 @@ interface VideoSectionProps {
 
 export default function VideoSection({ pageContent }: VideoSectionProps) {
   const { isMobile } = useApp();
-
+  const { darkMode } = useTheme();
   const videoUrl =
     "https://upload.wikimedia.org/wikipedia/commons/c/cd/Capacity_Exchange_-_Launch_Video.webm";
 
   if (isMobile) {
     return (
       <section
-        className="w-full pt-12 border-b border-capx-secondary-purple bg-[var(--Backgrounds-light-box-bg,_#EFEFEF)]"
+        className={`w-full pt-12 border-b ${
+          darkMode
+            ? "border-capx-light-bg bg-capx-dark-bg"
+            : "border-capx-secondary-purple bg-capx-light-bg"
+        }`}
         id="video-section"
       >
         <div className="flex flex-col justify-center items-center">
-          <h1 className="font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg mb-8">
+          <h1
+            className={`font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] ${
+              darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+            } mb-8`}
+          >
             {pageContent["body-home-video-section-title"]}
           </h1>
         </div>
@@ -49,9 +58,19 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
   }
 
   return (
-    <section className="w-full pt-12 border-b border-capx-secondary-purple bg-[var(--Backgrounds-light-box-bg,_#EFEFEF)]">
+    <section
+      className={`w-full pt-12 border-b ${
+        darkMode
+          ? "border-capx-light-bg bg-capx-dark-bg"
+          : "border-capx-secondary-purple bg-capx-light-bg"
+      }`}
+    >
       <div className="flex flex-col justify-center items-center sm:items-start sm:justify-start ml-0 sm:ml-20">
-        <h1 className="font-[Montserrat] text-[36px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg">
+        <h1
+          className={`font-[Montserrat] text-[36px] not-italic font-extrabold leading-[normal] ${
+            darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+          }`}
+        >
           {pageContent["body-home-video-section-title"]}
         </h1>
       </div>
@@ -60,7 +79,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
           <Image
             src={CapxPencilIllustration}
             alt="Capx pencil illustration"
-            className="w-[250px] h-[450px]"
+            className="w-[335px] h-[450px]"
           />
         </div>
         <div className="w-full flex justify-center items-center mr-0 sm:mr-10 relative">

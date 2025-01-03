@@ -40,7 +40,12 @@ export default function AuthButton({
     }
 
     try {
-      const response = await axios.post("/api/login");
+      const response = await axios.post("/api/login", null, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data?.redirect_url) {
         localStorage.setItem("oauth_token", response.data.oauth_token);
@@ -48,14 +53,16 @@ export default function AuthButton({
           "oauth_token_secret",
           response.data.oauth_token_secret
         );
-
         window.location.href = response.data.redirect_url;
       } else {
-        throw new Error("No redirect URL received");
+        throw new Error("URL de redirecionamento não recebida");
       }
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch (error: any) {
+      console.error("Erro completo:", error);
+      console.error("Dados da resposta:", error.response?.data);
+      console.error("Status da resposta:", error.response?.status);
       setShowPopup(false);
+      alert(`Erro no login: ${error.response?.data?.error || error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -93,4 +100,11 @@ export default function AuthButton({
       )}
     </div>
   );
+}
+
+function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+  return null;
 }
