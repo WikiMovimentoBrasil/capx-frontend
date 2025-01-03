@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       {
         oauth_callback: process.env.NEXTAUTH_URL + "/oauth",
         provider: "mediawiki",
-        host: request.headers.get("host"),
+        extra: request.headers.get("host"),
       },
       {
         headers: {
