@@ -132,7 +132,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
                 message={pageContent["body-home-section01-button"]}
                 customClass={`h-16 inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] rounded-[6px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
-                    ? "text-capx-light-text bg-capx-light-bg"
+                    ? "text-capx-dark-text bg-capx-secondary-purple"
                     : "text-capx-dark-text bg-capx-secondary-purple"
                 }`}
               />
