@@ -35,13 +35,15 @@ export default function OAuth({ searchParams }: OAuthProps) {
 
         if (response.ok) {
           const result = await response.json();
-          const hostname = `${document.location.hostname}:${document.location.port}`;
+          let hostname = `${document.location.hostname}`;
+          if (document.location.port !== "443") {
+            hostname += `:${document.location.port}`;
+          }
 
           if (!result) {
             return;
           }
 
-          result.extra = "capx-test.toolforge.org";
           if (result.extra === hostname) {
             console.log("hostname is correct");
             handleLogin();
