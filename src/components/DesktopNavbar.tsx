@@ -32,6 +32,11 @@ export default function DesktopNavbar({
       active: true,
     },
     { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
+    {
+      title: pageContent["navbar-link-organization"],
+      to: "/organization_profile",
+      active: true,
+    },
   ];
 
   return (

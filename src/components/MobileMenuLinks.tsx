@@ -81,6 +81,11 @@ export default function MobileMenuLinks({
       image: ArrowDropDownBlack,
       isDarkBg: true,
     },
+    {
+      title: "Organization",
+      to: "/organization_profile",
+      active: true,
+    },
   ];
 
   const handleProfileClick = () => {
