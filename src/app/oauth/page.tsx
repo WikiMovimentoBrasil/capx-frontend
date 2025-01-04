@@ -36,7 +36,7 @@ export default function OAuth({ searchParams }: OAuthProps) {
         if (response.ok) {
           const result = await response.json();
           let hostname = `${document.location.hostname}`;
-          if (document.location.port !== "443") {
+          if (document.location.port !== "") {
             hostname += `:${document.location.port}`;
           }
 
