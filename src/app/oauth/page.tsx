@@ -15,14 +15,61 @@ interface OAuthProps {
 
 export default function OAuth({ searchParams }: OAuthProps) {
   const router = useRouter();
-  const [loginStatus, setLoginStatus] = useState<string>("");
+  const [loginStatus, setLoginStatus] = useState<string | null>(null);
+  const oauth_verifier = searchParams.oauth_verifier;
+  const oauth_token_request = searchParams.oauth_token;
 
   useEffect(() => {
-    const completeLogin = async () => {
-      if (!searchParams.oauth_token || !searchParams.oauth_verifier) {
-        setLoginStatus("Missing OAuth parameters");
-        return;
+    let mounted = true;
+
+    async function checkToken() {
+      if (!oauth_token_request || !mounted) return;
+
+      try {
+        const response = await fetch("/api/check/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: oauth_token_request }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          let hostname = `${document.location.hostname}`;
+          if (document.location.port !== "") {
+            hostname += `:${document.location.port}`;
+          }
+
+          if (!result) {
+            return;
+          }
+
+          if (result.extra === hostname) {
+            console.log("hostname is correct");
+            handleLogin();
+          } else if (
+            result.extra === "localhost:3000" ||
+            result.extra === "127.0.0.1:3000"
+          ) {
+            router.push(
+              `http://localhost:3000/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
+            );
+            return;
+          } else if (result.extra === "capx-test.toolforge.org") {
+            router.push(
+              `https://capx-test.toolforge.org/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
+            );
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Token check error:", error);
       }
+    }
+
+    async function handleLogin() {
+      if (!oauth_verifier || !mounted) return;
 
       try {
         const storedToken = localStorage.getItem("oauth_token");
@@ -55,7 +102,13 @@ export default function OAuth({ searchParams }: OAuthProps) {
         console.error("Login completion error:", error);
         setLoginStatus("An error occurred during login");
       }
+    }
+
+    checkToken();
+    return () => {
+      mounted = false;
     };
+  }, [oauth_verifier, oauth_token_request, router]);
 
     completeLogin();
   }, [searchParams.oauth_token, searchParams.oauth_verifier, router]);
