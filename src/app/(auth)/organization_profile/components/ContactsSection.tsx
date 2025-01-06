@@ -69,16 +69,17 @@ export const ContactsSection = () => {
           {mobileContacts.map((contact, index) => (
             <div
               key={index}
-              className="flex w-full pl-[6px] pr-[13px] py-[6px] items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[var(--Backgrounds-light-bg,_#FFF)]"
+              className="flex w-full pl-[6px] pr-[13px] py-[6px] items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#EFEFEF]"
             >
-              <Image
-                src={contact.icon}
-                alt={contact.name}
-                width={16}
-                height={16}
-                style={{ width: "auto", height: "auto" }}
-              />
-              <p className="text-[#829BA4] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]">
+              <div className="relative w-[16px] h-[16px]">
+                <Image
+                  src={contact.icon}
+                  alt={contact.name}
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </div>
+              <p className="text-[#053749] font-[Montserrat] text-[13px] not-italic font-normal leading-[normal]">
                 {contact.name}
               </p>
             </div>

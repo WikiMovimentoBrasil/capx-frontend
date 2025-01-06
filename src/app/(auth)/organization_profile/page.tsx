@@ -14,13 +14,58 @@ import TargetIcon from "@/public/static/images/target.svg";
 import { ProjectsEventsList } from "./components/ProjectsEventsList";
 import { ContactsSection } from "./components/ContactsSection";
 import { useApp } from "@/contexts/AppContext";
-import ArrowDownIcon from "@/public/static/images/arrow_down.svg";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { organizationService } from "@/services/organizationProfileService";
+import { Organization } from "@/types/organization";
+import { useManagerStatus } from "@/hooks/useManagerStatus";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const router = useRouter();
+  const { data: session } = useSession();
+  const user = session?.user?.name;
+  const token = session?.user?.token;
+  const { managedOrganizations, isLoading: managerLoading } =
+    useManagerStatus(token);
+  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [isOrgManager, setIsOrgManager] = useState(false);
+
+  useEffect(() => {
+    if (token && managedOrganizations.length > 0) {
+      // Pega a primeira organização que o usuário gerencia
+      const managedOrg = managedOrganizations[0];
+
+      // Busca os detalhes completos dessa organização
+      organizationService
+        .fetchOrganization(managedOrg.id, token)
+        .then((orgData) => {
+          setOrganization(orgData);
+          setIsOrgManager(true);
+        })
+        .catch((error) => {
+          console.error(
+            "Error fetching organization details:",
+            error.response?.data
+          );
+        });
+    }
+  }, [token, managedOrganizations]);
+
+  // Se ainda está carregando os dados de manager
+  if (managerLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Se não é manager de nenhuma organização
+  if (!managerLoading && managedOrganizations.length === 0) {
+    return <div>You are not a manager of any organization</div>;
+  }
+
+  console.log("organization", organization);
+  console.log("managedOrganizations", managedOrganizations);
 
   if (isMobile) {
     return (
@@ -29,7 +74,7 @@ export default function OrganizationProfilePage() {
         <div className="relative w-full overflow-x-hidden">
           <section
             className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-              isMobile ? "mt-[80px]" : ""
+              isMobile ? "mt-[80px]" : "mt-[64px]"
             }`}
           >
             <div className="flex flex-col gap-8">
@@ -60,7 +105,7 @@ export default function OrganizationProfilePage() {
                           : "text-capx-light-text"
                       }`}
                     >
-                      Wiki Movimento Brasil
+                      {organization?.display_name || "Loading..."}
                     </span>
                   </div>
 
@@ -80,15 +125,17 @@ export default function OrganizationProfilePage() {
                       className="w-full rounded-lg"
                     />
                   </div>
-                  <BaseButton
-                    onClick={() => router.push("/organization_profile/edit")}
-                    label="Edit organization profile"
-                    customClass={`w-full md:w-auto text-start font-[Montserrat] text-[14px] md:text-[24px] not-italic font-extrabold leading-[normal] inline-flex h-[56px] md:h-[64px] px-[24px] md:px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
-                    imageUrl={EditIcon}
-                    imageAlt="Edit icon"
-                    imageWidth={isMobile ? 24 : 32}
-                    imageHeight={isMobile ? 24 : 32}
-                  />
+                  {isOrgManager && (
+                    <BaseButton
+                      onClick={() => router.push("/organization_profile/edit")}
+                      label="Edit org. profile"
+                      customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
+                      imageUrl={EditIcon}
+                      imageAlt="Edit icon"
+                      imageWidth={20}
+                      imageHeight={20}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -152,7 +199,11 @@ export default function OrganizationProfilePage() {
     <>
       {/* Wrapper para garantir que o conteúdo não afete a navbar */}
       <div className="relative w-full overflow-x-hidden">
-        <section className="w-full max-w-screen-xl mx-auto px-4 py-8">
+        <section
+          className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
+            isMobile ? "mt-[80px]" : "mt-[64px]"
+          }`}
+        >
           <div className="flex flex-col gap-8">
             {/* Header Section */}
             <div className="flex flex-row gap-6">
@@ -184,8 +235,8 @@ export default function OrganizationProfilePage() {
                     src={UserCircleIcon}
                     alt="User circle icon"
                     style={{ width: "auto", height: "auto" }}
-                    width={isMobile ? 32 : 42}
-                    height={isMobile ? 32 : 48}
+                    width={20}
+                    height={20}
                   />
                   <span
                     className={`text-center font-[Montserrat] text-[20px] md:text-[24px] not-italic font-extrabold leading-[normal] pl-2 ${
@@ -200,15 +251,17 @@ export default function OrganizationProfilePage() {
                   Grupo de usuários Wiki Movimento Brasil
                 </p>
 
-                <BaseButton
-                  onClick={() => router.push("/organization_profile/edit")}
-                  label="Edit organization profile"
-                  customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
-                  imageUrl={EditIcon}
-                  imageAlt="Edit icon"
-                  imageWidth={32}
-                  imageHeight={32}
-                />
+                {isOrgManager && (
+                  <BaseButton
+                    onClick={() => router.push("/organization_profile/edit")}
+                    label="Edit organization profile"
+                    customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
+                    imageUrl={EditIcon}
+                    imageAlt="Edit icon"
+                    imageWidth={32}
+                    imageHeight={32}
+                  />
+                )}
               </div>
             </div>
 
