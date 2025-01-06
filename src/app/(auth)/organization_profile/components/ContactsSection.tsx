@@ -50,7 +50,13 @@ export const ContactsSection = () => {
     return (
       <section className="w-full mx-auto">
         <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-[14px]">
-          <Image src={WikimediaIcon} alt="Wikimedia" width={20} height={20} />
+          <Image
+            src={WikimediaIcon}
+            alt="Wikimedia"
+            width={20}
+            height={20}
+            style={{ width: "auto", height: "auto" }}
+          />
           <h2
             className={`font-[Montserrat] not-italic font-extrabold leading-[normal] text-[#003649] pl-2 ${
               isMobile ? "text-[14px]" : " text-[24px]"
@@ -60,13 +66,17 @@ export const ContactsSection = () => {
           </h2>
         </div>
         <div className="flex flex-col gap-4">
-          {mobileContacts.map((contact) => (
-            <div className="flex w-full pl-[6px] pr-[13px] py-[6px] items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[var(--Backgrounds-light-bg,_#FFF)]">
+          {mobileContacts.map((contact, index) => (
+            <div
+              key={index}
+              className="flex w-full pl-[6px] pr-[13px] py-[6px] items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[var(--Backgrounds-light-bg,_#FFF)]"
+            >
               <Image
                 src={contact.icon}
                 alt={contact.name}
                 width={16}
                 height={16}
+                style={{ width: "auto", height: "auto" }}
               />
               <p className="text-[#829BA4] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]">
                 {contact.name}
@@ -81,7 +91,13 @@ export const ContactsSection = () => {
   return (
     <section className="w-full max-w-screen-xl mx-auto py-8">
       <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
-        <Image src={WikimediaIcon} alt="Wikimedia" width={36} height={36} />
+        <Image
+          src={WikimediaIcon}
+          alt="Wikimedia"
+          width={36}
+          height={36}
+          style={{ width: "auto", height: "auto" }}
+        />
         <h2
           className={`font-[Montserrat] not-italic font-extrabold leading-[normal] text-[#003649] pl-2 ${
             isMobile ? "text-[14px]" : " text-[24px]"
@@ -98,6 +114,7 @@ export const ContactsSection = () => {
               alt={contact.name}
               width={32}
               height={32}
+              style={{ width: "auto", height: "auto" }}
             />
             <p
               className={`text-center font-[Montserrat] not-italic font-normal leading-[normal] ${

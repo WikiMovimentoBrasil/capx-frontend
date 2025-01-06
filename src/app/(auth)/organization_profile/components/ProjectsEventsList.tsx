@@ -70,6 +70,7 @@ export const ProjectsEventsList = ({ title }: ProjectsEventsListProps) => {
           alt="Wikimedia icon"
           width={36}
           height={36}
+          style={{ width: "auto", height: "auto" }}
         />
         <h2
           className={`text-[#003649] text-center not-italic font-extrabold leading-[29px] font-[Montserrat] ${

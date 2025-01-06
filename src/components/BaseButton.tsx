@@ -38,12 +38,17 @@ export default function BaseButton({
     >
       <span>{label}</span>
       {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt={imageAlt}
-          width={imageWidth}
-          height={imageHeight}
-        />
+        <div
+          className="relative"
+          style={{ width: `${imageWidth}px`, height: `${imageHeight}px` }}
+        >
+          <Image
+            src={imageUrl}
+            alt={imageAlt}
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
       )}
     </button>
   );

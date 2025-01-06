@@ -96,7 +96,13 @@ export default function EditOrganizationProfilePage() {
                   {formData.name}
                 </h2>
               </div>
-              <Image src={AvatarIcon} alt="Avatar" width={70} height={70} />
+              <Image
+                src={AvatarIcon}
+                alt="Avatar"
+                width={70}
+                height={70}
+                className="w-auto h-auto"
+              />
             </div>
             <div className="flex items-center gap-2">
               <Image
@@ -122,6 +128,8 @@ export default function EditOrganizationProfilePage() {
                 width={300}
                 height={165}
                 className="w-full rounded-lg"
+                style={{ width: "auto", height: "auto" }}
+                priority
               />
             </div>
 
@@ -130,7 +138,7 @@ export default function EditOrganizationProfilePage() {
               <BaseButton
                 onClick={() => {}}
                 label="Save profile"
-                customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+                customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px] w-auto h-auto"
                 imageUrl={SaveIcon}
                 imageAlt="Save icon"
                 imageWidth={24}
@@ -155,6 +163,7 @@ export default function EditOrganizationProfilePage() {
                 alt="Report icon"
                 width={24}
                 height={24}
+                style={{ width: "auto", height: "auto" }}
               />
               <h2 className="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]">
                 Report of activities
@@ -323,6 +332,7 @@ export default function EditOrganizationProfilePage() {
                 alt="Project icon"
                 width={24}
                 height={24}
+                style={{ width: "auto", height: "auto" }}
               />
               <h2 className="font-[Montserrat] text-[14px] font-bold">
                 Main Projects
@@ -367,6 +377,7 @@ export default function EditOrganizationProfilePage() {
                 alt="Event icon"
                 width={24}
                 height={24}
+                style={{ width: "auto", height: "auto" }}
               />
               <h2 className="font-[Montserrat] text-[14px] font-bold">
                 Events
@@ -410,6 +421,7 @@ export default function EditOrganizationProfilePage() {
                 alt="News icon"
                 width={24}
                 height={24}
+                style={{ width: "auto", height: "auto" }}
               />
               <h2 className="font-[Montserrat] text-[14px] font-bold">News</h2>
             </div>
@@ -442,6 +454,7 @@ export default function EditOrganizationProfilePage() {
                 alt="Document icon"
                 width={24}
                 height={24}
+                style={{ width: "auto", height: "auto" }}
               />
               <h2 className="font-[Montserrat] text-[14px] font-bold">
                 Documents
@@ -477,7 +490,7 @@ export default function EditOrganizationProfilePage() {
             <BaseButton
               onClick={() => {}}
               label="Save profile"
-              customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+              customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px] h-auto w-auto"
               imageUrl={SaveIcon}
               imageAlt="Save icon"
               imageWidth={24}

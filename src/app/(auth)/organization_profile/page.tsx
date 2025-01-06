@@ -49,6 +49,7 @@ export default function OrganizationProfilePage() {
                     <Image
                       src={UserCircleIcon}
                       alt="User circle icon"
+                      style={{ width: "auto", height: "auto" }}
                       width={isMobile ? 32 : 42}
                       height={isMobile ? 32 : 48}
                     />
@@ -74,6 +75,8 @@ export default function OrganizationProfilePage() {
                       alt="Organization logo"
                       width={isMobile ? 300 : 595}
                       height={isMobile ? 165 : 326}
+                      priority
+                      style={{ width: "auto", height: "auto" }}
                       className="w-full rounded-lg"
                     />
                   </div>
@@ -96,6 +99,7 @@ export default function OrganizationProfilePage() {
                   alt="Report activity icon"
                   width={isMobile ? 343 : 1179}
                   height={isMobile ? 116 : 399}
+                  style={{ width: "auto", height: "auto" }}
                   className="w-full p-6"
                 />
                 <div className="flex flex-col justify-center items-center gap-2">
@@ -148,14 +152,10 @@ export default function OrganizationProfilePage() {
     <>
       {/* Wrapper para garantir que o conteúdo não afete a navbar */}
       <div className="relative w-full overflow-x-hidden">
-        <section
-          className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-            isMobile ? "mt-[80px]" : ""
-          }`}
-        >
+        <section className="w-full max-w-screen-xl mx-auto px-4 py-8">
           <div className="flex flex-col gap-8">
             {/* Header Section */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-row gap-6">
               {/* Logo */}
               <div className="w-full">
                 <Image
@@ -163,12 +163,14 @@ export default function OrganizationProfilePage() {
                   alt="Organization logo"
                   width={isMobile ? 300 : 595}
                   height={isMobile ? 165 : 326}
+                  style={{ width: "auto", height: "auto" }}
+                  priority
                   className="w-full rounded-lg"
                 />
               </div>
 
               {/* Content */}
-              <div className="w-full space-y-4">
+              <div className="w-full flex flex-col gap-4 justify-center">
                 <h1
                   className={`font-[Montserrat] text-[32px] md:text-[48px] not-italic font-normal leading-[normal] md:leading-[59px] mb-4 ${
                     darkMode ? "text-capx-dark-text" : "text-capx-light-text"
@@ -181,6 +183,7 @@ export default function OrganizationProfilePage() {
                   <Image
                     src={UserCircleIcon}
                     alt="User circle icon"
+                    style={{ width: "auto", height: "auto" }}
                     width={isMobile ? 32 : 42}
                     height={isMobile ? 32 : 48}
                   />
@@ -200,24 +203,37 @@ export default function OrganizationProfilePage() {
                 <BaseButton
                   onClick={() => router.push("/organization_profile/edit")}
                   label="Edit organization profile"
-                  customClass={`w-full md:w-auto text-center font-[Montserrat] text-[20px] md:text-[24px] not-italic font-extrabold leading-[normal] inline-flex h-[56px] md:h-[64px] px-[24px] md:px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
+                  customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
                   imageUrl={EditIcon}
                   imageAlt="Edit icon"
-                  imageWidth={isMobile ? 24 : 32}
-                  imageHeight={isMobile ? 24 : 32}
+                  imageWidth={32}
+                  imageHeight={32}
                 />
               </div>
             </div>
 
             {/* Report Activity Image */}
-            <div className="w-full mt-4">
-              <Image
-                src={ReportActivityIcon}
-                alt="Report activity icon"
-                width={isMobile ? 343 : 1179}
-                height={isMobile ? 116 : 399}
-                className="w-full"
-              />
+            <div className="flex flex-row justify-between px-[85px] py-[64px] items-center rounded-[4px] bg-[#04222F] w-full h-[399px] flex-shrink-0">
+              <div className="w-[619px] h-[271px]">
+                <Image
+                  src={ReportActivityIcon}
+                  alt="Report activity icon"
+                  width={619}
+                  height={271}
+                  style={{ width: "auto", height: "auto" }}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex flex-col justify-center items-center gap-2">
+                <h2 className="text-[#FFF] text-[30px] not-italic font-extrabold leading-[37px] mb-6">
+                  Report of activities
+                </h2>
+                <BaseButton
+                  onClick={() => {}}
+                  label="Click here"
+                  customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
+                />
+              </div>
             </div>
 
             {/* Capacities Lists */}

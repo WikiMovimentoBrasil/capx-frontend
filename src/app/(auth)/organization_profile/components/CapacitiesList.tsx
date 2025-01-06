@@ -142,7 +142,15 @@ export const CapacitiesList = ({
   return (
     <section className={`flex flex-col gap-4 ${isMobile ? "mt-0" : "mt-24"}`}>
       <div className="flex justify-start items-center gap-4">
-        <Image src={icon} alt={title} width={48} height={48} />
+        <div className="relative w-[48px] h-[48px]">
+          <Image
+            src={icon}
+            alt={title}
+            fill
+            style={{ objectFit: "contain" }}
+            className="p-1"
+          />
+        </div>
         <h2 className={`${customClass}`}>{title}</h2>
       </div>
       <CapacitiesListComponent category={title} />

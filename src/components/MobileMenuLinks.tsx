@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { Link } from "react-scroll";
@@ -6,7 +8,6 @@ import IconDarkMode from "@/public/static/images/dark_mode.svg";
 import IconLightMode from "@/public/static/images/light_mode.svg";
 import ArrowDropDownWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
 import ArrowDropDownBlack from "@/public/static/images/arrow_drop_down_circle.svg";
-import { useState } from "react";
 import UserProfileIcon from "@/public/static/images/check_box_outline_blank.svg";
 import UserProfileIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import OrgProfileIcon from "@/public/static/images/check_box.svg";
@@ -42,21 +43,55 @@ export default function MobileMenuLinks({
   pageContent,
   handleMenuStatus,
 }: MobileMenuLinksProps) {
+  const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [selectedProfile, setSelectedProfile] = useState<
+    "user" | "organization"
+  >(pathname === "/organization_profile" ? "organization" : "user");
   const { darkMode, setDarkMode } = useTheme();
+
+  const handleProfileChange = (type: "user" | "organization", path: string) => {
+    setSelectedProfile(type);
+    handleMenuStatus();
+    window.location.href = path; // Usando window.location como fallback
+  };
+
   const subMenuItems: SubMenuItem[] = [
     {
       title: "Organization Profile",
-      to: "/organization-profile",
-      image: darkMode ? OrgProfileIconWhite : OrgProfileIcon,
+      to: "/organization_profile",
+      image: darkMode
+        ? selectedProfile === "organization"
+          ? OrgProfileIconWhite
+          : UserProfileIconWhite
+        : selectedProfile === "organization"
+        ? OrgProfileIcon
+        : UserProfileIcon,
+      action: () =>
+        handleProfileChange("organization", "/organization_profile"),
     },
     {
       title: "User Profile",
-      to: "/user-profile",
-      image: darkMode ? UserProfileIconWhite : UserProfileIcon,
+      to: "/profile",
+      image: darkMode
+        ? selectedProfile === "user"
+          ? OrgProfileIconWhite
+          : UserProfileIconWhite
+        : selectedProfile === "user"
+        ? OrgProfileIcon
+        : UserProfileIcon,
+      action: () => handleProfileChange("user", "/profile"),
     },
   ];
+
+  // Atualiza o selectedProfile baseado na rota atual
+  useEffect(() => {
+    if (pathname === "/organization_profile") {
+      setSelectedProfile("organization");
+    } else if (pathname === "/profile") {
+      setSelectedProfile("user");
+    }
+  }, [pathname]);
 
   const menuDataLoggedIn: MenuItem[] = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
@@ -130,6 +165,7 @@ export default function MobileMenuLinks({
                         alt="Profile menu icon"
                         width={24}
                         height={24}
+                        style={{ width: "auto", height: "auto" }}
                         className={`ml-4 transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
@@ -141,6 +177,7 @@ export default function MobileMenuLinks({
                         alt="Profile menu icon"
                         width={24}
                         height={24}
+                        style={{ width: "auto", height: "auto" }}
                         className={`ml-4 transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
@@ -152,6 +189,7 @@ export default function MobileMenuLinks({
                         alt="Profile menu icon"
                         width={24}
                         height={24}
+                        style={{ width: "auto", height: "auto" }}
                       />
                     )}
                     {item.image && isExpanded && !darkMode && (
@@ -160,6 +198,7 @@ export default function MobileMenuLinks({
                         alt="Profile menu icon"
                         width={24}
                         height={24}
+                        style={{ width: "auto", height: "auto" }}
                         className={`ml-4 transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
@@ -169,11 +208,10 @@ export default function MobileMenuLinks({
                   {isExpanded && (
                     <div className="flex flex-col rounded-b-[4px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
                       {subMenuItems.map((subItem, subIndex) => (
-                        <NextLink
+                        <div
                           key={`submenu-item-${subIndex}`}
-                          href={subItem.to || ""}
-                          onClick={handleMenuStatus}
-                          className={`flex items-center justify-between w-full px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 ${
+                          onClick={subItem.action}
+                          className={`flex items-center justify-between w-full px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 cursor-pointer ${
                             darkMode
                               ? "text-capx-dark-text bg-capx-dark-bg"
                               : "text-capx-light-text bg-capx-light-bg"
@@ -188,7 +226,7 @@ export default function MobileMenuLinks({
                             width={24}
                             height={24}
                           />
-                        </NextLink>
+                        </div>
                       ))}
                     </div>
                   )}
