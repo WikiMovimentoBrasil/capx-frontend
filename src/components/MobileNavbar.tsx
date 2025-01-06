@@ -39,7 +39,7 @@ export default function MobileNavbar({
     return (
       <>
         <div className={navbarClasses}>
-          <div className="flex w-full h-full justify-between items-center px-4 py-4 sm:px-6">
+          <div className="flex w-screen max-w-full justify-between items-center px-4 py-4">
             <div className="relative flex items-center">
               <NextLink href="/">
                 <Image
@@ -101,7 +101,7 @@ export default function MobileNavbar({
 
   return (
     <div className={navbarClasses}>
-      <div className="flex w-full h-full justify-between items-center px-4 py-4 sm:px-6">
+      <div className="flex w-screen max-w-full justify-between items-center px-4 py-4">
         <div className="relative flex items-center">
           <NextLink href="/">
             <Image

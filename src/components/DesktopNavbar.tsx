@@ -5,7 +5,7 @@ import LanguageSelect from "./LanguageSelect";
 import CapXLogo from "../../public/static/images/capx_minimalistic_logo.svg";
 import DarkModeButton from "./DarkModeButton";
 import { useTheme } from "@/contexts/ThemeContext";
-
+import ProfileSelect from "./ProfileSelect";
 export interface DesktopNavbarProps {
   pageContent: any;
   language: string;
@@ -79,6 +79,7 @@ export default function DesktopNavbar({
 
         <div className="flex flex-1 items-center justify-end gap-[24px]">
           <DarkModeButton />
+          <ProfileSelect />
           <LanguageSelect
             isMobile={false}
             language={language}
