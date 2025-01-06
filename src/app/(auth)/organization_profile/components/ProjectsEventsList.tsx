@@ -3,7 +3,7 @@ import BaseButton from "@/components/BaseButton";
 import WikimediaIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import CapacityExchangeIcon from "@/public/static/images/capx_most_detailed_logo.svg";
 import CalibraLogo from "@/public/static/images/logo_calibra.svg";
-
+import { useApp } from "@/contexts/AppContext";
 interface ProjectsEventsCardProps {
   title: string;
   image: string;
@@ -35,6 +35,7 @@ const events = [
 ];
 
 const ProjectsEventsCard = ({ title, image }: ProjectsEventsCardProps) => {
+  const { isMobile } = useApp();
   return (
     <div className="rounded-[16px] bg-[#EFEFEF] w-[350px] flex-shrink-0 flex flex-col h-[400px]">
       <div className="p-6 flex items-center justify-center h-[250px]">
@@ -60,6 +61,7 @@ const ProjectsEventsCard = ({ title, image }: ProjectsEventsCardProps) => {
 };
 
 export const ProjectsEventsList = ({ title }: ProjectsEventsListProps) => {
+  const { isMobile } = useApp();
   return (
     <section className="flex flex-col gap-4 mt-24">
       <div className="flex flex-row gap-4">
@@ -69,7 +71,11 @@ export const ProjectsEventsList = ({ title }: ProjectsEventsListProps) => {
           width={36}
           height={36}
         />
-        <h2 className="text-[#003649] text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat]">
+        <h2
+          className={`text-[#003649] text-center not-italic font-extrabold leading-[29px] font-[Montserrat] ${
+            isMobile ? "text-[14px]" : "text-[24px]"
+          }`}
+        >
           {title}
         </h2>
       </div>
