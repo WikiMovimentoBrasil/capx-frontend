@@ -15,9 +15,7 @@ export const useOrganization = (token?: string) => {
       setError(null);
 
       try {
-        const data = await organizationService.fetchOrganization(id, {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const data = await organizationService.fetchOrganization(id, token);
         setOrganization(data);
       } catch (err) {
         setError("Failed to load organization");
@@ -40,9 +38,7 @@ export const useOrganization = (token?: string) => {
         const updatedData = await organizationService.updateOrganization(
           id,
           data,
-          {
-            headers: { Authorization: `Token ${token}` },
-          }
+          token
         );
         setOrganization(updatedData);
         return updatedData;
