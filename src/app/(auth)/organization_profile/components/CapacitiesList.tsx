@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ArrowDropDownIcon from "@/public/static/images/arrow_drop_down_circle.svg";
 import { useApp } from "@/contexts/AppContext";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 interface CapacitiesListProps {
   icon: string;
@@ -12,43 +12,43 @@ interface CapacitiesListProps {
 const capacitiesList = [
   {
     category: "Known capacities",
-    title: "Communication",
+    title: "communication",
   },
   {
     category: "Known capacities",
-    title: "Leadership",
+    title: "leadership",
   },
   {
     category: "Known capacities",
-    title: "Problem Solving",
+    title: "problem solving",
   },
   {
     category: "Known capacities",
-    title: "Critical Thinking",
+    title: "critical thinking",
   },
   {
     category: "Available capacities",
-    title: "Teamwork",
+    title: "teamwork",
   },
   {
     category: "Available capacities",
-    title: "Time Management",
+    title: "time management",
   },
   {
     category: "Available capacities",
-    title: "Adaptability",
+    title: "adaptability",
   },
   {
     category: "Wanted capacities",
-    title: "Creativity",
+    title: "creativity",
   },
   {
     category: "Wanted capacities",
-    title: "Critical Thinking",
+    title: "critical thinking",
   },
   {
     category: "Wanted capacities",
-    title: "Problem Solving",
+    title: "problem solving",
   },
 ];
 
@@ -67,12 +67,12 @@ const CapacitiesListComponent = ({ category }: { category: string }) => {
 
   return (
     <>
-      <div className="inline-flex px-[12px] py-[24px] items-center gap-[12px] rounded-[8px] bg-[#EFEFEF] relative">
+      <div className="inline-flex px-[4px] py-[6px] items-center gap-[12px] rounded-[8px] bg-[#EFEFEF] relative">
         <div className="flex items-center gap-[12px]">
           {visibleCapacities.map((capacity, index) => (
             <div
               key={`${category}-${index}`}
-              className={`flex h-[42px] p-[8px] items-center gap-[8px] rounded-[8px] border-[1.5px] border-[solid] ${
+              className={`flex p-[4px] items-center gap-[8px] rounded-[8px] border-[1.5px] border-[solid] ${
                 category === "Known capacities"
                   ? "border-[var(--Links-light-link,#0070B9)] bg-[var(--Links-light-link,#0070B9)]"
                   : category === "Available capacities"
@@ -141,8 +141,8 @@ export const CapacitiesList = ({
 
   return (
     <section className={`flex flex-col gap-4 ${isMobile ? "mt-0" : "mt-24"}`}>
-      <div className="flex justify-start items-center gap-4">
-        <div className="relative w-[48px] h-[48px]">
+      <div className="flex justify-start items-center gap-1">
+        <div className="relative w-[32px] h-[32px]">
           <Image
             src={icon}
             alt={title}
