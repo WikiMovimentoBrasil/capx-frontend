@@ -25,6 +25,8 @@ import { ContactsSection } from "../components/ContactsSection";
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
+  const user = session?.user?.name;
+  const token = session?.user?.token;
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const {
@@ -33,7 +35,7 @@ export default function EditOrganizationProfilePage() {
     error,
     fetchOrganization,
     updateOrganization,
-  } = useOrganization(session?.user?.token);
+  } = useOrganization(token);
 
   const [formData, setFormData] = useState({
     name: "AMartins (WMB)",
@@ -93,7 +95,7 @@ export default function EditOrganizationProfilePage() {
                   Welcome!
                 </h1>
                 <h2 className="text-[#053749] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal]">
-                  {formData.name}
+                  {user}
                 </h2>
               </div>
               <Image
