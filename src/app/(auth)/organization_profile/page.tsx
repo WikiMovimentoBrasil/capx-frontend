@@ -166,17 +166,17 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   icon={NeurologyIcon}
                   title="Known capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
                 />
                 <CapacitiesList
                   icon={EmojiIcon}
                   title="Available capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
                 />
                 <CapacitiesList
                   icon={TargetIcon}
                   title="Wanted capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
                 />
               </div>
 
