@@ -1,7 +1,9 @@
 import Image from "next/image";
 import ArrowDropDownIcon from "@/public/static/images/arrow_drop_down_circle.svg";
+import ArrowDropDownIconWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface CapacitiesListProps {
   icon: string;
@@ -56,7 +58,7 @@ const capacitiesList = [
 const CapacitiesListComponent = ({ category }: { category: string }) => {
   const { isMobile } = useApp();
   const [showOverlay, setShowOverlay] = useState(false);
-
+  const { darkMode } = useTheme();
   const filteredCapacities = capacitiesList.filter(
     (capacity) => capacity.category === category
   );
@@ -68,7 +70,11 @@ const CapacitiesListComponent = ({ category }: { category: string }) => {
 
   return (
     <>
-      <div className="inline-flex px-[4px] py-[6px] items-center gap-[12px] rounded-[8px] bg-[#EFEFEF] relative">
+      <div
+        className={`inline-flex px-[4px] py-[6px] items-center gap-[12px] rounded-[8px]  relative ${
+          darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+        }`}
+      >
         <div className="flex items-center gap-[12px]">
           {visibleCapacities.map((capacity, index) => (
             <div
@@ -89,7 +95,7 @@ const CapacitiesListComponent = ({ category }: { category: string }) => {
         </div>
         {hasMore && (
           <Image
-            src={ArrowDropDownIcon}
+            src={darkMode ? ArrowDropDownIconWhite : ArrowDropDownIcon}
             alt="More items"
             width={24}
             height={24}

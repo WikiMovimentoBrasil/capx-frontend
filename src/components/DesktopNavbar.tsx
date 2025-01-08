@@ -79,7 +79,7 @@ export default function DesktopNavbar({
 
         <div className="flex flex-1 items-center justify-end gap-[24px]">
           <DarkModeButton />
-          <ProfileSelect />
+          {session ? <ProfileSelect /> : null}
           <LanguageSelect
             isMobile={false}
             language={language}
