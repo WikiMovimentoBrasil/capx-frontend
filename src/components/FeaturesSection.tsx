@@ -59,7 +59,7 @@ export default function FeaturesSection() {
   return (
     <div
       className={`flex flex-col w-full mx-auto ${
-        darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
       }`}
     >
       {features.map((feature, index) => (

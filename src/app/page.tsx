@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { cookies } from "next/headers";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth/next";
 import ApplicationWrapper from "@/components/ApplicationWrapper";
 
 export const metadata: Metadata = {
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const cookieStore = cookies();
-  const session = await getServerSession();
   const language = cookieStore.get("language")?.value ?? "en";
 
   // Loading page content based on selected language
@@ -21,11 +19,5 @@ export default async function Home() {
     fs.readFileSync(filePath, "utf8")
   );
 
-  return (
-    <ApplicationWrapper
-      session={session !== null}
-      language={language}
-      pageContent={pageContent}
-    />
-  );
+  return <ApplicationWrapper pageContent={pageContent} />;
 }

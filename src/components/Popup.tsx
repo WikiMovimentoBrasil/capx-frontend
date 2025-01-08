@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import BaseButton from "./BaseButton";
 import Image, { StaticImageData } from "next/image";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface PopupProps {
   onContinue: () => void;
@@ -23,6 +24,7 @@ const Popup = ({
   children,
   customClass,
 }: PopupProps) => {
+  const { darkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(true);
 
   const onCloseTab = () => {
@@ -61,7 +63,11 @@ const Popup = ({
             </button>
 
             {/* Layout Mobile (<md) */}
-            <div className="flex md:hidden flex-col items-center p-8 h-full">
+            <div
+              className={`flex md:hidden flex-col items-center p-8 h-full ${
+                darkMode ? "bg-[#005B3F]" : "bg-white"
+              }`}
+            >
               <Image
                 src={image}
                 alt="Popup Illustration"
@@ -69,13 +75,19 @@ const Popup = ({
                 priority
               />
               <h2
-                className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${customClass}`}
+                className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                }`}
               >
                 {title}
               </h2>
               <div className="flex flex-row gap-4 w-full">
                 <BaseButton
-                  customClass="flex-1 bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                  customClass={`flex-1 ${
+                    darkMode
+                      ? "bg-transparent hover:bg-capx-primary-green border-capx-light-bg border-2 text-capx-light-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                      : "bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                  }`}
                   label={closeButtonLabel}
                   onClick={onCloseTab}
                 />

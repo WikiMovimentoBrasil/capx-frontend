@@ -33,7 +33,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
       <section
         id="main-section"
         className={`flex flex-col items-center justify-center w-full ${
-          darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+          darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
         }`}
       >
         <div className="flex flex-col items-center justify-center w-full px-4 py-8 mt-24">
@@ -93,7 +93,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
     <section
       id="main-section"
       className={`flex flex-col items-center justify-start w-full ${
-        darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
       }`}
     >
       <div className="w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12">

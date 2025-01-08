@@ -10,13 +10,15 @@ interface Option {
 
 interface BaseSelectProps {
   name: string;
-  options: Option[];
-  defaultValue: Option;
-  onChange: (selectedOption: Option) => void;
-  className?: string;
+  options: any[];
+  defaultValue: any;
+  onChange: (value: any) => void;
   ariaLabel?: string;
-  isMobile?: boolean;
-  darkMode?: boolean;
+  isMobile: boolean;
+  darkMode: boolean;
+  className?: string;
+  onContainerClick?: () => void;
+  onMenuOpen?: () => void;
 }
 
 const DropdownIndicator = (isMobile: boolean, darkMode: boolean) => (
@@ -86,68 +88,78 @@ export default function BaseSelect({
   options,
   defaultValue,
   onChange,
-  className,
   ariaLabel,
-  isMobile = false,
-  darkMode = false,
+  isMobile,
+  darkMode,
+  className = "",
+  onContainerClick,
+  onMenuOpen,
 }: BaseSelectProps) {
   return (
-    <Select
-      name={name}
-      instanceId={name}
-      options={options}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      aria-label={ariaLabel}
-      components={{
-        DropdownIndicator: () => DropdownIndicator(isMobile, darkMode),
-        IndicatorSeparator: () => null,
-      }}
-      className={className}
-      unstyled={true}
-      classNames={{
-        control: () =>
-          `${
+    <div onClick={onContainerClick}>
+      <Select
+        name={name}
+        options={options}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        aria-label={ariaLabel}
+        className={`${className} ${
+          isMobile ? "w-[73px] h-8" : "w-[100px] h-10"
+        } ${
+          darkMode
+            ? "text-white border-white"
+            : "text-[#053749] border-[#053749]"
+        }`}
+        components={{
+          DropdownIndicator: () => DropdownIndicator(isMobile, darkMode),
+          IndicatorSeparator: () => null,
+        }}
+        unstyled={true}
+        classNames={{
+          control: () =>
+            `${
+              isMobile
+                ? `flex !px-3 !py-0 items-center h-8 gap-2`
+                : `flex h-16 px-8 !pl-[32px] !pr-[32px] py-4 justify-center items-center gap-[8px]`
+            }
+            ${darkMode ? "!border-capx-dark-text" : "!border-capx-light-text"}`,
+          container: () => "relative",
+          valueContainer: () => "flex flex-1 items-center justify-center",
+          singleValue: () =>
+            `align-middle
+          ${
             isMobile
-              ? `flex !px-3 !py-0 items-center h-8 gap-2`
-              : `flex h-16 px-8 !pl-[32px] !pr-[32px] py-4 justify-center items-center gap-[8px]`
-          }
-          ${darkMode ? "!border-capx-dark-text" : "!border-capx-light-text"}`,
-        container: () => "relative",
-        valueContainer: () => "flex flex-1 items-center justify-center",
-        singleValue: () =>
-          `align-middle
-        ${
-          isMobile
-            ? `text-[14px] font-bold`
-            : `text-center text-[24px] not-italic font-extrabold leading-[normal] flex-1`
-        }`,
-        indicatorSeparator: () => "hidden",
-        dropdownIndicator: () =>
-          `flex items-center ${
-            isMobile ? "!w-[20px] !h-[20px]" : "!w-[40px] !h-[40px]"
-          }
-          `,
-        option: ({ isSelected }) =>
-          `${
-            isSelected
-              ? darkMode
+              ? `text-[14px] font-bold`
+              : `text-center text-[24px] not-italic font-extrabold leading-[normal] flex-1`
+          }`,
+          indicatorSeparator: () => "hidden",
+          dropdownIndicator: () =>
+            `flex items-center ${
+              isMobile ? "!w-[20px] !h-[20px]" : "!w-[40px] !h-[40px]"
+            }
+            `,
+          option: ({ isSelected }) =>
+            `${
+              isSelected
+                ? darkMode
+                  ? "bg-capx-dark-bg text-capx-light-text"
+                  : "bg-capx-light-bg text-capx-dark-text"
+                : darkMode
                 ? "bg-capx-dark-bg text-capx-light-text"
                 : "bg-capx-light-bg text-capx-dark-text"
-              : darkMode
-              ? "bg-capx-dark-bg text-capx-light-text"
-              : "bg-capx-light-bg text-capx-dark-text"
-          } p-4 font-bold hover:bg-capx-light-bg hover:text-capx-dark-text`,
-        menu: () =>
-          `rounded-lg shadow-lg border-2 ${
-            darkMode
-              ? "bg-capx-dark-bg text-capx-light-text"
-              : "bg-capx-light-bg text-capx-dark-text"
-          }`,
-        menuList: () => "p-0",
-      }}
-      styles={customStyles(darkMode)}
-      isSearchable={false}
-    />
+            } p-4 font-bold hover:bg-capx-light-bg hover:text-capx-dark-text`,
+          menu: () =>
+            `rounded-lg shadow-lg border-2 ${
+              darkMode
+                ? "bg-capx-dark-bg text-capx-light-text"
+                : "bg-capx-light-bg text-capx-dark-text"
+            }`,
+          menuList: () => "p-0",
+        }}
+        styles={customStyles(darkMode)}
+        isSearchable={false}
+        onMenuOpen={onMenuOpen}
+      />
+    </div>
   );
 }

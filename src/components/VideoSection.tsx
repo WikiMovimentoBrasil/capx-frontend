@@ -1,5 +1,6 @@
 import Image from "next/image";
 import TabletIllustration from "@/public/static/images/tablet_illustration.svg";
+import TabletIllustrationWhite from "@/public/static/images/tablet_illustration_white.svg";
 import CapxPencilIllustration from "@/public/static/images/capx_pencil_illustration.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -19,7 +20,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
       <section
         className={`w-full pt-12 border-b ${
           darkMode
-            ? "border-capx-light-bg bg-capx-dark-bg"
+            ? "border-capx-light-bg bg-capx-dark-box-bg"
             : "border-capx-secondary-purple bg-capx-light-bg"
         }`}
         id="video-section"
@@ -35,15 +36,15 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
         </div>
         <div className="flex justify-center items-center mx-4 relative">
           <Image
-            src={TabletIllustration}
+            src={darkMode ? TabletIllustrationWhite : TabletIllustration}
             alt="Tablet illustration"
             className="w-[600px] h-[300px] -mt-8"
           />
           <div className="absolute inset-0 flex items-center justify-center mb-10">
-            <div className="w-[80%] h-[70%] relative">
+            <div className="w-[82%] h-[60%] top-[5px] relative">
               <video
                 controls
-                className="w-full h-full object-fill rounded-lg"
+                className="w-full h-full object-fill"
                 playsInline
                 preload="metadata"
               >
@@ -61,7 +62,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
     <section
       className={`w-full pt-12 border-b ${
         darkMode
-          ? "border-capx-light-bg bg-capx-dark-bg"
+          ? "border-capx-light-bg bg-capx-dark-box-bg"
           : "border-capx-secondary-purple bg-capx-light-bg"
       }`}
     >
@@ -84,15 +85,15 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
         </div>
         <div className="w-full flex justify-center items-center mr-0 sm:mr-10 relative">
           <Image
-            src={TabletIllustration}
+            src={darkMode ? TabletIllustrationWhite : TabletIllustration}
             alt="Tablet illustration"
             className="w-[1000px] h-[500px] -mt-8"
           />
           <div className="absolute inset-0 flex items-center justify-center mb-10">
-            <div className="w-[80%] h-[70%] relative">
+            <div className="w-[81%] h-[52%] top-[6px] relative">
               <video
                 controls
-                className="w-full h-full object-fill rounded-lg"
+                className="w-full h-full object-fill"
                 playsInline
                 preload="metadata"
               >

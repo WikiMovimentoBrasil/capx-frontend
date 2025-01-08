@@ -19,7 +19,7 @@ export default function AuthenticatedHomeWrapper({
     router.push("/profile/edit");
   };
 
-  const isFirstLogin = true;
+  const isFirstLogin = true; // TODO: remove this
 
   return (
     <>
