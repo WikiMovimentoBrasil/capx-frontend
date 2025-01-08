@@ -23,7 +23,7 @@ export default function LanguageSelect({
   setLanguage,
   setPageContent,
   isMobile,
-  className = "",
+  className = "w-max",
 }: LanguageSelectProps) {
   const { darkMode } = useTheme();
   const { setMobileMenuStatus } = useApp();
@@ -68,7 +68,7 @@ export default function LanguageSelect({
       ariaLabel={setPageContent["aria-language-input"]}
       isMobile={isMobile}
       darkMode={darkMode}
-      className={className}
+      className={`${className} flex items-center`}
       onMenuOpen={() => {
         if (isMobile) {
           setMobileMenuStatus(false);

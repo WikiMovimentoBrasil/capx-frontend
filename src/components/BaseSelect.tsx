@@ -103,9 +103,7 @@ export default function BaseSelect({
         defaultValue={defaultValue}
         onChange={onChange}
         aria-label={ariaLabel}
-        className={`${className} ${
-          isMobile ? "w-[73px] h-8" : "w-[100px] h-10"
-        } ${
+        className={`${className} ${isMobile ? "w-[73px] h-8" : "w-[100px]"} ${
           darkMode
             ? "text-white border-white"
             : "text-[#053749] border-[#053749]"
@@ -120,7 +118,7 @@ export default function BaseSelect({
             `${
               isMobile
                 ? `flex !px-3 !py-0 items-center h-8 gap-2`
-                : `flex h-16 px-8 !pl-[32px] !pr-[32px] py-4 justify-center items-center gap-[8px]`
+                : `flex h-[64px] px-8 !pl-[32px] !pr-[32px] items-center gap-[8px]`
             }
             ${darkMode ? "!border-capx-dark-text" : "!border-capx-light-text"}`,
           container: () => "relative",
