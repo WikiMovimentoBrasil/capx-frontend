@@ -9,6 +9,7 @@ interface PopupProps {
   title: string;
   closeButtonLabel: string;
   continueButtonLabel: string;
+  children?: React.ReactNode;
 }
 
 const Popup = ({
@@ -18,6 +19,7 @@ const Popup = ({
   title,
   closeButtonLabel,
   continueButtonLabel,
+  children,
 }: PopupProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
