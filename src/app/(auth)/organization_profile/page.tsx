@@ -7,7 +7,7 @@ import EditIcon from "@/public/static/images/edit.svg";
 import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import ReportActivityIcon from "@/public/static/images/report_of_activities.svg";
-import { CapacitiesList } from "./components/CapacitiesList";
+import { CapacitiesList } from "../../../components/CapacitiesList";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import TargetIcon from "@/public/static/images/target.svg";
