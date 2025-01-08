@@ -47,7 +47,7 @@ export default function MobileMenu({ session, pageContent }: MobileMenuProps) {
       exit="exit"
       className={`${
         darkMode
-          ? "bg-capx-dark-bg text-capx-light-bg border-b-capx-light-bg"
+          ? "bg-capx-dark-box-bg text-capx-light-bg border-b-capx-light-bg"
           : "bg-capx-light-bg text-capx-dark-bg border-b-capx-dark-bg"
       } fixed w-screen pb-10 z-50 mt-16`}
     >
