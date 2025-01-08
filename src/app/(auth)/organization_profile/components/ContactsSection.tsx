@@ -1,6 +1,5 @@
 import Image from "next/image";
 import WikimediaIcon from "@/public/static/images/wikimedia_logo_black.svg";
-import ContactInstagramIcon from "@/public/static/images/contact_instagram.svg";
 import ContactMetaIcon from "@/public/static/images/contact_meta.svg";
 import ContactEmailIcon from "@/public/static/images/contact_alternate_email.svg";
 import ContactPortalIcon from "@/public/static/images/contact_captive_portal.svg";
@@ -18,10 +17,6 @@ const contacts = [
     name: "wmnobrasil.org",
     icon: ContactPortalIcon,
   },
-  {
-    name: "instagram.com/wmnobrasil/",
-    icon: ContactInstagramIcon,
-  },
 ];
 
 const mobileContacts = [
@@ -36,10 +31,6 @@ const mobileContacts = [
   {
     name: "Website",
     icon: ContactPortalIcon,
-  },
-  {
-    name: "Instagram",
-    icon: ContactInstagramIcon,
   },
 ];
 
