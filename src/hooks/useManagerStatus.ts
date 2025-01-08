@@ -1,30 +1,19 @@
 import { useState, useEffect } from "react";
-import { organizationService } from "@/services/organizationProfileService";
+import { useUserProfile } from "./useUserProfile";
 
-export function useManagerStatus(token: string | undefined) {
-  const [isManager, setIsManager] = useState(false);
-  const [managedOrganizations, setManagedOrganizations] = useState<
-    Array<{ id: number; name: string }>
-  >([]);
+export function useManagerStatus() {
+  const { userProfile, isLoading: profileLoading } = useUserProfile();
+  const [managedOrganizations, setManagedOrganizations] = useState<number[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token) {
-      organizationService
-        .checkManagerStatus(token)
-        .then((data) => {
-          setIsManager(data.is_manager);
-          setManagedOrganizations(data.organizations);
-        })
-        .catch((err) => {
-          setError(err.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+    if (!profileLoading && userProfile) {
+      setManagedOrganizations(userProfile.is_manager || []);
+      setIsLoading(false);
     }
-  }, [token]);
+  }, [userProfile, profileLoading]);
 
-  return { isManager, managedOrganizations, isLoading, error };
+  return { managedOrganizations, isLoading: isLoading || profileLoading };
 }
