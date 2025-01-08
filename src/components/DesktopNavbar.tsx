@@ -39,7 +39,7 @@ export default function DesktopNavbar({
       className={`
       ${
         globalDarkMode
-          ? "bg-capx-dark-bg text-capx-dark-text"
+          ? "bg-capx-dark-box-bg text-capx-dark-text"
           : "bg-capx-light-bg text-capx-light-text"
       }
       transition-colors duration-200

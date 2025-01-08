@@ -1,12 +1,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import MainSectionIllustration from "@/public/static/images/capx_loggedin_home_illustration.svg";
+import MainSectionIllustrationDark from "@/public/static/images/capx_loggedin_home_illustration_dark.svg";
 import SecondarySectionIllustration01 from "@/public/static/images/capx_loggedin_home_illustration02.svg";
 import SecondarySectionIllustration02 from "@/public/static/images/capx_loggedin_home_illustration03.svg";
 import SecondarySectionIllustration03 from "@/public/static/images/capx_loggedin_home_illustration04.svg";
 import AuthButton from "@/components/AuthButton";
 import BaseButton from "@/components/BaseButton";
 import { useApp } from "@/contexts/AppContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface AuthenticatedMainSectionProps {
   pageContent: any;
@@ -16,10 +18,15 @@ export default function AuthenticatedMainSection({
   pageContent,
 }: AuthenticatedMainSectionProps) {
   const { isMobile } = useApp();
+  const { darkMode } = useTheme();
   const router = useRouter();
 
   const secondarySection = isMobile ? (
-    <section className="flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 bg-[var(--Backgrounds-dark-box-bg,#053749)]">
+    <section
+      className={`flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 ${
+        darkMode ? "bg-capx-dark-bg" : "bg-capx-dark-box-bg"
+      }`}
+    >
       <div className="flex flex-col md:flex-row items-center justify-between w-full py-16 md:py-32 gap-8">
         <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
           <h1 className="text-capx-light-bg text-center text-[24px] not-italic font-extrabold leading-[29px]">
@@ -68,7 +75,12 @@ export default function AuthenticatedMainSection({
       </div>
     </section>
   ) : (
-    <section className="flex flex-col items-center justify-start w-full mx-auto px-4 px-[132px] bg-[var(--Backgrounds-dark-box-bg,#053749)]">
+    <section
+      className={
+        (darkMode ? "bg-capx-dark-bg" : "bg-capx-dark-box-bg") +
+        "flex flex-col items-center justify-start w-full mx-auto px-4 px-[132px]"
+      }
+    >
       <div className="flex flex-col items-center justify-between w-full py-16 md:py-32 gap-16">
         <div className="flex items-center w-full">
           <h1 className="text-[#FFF] font-[Montserrat] text-[72px] not-italic font-extrabold leading-[88px]">
@@ -129,25 +141,44 @@ export default function AuthenticatedMainSection({
   if (isMobile) {
     return (
       <>
-        <section className="flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 mt-8">
+        <section
+          className={
+            (darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg") +
+            " flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 mt-8"
+          }
+        >
           <div className="flex flex-col md:flex-row items-center justify-between w-full py-16 md:py-32 gap-8">
             <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
-              <h1 className="text-[#053749] text-center text-[24px] not-italic font-extrabold leading-[29px]">
+              <h1
+                className={
+                  (darkMode ? "text-capx-dark-text" : "text-capx-light-text") +
+                  " text-center text-[24px] not-italic font-extrabold leading-[29px]"
+                }
+              >
                 {pageContent["body-loggedin-home-main-section-title"]}
               </h1>
-              <p className="text-[#053749] text-[16px] not-italic font-normal leading-[20px]">
+              <p
+                className={
+                  (darkMode ? "text-capx-dark-text" : "text-capx-light-text") +
+                  " text-[16px] not-italic font-normal leading-[20px]"
+                }
+              >
                 {pageContent["body-loggedin-home-main-section-description"]}
               </p>
             </div>
             <div className="w-full md:w-1/2">
               <Image
                 priority={true}
-                src={MainSectionIllustration}
+                src={
+                  darkMode
+                    ? MainSectionIllustrationDark
+                    : MainSectionIllustration
+                }
                 alt="Main illustration"
                 className="w-full h-auto"
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center items-center">
+            <div className="flex flex-row gap-4 w-full justify-center items-center">
               <AuthButton
                 message={
                   pageContent["body-loggedin-home-main-section-button01"]

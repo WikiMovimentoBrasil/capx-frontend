@@ -32,7 +32,7 @@ export default function MobileNavbar({
   const { isMobile, mobileMenuStatus, setMobileMenuStatus } = useApp();
   const { darkMode } = useTheme();
   const navbarClasses = `fixed top-0 left-0 right-0 z-50 mb-16 ${
-    darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+    darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
   } ${mobileMenuStatus ? "shadow-lg" : ""}`;
 
   if (session) {

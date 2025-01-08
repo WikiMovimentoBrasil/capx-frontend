@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import BaseButton from "./BaseButton";
 import Image, { StaticImageData } from "next/image";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface PopupProps {
   onContinue: () => void;
@@ -19,6 +20,7 @@ const Popup = ({
   closeButtonLabel,
   continueButtonLabel,
 }: PopupProps) => {
+  const { darkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(true);
 
   const onCloseTab = () => {
@@ -32,10 +34,12 @@ const Popup = ({
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
           <div
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 
+            className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 
             w-[90%] md:w-[880px] xl:w-[1024px]
             h-auto md:h-[543px] xl:h-[600px]
-            rounded-3xl shadow-xl"
+            rounded-3xl shadow-xl ${
+              darkMode ? "bg-capx-dark-box-bg" : "bg-white"
+            }`}
           >
             <button
               onClick={onCloseTab}
@@ -57,19 +61,31 @@ const Popup = ({
             </button>
 
             {/* Layout Mobile (<md) */}
-            <div className="flex md:hidden flex-col items-center p-8 h-full">
+            <div
+              className={`flex md:hidden flex-col items-center p-8 h-full ${
+                darkMode ? "bg-[#005B3F]" : "bg-white"
+              }`}
+            >
               <Image
                 src={image}
                 alt="Popup Illustration"
                 className="w-full max-w-[300px] h-auto mb-8"
                 priority
               />
-              <h2 className="text-[#053749] text-xl text-center font-extrabold mb-8 font-[Montserrat]">
+              <h2
+                className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                }`}
+              >
                 {title}
               </h2>
               <div className="flex flex-row gap-4 w-full">
                 <BaseButton
-                  customClass="flex-1 bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                  customClass={`flex-1 ${
+                    darkMode
+                      ? "bg-transparent hover:bg-capx-primary-green border-capx-light-bg border-2 text-capx-light-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                      : "bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                  }`}
                   label={closeButtonLabel}
                   onClick={onCloseTab}
                 />

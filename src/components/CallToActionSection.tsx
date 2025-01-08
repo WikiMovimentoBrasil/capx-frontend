@@ -18,8 +18,8 @@ export default function CallToActionSection({
   if (isMobile) {
     return (
       <section
-        className={`w-full pb-16 ${
-          darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+        className={`w-full ${
+          darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
         }`}
       >
         <div className="flex flex-col items-center justify-center pt-16 w-full">
@@ -61,7 +61,7 @@ export default function CallToActionSection({
   return (
     <section
       className={`w-full pb-16 ${
-        darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
       }`}
     >
       <div className="flex flex-row items-center justify-around max-w-screen-xl mx-auto px-32">

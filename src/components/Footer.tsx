@@ -56,7 +56,9 @@ export default function Footer({ pageContent }: FooterProps) {
 
   return (
     <footer
-      className={`w-full ${darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"}`}
+      className={`w-full ${
+        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
+      }`}
     >
       {isMobile ? (
         <div className="flex flex-col items-center justify-center max-w-screen-xl mx-auto mt-10">

@@ -3,6 +3,7 @@ import { setCookie } from "@/app/actions";
 import BaseSelect from "./BaseSelect";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useApp } from "@/contexts/AppContext";
 
 interface LanguageSelectProps {
   language: string;
@@ -25,6 +26,7 @@ export default function LanguageSelect({
   className = "",
 }: LanguageSelectProps) {
   const { darkMode } = useTheme();
+  const { setMobileMenuStatus } = useApp();
   const { fetchLanguages, fetchTranslations } = useLanguage();
   const [options, setOptions] = useState<LanguageOption[]>([]);
   const [isClient, setIsClient] = useState(false);
@@ -46,7 +48,7 @@ export default function LanguageSelect({
     loadTranslations();
   }, [language, setPageContent, fetchTranslations]);
 
-  const handleSelection = async (selectedOption) => {
+  const handleSelection = async (selectedOption: any) => {
     setLanguage(selectedOption.value);
     await setCookie({
       name: "language",
@@ -67,6 +69,11 @@ export default function LanguageSelect({
       isMobile={isMobile}
       darkMode={darkMode}
       className={className}
+      onMenuOpen={() => {
+        if (isMobile) {
+          setMobileMenuStatus(false);
+        }
+      }}
     />
   );
 }
