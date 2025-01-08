@@ -10,6 +10,7 @@ interface PopupProps {
   closeButtonLabel: string;
   continueButtonLabel: string;
   children?: React.ReactNode;
+  customClass?: string;
 }
 
 const Popup = ({
@@ -20,6 +21,7 @@ const Popup = ({
   closeButtonLabel,
   continueButtonLabel,
   children,
+  customClass,
 }: PopupProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -29,15 +31,15 @@ const Popup = ({
   };
 
   return (
-    <div>
+    <div className={customClass}>
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
           <div
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 
+            className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
             w-[90%] md:w-[880px] xl:w-[1024px]
             h-auto md:h-[543px] xl:h-[600px]
-            rounded-3xl shadow-xl"
+            rounded-3xl shadow-xl ${customClass}`}
           >
             <button
               onClick={onCloseTab}
@@ -66,7 +68,9 @@ const Popup = ({
                 className="w-full max-w-[300px] h-auto mb-8"
                 priority
               />
-              <h2 className="text-[#053749] text-xl text-center font-extrabold mb-8 font-[Montserrat]">
+              <h2
+                className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${customClass}`}
+              >
                 {title}
               </h2>
               <div className="flex flex-row gap-4 w-full">
@@ -96,7 +100,9 @@ const Popup = ({
                 </div>
 
                 <div className="w-1/2 flex items-center justify-center">
-                  <h2 className="text-[#053749] text-4xl xl:text-5xl font-extrabold leading-tight font-[Montserrat]">
+                  <h2
+                    className={`text-4xl xl:text-5xl font-extrabold leading-tight font-[Montserrat] leading-[normal] ${customClass}`}
+                  >
                     {title}
                   </h2>
                 </div>

@@ -24,6 +24,7 @@ import BarCodeIconWhite from "@/public/static/images/barcode_white.svg";
 import WikiIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import WikiIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 import ContactImage from "@/public/static/images/capx_contact_person.svg";
+import ContactImageDesktop from "@/public/static/images/capx_contact_person_desktop.svg";
 
 import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
@@ -88,7 +89,11 @@ export default function ProfilePage() {
       }`}
     >
       <section className={`w-full max-w-screen-xl mx-auto px-4 py-8 mt-[80px]`}>
-        <div className="flex flex-col gap-6 max-w-[600px] mx-auto">
+        <div
+          className={`flex flex-col max-w-[600px] mx-auto ${
+            isMobile ? "gap-6" : "gap-[80px]"
+          }`}
+        >
           <ProfileHeader username={profile?.display_name || ""} />
           <MiniBio about={profile?.about || ""} />
           <CapacitiesList
@@ -187,21 +192,41 @@ export default function ProfilePage() {
             </p>
           </div>
 
-          <div className="flex w-[273px] m-auto px-[34px] py-[24px] flex-col items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
-            <div className="relative h-[200px] w-[200px]">
-              <Image
-                src={ContactImage}
-                alt={"Contact Image"}
-                fill
-                objectFit="contain"
+          {isMobile && (
+            <div className="flex w-[273px] m-auto px-[34px] py-[24px] flex-col items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
+              <div className="relative h-[200px] w-[200px]">
+                <Image
+                  src={ContactImage}
+                  alt={"Contact Image"}
+                  fill
+                  objectFit="contain"
+                />
+              </div>
+              <BaseButton
+                label="Let's talk"
+                customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                onClick={() => {}}
               />
             </div>
-            <BaseButton
-              label="Let's talk"
-              customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-              onClick={() => {}}
-            />
-          </div>
+          )}
+
+          {!isMobile && (
+            <div className="flex w-full justify-center m-auto px-[34px] flex-row items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
+              <div className="relative h-[248px] w-[248px]">
+                <Image
+                  src={ContactImageDesktop}
+                  alt={"Contact Image"}
+                  fill
+                  objectFit="contain"
+                />
+              </div>
+              <BaseButton
+                label="Let's talk"
+                customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                onClick={() => {}}
+              />
+            </div>
+          )}
         </div>
       </section>
     </div>

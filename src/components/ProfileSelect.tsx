@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BaseSelect from "./BaseSelect";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface ProfileOption {
   value: string;
@@ -12,7 +13,7 @@ const profileOptions: ProfileOption[] = [
   { value: "user", label: "User Profile", path: "/profile" },
   {
     value: "organization",
-    label: "Organization Profile",
+    label: "Org. Profile",
     path: "/organization_profile",
   },
 ];
@@ -20,7 +21,7 @@ const profileOptions: ProfileOption[] = [
 export default function ProfileSelect() {
   const router = useRouter();
   const [selectedProfile, setSelectedProfile] = useState<string>("user");
-
+  const { darkMode } = useTheme();
   const handleProfileChange = (selectedOption: {
     value: string;
     label: string;
@@ -43,7 +44,8 @@ export default function ProfileSelect() {
       onChange={handleProfileChange}
       options={profileOptions}
       name="My profiles"
-      className="w-[200px] text-[20px]"
+      className="w-[200px] text-[20px] w-max"
+      darkMode={darkMode}
     />
   );
 }

@@ -11,6 +11,11 @@ import { CapacitiesList } from "../../../components/CapacitiesList";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import TargetIcon from "@/public/static/images/target.svg";
+import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
+import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
+import TargetIconWhite from "@/public/static/images/target_white.svg";
+import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_white.svg";
+import EditIconWhite from "@/public/static/images/edit_white.svg";
 import { ProjectsEventsList } from "./components/ProjectsEventsList";
 import { ContactsSection } from "./components/ContactsSection";
 import { useApp } from "@/contexts/AppContext";
@@ -26,57 +31,43 @@ export default function OrganizationProfilePage() {
   const { isMobile } = useApp();
   const router = useRouter();
   const { data: session } = useSession();
-  const user = session?.user?.name;
   const token = session?.user?.token;
-  const { managedOrganizations, isLoading: managerLoading } =
-    useManagerStatus(token);
+  const { managedOrganizations, isLoading } = useManagerStatus();
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isOrgManager, setIsOrgManager] = useState(false);
 
   useEffect(() => {
-    if (token && managedOrganizations.length > 0) {
-      // Pega a primeira organização que o usuário gerencia
-      const managedOrg = managedOrganizations[0];
+    if (token && organization?.id) {
+      setIsOrgManager(managedOrganizations.includes(organization.id));
+    }
+  }, [token, organization?.id, managedOrganizations]);
 
-      // Busca os detalhes completos dessa organização
+  useEffect(() => {
+    if (token && managedOrganizations.length > 0) {
       organizationService
-        .fetchOrganization(managedOrg.id, token)
+        .fetchOrganization(managedOrganizations[0], token)
         .then((orgData) => {
           setOrganization(orgData);
-          setIsOrgManager(true);
         })
         .catch((error) => {
-          console.error(
-            "Error fetching organization details:",
-            error.response?.data
-          );
+          console.error("Error fetching organization details:", error);
         });
     }
   }, [token, managedOrganizations]);
 
-  // Se ainda está carregando os dados de manager
-  if (managerLoading) {
-    return <div>Loading...</div>;
-  }
-
-  // Se não é manager de nenhuma organização
-  if (!managerLoading && managedOrganizations.length === 0) {
+  if (!isLoading && managedOrganizations.length === 0) {
     return <div>You are not a manager of any organization</div>;
   }
-
-  console.log("organization", organization);
-  console.log("managedOrganizations", managedOrganizations);
 
   if (isMobile) {
     return (
       <>
-        {/* Wrapper para garantir que o conteúdo não afete a navbar */}
-        <div className="relative w-full overflow-x-hidden">
-          <section
-            className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-              isMobile ? "mt-[80px]" : "mt-[64px]"
-            }`}
-          >
+        <div
+          className={`relative w-full overflow-x-hidden ${
+            darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
+          }`}
+        >
+          <section className={`w-full max-w-screen-xl mx-auto px-4 py-8 `}>
             <div className="flex flex-col gap-8">
               {/* Header Section */}
               <div className="flex flex-col gap-6">
@@ -92,7 +83,7 @@ export default function OrganizationProfilePage() {
 
                   <div className="flex items-center gap-2 mb-2">
                     <Image
-                      src={UserCircleIcon}
+                      src={darkMode ? UserCircleIconWhite : UserCircleIcon}
                       alt="User circle icon"
                       style={{ width: "auto", height: "auto" }}
                       width={isMobile ? 32 : 42}
@@ -129,8 +120,12 @@ export default function OrganizationProfilePage() {
                     <BaseButton
                       onClick={() => router.push("/organization_profile/edit")}
                       label="Edit org. profile"
-                      customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
-                      imageUrl={EditIcon}
+                      customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
+                        darkMode
+                          ? "border-white text-white"
+                          : "border-capx-dark-box-bg text-capx-light-text"
+                      }`}
+                      imageUrl={darkMode ? EditIconWhite : EditIcon}
                       imageAlt="Edit icon"
                       imageWidth={20}
                       imageHeight={20}
@@ -141,14 +136,15 @@ export default function OrganizationProfilePage() {
 
               {/* Report Activity Image */}
               <div className="w-full h-[242px] flex-shrink-0 rounded-[4px] bg-[var(--Backgrounds-dark-bg,_#04222F)]">
-                <Image
-                  src={ReportActivityIcon}
-                  alt="Report activity icon"
-                  width={isMobile ? 343 : 1179}
-                  height={isMobile ? 116 : 399}
-                  style={{ width: "auto", height: "auto" }}
-                  className="w-full p-6"
-                />
+                <div className="relative w-[619px] h-[271px]">
+                  <Image
+                    src={ReportActivityIcon}
+                    alt="Report activity icon"
+                    objectFit="contain"
+                    style={{ width: "auto", height: "auto" }}
+                    className="w-full p-6"
+                  />
+                </div>
                 <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
                     Report of activities
@@ -164,19 +160,25 @@ export default function OrganizationProfilePage() {
               {/* Capacities Lists */}
               <div className="space-y-6 mt-4">
                 <CapacitiesList
-                  icon={NeurologyIcon}
+                  icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                   title="Known capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
                 />
                 <CapacitiesList
-                  icon={EmojiIcon}
+                  icon={darkMode ? EmojiIconWhite : EmojiIcon}
                   title="Available capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
                 />
                 <CapacitiesList
-                  icon={TargetIcon}
+                  icon={darkMode ? TargetIconWhite : TargetIcon}
                   title="Wanted capacities"
-                  customClass="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] text-capx-dark-box-bg"
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
                 />
               </div>
 
@@ -197,8 +199,11 @@ export default function OrganizationProfilePage() {
 
   return (
     <>
-      {/* Wrapper para garantir que o conteúdo não afete a navbar */}
-      <div className="relative w-full overflow-x-hidden">
+      <div
+        className={`relative w-full overflow-x-hidden ${
+          darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
+        }`}
+      >
         <section
           className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
             isMobile ? "mt-[80px]" : "mt-[64px]"
@@ -209,15 +214,16 @@ export default function OrganizationProfilePage() {
             <div className="flex flex-row gap-6">
               {/* Logo */}
               <div className="w-full">
-                <Image
-                  src={WMBLogo}
-                  alt="Organization logo"
-                  width={isMobile ? 300 : 595}
-                  height={isMobile ? 165 : 326}
-                  style={{ width: "auto", height: "auto" }}
-                  priority
-                  className="w-full rounded-lg"
-                />
+                <div className="relative h-[326px] w-[595px]">
+                  <Image
+                    src={WMBLogo}
+                    alt="Organization logo"
+                    objectFit="contain"
+                    style={{ width: "auto", height: "auto" }}
+                    priority
+                    className="w-full rounded-lg"
+                  />
+                </div>
               </div>
 
               {/* Content */}
@@ -232,7 +238,7 @@ export default function OrganizationProfilePage() {
 
                 <div className="flex items-center gap-2 mb-2">
                   <Image
-                    src={UserCircleIcon}
+                    src={darkMode ? UserCircleIconWhite : UserCircleIcon}
                     alt="User circle icon"
                     style={{ width: "auto", height: "auto" }}
                     width={20}
@@ -240,14 +246,18 @@ export default function OrganizationProfilePage() {
                   />
                   <span
                     className={`text-center font-[Montserrat] text-[20px] md:text-[24px] not-italic font-extrabold leading-[normal] pl-2 ${
-                      darkMode ? "text-capx-dark-text" : "text-capx-light-text"
+                      darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
                     Wiki Movimento Brasil
                   </span>
                 </div>
 
-                <p className="font-[Montserrat] text-[16px] md:text-[20px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4">
+                <p
+                  className={`font-[Montserrat] text-[16px] md:text-[20px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4 ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
+                >
                   Grupo de usuários Wiki Movimento Brasil
                 </p>
 
@@ -255,8 +265,12 @@ export default function OrganizationProfilePage() {
                   <BaseButton
                     onClick={() => router.push("/organization_profile/edit")}
                     label="Edit organization profile"
-                    customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] border-capx-dark-box-bg text-capx-light-text`}
-                    imageUrl={EditIcon}
+                    customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
+                      darkMode
+                        ? "border-white text-white"
+                        : "border-capx-dark-box-bg text-capx-light-text"
+                    }`}
+                    imageUrl={darkMode ? EditIconWhite : EditIcon}
                     imageAlt="Edit icon"
                     imageWidth={32}
                     imageHeight={32}
@@ -267,13 +281,11 @@ export default function OrganizationProfilePage() {
 
             {/* Report Activity Image */}
             <div className="flex flex-row justify-between px-[85px] py-[64px] items-center rounded-[4px] bg-[#04222F] w-full h-[399px] flex-shrink-0">
-              <div className="w-[619px] h-[271px]">
+              <div className="relative w-[619px] h-[271px]">
                 <Image
                   src={ReportActivityIcon}
                   alt="Report activity icon"
-                  width={619}
-                  height={271}
-                  style={{ width: "auto", height: "auto" }}
+                  objectFit="contain"
                   className="w-full"
                 />
               </div>
@@ -292,19 +304,25 @@ export default function OrganizationProfilePage() {
             {/* Capacities Lists */}
             <div className="space-y-6 mt-4">
               <CapacitiesList
-                icon={NeurologyIcon}
+                icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                 title="Known capacities"
-                customClass="text-[#003649] text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat]"
+                customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
+                  darkMode ? "text-white" : "text-capx-dark-box-bg"
+                }`}
               />
               <CapacitiesList
-                icon={EmojiIcon}
+                icon={darkMode ? EmojiIconWhite : EmojiIcon}
                 title="Available capacities"
-                customClass="text-[#003649] text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat]"
+                customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
+                  darkMode ? "text-white" : "text-capx-dark-box-bg"
+                }`}
               />
               <CapacitiesList
-                icon={TargetIcon}
+                icon={darkMode ? TargetIconWhite : TargetIcon}
                 title="Wanted capacities"
-                customClass="text-[#003649] text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat]"
+                customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
+                  darkMode ? "text-white" : "text-capx-dark-box-bg"
+                }`}
               />
             </div>
 

@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import BaseButton from "./BaseButton";
 import Popup from "./Popup";
 import capxPersonIcon from "../../public/static/images/capx_person_icon.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface AuthButtonProps {
   message: string;
@@ -26,10 +26,9 @@ export default function AuthButton({
   imageWidth,
   imageHeight,
 }: AuthButtonProps) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const { darkMode } = useTheme();
   const handleAuth = async () => {
     setIsLoading(true);
 
@@ -96,6 +95,7 @@ export default function AuthButton({
           title="You are being redirected to the unified login on Meta-Wiki"
           closeButtonLabel="Close Tab"
           continueButtonLabel="Continue"
+          customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
         />
       )}
     </div>

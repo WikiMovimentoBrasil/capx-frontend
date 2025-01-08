@@ -148,7 +148,7 @@ export const CapacitiesList = ({
   const { isMobile } = useApp();
 
   return (
-    <section className={`flex flex-col gap-4 ${isMobile ? "mt-0" : "mt-24"}`}>
+    <section className={`flex flex-col gap-4`}>
       <div className="flex justify-start items-center gap-1">
         <div className="relative w-[32px] h-[32px]">
           <Image

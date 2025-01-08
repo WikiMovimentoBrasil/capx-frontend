@@ -12,15 +12,23 @@ import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import SaveIcon from "@/public/static/images/save_as.svg";
 import CancelIcon from "@/public/static/images/cancel.svg";
+import CancelIconWhite from "@/public/static/images/cancel_white.svg";
 import ReportIcon from "@/public/static/images/report.svg";
+import ReportIconWhite from "@/public/static/images/report_white.svg";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import TargetIcon from "@/public/static/images/target.svg";
 import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
-import AddIcon from "@/public/static/images/add.svg";
+import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
+import AddIcon from "@/public/static/images/add_dark.svg";
+import AddIconWhite from "@/public/static/images/add.svg";
 import WikimediaIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import AvatarIcon from "@/public/static/images/avatar.svg";
 import { ContactsSection } from "../components/ContactsSection";
+import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
+import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
+import TargetIconWhite from "@/public/static/images/target_white.svg";
+import WikimediaIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -80,10 +88,14 @@ export default function EditOrganizationProfilePage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="relative w-full overflow-x-hidden bg-white min-h-screen">
+    <div
+      className={`relative w-full overflow-x-hidden min-h-screen ${
+        darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
+      }`}
+    >
       <section
         className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-          isMobile ? "mt-[80px]" : ""
+          isMobile ? "mt-[80px]" : "mt-[64px]"
         }`}
       >
         <div className="flex flex-col gap-6 max-w-[600px] mx-auto">
@@ -161,20 +173,24 @@ export default function EditOrganizationProfilePage() {
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-4">
               <Image
-                src={ReportIcon}
+                src={darkMode ? ReportIconWhite : ReportIcon}
                 alt="Report icon"
-                width={24}
-                height={24}
+                width={36}
+                height={36}
                 style={{ width: "auto", height: "auto" }}
               />
-              <h2 className="font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]">
+              <h2 className={`font-[Montserrat] text-[14px] font-bold`}>
                 Report of activities
               </h2>
             </div>
             <input
               type="text"
               placeholder="Insert link"
-              className="w-full p-2 border border-gray-300 rounded-md text-[12px]"
+              className={`w-full p-2 text-[12px] border rounded-md ${
+                darkMode
+                  ? "bg-transparent border-white text-white placeholder-gray-400"
+                  : "border-gray-300 text-gray-700"
+              }`}
               value={formData.report_link}
               onChange={(e) =>
                 setFormData({ ...formData, report_link: e.target.value })

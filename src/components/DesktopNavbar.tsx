@@ -21,8 +21,7 @@ export default function DesktopNavbar({
   setPageContent,
   session,
 }: DesktopNavbarProps) {
-  const { darkMode: globalDarkMode, setDarkMode: setGlobalDarkMode } =
-    useTheme();
+  const { darkMode, setDarkMode } = useTheme();
 
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
@@ -41,35 +40,33 @@ export default function DesktopNavbar({
 
   return (
     <div
-      className={`
-      ${
-        globalDarkMode
-          ? "bg-capx-dark-bg text-capx-dark-text"
+      className={`${
+        darkMode
+          ? "bg-capx-dark-box-bg text-capx-dark-text"
           : "bg-capx-light-bg text-capx-light-text"
-      }
-      transition-colors duration-200
-    `}
+      }`}
     >
       <div className="flex w-full h-full justify-between pb-6 pt-10 px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto">
         <div className="flex-none relative my-auto ml-4 sm:ml-0">
           <NextLink href="/">
-            <Image
-              priority
-              src={CapXLogo}
-              alt="Capacity Exchange logo"
-              width={100}
-              height={100}
-              className="w-[100px] h-[100px]"
-            />
+            <div className="relative w-[80px] h-[80px]">
+              <Image
+                priority
+                src={CapXLogo}
+                alt="Capacity Exchange logo"
+                className="w-[100px] h-[100px]"
+                objectFit="contain"
+              />
+            </div>
           </NextLink>
         </div>
         {session ? (
-          <div className="flex flex-row xl:flex flex-1 items-center justify-end gap-[43px]">
+          <div className="flex flex-[0.5] flex-row xl:flex items-center justify-end gap-[43px] ml-[90px]">
             {menuItems.map((item, index) => (
               <NextLink
                 key={"navbar-link-" + index.toString()}
                 href={item.to}
-                className="flex text-center font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] my-auto cursor-pointer hover:border-b hover:border-current"
+                className="flex text-center font-[Montserrat] text-[20px] not-italic font-normal leading-[normal] my-auto cursor-pointer hover:border-b hover:border-current"
               >
                 {item.title}
               </NextLink>
@@ -77,7 +74,7 @@ export default function DesktopNavbar({
           </div>
         ) : null}
 
-        <div className="flex flex-1 items-center justify-end gap-[24px]">
+        <div className="flex flex-[1.5] items-center justify-end gap-[24px]">
           <DarkModeButton />
           {session ? <ProfileSelect /> : null}
           <LanguageSelect

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import AuthenticatedMainSection from "./AuthenticatedMainSection";
 import Popup from "@/components/Popup";
 import FirstLoginImage from "@/public/static/images/capx_complete_profile.svg";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface AuthenticatedHomeWrapperProps {
   pageContent: any;
@@ -13,9 +14,9 @@ export default function AuthenticatedHomeWrapper({
   pageContent,
 }: AuthenticatedHomeWrapperProps) {
   const router = useRouter();
-
+  const { darkMode } = useTheme();
   const handleContinue = () => {
-    router.push("/auth/profile/edit");
+    router.push("/profile/edit");
   };
 
   const isFirstLogin = true;
@@ -31,6 +32,9 @@ export default function AuthenticatedHomeWrapper({
           title="Complete your profile for a better experience"
           closeButtonLabel="Close tab"
           continueButtonLabel="Continue"
+          customClass={`${
+            darkMode ? "bg-[#005B3F] text-white" : "bg-white text-[#053749]"
+          }`}
         />
       )}
     </>
