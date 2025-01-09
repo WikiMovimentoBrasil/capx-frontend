@@ -1,10 +1,10 @@
 import axios from "axios";
 
 interface QueryData {
-  params: {
-    userId: string;
-    username: string;
-    language: string;
+  params?: {
+    userId?: number;
+    username?: string;
+    language?: string;
   };
   headers: {
     Authorization: string;
@@ -76,10 +76,16 @@ export const profileService = {
     }
   },
 
-  async updateProfile(queryData: QueryData) {
+  async updateProfile(userId: number, profileData: any, queryData: QueryData) {
     try {
-      const response = await axios.put("/api/profile", queryData.body, {
-        params: queryData.params,
+      const payload = {
+        ...profileData,
+        user: {
+          id: userId,
+        },
+      };
+
+      const response = await axios.put(`/api/profile/${userId}`, payload, {
         headers: queryData.headers,
       });
       return response.data;
