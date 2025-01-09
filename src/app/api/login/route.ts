@@ -22,9 +22,8 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    if (!startLoginResponse.data) 
+    if (!startLoginResponse.data)
       throw new Error("Empty response from startLogin");
-    }
 
     const { oauth_token, oauth_token_secret } = startLoginResponse.data;
 

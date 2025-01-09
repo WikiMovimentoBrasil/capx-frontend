@@ -1,15 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
-import axios from "axios";
 import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
 
 interface OAuthProps {
   searchParams: {
-    oauth_token?: string;
-    oauth_verifier?: string;
+    oauth_verifier: string;
+    oauth_token: string;
   };
 }
 
@@ -72,35 +71,41 @@ export default function OAuth({ searchParams }: OAuthProps) {
       if (!oauth_verifier || !mounted) return;
 
       try {
-        const storedToken = localStorage.getItem("oauth_token");
-        const storedTokenSecret = localStorage.getItem("oauth_token_secret");
+        const oauth_token = localStorage.getItem("oauth_token");
+        const oauth_token_secret = localStorage.getItem("oauth_token_secret");
 
-        if (!storedToken || !storedTokenSecret) {
-          setLoginStatus("Missing stored OAuth tokens");
-          return;
+        if (!oauth_token || !oauth_token_secret) {
+          throw new Error("Missing OAuth tokens");
         }
 
         setLoginStatus("FINISHING LOGIN");
 
         const result = await signIn("credentials", {
-          oauth_token: searchParams.oauth_token,
-          oauth_verifier: searchParams.oauth_verifier,
-          stored_token: storedToken,
-          stored_token_secret: storedTokenSecret,
+          oauth_token,
+          oauth_token_secret,
+          oauth_verifier,
+          stored_token: oauth_token,
+          stored_token_secret: oauth_token_secret,
           redirect: false,
         });
 
-        if (result?.ok) {
-          setLoginStatus("Login successful!");
-          localStorage.removeItem("oauth_token");
-          localStorage.removeItem("oauth_token_secret");
-          router.push("/home");
-        } else {
-          setLoginStatus("Login failed: " + (result?.error || "Unknown error"));
+        if (mounted) {
+          if (result?.ok) {
+            localStorage.removeItem("oauth_token");
+            localStorage.removeItem("oauth_token_secret");
+            router.replace("/");
+          } else {
+            throw new Error(result?.error || "Authentication failed");
+          }
         }
-      } catch (error: any) {
-        console.error("Login completion error:", error);
-        setLoginStatus("An error occurred during login");
+      } catch (error) {
+        if (mounted) {
+          console.error("Login error:", error);
+          setLoginStatus("LOGIN FAILED");
+          setTimeout(() => {
+            router.replace("/");
+          }, 2000);
+        }
       }
     }
 
@@ -110,8 +115,9 @@ export default function OAuth({ searchParams }: OAuthProps) {
     };
   }, [oauth_verifier, oauth_token_request, router]);
 
-    completeLogin();
-  }, [searchParams.oauth_token, searchParams.oauth_verifier, router]);
+  if (!loginStatus) {
+    return null;
+  }
 
   return (
     <section className="flex w-screen h-screen font-montserrat">
@@ -125,7 +131,7 @@ export default function OAuth({ searchParams }: OAuthProps) {
           />
         </div>
         <div className="flex w-full text-center mb-4">
-          <h1 className="w-full">{loginStatus || "Processing login..."}</h1>
+          <h1 className="w-full">{loginStatus}</h1>
         </div>
         <div className="flex w-fit mx-auto">
           <div className="mx-auto animate-spin ease-linear h-8 w-8 rounded-full border-8 border-l-gray-300 border-r-gray-300 border-b-gray-300 border-t-capx-primary-blue"></div>
