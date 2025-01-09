@@ -1,41 +1,62 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Profile } from "@/types/profile";
+import { profileService } from "@/services/profileService";
+import { useSession } from "next-auth/react";
 
-export function useProfile(token: string | undefined) {
+export function useProfile(token: string | undefined, userId: number) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchProfile = useCallback(async () => {
+    if (!token || !userId) return;
+
+    try {
+      setIsLoading(true);
+      const response = await profileService.fetchUserProfile({
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+        params: {
+          userId: userId,
+        },
+      });
+      const latestProfile = Array.isArray(response)
+        ? response[response.length - 1]
+        : response;
+      setProfile(latestProfile);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, userId]);
+
+  const updateProfile = async (profileData: Partial<Profile>) => {
+    if (!token || !userId) {
+      throw new Error("No token or userId available");
+    }
+
+    try {
+      const response = await profileService.updateProfile(userId, profileData, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      const updatedProfile = Array.isArray(response)
+        ? response[response.length - 1]
+        : response;
+      setProfile(updatedProfile);
+      return updatedProfile;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   useEffect(() => {
-    if (!token) return;
+    fetchProfile();
+  }, [fetchProfile]);
 
-    const fetchProfiles = async () => {
-      try {
-        const response = await axios.get("/api/profile", {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-        const profiles = Array.isArray(response.data) ? response.data : [];
-
-        // Filter profiles with display_name
-        const profilesWithDisplayName = profiles.filter(
-          (p) => p.display_name && p.display_name.trim() !== ""
-        );
-
-        // If filtered profiles, use the first one
-        // If not, use the first profile from the array
-        setProfile(profilesWithDisplayName[0] || profiles[0] || null);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProfiles();
-  }, [token]);
-
-  return { profile, isLoading, error };
+  return { profile, isLoading, error, fetchProfile, updateProfile };
 }
