@@ -4,164 +4,44 @@ import ArrowDropDownIconWhite from "@/public/static/images/arrow_drop_down_circl
 import { useApp } from "@/contexts/AppContext";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Capacity } from "@/types/capacity";
 
 interface CapacitiesListProps {
   icon: string;
   title: string;
+  items: Capacity[] | string[] | number[];
   customClass?: string;
-  items?: string[];
 }
-
-const capacitiesList = [
-  {
-    category: "Known capacities",
-    title: "communication",
-  },
-  {
-    category: "Known capacities",
-    title: "leadership",
-  },
-  {
-    category: "Known capacities",
-    title: "problem solving",
-  },
-  {
-    category: "Known capacities",
-    title: "critical thinking",
-  },
-  {
-    category: "Available capacities",
-    title: "teamwork",
-  },
-  {
-    category: "Available capacities",
-    title: "time management",
-  },
-  {
-    category: "Available capacities",
-    title: "adaptability",
-  },
-  {
-    category: "Wanted capacities",
-    title: "creativity",
-  },
-  {
-    category: "Wanted capacities",
-    title: "critical thinking",
-  },
-  {
-    category: "Wanted capacities",
-    title: "problem solving",
-  },
-];
-
-const CapacitiesListComponent = ({ category }: { category: string }) => {
-  const { isMobile } = useApp();
-  const [showOverlay, setShowOverlay] = useState(false);
-  const { darkMode } = useTheme();
-  const filteredCapacities = capacitiesList.filter(
-    (capacity) => capacity.category === category
-  );
-
-  const visibleCapacities = isMobile
-    ? filteredCapacities.slice(0, 2)
-    : filteredCapacities;
-  const hasMore = isMobile && filteredCapacities.length > 2;
-
-  return (
-    <>
-      <div
-        className={`inline-flex px-[4px] py-[6px] items-center gap-[12px] rounded-[8px]  relative ${
-          darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
-        }`}
-      >
-        <div className="flex items-center gap-[12px]">
-          {visibleCapacities.map((capacity, index) => (
-            <div
-              key={`${category}-${index}`}
-              className={`flex p-[4px] items-center gap-[8px] rounded-[8px] border-[1.5px] border-[solid] ${
-                category === "Known capacities"
-                  ? "border-[var(--Links-light-link,#0070B9)] bg-[var(--Links-light-link,#0070B9)]"
-                  : category === "Available capacities"
-                  ? "border-[var(--Links-light-link,#05A300)] bg-[var(--Links-light-link,#05A300)]"
-                  : category === "Wanted capacities"
-                  ? "border-[var(--Links-light-link,#D43831)] bg-[var(--Links-light-link,#D43831)]"
-                  : ""
-              } text-white whitespace-nowrap`}
-            >
-              {capacity.title}
-            </div>
-          ))}
-        </div>
-        {hasMore && (
-          <Image
-            src={darkMode ? ArrowDropDownIconWhite : ArrowDropDownIcon}
-            alt="More items"
-            width={24}
-            height={24}
-            className="absolute right-3 cursor-pointer"
-            onClick={() => setShowOverlay(true)}
-          />
-        )}
-      </div>
-
-      {showOverlay && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
-          onClick={() => setShowOverlay(false)}
-        >
-          <div
-            className="bg-white rounded-lg p-6 max-w-[90%] max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex flex-wrap gap-3">
-              {filteredCapacities.map((capacity, index) => (
-                <div
-                  key={`overlay-${category}-${index}`}
-                  className={`flex h-[42px] p-[8px] items-center gap-[8px] rounded-[8px] border-[1.5px] border-[solid] ${
-                    category === "Known capacities"
-                      ? "border-[var(--Links-light-link,#0070B9)] bg-[var(--Links-light-link,#0070B9)]"
-                      : category === "Available capacities"
-                      ? "border-[var(--Links-light-link,#05A300)] bg-[var(--Links-light-link,#05A300)]"
-                      : category === "Wanted capacities"
-                      ? "border-[var(--Links-light-link,#D43831)] bg-[var(--Links-light-link,#D43831)]"
-                      : ""
-                  } text-white whitespace-nowrap`}
-                >
-                  {capacity.title}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
 
 export const CapacitiesList = ({
   icon,
   title,
-  customClass,
   items,
+  customClass,
 }: CapacitiesListProps) => {
-  const { isMobile } = useApp();
+  const renderItem = (item: Capacity | string | number) => {
+    if (typeof item === "object" && "name" in item) {
+      return item.name || `Capacity ${item.id}`;
+    }
+    return String(item);
+  };
 
   return (
-    <section className={`flex flex-col gap-4`}>
-      <div className="flex justify-start items-center gap-1">
-        <div className="relative w-[32px] h-[32px]">
-          <Image
-            src={icon}
-            alt={title}
-            fill
-            style={{ objectFit: "contain" }}
-            className="p-1"
-          />
-        </div>
-        <h2 className={`${customClass}`}>{title}</h2>
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-row gap-2">
+        <Image src={icon} alt={title} width={20} height={20} />
+        <p className={customClass}>{title}</p>
       </div>
-      <CapacitiesListComponent category={title} />
-    </section>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] justify-center items-center gap-[4px]"
+          >
+            <p className={customClass}>{renderItem(item)}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

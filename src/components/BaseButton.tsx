@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 interface BaseButtonProps {
-  label: string;
+  label: string | React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
   customClass?: string;

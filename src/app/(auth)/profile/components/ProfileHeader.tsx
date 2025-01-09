@@ -10,19 +10,23 @@ import { useApp } from "@/contexts/AppContext";
 import AvatarIcon from "@/public/static/images/avatar.svg";
 interface ProfileHeaderProps {
   username?: string;
+  profileImage?: string;
 }
 
-export default function ProfileHeader({ username }: ProfileHeaderProps) {
+export default function ProfileHeader({
+  username,
+  profileImage,
+}: ProfileHeaderProps) {
   const router = useRouter();
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
-  console.log("isMobile", isMobile);
+
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
         <div className="relative w-[100px] h-[100px]">
           <Image
-            src={AvatarIcon}
+            src={profileImage || AvatarIcon}
             alt="User profile"
             fill
             className="object-cover"
