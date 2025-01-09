@@ -1,47 +1,39 @@
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import Image from "next/image";
-import ArrowDropDownIcon from "@/public/static/images/arrow_drop_down_circle.svg";
-import ArrowDropDownIconWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
-import { useApp } from "@/contexts/AppContext";
-import { useState } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Capacity } from "@/types/capacity";
 
 interface CapacitiesListProps {
   icon: string;
   title: string;
-  items: Capacity[] | string[] | number[];
+  items: (number | string)[];
   customClass?: string;
 }
 
-export const CapacitiesList = ({
+export function CapacitiesList({
   icon,
   title,
   items,
   customClass,
-}: CapacitiesListProps) => {
-  const renderItem = (item: Capacity | string | number) => {
-    if (typeof item === "object" && "name" in item) {
-      return item.name || `Capacity ${item.id}`;
-    }
-    return String(item);
-  };
+}: CapacitiesListProps) {
+  const { getCapacityName } = useCapacityDetails(items);
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
-        <Image src={icon} alt={title} width={20} height={20} />
+        <div className="relative h-[20px] w-[20px]">
+          <Image src={icon} alt={title} fill objectFit="contain" />
+        </div>
         <p className={customClass}>{title}</p>
       </div>
       <div className="flex flex-wrap gap-2">
         {items.map((item, index) => (
           <div
             key={index}
-            className="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] justify-center items-center gap-[4px]"
+            className="rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] bg-[#EFEFEF]"
           >
-            <p className={customClass}>{renderItem(item)}</p>
+            <p className={customClass}>{getCapacityName(item)}</p>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
