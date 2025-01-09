@@ -67,7 +67,9 @@ export default function OrganizationProfilePage() {
             darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
           }`}
         >
-          <section className={`w-full max-w-screen-xl mx-auto px-4 py-8 `}>
+          <section
+            className={`w-full max-w-screen-xl mx-auto px-4 py-8 mt-[80px]`}
+          >
             <div className="flex flex-col gap-8">
               {/* Header Section */}
               <div className="flex flex-col gap-6">
@@ -135,17 +137,15 @@ export default function OrganizationProfilePage() {
               </div>
 
               {/* Report Activity Image */}
-              <div className="w-full h-[242px] flex-shrink-0 rounded-[4px] bg-[var(--Backgrounds-dark-bg,_#04222F)]">
-                <div className="relative w-[619px] h-[271px]">
-                  <Image
-                    src={ReportActivityIcon}
-                    alt="Report activity icon"
-                    objectFit="contain"
-                    style={{ width: "auto", height: "auto" }}
-                    className="w-full p-6"
-                  />
-                </div>
-                <div className="flex flex-col justify-center items-center gap-2">
+              <div className="w-full flex-shrink-0 rounded-[4px] bg-[#04222F]">
+                <Image
+                  src={ReportActivityIcon}
+                  alt="Report activity icon"
+                  objectFit="contain"
+                  style={{ width: "auto", height: "auto" }}
+                  className="w-full p-6"
+                />
+                <div className="flex flex-col justify-center items-center gap-2 mb-10">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
                     Report of activities
                   </h2>
@@ -205,9 +205,7 @@ export default function OrganizationProfilePage() {
         }`}
       >
         <section
-          className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-            isMobile ? "mt-[80px]" : "mt-[64px]"
-          }`}
+          className={`w-full max-w-screen-xl mx-auto px-4 py-8 mt-[80px]`}
         >
           <div className="flex flex-col gap-8">
             {/* Header Section */}

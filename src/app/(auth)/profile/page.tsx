@@ -75,12 +75,14 @@ export default function ProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const token = session?.user?.token;
-  const { profile, isLoading, error } = useProfile(token);
+  const { profile, isLoading, error } = useProfile(
+    token,
+    Number(session?.user?.id)
+  );
 
   console.log("profile", profile);
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <div
@@ -94,7 +96,10 @@ export default function ProfilePage() {
             isMobile ? "gap-6" : "gap-[80px]"
           }`}
         >
-          <ProfileHeader username={profile?.display_name || ""} />
+          <ProfileHeader
+            username={profile?.user?.username || ""}
+            profileImage={profile?.profile_image || ""}
+          />
           <MiniBio about={profile?.about || ""} />
           <CapacitiesList
             icon={darkMode ? NeurologyIconWhite : NeurologyIcon}

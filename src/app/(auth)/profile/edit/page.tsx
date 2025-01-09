@@ -14,7 +14,9 @@ import ChangeCircleIcon from "@/public/static/images/change_circle.svg";
 import ChangeCircleIconWhite from "@/public/static/images/change_circle_white.svg";
 import CheckIcon from "@/public/static/images/check_box_outline_blank.svg";
 import CheckIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
-import { useState } from "react";
+import CheckBoxFilledIcon from "@/public/static/images/check_box.svg";
+import CheckBoxFilledIconWhite from "@/public/static/images/check_box_light.svg";
+import { useState, useEffect } from "react";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
@@ -45,11 +47,59 @@ import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import Avatar1Icon from "@/public/static/images/capx_avatar_1.svg";
 import PersonIcon from "@/public/static/images/person_book.svg";
 import PersonIconWhite from "@/public/static/images/person_book_white.svg";
-/* import Avatar2Icon from "@/public/static/images/capx_avatar_2.svg";
- */
 import Avatar3Icon from "@/public/static/images/capx_avatar_3.svg";
 import Avatar4Icon from "@/public/static/images/capx_avatar_4.svg";
-import { text } from "stream/consumers";
+import { useProfile } from "@/hooks/useProfile";
+import { useSkills } from "@/hooks/useSkills";
+import { useTerritories } from "@/hooks/useTerritories";
+import { Profile } from "@/types/profile";
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
+import CapacitySelectionModal from "./components/CapacitySelectionModal";
+import { Capacity } from "@/types/capacity";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+const AVATAR_URLS = {
+  0: {
+    src: NoAvatarIcon.src,
+    url: `${BASE_URL}/static/images/no_avatar.svg`,
+  },
+  1: {
+    src: Avatar1Icon.src,
+    url: `${BASE_URL}/static/images/capx_avatar_1.svg`,
+  },
+  3: {
+    src: Avatar3Icon.src,
+    url: `${BASE_URL}/static/images/capx_avatar_3.svg`,
+  },
+  4: {
+    src: Avatar4Icon.src,
+    url: `${BASE_URL}/static/images/capx_avatar_4.svg`,
+  },
+};
+
+const fetchWikidataImage = async (qid: string) => {
+  try {
+    // Primeiro, busca a imagem do item Wikidata
+    const sparqlQuery = `
+      SELECT ?image WHERE {
+        wd:${qid} wdt:P18 ?image.
+      }
+    `;
+    const encodedQuery = encodeURIComponent(sparqlQuery);
+    const response = await fetch(
+      `https://query.wikidata.org/sparql?query=${encodedQuery}&format=json`
+    );
+    const data = await response.json();
+
+    if (data.results.bindings.length > 0) {
+      return data.results.bindings[0].image.value;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching Wikidata image:", error);
+    return null;
+  }
+};
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -57,664 +107,900 @@ export default function EditProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const username = session?.user?.name;
+  const token = session?.user?.token;
+  const userId = session?.user?.id;
 
-  const [formData, setFormData] = useState({
-    name: username || "",
-    useWikidataImage: false,
-    languages: ["english", "portuguese"],
-    alternativeAccount: "",
-    affiliation: "",
-    territory: "",
-    wikidataItem: false,
-    wikimediaProjects: ["wikipedia", "wiktionary", "wikiquote", "wikisource"],
-    capacities: {
-      known: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-        "financial reporting",
-        "research",
-      ],
-      available: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-      ],
-      wanted: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-      ],
-    },
+  useEffect(() => {
+    if (!token || !userId) {
+      router.push("/");
+    }
+  }, [token, userId, router]);
+
+  if (!token || !userId) {
+    return null;
+  }
+
+  const { profile, isLoading, error, updateProfile } = useProfile(
+    token,
+    Number(userId)
+  );
+  const { fetchSkills } = useSkills();
+  const [skills, setSkills] = useState(null);
+  const { fetchTerritories } = useTerritories();
+  const [territories, setTerritories] = useState(null);
+
+  useEffect(() => {
+    const getSkills = async () => {
+      const skillsData = await fetchSkills();
+      setSkills(skillsData);
+    };
+    getSkills();
+  }, []);
+
+  useEffect(() => {
+    const getTerritories = async () => {
+      const territoriesData = await fetchTerritories();
+      setTerritories(territoriesData);
+    };
+    getTerritories();
+  }, []);
+
+  const [formData, setFormData] = useState<Partial<Profile>>({
+    about: "",
+    affiliation: [],
+    contact: "",
+    display_name: "",
+    language: [],
+    profile_image: `${process.env.NEXT_PUBLIC_API_URL}${AVATAR_URLS[0].url}`,
+    pronoun: "",
+    skills_available: [],
+    skills_known: [],
+    skills_wanted: [],
+    social: [],
+    team: "",
+    territory: undefined,
+    wiki_alt: "",
+    wikidata_qid: "",
+    wikimedia_project: [],
   });
+
+  // Update formData when profile data is loaded
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        ...profile,
+        affiliation: profile.affiliation ? profile.affiliation : [],
+        territory: profile.territory ? profile.territory : undefined,
+        profile_image: profile.profile_image || AVATAR_URLS[0].url,
+      });
+
+      if (profile.profile_image) {
+        setSelectedAvatar({
+          id: -1,
+          src: profile.profile_image,
+        });
+      } else {
+        setSelectedAvatar({
+          id: 0,
+          src: AVATAR_URLS[0].src,
+        });
+      }
+    }
+  }, [profile]);
+
+  const handleSubmit = async () => {
+    if (!token) {
+      console.error("No token available");
+      return;
+    }
+
+    try {
+      await updateProfile(formData);
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
 
   const [selectedAvatar, setSelectedAvatar] = useState({
     id: 0,
     src: NoAvatarIcon,
   });
+
   const [showAvatarPopup, setShowAvatarPopup] = useState(false);
 
   const handleAvatarSelect = (avatarId: number) => {
-    const avatarMap = {
-      0: NoAvatarIcon,
-      1: Avatar1Icon,
-      3: Avatar3Icon,
-      4: Avatar4Icon,
-    };
+    const selected = AVATAR_URLS[avatarId as keyof typeof AVATAR_URLS];
 
     setSelectedAvatar({
       id: avatarId,
-      src: avatarMap[avatarId as keyof typeof avatarMap],
+      src: selected.src,
     });
+
+    setFormData({
+      ...formData,
+      profile_image: selected.url,
+    });
+  };
+
+  const [isWikidataSelected, setIsWikidataSelected] = useState(false);
+
+  const handleWikidataClick = async () => {
+    const newWikidataSelected = !isWikidataSelected;
+    setIsWikidataSelected(newWikidataSelected);
+
+    if (newWikidataSelected && formData.wikidata_qid) {
+      // Mostrar loading state se necessário
+      const wikidataImage = await fetchWikidataImage(formData.wikidata_qid);
+
+      if (wikidataImage) {
+        setSelectedAvatar({
+          id: -1,
+          src: wikidataImage,
+        });
+        setFormData((prev) => ({
+          ...prev,
+          profile_image: wikidataImage,
+        }));
+      } else {
+        // Se não encontrar imagem no Wikidata, mantenha a imagem atual
+        console.log("No Wikidata image found");
+      }
+    } else {
+      // Reverting to profile image or default avatar
+      if (profile?.profile_image) {
+        setSelectedAvatar({
+          id: -1,
+          src: profile.profile_image,
+        });
+        setFormData((prev) => ({
+          ...prev,
+          profile_image: profile.profile_image,
+        }));
+      } else {
+        setSelectedAvatar({
+          id: 0,
+          src: AVATAR_URLS[0].src,
+        });
+        setFormData((prev) => ({
+          ...prev,
+          profile_image: AVATAR_URLS[0].src,
+        }));
+      }
+    }
+  };
+
+  useEffect(() => {
+    const loadWikidataImage = async () => {
+      if (profile?.wikidata_qid && isWikidataSelected) {
+        const wikidataImage = await fetchWikidataImage(profile.wikidata_qid);
+        if (wikidataImage) {
+          setSelectedAvatar({
+            id: -1,
+            src: wikidataImage,
+          });
+          setFormData((prev) => ({
+            ...prev,
+            profile_image: wikidataImage,
+          }));
+        }
+      }
+    };
+
+    loadWikidataImage();
+  }, [profile?.wikidata_qid, isWikidataSelected]);
+
+  const capacityIds = [
+    ...(profile?.skills_known || []),
+    ...(profile?.skills_available || []),
+    ...(profile?.skills_wanted || []),
+  ]
+    .map((capacity: Capacity | number) =>
+      typeof capacity === "object" ? capacity.code : capacity
+    )
+    .filter((id): id is number => id !== undefined);
+
+  const { capacityNames, getCapacityName } = useCapacityDetails(capacityIds);
+
+  const handleRemoveCapacity = (
+    type: "known" | "available" | "wanted",
+    index: number
+  ) => {
+    setFormData((prev) => {
+      const newFormData = { ...prev };
+      const key = `skills_${type}` as
+        | "skills_known"
+        | "skills_available"
+        | "skills_wanted";
+
+      if (Array.isArray(newFormData[key])) {
+        newFormData[key] = (newFormData[key] as number[]).filter(
+          (_, i) => i !== index
+        );
+      }
+
+      return newFormData;
+    });
+  };
+
+  const handleRemoveLanguage = (index: number) => {
+    setFormData((prev) => {
+      const newFormData = { ...prev };
+      if (newFormData.language) {
+        newFormData.language = newFormData.language.filter(
+          (_, i) => i !== index
+        );
+      }
+      return newFormData;
+    });
+  };
+
+  const [showCapacityModal, setShowCapacityModal] = useState(false);
+
+  const [selectedCapacityType, setSelectedCapacityType] = useState<
+    "known" | "available" | "wanted"
+  >("known");
+
+  const handleAddCapacity = (type: "known" | "available" | "wanted") => {
+    setSelectedCapacityType(type);
+    setShowCapacityModal(true);
+  };
+
+  const handleCapacitySelect = (capacity: Capacity) => {
+    setFormData((prev) => {
+      const newFormData = { ...prev };
+      const capacityId = Number(capacity.code);
+
+      switch (selectedCapacityType) {
+        case "known":
+          newFormData.skills_known = [
+            ...(prev.skills_known || []),
+            capacityId,
+          ] as number[];
+          break;
+        case "available":
+          newFormData.skills_available = [
+            ...(prev.skills_available || []),
+            capacityId,
+          ] as number[];
+          break;
+        case "wanted":
+          newFormData.skills_wanted = [
+            ...(prev.skills_wanted || []),
+            capacityId,
+          ] as number[];
+          break;
+      }
+      return newFormData;
+    });
+    setShowCapacityModal(false);
   };
 
   if (isMobile) {
     return (
-      <div
-        className={`relative w-full overflow-x-hidden min-h-screen ${
-          darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
-        }`}
-      >
-        <section
-          className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
-            isMobile ? "mt-[80px]" : "mt-[64px]"
+      <>
+        <div
+          className={`relative w-full overflow-x-hidden min-h-screen ${
+            darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
           }`}
         >
-          <div
-            className={`flex flex-col gap-6 ${
-              isMobile ? "" : "mx-[80px]"
-            } mx-auto`}
+          <section
+            className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
+              isMobile ? "mt-[80px]" : "mt-[64px]"
+            }`}
           >
-            {/* Header */}
-            <div className="flex flex-col gap-2">
-              <h1
-                className={`font-[Montserrat] text-[16px] not-italic font-normal leading-[29px] ${
-                  darkMode ? "text-white" : "text-[#053749]"
-                }`}
-              >
-                Welcome!
-              </h1>
-              <div className="flex items-center gap-[6px]">
-                <div className="relative w-[24px] h-[24px]">
-                  <Image
-                    src={darkMode ? AccountCircleIconWhite : AccountCircleIcon}
-                    alt="User circle icon"
-                    fill
-                    objectFit="contain"
-                  />
-                </div>
-
-                <span
-                  className={`text-start ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  } font-[Montserrat] text-[20px] font-extrabold`}
-                >
-                  {username}
-                </span>
-              </div>
-            </div>
-
-            {/* Image Profile Section */}
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-row gap-1 items-center">
-                <div className="relative w-[20px] h-[20px]">
-                  <Image
-                    src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
-                    alt="Account box icon"
-                    fill
-                    objectFit="contain"
-                  />
-                </div>
-                <h2
-                  className={`${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  } font-[Montserrat] text-[16px] font-bold`}
-                >
-                  Image profile
-                </h2>
-              </div>
-
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <div className="w-32 h-32 mx-auto mb-4 relative">
-                  <Image
-                    src={selectedAvatar.src}
-                    alt="Selected avatar"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-
-              <BaseButton
-                onClick={() => setShowAvatarPopup(true)}
-                label="Choose avatar"
-                customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
-                  darkMode
-                    ? "bg-capx-light-bg text-[#053749]"
-                    : "bg-[#053749] text-[#F6F6F6]"
-                } font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0`}
-                imageUrl={darkMode ? ChangeCircleIconWhite : ChangeCircleIcon}
-                imageAlt="Change circle icon"
-                imageWidth={20}
-                imageHeight={20}
-              />
-
-              {showAvatarPopup && (
-                <AvatarSelectionPopup
-                  onClose={() => setShowAvatarPopup(false)}
-                  onSelect={handleAvatarSelect}
-                  selectedAvatarId={selectedAvatar.id}
-                />
-              )}
-
-              <div className="flex flex-col items-center gap-0">
-                <BaseButton
-                  onClick={() => {}}
-                  label="Use Wikidata item image"
-                  customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
-                    darkMode
-                      ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
-                      : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
-                  } font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal]`}
-                  imageUrl={darkMode ? CheckIconWhite : CheckIcon}
-                  imageAlt="Check icon"
-                  imageWidth={20}
-                  imageHeight={20}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+            <div
+              className={`flex flex-col gap-6 ${
+                isMobile ? "" : "mx-[80px]"
+              } mx-auto`}
+            >
+              {/* Header */}
+              <div className="flex flex-col gap-2">
+                <h1
+                  className={`font-[Montserrat] text-[16px] not-italic font-normal leading-[29px] ${
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  I consent displaying my Wikidata item image on CapX profile
-                  (if existent).
-                </span>
-              </div>
-              <div className="flex flex-col gap-[10px] mt-2">
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-6 mt-0">
-                  <BaseButton
-                    onClick={() => {}}
-                    label="Save profile"
-                    customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
-                    imageUrl={UploadIcon}
-                    imageAlt="Upload icon"
-                    imageWidth={20}
-                    imageHeight={20}
-                  />
-                  <BaseButton
-                    onClick={() => router.back()}
-                    label="Cancel edit"
-                    customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
-                      darkMode
-                        ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
-                        : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
-                    }`}
-                    imageUrl={darkMode ? CancelIconWhite : CancelIcon}
-                    imageAlt="Cancel icon"
-                    imageWidth={20}
-                    imageHeight={20}
-                  />
-                </div>
-                <div className="flex flex-row gap-2 mt-4">
-                  <div className="relative w-[20px] h-[20px]">
+                  Welcome!
+                </h1>
+                <div className="flex items-center gap-[6px]">
+                  <div className="relative w-[24px] h-[24px]">
                     <Image
-                      src={darkMode ? PersonIconWhite : PersonIcon}
-                      alt="Person icon"
+                      src={
+                        darkMode ? AccountCircleIconWhite : AccountCircleIcon
+                      }
+                      alt="User circle icon"
                       fill
                       objectFit="contain"
                     />
                   </div>
-                  <div className="flex flex-row gap-1 items-center">
+
+                  <span
+                    className={`text-start ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    } font-[Montserrat] text-[20px] font-extrabold`}
+                  >
+                    {username}
+                  </span>
+                </div>
+              </div>
+
+              {/* Image Profile Section */}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-row gap-1 items-center">
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
+                      alt="Account box icon"
+                      fill
+                      objectFit="contain"
+                    />
+                  </div>
+                  <h2
+                    className={`${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    } font-[Montserrat] text-[16px] font-bold`}
+                  >
+                    Image profile
+                  </h2>
+                </div>
+
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  <div className="w-32 h-32 mx-auto mb-4 relative">
+                    <Image
+                      src={selectedAvatar.src}
+                      alt="Selected avatar"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+
+                <BaseButton
+                  onClick={() => setShowAvatarPopup(true)}
+                  label="Choose avatar"
+                  customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
+                    darkMode
+                      ? "bg-capx-light-bg text-[#053749]"
+                      : "bg-[#053749] text-[#F6F6F6]"
+                  } font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0`}
+                  imageUrl={darkMode ? ChangeCircleIconWhite : ChangeCircleIcon}
+                  imageAlt="Change circle icon"
+                  imageWidth={20}
+                  imageHeight={20}
+                />
+
+                {showAvatarPopup && (
+                  <AvatarSelectionPopup
+                    onClose={() => setShowAvatarPopup(false)}
+                    onSelect={handleAvatarSelect}
+                    selectedAvatarId={selectedAvatar.id}
+                  />
+                )}
+
+                <div className="flex flex-col items-center gap-0">
+                  <BaseButton
+                    onClick={handleWikidataClick}
+                    label="Use Wikidata item"
+                    customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
+                      darkMode
+                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                        : "border-[#053749] text-[#829BA4]"
+                    } border`}
+                    imageUrl={
+                      isWikidataSelected
+                        ? darkMode
+                          ? CheckBoxFilledIconWhite
+                          : CheckBoxFilledIcon
+                        : darkMode
+                        ? CheckIconWhite
+                        : CheckIcon
+                    }
+                    imageAlt="Check icon"
+                    imageWidth={20}
+                    imageHeight={20}
+                  />
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    }`}
+                  >
+                    I consent displaying my Wikidata item image on CapX profile
+                    (if existent).
+                  </span>
+                </div>
+                <div className="flex flex-col gap-[10px] mt-2">
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-[10px] mt-0">
+                    <BaseButton
+                      onClick={handleSubmit}
+                      label="Save profile"
+                      customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
+                      imageUrl={UploadIcon}
+                      imageAlt="Upload icon"
+                      imageWidth={20}
+                      imageHeight={20}
+                    />
+                    <BaseButton
+                      onClick={() => router.back()}
+                      label="Cancel edit"
+                      customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
+                        darkMode
+                          ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
+                          : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
+                      }`}
+                      imageUrl={darkMode ? CancelIconWhite : CancelIcon}
+                      imageAlt="Cancel icon"
+                      imageWidth={20}
+                      imageHeight={20}
+                    />
+                  </div>
+                  <div className="flex flex-row gap-2 mt-4">
+                    <div className="relative w-[20px] h-[20px]">
+                      <Image
+                        src={darkMode ? PersonIconWhite : PersonIcon}
+                        alt="Person icon"
+                        fill
+                        objectFit="contain"
+                      />
+                    </div>
+                    <div className="flex flex-row gap-1 items-center">
+                      <h2
+                        className={`font-[Montserrat] text-[14px] font-bold ${
+                          darkMode ? "text-white" : "text-[#053749]"
+                        }`}
+                      >
+                        Mini bio
+                      </h2>
+                    </div>
+                  </div>
+                  <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[4px] border-[1px] border-[solid] border-capx-light-bg">
+                    <textarea
+                      value={formData.about || ""}
+                      onChange={(e) =>
+                        setFormData({ ...formData, about: e.target.value })
+                      }
+                      placeholder="Write a short description about yourself."
+                      className={`w-full font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] px-[4px] ${
+                        darkMode
+                          ? "text-white placeholder-gray-400"
+                          : "text-[#053749] placeholder-[#829BA4]"
+                      }`}
+                    />
+                  </div>
+                  <span
+                    className={`font-[Montserrat] text-[10px] not-italic font-normal leading-[15px] ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    }`}
+                  >
+                    Select skills you already have from the Capacity Directory.
+                    Try to choose the most specific ones.{" "}
+                  </span>
+                </div>
+              </div>
+
+              {/* Capacities Sections */}
+              <div className="space-y-6">
+                {/* Known Capacities */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? NeurologyIconWhite : NeurologyIcon}
+                      alt="Neurology icon"
+                      width={20}
+                      height={20}
+                    />
                     <h2
                       className={`font-[Montserrat] text-[14px] font-bold ${
                         darkMode ? "text-white" : "text-[#053749]"
                       }`}
                     >
-                      Mini bio
+                      Known capacities
                     </h2>
                   </div>
-                </div>
-                <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[4px] border-[1px] border-[solid] border-capx-light-bg">
-                  <p
-                    className={`font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] p-2 ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
+                  <div
+                    className={`flex flex-wrap gap-2 rounded-[4px] ${
+                      darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                    } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
                   >
-                    Write a short description about yourself.
-                  </p>
-                </div>
-                <span
-                  className={`font-[Montserrat] text-[10px] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Select skills you already have from the Capacity Directory.
-                  Try to choose the most specific ones.{" "}
-                </span>
-              </div>
-            </div>
-
-            {/* Capacities Sections */}
-            <div className="space-y-6">
-              {/* Known Capacities */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                    alt="Neurology icon"
-                    width={20}
-                    height={20}
+                    {formData?.skills_known?.map((capacity, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 rounded-md"
+                      >
+                        <BaseButton
+                          onClick={() => handleRemoveCapacity("known", index)}
+                          label={getCapacityName(capacity)}
+                          customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                          imageUrl={CloseIcon}
+                          imageAlt="Close icon"
+                          imageWidth={16}
+                          imageHeight={16}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <BaseButton
+                    onClick={() => handleAddCapacity("known")}
+                    label="Add capacities"
+                    customClass={`w-full flex ${
+                      darkMode
+                        ? "bg-capx-light-box-bg text-[#04222F]"
+                        : "bg-[#053749] text-white"
+                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                    imageUrl={darkMode ? AddIconDark : AddIcon}
+                    imageAlt="Add capacity"
+                    imageWidth={20}
+                    imageHeight={20}
                   />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Known capacities
-                  </h2>
+                    Select skills you already have from the Capacity Directory.
+                    Try to choose the most specific ones.
+                  </span>
                 </div>
-                <div
-                  className={`flex flex-wrap gap-2 rounded-[4px] ${
-                    darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                  } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
-                >
-                  {formData.capacities.known.map((capacity, index) => (
-                    <BaseButton
-                      key={index}
-                      onClick={() => {}}
-                      label={capacity}
-                      customClass={`${
-                        darkMode
-                          ? "text-white bg-transparent"
-                          : "text-[#053749] border-[#0070B9] bg-white"
-                      } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                      imageAlt="Remove capacity"
-                      imageWidth={16}
-                      imageHeight={16}
+
+                {/* Available Capacities */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? EmojiIconWhite : EmojiIcon}
+                      alt="Available capacities icon"
+                      width={20}
+                      height={20}
                     />
-                  ))}
-                </div>
-                <BaseButton
-                  onClick={() => {}}
-                  label="Add capacities"
-                  customClass={`w-full flex ${
-                    darkMode
-                      ? "bg-capx-light-box-bg text-[#04222F]"
-                      : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                  imageUrl={darkMode ? AddIconDark : AddIcon}
-                  imageAlt="Add capacity"
-                  imageWidth={20}
-                  imageHeight={20}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Select skills you already have from the Capacity Directory.
-                  Try to choose the most specific ones.
-                </span>
-              </div>
-
-              {/* Available Capacities */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? EmojiIconWhite : EmojiIcon}
-                    alt="Available capacities icon"
-                    width={20}
-                    height={20}
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Available capacities
+                    </h2>
+                  </div>
+                  <div
+                    className={`flex flex-wrap gap-2 rounded-[4px] ${
+                      darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                    } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
+                  >
+                    {formData?.skills_available?.map((capacity, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 rounded-md"
+                      >
+                        <BaseButton
+                          onClick={() =>
+                            handleRemoveCapacity("available", index)
+                          }
+                          label={getCapacityName(capacity)}
+                          customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                          imageUrl={CloseIcon}
+                          imageAlt="Close icon"
+                          imageWidth={16}
+                          imageHeight={16}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <BaseButton
+                    onClick={() => handleAddCapacity("available")}
+                    label="Add capacities"
+                    customClass={`w-full flex ${
+                      darkMode
+                        ? "bg-capx-light-box-bg text-[#04222F]"
+                        : "bg-[#053749] text-white"
+                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                    imageUrl={darkMode ? AddIconDark : AddIcon}
+                    imageAlt="Add capacity"
+                    imageWidth={20}
+                    imageHeight={20}
                   />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Available capacities
-                  </h2>
+                    From your known capacities, choose those you are available
+                    to share.
+                  </span>
                 </div>
-                <div
-                  className={`flex flex-wrap gap-2 rounded-[4px] ${
-                    darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                  } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
-                >
-                  {formData.capacities.available.map((capacity, index) => (
-                    <BaseButton
-                      key={index}
-                      onClick={() => {}}
-                      label={capacity}
-                      customClass={`${
-                        darkMode
-                          ? "text-white bg-transparent"
-                          : "text-[#053749] border-[#05A300] bg-white"
-                      } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                      imageAlt="Remove capacity"
-                      imageWidth={16}
-                      imageHeight={16}
+
+                {/* Wanted Capacities */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? TargetIconWhite : TargetIcon}
+                      alt="Wanted capacities icon"
+                      width={20}
+                      height={20}
                     />
-                  ))}
-                </div>
-                <BaseButton
-                  onClick={() => {}}
-                  label="Add capacities"
-                  customClass={`w-full flex ${
-                    darkMode
-                      ? "bg-capx-light-box-bg text-[#04222F]"
-                      : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                  imageUrl={darkMode ? AddIconDark : AddIcon}
-                  imageAlt="Add capacity"
-                  imageWidth={20}
-                  imageHeight={20}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  From your known capacities, choose those you are available to
-                  share.
-                </span>
-              </div>
-
-              {/* Wanted Capacities */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? TargetIconWhite : TargetIcon}
-                    alt="Wanted capacities icon"
-                    width={20}
-                    height={20}
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Wanted capacities
+                    </h2>
+                  </div>
+                  <div
+                    className={`flex flex-wrap gap-2 rounded-[4px] ${
+                      darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                    } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
+                  >
+                    {formData?.skills_wanted?.map((capacity, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 rounded-md"
+                      >
+                        <BaseButton
+                          onClick={() => handleRemoveCapacity("wanted", index)}
+                          label={getCapacityName(capacity)}
+                          customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                          imageUrl={CloseIcon}
+                          imageAlt="Close icon"
+                          imageWidth={16}
+                          imageHeight={16}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <BaseButton
+                    onClick={() => handleAddCapacity("wanted")}
+                    label="Add capacities"
+                    customClass={`w-full flex ${
+                      darkMode
+                        ? "bg-capx-light-box-bg text-[#04222F]"
+                        : "bg-[#053749] text-white"
+                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                    imageUrl={darkMode ? AddIconDark : AddIcon}
+                    imageAlt="Add capacity"
+                    imageWidth={20}
+                    imageHeight={20}
                   />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Wanted capacities
-                  </h2>
+                    Select skills you are willing to learn from the Capacity
+                    Directory. Try to choose the most specific ones.
+                  </span>
                 </div>
-                <div
-                  className={`flex flex-wrap gap-2 rounded-[4px] ${
-                    darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                  } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
-                >
-                  {formData.capacities.wanted.map((capacity, index) => (
-                    <BaseButton
-                      key={index}
-                      onClick={() => {}}
-                      label={capacity}
-                      customClass={`${
-                        darkMode
-                          ? "text-white bg-transparent"
-                          : "text-[#053749] border-[#D43831] bg-white"
-                      } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                      imageAlt="Remove capacity"
-                      imageWidth={16}
-                      imageHeight={16}
+
+                {/* Languages Section */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? LanguageIconWhite : LanguageIcon}
+                      alt="Languages icon"
+                      width={20}
+                      height={20}
                     />
-                  ))}
-                </div>
-                <BaseButton
-                  onClick={() => {}}
-                  label="Add capacities"
-                  customClass={`w-full flex ${
-                    darkMode
-                      ? "bg-capx-light-box-bg text-[#04222F]"
-                      : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                  imageUrl={darkMode ? AddIconDark : AddIcon}
-                  imageAlt="Add capacity"
-                  imageWidth={20}
-                  imageHeight={20}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Select skills you are willing to learn from the Capacity
-                  Directory. Try to choose the most specific ones.
-                </span>
-              </div>
-
-              {/* Languages Section */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? LanguageIconWhite : LanguageIcon}
-                    alt="Languages icon"
-                    width={20}
-                    height={20}
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Languages
+                    </h2>
+                  </div>
+                  <div
+                    className={`flex flex-wrap gap-2 rounded-[4px] ${
+                      darkMode ? "bg-[#04222F]" : "bg-capx-light-bg"
+                    } flex w-full px-[4px] py-[6px] items-start gap-[12px] rounded-[4px] border-[1px] border-[solid] border-[#053749]`}
+                  >
+                    {formData?.language?.map((language, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 rounded-md"
+                      >
+                        <BaseButton
+                          onClick={() => handleRemoveLanguage(index)}
+                          label={language}
+                          customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                          imageUrl={CloseIcon}
+                          imageAlt="Close icon"
+                          imageWidth={16}
+                          imageHeight={16}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <BaseButton
+                    onClick={() => {}}
+                    label="Add languages"
+                    customClass={`w-full flex ${
+                      darkMode
+                        ? "bg-capx-light-box-bg text-[#04222F]"
+                        : "bg-[#053749] text-white"
+                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                    imageUrl={darkMode ? AddIconDark : AddIcon}
+                    imageAlt="Add language"
+                    imageWidth={20}
+                    imageHeight={20}
                   />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Languages
-                  </h2>
+                    Please list the languages in which you are able to connect.
+                  </span>
                 </div>
-                <div
-                  className={`flex flex-wrap gap-2 rounded-[4px] ${
-                    darkMode ? "bg-[#04222F]" : "bg-capx-light-bg"
-                  } flex w-full px-[4px] py-[6px] items-start gap-[12px] rounded-[4px] border-[1px] border-[solid] border-[#053749]`}
-                >
-                  {["english", "portuguese"].map((language, index) => (
-                    <BaseButton
-                      key={index}
-                      onClick={() => {}}
-                      label={language}
-                      customClass={`${
-                        darkMode
-                          ? "text-white border-white bg-transparent"
-                          : "text-[#053749] border-capx-light-box-bg bg-capx-light-box-bg"
-                      } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                      imageAlt="Remove language"
-                      imageWidth={16}
-                      imageHeight={16}
+
+                {/* Alternative Wikimedia Account */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? WikiIconWhite : WikiIcon}
+                      alt="Alternative account icon"
+                      width={20}
+                      height={20}
                     />
-                  ))}
-                </div>
-                <BaseButton
-                  onClick={() => {}}
-                  label="Add languages"
-                  customClass={`w-full flex ${
-                    darkMode
-                      ? "bg-capx-light-box-bg text-[#04222F]"
-                      : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                  imageUrl={darkMode ? AddIconDark : AddIcon}
-                  imageAlt="Add language"
-                  imageWidth={20}
-                  imageHeight={20}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Please list the languages in which you are able to connect.
-                </span>
-              </div>
-
-              {/* Alternative Wikimedia Account */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? WikiIconWhite : WikiIcon}
-                    alt="Alternative account icon"
-                    width={20}
-                    height={20}
-                  />
-                  <h2
-                    className={`font-[Montserrat] text-[12px] font-bold ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
-                  >
-                    Alternative Wikimedia Account
-                  </h2>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Insert item"
-                  value={formData.alternativeAccount}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      alternativeAccount: e.target.value,
-                    })
-                  }
-                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] ${
-                    darkMode
-                      ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                      : "border-[#053749] text-[#829BA4]"
-                  } border`}
-                />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Share another Wikimedia username if you have one.
-                </span>
-              </div>
-
-              {/* Affiliation */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? AffiliationIconWhite : AffiliationIcon}
-                    alt="Affiliation icon"
-                    width={20}
-                    height={20}
-                  />
-                  <h2
-                    className={`font-[Montserrat] text-[12px] font-bold ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
-                  >
-                    Affiliation
-                  </h2>
-                </div>
-                <div className="relative">
-                  <select
-                    value={formData.affiliation}
+                    <h2
+                      className={`font-[Montserrat] text-[12px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Alternative Wikimedia Account
+                    </h2>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Insert item"
+                    value={formData.wiki_alt}
                     onChange={(e) =>
-                      setFormData({ ...formData, affiliation: e.target.value })
+                      setFormData({
+                        ...formData,
+                        wiki_alt: e.target.value,
+                      })
                     }
-                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] ${
                       darkMode
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
-                  >
-                    <option value="">Insert item</option>
-                    {/* Adicionar opções dinâmicas aqui */}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                    <Image
-                      src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
-                      alt="Select"
-                      width={20}
-                      height={20}
-                    />
-                  </div>
-                </div>
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Select your organization from the dropdown menu.
-                </span>
-              </div>
-
-              {/* Territory */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? TerritoryIconWhite : TerritoryIcon}
-                    alt="Territory icon"
-                    width={20}
-                    height={20}
                   />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Territory
-                  </h2>
+                    Share another Wikimedia username if you have one.
+                  </span>
                 </div>
-                <div className="relative">
-                  <select
-                    value={formData.territory}
-                    onChange={(e) =>
-                      setFormData({ ...formData, territory: e.target.value })
-                    }
-                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
-                      darkMode
-                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                        : "border-[#053749] text-[#829BA4]"
-                    } border`}
-                  >
-                    <option value="">Insert item</option>
-                    {/* Adicionar opções dinâmicas aqui */}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+
+                {/* Affiliation */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
                     <Image
-                      src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
-                      alt="Select"
+                      src={darkMode ? AffiliationIconWhite : AffiliationIcon}
+                      alt="Affiliation icon"
                       width={20}
                       height={20}
                     />
+                    <h2
+                      className={`font-[Montserrat] text-[12px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Affiliation
+                    </h2>
                   </div>
-                </div>
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Inform your geographic location by region or country.
-                </span>
-              </div>
-
-              {/* Wikidata Item */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? BarCodeIconWhite : BarCodeIcon}
-                    alt="Wikidata item icon"
-                    width={20}
-                    height={20}
-                  />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                  <div className="relative">
+                    <select
+                      value={formData.affiliation?.[0] || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          affiliation: e.target.value ? [e.target.value] : [],
+                        })
+                      }
+                      className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                        darkMode
+                          ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                          : "border-[#053749] text-[#829BA4]"
+                      } border`}
+                    >
+                      <option value="">Insert item</option>
+                      {/* Adicionar opções dinâmicas aqui */}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <Image
+                        src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                        alt="Select"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Wikidata Item
-                  </h2>
+                    Select your organization from the dropdown menu.
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 py-[6px] border border-[#053749] rounded-[4px]">
-                  {/* <input
+
+                {/* Territory */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? TerritoryIconWhite : TerritoryIcon}
+                      alt="Territory icon"
+                      width={20}
+                      height={20}
+                    />
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Territory
+                    </h2>
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={formData.territory?.[0] || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          territory: e.target.value ? [e.target.value] : [],
+                        })
+                      }
+                      className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                        darkMode
+                          ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                          : "border-[#053749] text-[#829BA4]"
+                      } border`}
+                    >
+                      <option value="">Insert item</option>
+                      {/* Adicionar opções dinâmicas aqui */}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <Image
+                        src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                        alt="Select"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    }`}
+                  >
+                    Inform your geographic location by region or country.
+                  </span>
+                </div>
+
+                {/* Wikidata Item */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={darkMode ? BarCodeIconWhite : BarCodeIcon}
+                      alt="Wikidata item icon"
+                      width={20}
+                      height={20}
+                    />
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Wikidata Item
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2 py-[6px] ">
+                    {/* <input
                     type="checkbox"
-                    checked={formData.wikidataItem}
+                    checked={formData.wikidata_qid}
                     onChange={(e) =>
-                      setFormData({ ...formData, wikidataItem: e.target.checked })
+                      setFormData({ ...formData, wikidata_qid: e.target.value })
                     }
                     className="mr-2"
                   />
@@ -722,130 +1008,145 @@ export default function EditProfilePage() {
                     Use Wikidata item
                   </span> */}
 
-                  <BaseButton
-                    onClick={() => {}}
-                    label="Use Wikidata item"
-                    customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
-                      darkMode
-                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                        : "border-[#053749] text-[#829BA4]"
-                    } border`}
-                    imageUrl={darkMode ? CheckIconWhite : CheckIcon}
-                    imageAlt="Check icon"
-                    imageWidth={20}
-                    imageHeight={20}
-                  />
-                </div>
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  I consent displaying my Wikidata item on CapX profile (if
-                  existent).
-                </span>
-              </div>
-
-              {/* Wikimedia Projects */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? WikiIconWhite : WikiIcon}
-                    alt="Wikimedia projects icon"
-                    width={20}
-                    height={20}
-                  />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
+                    <BaseButton
+                      onClick={handleWikidataClick}
+                      label="Use Wikidata item"
+                      customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
+                        darkMode
+                          ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                          : "border-[#053749] text-[#829BA4]"
+                      } border`}
+                      imageUrl={
+                        isWikidataSelected
+                          ? darkMode
+                            ? CheckBoxFilledIconWhite
+                            : CheckBoxFilledIcon
+                          : darkMode
+                          ? CheckIconWhite
+                          : CheckIcon
+                      }
+                      imageAlt="Check icon"
+                      imageWidth={20}
+                      imageHeight={20}
+                    />
+                  </div>
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Wikimedia Projects
-                  </h2>
+                    I consent displaying my Wikidata item on CapX profile (if
+                    existent).
+                  </span>
                 </div>
-                <div className="relative">
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setFormData({
-                          ...formData,
-                          wikimediaProjects: [
-                            ...formData.wikimediaProjects,
-                            e.target.value,
-                          ],
-                        });
-                      }
-                    }}
-                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
-                      darkMode
-                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                        : "border-[#053749] text-[#829BA4]"
-                    } border`}
-                  >
-                    <option value="">Insert project</option>
-                    {/* Adicionar opções dinâmicas aqui */}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+
+                {/* Wikimedia Projects */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
                     <Image
-                      src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
-                      alt="Select"
+                      src={darkMode ? WikiIconWhite : WikiIcon}
+                      alt="Wikimedia projects icon"
                       width={20}
                       height={20}
                     />
+                    <h2
+                      className={`font-[Montserrat] text-[14px] font-bold ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      Wikimedia Projects
+                    </h2>
                   </div>
+                  <div className="relative">
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setFormData({
+                            ...formData,
+                            wikimedia_project: [
+                              ...(formData.wikimedia_project || []),
+                              e.target.value,
+                            ],
+                          });
+                        }
+                      }}
+                      className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                        darkMode
+                          ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                          : "border-[#053749] text-[#829BA4]"
+                      } border`}
+                    >
+                      <option value="">Insert project</option>
+                      {/* Adicionar opções dinâmicas aqui */}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <Image
+                        src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                        alt="Select"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                  <BaseButton
+                    onClick={() => {}}
+                    label="Add projects"
+                    customClass={`w-full flex ${
+                      darkMode
+                        ? "bg-capx-light-box-bg text-[#04222F]"
+                        : "bg-[#053749] text-white"
+                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                    imageUrl={darkMode ? AddIconDark : AddIcon}
+                    imageAlt="Add project"
+                    imageWidth={20}
+                    imageHeight={20}
+                  />
+                  <span
+                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    }`}
+                  >
+                    Inform the Wikimedia Projects you have interest in.
+                  </span>
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-[10px] mt-0">
                 <BaseButton
                   onClick={() => {}}
-                  label="Add projects"
-                  customClass={`w-full flex ${
-                    darkMode
-                      ? "bg-capx-light-box-bg text-[#04222F]"
-                      : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                  imageUrl={darkMode ? AddIconDark : AddIcon}
-                  imageAlt="Add project"
+                  label="Save profile"
+                  customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
+                  imageUrl={UploadIcon}
+                  imageAlt="Upload icon"
                   imageWidth={20}
                   imageHeight={20}
                 />
-                <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  Inform the Wikimedia Projects you have interest in.
-                </span>
+                <BaseButton
+                  onClick={() => router.back()}
+                  label="Cancel edit"
+                  customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border ${
+                    darkMode
+                      ? "border-white text-white"
+                      : "border-[#053749] text-[#053749]"
+                  } rounded-md py-3 font-bold mb-0`}
+                  imageUrl={darkMode ? CancelIconWhite : CancelIcon}
+                  imageAlt="Cancel icon"
+                  imageWidth={20}
+                  imageHeight={20}
+                />
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-[10px] mt-0">
-              <BaseButton
-                onClick={() => {}}
-                label="Save profile"
-                customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
-                imageUrl={UploadIcon}
-                imageAlt="Upload icon"
-                imageWidth={20}
-                imageHeight={20}
-              />
-              <BaseButton
-                onClick={() => router.back()}
-                label="Cancel edit"
-                customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border ${
-                  darkMode
-                    ? "border-white text-white"
-                    : "border-[#053749] text-[#053749]"
-                } rounded-md py-3 font-bold mb-0`}
-                imageUrl={darkMode ? CancelIconWhite : CancelIcon}
-                imageAlt="Cancel icon"
-                imageWidth={20}
-                imageHeight={20}
-              />
-            </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+        <CapacitySelectionModal
+          isOpen={showCapacityModal}
+          onClose={() => setShowCapacityModal(false)}
+          onSelect={handleCapacitySelect}
+          title={`Add ${selectedCapacityType} capacities`}
+        />
+      </>
     );
   }
 
@@ -952,14 +1253,22 @@ export default function EditProfilePage() {
               )}
               <div className="flex flex-col items-start gap-6">
                 <BaseButton
-                  onClick={() => {}}
-                  label="Use Wikidata item image"
-                  customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] mb-0 ${
+                  onClick={handleWikidataClick}
+                  label="Use Wikidata item"
+                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                     darkMode
-                      ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
-                      : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
-                  } font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal]`}
-                  imageUrl={darkMode ? CheckIconWhite : CheckIcon}
+                      ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                      : "border-[#053749] text-[#829BA4]"
+                  } border`}
+                  imageUrl={
+                    isWikidataSelected
+                      ? darkMode
+                        ? CheckBoxFilledIconWhite
+                        : CheckBoxFilledIcon
+                      : darkMode
+                      ? CheckIconWhite
+                      : CheckIcon
+                  }
                   imageAlt="Check icon"
                   imageWidth={20}
                   imageHeight={20}
@@ -1022,13 +1331,18 @@ export default function EditProfilePage() {
               </div>
             </div>
             <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[4px] border-[1px] border-[solid] border-capx-light-bg">
-              <p
-                className={`font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] p-2 ${
-                  darkMode ? "text-white" : "text-[#053749]"
+              <textarea
+                value={formData.about || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, about: e.target.value })
+                }
+                placeholder="Write a short description about yourself."
+                className={`w-full font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] p-2 bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] px-[4px] ${
+                  darkMode
+                    ? "text-white placeholder-gray-400"
+                    : "text-[#053749] placeholder-[#829BA4]"
                 }`}
-              >
-                Write a short description about yourself.
-              </p>
+              />
             </div>
             <span
               className={`font-[Montserrat] text-[10px] not-italic font-normal leading-[15px] ${
@@ -1064,25 +1378,25 @@ export default function EditProfilePage() {
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
                 } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
               >
-                {formData.capacities.known.map((capacity, index) => (
-                  <BaseButton
+                {formData?.skills_known?.map((capacity, index) => (
+                  <div
                     key={index}
-                    onClick={() => {}}
-                    label={capacity}
-                    customClass={`${
-                      darkMode
-                        ? "text-white bg-transparent"
-                        : "text-[#053749] border-[#0070B9] bg-white"
-                    } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                    imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                    imageAlt="Remove capacity"
-                    imageWidth={16}
-                    imageHeight={16}
-                  />
+                    className="flex items-center gap-1 rounded-md"
+                  >
+                    <BaseButton
+                      onClick={() => handleRemoveCapacity("known", index)}
+                      label={getCapacityName(capacity)}
+                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                      imageUrl={CloseIcon}
+                      imageAlt="Close icon"
+                      imageWidth={16}
+                      imageHeight={16}
+                    />
+                  </div>
                 ))}
               </div>
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("known")}
                 label="Add capacities"
                 customClass={`w-full flex ${
                   darkMode
@@ -1126,25 +1440,25 @@ export default function EditProfilePage() {
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
                 } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
               >
-                {formData.capacities.available.map((capacity, index) => (
-                  <BaseButton
+                {formData?.skills_available?.map((capacity, index) => (
+                  <div
                     key={index}
-                    onClick={() => {}}
-                    label={capacity}
-                    customClass={`${
-                      darkMode
-                        ? "text-white bg-transparent"
-                        : "text-[#053749] border-[#05A300] bg-white"
-                    } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                    imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                    imageAlt="Remove capacity"
-                    imageWidth={16}
-                    imageHeight={16}
-                  />
+                    className="flex items-center gap-1 rounded-md"
+                  >
+                    <BaseButton
+                      onClick={() => handleRemoveCapacity("available", index)}
+                      label={getCapacityName(capacity)}
+                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                      imageUrl={CloseIcon}
+                      imageAlt="Close icon"
+                      imageWidth={16}
+                      imageHeight={16}
+                    />
+                  </div>
                 ))}
               </div>
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("available")}
                 label="Add capacities"
                 customClass={`w-full flex ${
                   darkMode
@@ -1188,25 +1502,25 @@ export default function EditProfilePage() {
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
                 } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
               >
-                {formData.capacities.wanted.map((capacity, index) => (
-                  <BaseButton
+                {formData?.skills_wanted?.map((capacity, index) => (
+                  <div
                     key={index}
-                    onClick={() => {}}
-                    label={capacity}
-                    customClass={`${
-                      darkMode
-                        ? "text-white bg-transparent"
-                        : "text-[#053749] border-[#D43831] bg-white"
-                    } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                    imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                    imageAlt="Remove capacity"
-                    imageWidth={16}
-                    imageHeight={16}
-                  />
+                    className="flex items-center gap-1 rounded-md"
+                  >
+                    <BaseButton
+                      onClick={() => handleRemoveCapacity("wanted", index)}
+                      label={getCapacityName(capacity)}
+                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                      imageUrl={CloseIcon}
+                      imageAlt="Close icon"
+                      imageWidth={16}
+                      imageHeight={16}
+                    />
+                  </div>
                 ))}
               </div>
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("wanted")}
                 label="Add capacities"
                 customClass={`w-full flex ${
                   darkMode
@@ -1250,21 +1564,21 @@ export default function EditProfilePage() {
                   darkMode ? "bg-[#04222F]" : "bg-capx-light-bg"
                 } flex w-full px-[4px] py-[6px] items-start gap-[12px] rounded-[4px] border-[1px] border-[solid] border-[#053749]`}
               >
-                {["english", "portuguese"].map((language, index) => (
-                  <BaseButton
+                {formData?.language?.map((language, index) => (
+                  <div
                     key={index}
-                    onClick={() => {}}
-                    label={language}
-                    customClass={`${
-                      darkMode
-                        ? "text-white border-white bg-transparent"
-                        : "text-[#053749] border-capx-light-box-bg bg-capx-light-box-bg"
-                    } font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] flex p-[4px] justify-center items-center gap-[4px] rounded-[4px] border-[1px] border-[solid] pb-[4px] mb-0`}
-                    imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                    imageAlt="Remove language"
-                    imageWidth={16}
-                    imageHeight={16}
-                  />
+                    className="flex items-center gap-1 rounded-md"
+                  >
+                    <BaseButton
+                      onClick={() => handleRemoveLanguage(index)}
+                      label={language}
+                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                      imageUrl={CloseIcon}
+                      imageAlt="Close icon"
+                      imageWidth={16}
+                      imageHeight={16}
+                    />
+                  </div>
                 ))}
               </div>
               <BaseButton
@@ -1309,11 +1623,11 @@ export default function EditProfilePage() {
               <input
                 type="text"
                 placeholder="Insert item"
-                value={formData.alternativeAccount}
+                value={formData.wiki_alt}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    alternativeAccount: e.target.value,
+                    wiki_alt: e.target.value,
                   })
                 }
                 className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] ${
@@ -1350,9 +1664,12 @@ export default function EditProfilePage() {
               </div>
               <div className="relative">
                 <select
-                  value={formData.affiliation}
+                  value={formData.affiliation?.[0] || ""}
                   onChange={(e) =>
-                    setFormData({ ...formData, affiliation: e.target.value })
+                    setFormData({
+                      ...formData,
+                      affiliation: e.target.value ? [e.target.value] : [],
+                    })
                   }
                   className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
                     darkMode
@@ -1400,9 +1717,12 @@ export default function EditProfilePage() {
               </div>
               <div className="relative">
                 <select
-                  value={formData.territory}
+                  value={formData.territory?.[0] || ""}
                   onChange={(e) =>
-                    setFormData({ ...formData, territory: e.target.value })
+                    setFormData({
+                      ...formData,
+                      territory: e.target.value ? [e.target.value] : [],
+                    })
                   }
                   className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
                     darkMode
@@ -1448,12 +1768,12 @@ export default function EditProfilePage() {
                   Wikidata Item
                 </h2>
               </div>
-              <div className="flex items-center gap-2 py-[6px] border border-[#053749] rounded-[4px]">
+              <div className="flex items-center gap-2 py-[6px] ">
                 {/* <input
                   type="checkbox"
-                  checked={formData.wikidataItem}
+                  checked={formData.wikidata_qid}
                   onChange={(e) =>
-                    setFormData({ ...formData, wikidataItem: e.target.checked })
+                    setFormData({ ...formData, wikidata_qid: e.target.value })
                   }
                   className="mr-2"
                 />
@@ -1462,14 +1782,22 @@ export default function EditProfilePage() {
                 </span> */}
 
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={handleWikidataClick}
                   label="Use Wikidata item"
                   customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
-                  imageUrl={darkMode ? CheckIconWhite : CheckIcon}
+                  imageUrl={
+                    isWikidataSelected
+                      ? darkMode
+                        ? CheckBoxFilledIconWhite
+                        : CheckBoxFilledIcon
+                      : darkMode
+                      ? CheckIconWhite
+                      : CheckIcon
+                  }
                   imageAlt="Check icon"
                   imageWidth={20}
                   imageHeight={20}
@@ -1509,8 +1837,8 @@ export default function EditProfilePage() {
                     if (e.target.value) {
                       setFormData({
                         ...formData,
-                        wikimediaProjects: [
-                          ...formData.wikimediaProjects,
+                        wikimedia_project: [
+                          ...(formData.wikimedia_project || []),
                           e.target.value,
                         ],
                       });
