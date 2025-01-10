@@ -57,6 +57,7 @@ import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import CapacitySelectionModal from "./components/CapacitySelectionModal";
 import { Capacity } from "@/types/capacity";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAffiliation } from "@/hooks/useAffiliation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
@@ -120,7 +121,6 @@ export default function EditProfilePage() {
   const username = session?.user?.name;
   const token = session?.user?.token;
   const userId = session?.user?.id;
-  const { languages, loading: languagesLoading } = useLanguage(token);
 
   useEffect(() => {
     if (!token || !userId) {
@@ -140,6 +140,8 @@ export default function EditProfilePage() {
   const [skills, setSkills] = useState(null);
   const { fetchTerritories } = useTerritories();
   const [territories, setTerritories] = useState(null);
+  const { languages, loading: languagesLoading } = useLanguage(token);
+  const { affiliations } = useAffiliation(token);
 
   useEffect(() => {
     const getSkills = async () => {
@@ -986,7 +988,11 @@ export default function EditProfilePage() {
                       } border`}
                     >
                       <option value="">Insert item</option>
-                      {/* Adicionar opções dinâmicas aqui */}
+                      {Object.entries(affiliations).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                       <Image
@@ -1807,7 +1813,11 @@ export default function EditProfilePage() {
                   } border`}
                 >
                   <option value="">Insert item</option>
-                  {/* Adicionar opções dinâmicas aqui */}
+                  {Object.entries(affiliations).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <Image

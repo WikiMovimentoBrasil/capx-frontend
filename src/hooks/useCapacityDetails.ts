@@ -37,7 +37,6 @@ export function useCapacityDetails(
           return acc;
         }, {} as { [key: string]: string });
 
-        console.log("Setting new capacity names:", newNames);
         setCapacityNames(newNames);
       } catch (error) {
         console.error("Error fetching capacities:", error);

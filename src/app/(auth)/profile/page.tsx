@@ -29,6 +29,7 @@ import ContactImageDesktop from "@/public/static/images/capx_contact_person_desk
 import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAffiliation } from "@/hooks/useAffiliation";
 
 const ProfileItemsComponent = ({
   icon,
@@ -81,6 +82,7 @@ export default function ProfilePage() {
     Number(session?.user?.id)
   );
   const { languages } = useLanguage(token);
+  const { affiliations } = useAffiliation(token);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -180,7 +182,11 @@ export default function ProfilePage() {
           <ProfileItemsComponent
             icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
             title="Affiliation"
-            value={profile?.affiliation || ""}
+            value={
+              profile?.affiliation
+                ? affiliations[profile.affiliation[0]] || ""
+                : ""
+            }
           />
           <ProfileItemsComponent
             icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
