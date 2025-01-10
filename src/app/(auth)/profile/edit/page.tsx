@@ -58,7 +58,7 @@ import CapacitySelectionModal from "./components/CapacitySelectionModal";
 import { Capacity } from "@/types/capacity";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
-
+import { useWikimediaProject } from "@/hooks/useWikimediaProject";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const AVATAR_URLS = {
@@ -141,6 +141,7 @@ export default function EditProfilePage() {
   const { territories } = useTerritories(token);
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
+  const { wikimediaProjects } = useWikimediaProject(token);
 
   useEffect(() => {
     const getSkills = async () => {
@@ -527,7 +528,7 @@ export default function EditProfilePage() {
                     imageHeight={20}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -595,7 +596,7 @@ export default function EditProfilePage() {
                     />
                   </div>
                   <span
-                    className={`font-[Montserrat] text-[10px] not-italic font-normal leading-[15px] ${
+                    className={`font-[Montserrat] text-[12px] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -660,7 +661,7 @@ export default function EditProfilePage() {
                     imageHeight={20}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -724,7 +725,7 @@ export default function EditProfilePage() {
                     imageHeight={20}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -786,7 +787,7 @@ export default function EditProfilePage() {
                     imageHeight={20}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -938,7 +939,7 @@ export default function EditProfilePage() {
                     } border`}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -995,7 +996,7 @@ export default function EditProfilePage() {
                     </div>
                   </div>
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -1052,7 +1053,7 @@ export default function EditProfilePage() {
                     </div>
                   </div>
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -1113,7 +1114,7 @@ export default function EditProfilePage() {
                     />
                   </div>
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -1141,7 +1142,7 @@ export default function EditProfilePage() {
                   </div>
                   <div className="relative">
                     <select
-                      value=""
+                      value={formData.wikimedia_project?.[0] || ""}
                       onChange={(e) => {
                         if (e.target.value) {
                           setFormData({
@@ -1160,7 +1161,11 @@ export default function EditProfilePage() {
                       } border`}
                     >
                       <option value="">Insert project</option>
-                      {/* Adicionar opções dinâmicas aqui */}
+                      {Object.entries(wikimediaProjects).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                       <Image
@@ -1185,7 +1190,7 @@ export default function EditProfilePage() {
                     imageHeight={20}
                   />
                   <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
@@ -1197,7 +1202,7 @@ export default function EditProfilePage() {
               {/* Action Buttons */}
               <div className="flex flex-col gap-[10px] mt-0">
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={handleSubmit}
                   label="Save profile"
                   customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
                   imageUrl={UploadIcon}
@@ -1356,7 +1361,7 @@ export default function EditProfilePage() {
                   imageHeight={20}
                 />
                 <span
-                  className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                  className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
@@ -1365,7 +1370,7 @@ export default function EditProfilePage() {
                 </span>
                 <div className="flex flex-col gap-6 mt-0 w-full">
                   <BaseButton
-                    onClick={() => {}}
+                    onClick={handleSubmit}
                     label="Save profile"
                     customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
                     imageUrl={UploadIcon}
@@ -1427,7 +1432,7 @@ export default function EditProfilePage() {
               />
             </div>
             <span
-              className={`font-[Montserrat] text-[10px] not-italic font-normal leading-[15px] ${
+              className={`font-[Montserrat] text-[12px] not-italic font-normal leading-[15px] ${
                 darkMode ? "text-white" : "text-[#053749]"
               }`}
             >
@@ -1491,7 +1496,7 @@ export default function EditProfilePage() {
                 imageHeight={20}
               />
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1553,7 +1558,7 @@ export default function EditProfilePage() {
                 imageHeight={20}
               />
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1615,7 +1620,7 @@ export default function EditProfilePage() {
                 imageHeight={20}
               />
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1767,7 +1772,7 @@ export default function EditProfilePage() {
                 } border`}
               />
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1824,7 +1829,7 @@ export default function EditProfilePage() {
                 </div>
               </div>
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1881,7 +1886,7 @@ export default function EditProfilePage() {
                 </div>
               </div>
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1942,7 +1947,7 @@ export default function EditProfilePage() {
                 />
               </div>
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -1970,7 +1975,7 @@ export default function EditProfilePage() {
               </div>
               <div className="relative">
                 <select
-                  value=""
+                  value={formData.wikimedia_project?.[0] || ""}
                   onChange={(e) => {
                     if (e.target.value) {
                       setFormData({
@@ -1989,7 +1994,11 @@ export default function EditProfilePage() {
                   } border`}
                 >
                   <option value="">Insert project</option>
-                  {/* Adicionar opções dinâmicas aqui */}
+                  {Object.entries(wikimediaProjects).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <Image
@@ -2014,7 +2023,7 @@ export default function EditProfilePage() {
                 imageHeight={20}
               />
               <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -2026,7 +2035,7 @@ export default function EditProfilePage() {
           {/* Action Buttons */}
           <div className="flex flex-row gap-[10px] mt-0">
             <BaseButton
-              onClick={() => {}}
+              onClick={handleSubmit}
               label="Save profile"
               customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
               imageUrl={UploadIcon}
