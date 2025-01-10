@@ -16,7 +16,7 @@ import CheckIcon from "@/public/static/images/check_box_outline_blank.svg";
 import CheckIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import CheckBoxFilledIcon from "@/public/static/images/check_box.svg";
 import CheckBoxFilledIconWhite from "@/public/static/images/check_box_light.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
@@ -164,6 +164,8 @@ export default function EditProfilePage() {
     wikimedia_project: [],
   });
 
+  console.log("formData", formData);
+
   // Update formData when profile data is loaded
   useEffect(() => {
     if (profile) {
@@ -290,17 +292,17 @@ export default function EditProfilePage() {
     loadWikidataImage();
   }, [profile?.wikidata_qid, isWikidataSelected]);
 
-  const capacityIds = [
-    ...(profile?.skills_known || []),
-    ...(profile?.skills_available || []),
-    ...(profile?.skills_wanted || []),
-  ]
-    .map((capacity: Capacity | number) =>
-      typeof capacity === "object" ? capacity.code : capacity
-    )
-    .filter((id): id is number => id !== undefined);
+  const capacityIds = useMemo(
+    () =>
+      [
+        ...(formData?.skills_known || []),
+        ...(formData?.skills_available || []),
+        ...(formData?.skills_wanted || []),
+      ].map((id) => Number(id)),
+    [formData]
+  );
 
-  const { capacityNames, getCapacityName } = useCapacityDetails(capacityIds);
+  const { getCapacityName } = useCapacityDetails(capacityIds);
 
   const handleRemoveCapacity = (
     type: "known" | "available" | "wanted",

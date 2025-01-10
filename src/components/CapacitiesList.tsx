@@ -1,5 +1,6 @@
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface CapacitiesListProps {
   icon: string;
@@ -14,7 +15,15 @@ export function CapacitiesList({
   items,
   customClass,
 }: CapacitiesListProps) {
-  const { getCapacityName } = useCapacityDetails(items);
+  console.log("CapacitiesList mounting with items:", items);
+
+  const { getCapacityName, capacityNames } = useCapacityDetails(items);
+
+  console.log("Hook returned:", { capacityNames, items });
+
+  useEffect(() => {
+    console.log("CapacitiesList capacityNames changed:", capacityNames);
+  }, [capacityNames]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -25,14 +34,18 @@ export function CapacitiesList({
         <p className={customClass}>{title}</p>
       </div>
       <div className="flex flex-wrap gap-2">
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] bg-[#EFEFEF]"
-          >
-            <p className={customClass}>{getCapacityName(item)}</p>
-          </div>
-        ))}
+        {items.map((item, index) => {
+          const name = getCapacityName(item);
+          console.log(`Rendering item ${index}:`, { item, name });
+          return (
+            <div
+              key={index}
+              className="rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] bg-[#EFEFEF]"
+            >
+              <p className={customClass}>{name}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

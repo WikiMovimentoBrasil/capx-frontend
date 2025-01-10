@@ -21,6 +21,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
 
       const formattedResponse = (response || []).map((cap) => ({
         id: Number(cap?.code),
+        code: Number(cap?.code),
         name: String(cap?.name || ""),
         skill_type: Array.isArray(cap?.skill_type) ? cap.skill_type : [],
         skill_wikidata_item: String(cap?.skill_wikidata_item || ""),
@@ -56,6 +57,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
         const formattedChildren = Object.entries(response).map(
           ([id, name]) => ({
             id: Number(id || 0),
+            code: Number(id || 0),
             name: String(name || ""),
             skill_type: [String(parentId)],
             skill_wikidata_item: "",
