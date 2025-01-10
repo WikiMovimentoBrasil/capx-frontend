@@ -30,6 +30,7 @@ import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
+import { useTerritories } from "@/hooks/useTerritories";
 
 const ProfileItemsComponent = ({
   icon,
@@ -83,6 +84,7 @@ export default function ProfilePage() {
   );
   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
+  const { territories } = useTerritories(token);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -191,7 +193,9 @@ export default function ProfilePage() {
           <ProfileItemsComponent
             icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
             title="Territory"
-            value={profile?.territory || ""}
+            value={
+              profile?.territory ? territories[profile.territory[0]] || "" : ""
+            }
           />
           <ProfileItemsComponent
             icon={darkMode ? BarCodeIconWhite : BarCodeIcon}

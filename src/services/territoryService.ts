@@ -1,21 +1,12 @@
 import axios from "axios";
+import { Territories } from "@/types/territory";
 
-interface QueryData {
-  headers: {
-    Authorization: string;
-  };
-}
+export const fetchTerritories = async (token: string): Promise<Territories> => {
+  const response = await axios.get<Territories>(`/api/list/territory/`, {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  });
 
-export const territoryService = {
-  async fetchTerritories(queryData: QueryData) {
-    try {
-      const response = await axios.get(`/api/territory`, {
-        headers: queryData.headers,
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Failed to fetch territories:", error);
-      throw error;
-    }
-  },
+  return response.data;
 };

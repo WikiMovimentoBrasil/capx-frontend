@@ -138,8 +138,7 @@ export default function EditProfilePage() {
   );
   const { fetchSkills } = useSkills();
   const [skills, setSkills] = useState(null);
-  const { fetchTerritories } = useTerritories();
-  const [territories, setTerritories] = useState(null);
+  const { territories } = useTerritories(token);
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
 
@@ -149,14 +148,6 @@ export default function EditProfilePage() {
       setSkills(skillsData);
     };
     getSkills();
-  }, []);
-
-  useEffect(() => {
-    const getTerritories = async () => {
-      const territoriesData = await fetchTerritories();
-      setTerritories(territoriesData);
-    };
-    getTerritories();
   }, []);
 
   const [formData, setFormData] = useState<Partial<Profile>>({
@@ -1045,7 +1036,11 @@ export default function EditProfilePage() {
                       } border`}
                     >
                       <option value="">Insert item</option>
-                      {/* Adicionar opções dinâmicas aqui */}
+                      {Object.entries(territories).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                       <Image
@@ -1870,7 +1865,11 @@ export default function EditProfilePage() {
                   } border`}
                 >
                   <option value="">Insert item</option>
-                  {/* Adicionar opções dinâmicas aqui */}
+                  {Object.entries(territories).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   <Image
