@@ -1,3 +1,5 @@
+import { LanguageProficiency } from "./language";
+
 interface Capacity {
   id: number;
   skill_type: string[];
@@ -10,7 +12,7 @@ export interface Profile {
   affiliation: string[];
   contact?: string;
   display_name?: string;
-  language: string[];
+  language: LanguageProficiency[];
   profile_image?: string;
   pronoun?: string;
   skills_known: number[];

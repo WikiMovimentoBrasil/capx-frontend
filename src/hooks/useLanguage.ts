@@ -1,53 +1,56 @@
-import axios from "axios";
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { Language, LanguageProficiency } from "@/types/language";
+import {
+  fetchLanguages,
+  updateLanguageProficiency,
+} from "@/services/languageService";
 
-interface LanguageOption {
-  value: string;
-  label: string;
-}
-
-export function useLanguage() {
-  const [isLoading, setIsLoading] = useState(false);
+export const useLanguage = (token: string | undefined) => {
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchLanguages = useCallback(async (): Promise<LanguageOption[]> => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get("/api/language");
-      const languages = response.data;
-      return languages.map((lang: string) => ({
-        value: lang,
-        label: lang,
-      }));
-    } catch (err) {
-      setError("Failed to fetch languages");
-      return [];
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  useEffect(() => {
+    const loadLanguages = async () => {
+      if (!token) return;
 
-  const fetchTranslations = useCallback(async (lang: string) => {
-    setIsLoading(true);
-    setError(null);
+      try {
+        const data = await fetchLanguages(token);
+        setLanguages(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to load languages"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLanguages();
+  }, [token]);
+
+  const updateProficiency = async (
+    userId: number,
+    languages: LanguageProficiency[]
+  ) => {
+    if (!token) return;
+
     try {
-      const response = await axios.get("/api/language", {
-        params: { lang },
-      });
-      return response.data;
+      await updateLanguageProficiency(token, userId, languages);
     } catch (err) {
-      setError("Failed to fetch translations");
-      return {};
-    } finally {
-      setIsLoading(false);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to update language proficiency"
+      );
+      throw err;
     }
-  }, []);
+  };
 
   return {
-    fetchLanguages,
-    fetchTranslations,
-    isLoading,
+    languages,
+    loading,
     error,
+    updateProficiency,
   };
-}
+};
