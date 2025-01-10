@@ -122,7 +122,6 @@ export default function EditProfilePage() {
   const userId = session?.user?.id;
   const { languages, loading: languagesLoading } = useLanguage(token);
 
-  console.log("languages", languages);
   useEffect(() => {
     if (!token || !userId) {
       router.push("/");
@@ -176,8 +175,6 @@ export default function EditProfilePage() {
     wikidata_qid: "",
     wikimedia_project: [],
   });
-
-  console.log("formData", formData);
 
   // Update formData when profile data is loaded
   useEffect(() => {

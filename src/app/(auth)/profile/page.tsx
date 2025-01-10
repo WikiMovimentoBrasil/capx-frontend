@@ -82,8 +82,6 @@ export default function ProfilePage() {
   );
   const { languages } = useLanguage(token);
 
-  console.log("profile", profile);
-
   if (isLoading) return <div>Loading...</div>;
 
   const getProficiencyLabel = (proficiency: string) => {
