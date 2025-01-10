@@ -28,6 +28,7 @@ import ContactImageDesktop from "@/public/static/images/capx_contact_person_desk
 
 import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const ProfileItemsComponent = ({
   icon,
@@ -79,10 +80,22 @@ export default function ProfilePage() {
     token,
     Number(session?.user?.id)
   );
+  const { languages } = useLanguage(token);
 
   console.log("profile", profile);
 
   if (isLoading) return <div>Loading...</div>;
+
+  const getProficiencyLabel = (proficiency: string) => {
+    const labels = {
+      "1": "Basic",
+      "2": "Intermediate",
+      "3": "Advanced",
+      "4": "Native",
+      n: "Not specified",
+    };
+    return labels[proficiency as keyof typeof labels] || "Not specified";
+  };
 
   return (
     <div
@@ -125,15 +138,46 @@ export default function ProfilePage() {
               darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
             }`}
           />
-          <ProfileItemsComponent
-            icon={darkMode ? LanguageIconWhite : LanguageIcon}
-            title="Languages"
-            value={profile?.language || ""}
-          />
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Image
+                src={darkMode ? LanguageIconWhite : LanguageIcon}
+                alt="Language icon"
+                width={20}
+                height={20}
+              />
+              <h2
+                className={`font-[Montserrat] text-[14px] font-bold ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                }`}
+              >
+                Languages
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {profile?.language?.map((lang, index) => (
+                <div
+                  key={index}
+                  className={`rounded-[4px] px-[4px] py-[6px] ${
+                    darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                  }`}
+                >
+                  <span
+                    className={`font-[Montserrat] text-[14px] ${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    }`}
+                  >
+                    {languages[lang.id]} -{" "}
+                    {getProficiencyLabel(lang.proficiency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
           <ProfileItemsComponent
             icon={darkMode ? WikiIconWhite : WikiIcon}
             title="Alternative Wikimedia Account"
-            value={profile?.language || ""} // TODO: change to profile?.alternative_wikimedia_account
+            value={""}
           />
           <ProfileItemsComponent
             icon={darkMode ? AffiliationIconWhite : AffiliationIcon}

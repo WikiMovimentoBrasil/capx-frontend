@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Language, LanguageProficiency } from "@/types/language";
+import { Languages, LanguageProficiency } from "@/types/language";
 import {
   fetchLanguages,
   updateLanguageProficiency,
 } from "@/services/languageService";
 
 export const useLanguage = (token: string | undefined) => {
-  const [languages, setLanguages] = useState<Language[]>([]);
+  const [languages, setLanguages] = useState<Languages>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

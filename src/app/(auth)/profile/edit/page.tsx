@@ -56,6 +56,8 @@ import { Profile } from "@/types/profile";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import CapacitySelectionModal from "./components/CapacitySelectionModal";
 import { Capacity } from "@/types/capacity";
+import { useLanguage } from "@/hooks/useLanguage";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const AVATAR_URLS = {
@@ -79,7 +81,7 @@ const AVATAR_URLS = {
 
 const fetchWikidataImage = async (qid: string) => {
   try {
-    // Primeiro, busca a imagem do item Wikidata
+    // First, search for the Wikidata item image
     const sparqlQuery = `
       SELECT ?image WHERE {
         wd:${qid} wdt:P18 ?image.
@@ -101,6 +103,15 @@ const fetchWikidataImage = async (qid: string) => {
   }
 };
 
+interface LanguageProficiency {
+  id: number;
+  proficiency: string;
+}
+
+interface FormData {
+  language: LanguageProficiency[];
+}
+
 export default function EditProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -109,7 +120,9 @@ export default function EditProfilePage() {
   const username = session?.user?.name;
   const token = session?.user?.token;
   const userId = session?.user?.id;
+  const { languages, loading: languagesLoading } = useLanguage(token);
 
+  console.log("languages", languages);
   useEffect(() => {
     if (!token || !userId) {
       router.push("/");
@@ -232,7 +245,7 @@ export default function EditProfilePage() {
     setIsWikidataSelected(newWikidataSelected);
 
     if (newWikidataSelected && formData.wikidata_qid) {
-      // Mostrar loading state se necessário
+      // Show loading state if necessary
       const wikidataImage = await fetchWikidataImage(formData.wikidata_qid);
 
       if (wikidataImage) {
@@ -245,7 +258,7 @@ export default function EditProfilePage() {
           profile_image: wikidataImage,
         }));
       } else {
-        // Se não encontrar imagem no Wikidata, mantenha a imagem atual
+        // If no image found in Wikidata, keep the current image
         console.log("No Wikidata image found");
       }
     } else {
@@ -326,14 +339,11 @@ export default function EditProfilePage() {
   };
 
   const handleRemoveLanguage = (index: number) => {
-    setFormData((prev) => {
-      const newFormData = { ...prev };
-      if (newFormData.language) {
-        newFormData.language = newFormData.language.filter(
-          (_, i) => i !== index
-        );
-      }
-      return newFormData;
+    if (!formData.language) return;
+
+    setFormData({
+      ...formData,
+      language: formData.language.filter((_, i) => i !== index),
     });
   };
 
@@ -376,6 +386,30 @@ export default function EditProfilePage() {
       return newFormData;
     });
     setShowCapacityModal(false);
+  };
+
+  const handleAddLanguage = (languageId: number) => {
+    setFormData({
+      ...formData,
+      language: [
+        ...(formData.language || []),
+        { id: languageId, proficiency: "3" }, // Default proficiency level
+      ],
+    });
+  };
+
+  const getLanguageName = (languageId: number) => {
+    // This should fetch from your language mapping or API
+    const languageMap: { [key: number]: string } = {
+      1: "Brazilian Portuguese",
+      2: "Portuguese",
+      3: "English",
+      4: "Spanish",
+      5: "French",
+      6: "German",
+      7: "Japanese",
+    };
+    return languageMap[languageId] || "Unknown Language";
   };
 
   if (isMobile) {
@@ -776,7 +810,7 @@ export default function EditProfilePage() {
                   <div className="flex items-center gap-2">
                     <Image
                       src={darkMode ? LanguageIconWhite : LanguageIcon}
-                      alt="Languages icon"
+                      alt="Language icon"
                       width={20}
                       height={20}
                     />
@@ -788,48 +822,96 @@ export default function EditProfilePage() {
                       Languages
                     </h2>
                   </div>
-                  <div
-                    className={`flex flex-wrap gap-2 rounded-[4px] ${
-                      darkMode ? "bg-[#04222F]" : "bg-capx-light-bg"
-                    } flex w-full px-[4px] py-[6px] items-start gap-[12px] rounded-[4px] border-[1px] border-[solid] border-[#053749]`}
-                  >
-                    {formData?.language?.map((language, index) => (
+
+                  {/* Language List */}
+                  <div className="flex flex-wrap gap-2">
+                    {formData.language?.map((lang, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-1 rounded-md"
+                        className={`flex items-center gap-2 p-2 rounded ${
+                          darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                        }`}
                       >
-                        <BaseButton
+                        <span className="font-[Montserrat] text-[12px]">
+                          {languages[lang.id]}
+                        </span>
+                        <select
+                          value={lang.proficiency}
+                          onChange={(e) => {
+                            const newLanguages = [...(formData.language || [])];
+                            newLanguages[index] = {
+                              ...newLanguages[index],
+                              proficiency: e.target.value,
+                            };
+                            setFormData({
+                              ...formData,
+                              language: newLanguages,
+                            });
+                          }}
+                          className={`ml-2 p-1 rounded border ${
+                            darkMode
+                              ? "bg-transparent border-white text-white"
+                              : "border-[#053749] text-[#829BA4]"
+                          }`}
+                        >
+                          <option value="1">Basic</option>
+                          <option value="2">Intermediate</option>
+                          <option value="3">Advanced</option>
+                          <option value="4">Native</option>
+                          <option value="n">Prefer not to say</option>
+                        </select>
+                        <button
                           onClick={() => handleRemoveLanguage(index)}
-                          label={language}
-                          customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                          imageUrl={CloseIcon}
-                          imageAlt="Close icon"
-                          imageWidth={16}
-                          imageHeight={16}
-                        />
+                          className="ml-2"
+                        >
+                          <Image
+                            src={darkMode ? CloseIconWhite : CloseIcon}
+                            alt="Remove language"
+                            width={16}
+                            height={16}
+                          />
+                        </button>
                       </div>
                     ))}
                   </div>
-                  <BaseButton
-                    onClick={() => {}}
-                    label="Add languages"
-                    customClass={`w-full flex ${
-                      darkMode
-                        ? "bg-capx-light-box-bg text-[#04222F]"
-                        : "bg-[#053749] text-white"
-                    } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                    imageUrl={darkMode ? AddIconDark : AddIcon}
-                    imageAlt="Add language"
-                    imageWidth={20}
-                    imageHeight={20}
-                  />
-                  <span
-                    className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
-                  >
-                    Please list the languages in which you are able to connect.
-                  </span>
+
+                  {/* Add Language Select */}
+                  <div className="relative">
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setFormData({
+                            ...formData,
+                            language: [
+                              ...(formData.language || []),
+                              { id: Number(e.target.value), proficiency: "3" },
+                            ],
+                          });
+                        }
+                      }}
+                      className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                        darkMode
+                          ? "bg-transparent border-white text-white opacity-50"
+                          : "border-[#053749] text-[#829BA4]"
+                      } border`}
+                    >
+                      <option value="">Add language...</option>
+                      {Object.entries(languages).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <Image
+                        src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                        alt="Select"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Alternative Wikimedia Account */}
@@ -1549,7 +1631,7 @@ export default function EditProfilePage() {
               <div className="flex items-center gap-2">
                 <Image
                   src={darkMode ? LanguageIconWhite : LanguageIcon}
-                  alt="Languages icon"
+                  alt="Language icon"
                   width={20}
                   height={20}
                 />
@@ -1561,48 +1643,96 @@ export default function EditProfilePage() {
                   Languages
                 </h2>
               </div>
-              <div
-                className={`flex flex-wrap gap-2 rounded-[4px] ${
-                  darkMode ? "bg-[#04222F]" : "bg-capx-light-bg"
-                } flex w-full px-[4px] py-[6px] items-start gap-[12px] rounded-[4px] border-[1px] border-[solid] border-[#053749]`}
-              >
-                {formData?.language?.map((language, index) => (
+
+              {/* Language List */}
+              <div className="flex flex-wrap gap-2">
+                {formData.language?.map((lang, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-1 rounded-md"
+                    className={`flex items-center gap-2 p-2 rounded ${
+                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                    }`}
                   >
-                    <BaseButton
+                    <span className="font-[Montserrat] text-[12px]">
+                      {languages[lang.id]}
+                    </span>
+                    <select
+                      value={lang.proficiency}
+                      onChange={(e) => {
+                        const newLanguages = [...(formData.language || [])];
+                        newLanguages[index] = {
+                          ...newLanguages[index],
+                          proficiency: e.target.value,
+                        };
+                        setFormData({
+                          ...formData,
+                          language: newLanguages,
+                        });
+                      }}
+                      className={`ml-2 p-1 rounded border ${
+                        darkMode
+                          ? "bg-transparent border-white text-white"
+                          : "border-[#053749] text-[#829BA4]"
+                      }`}
+                    >
+                      <option value="1">Basic</option>
+                      <option value="2">Intermediate</option>
+                      <option value="3">Advanced</option>
+                      <option value="4">Native</option>
+                      <option value="n">Prefer not to say</option>
+                    </select>
+                    <button
                       onClick={() => handleRemoveLanguage(index)}
-                      label={language}
-                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                      imageUrl={CloseIcon}
-                      imageAlt="Close icon"
-                      imageWidth={16}
-                      imageHeight={16}
-                    />
+                      className="ml-2"
+                    >
+                      <Image
+                        src={darkMode ? CloseIconWhite : CloseIcon}
+                        alt="Remove language"
+                        width={16}
+                        height={16}
+                      />
+                    </button>
                   </div>
                 ))}
               </div>
-              <BaseButton
-                onClick={() => {}}
-                label="Add languages"
-                customClass={`w-full flex ${
-                  darkMode
-                    ? "bg-capx-light-box-bg text-[#04222F]"
-                    : "bg-[#053749] text-white"
-                } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
-                imageUrl={darkMode ? AddIconDark : AddIcon}
-                imageAlt="Add language"
-                imageWidth={20}
-                imageHeight={20}
-              />
-              <span
-                className={`text-[10px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                  darkMode ? "text-white" : "text-[#053749]"
-                }`}
-              >
-                Please list the languages in which you are able to connect.
-              </span>
+
+              {/* Add Language Select */}
+              <div className="relative">
+                <select
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setFormData({
+                        ...formData,
+                        language: [
+                          ...(formData.language || []),
+                          { id: Number(e.target.value), proficiency: "3" },
+                        ],
+                      });
+                    }
+                  }}
+                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                    darkMode
+                      ? "bg-transparent border-white text-white opacity-50"
+                      : "border-[#053749] text-[#829BA4]"
+                  } border`}
+                >
+                  <option value="">Add language...</option>
+                  {Object.entries(languages).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <Image
+                    src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                    alt="Select"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Alternative Wikimedia Account */}

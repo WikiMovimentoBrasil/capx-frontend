@@ -1,20 +1,14 @@
-import { Language, LanguageProficiency } from "@/types/language";
+import axios from "axios";
+import { Language, Languages, LanguageProficiency } from "@/types/language";
 
-export const fetchLanguages = async (token: string): Promise<Language[]> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/languages/`,
-    {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }
-  );
+export const fetchLanguages = async (token: string): Promise<Languages> => {
+  const response = await axios.get<Languages>(`/api/list/language/`, {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch languages");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export const updateLanguageProficiency = async (
@@ -22,19 +16,13 @@ export const updateLanguageProficiency = async (
   userId: number,
   languages: LanguageProficiency[]
 ): Promise<void> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/profile/${userId}/`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-      body: JSON.stringify({ language: languages }),
-    }
-  );
+  const response = await axios.put(`/api/profile/${userId}/`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+    body: JSON.stringify({ language: languages }),
+  });
 
-  if (!response.ok) {
-    throw new Error("Failed to update language proficiency");
-  }
+  return response.data;
 };
