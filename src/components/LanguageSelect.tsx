@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { setCookie } from "@/app/actions";
 import BaseSelect from "./BaseSelect";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguageSelection } from "@/hooks/useLanguageSelection";
 import { useApp } from "@/contexts/AppContext";
 
 interface LanguageSelectProps {
@@ -27,7 +27,7 @@ export default function LanguageSelect({
 }: LanguageSelectProps) {
   const { darkMode } = useTheme();
   const { setMobileMenuStatus } = useApp();
-  const { fetchLanguages, fetchTranslations } = useLanguage();
+  const { fetchLanguages, fetchTranslations } = useLanguageSelection();
   const [options, setOptions] = useState<LanguageOption[]>([]);
   const [isClient, setIsClient] = useState(false);
 
