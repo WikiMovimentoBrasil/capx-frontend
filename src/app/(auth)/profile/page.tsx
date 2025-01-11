@@ -337,166 +337,170 @@ export default function ProfilePage() {
   }
 
   return (
-    <div
-      className={`relative w-full overflow-x-hidden ${
-        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
-      }`}
-    >
-      <section className={`w-full mx-[130px] px-4 py-8 mt-[16px]`}>
-        <div className={`flex flex-col mx-auto`}>
-          <ProfileHeader
-            username={profile?.user?.username || ""}
-            profileImage={profile?.profile_image || ""}
-          />
-          <MiniBio about={profile?.about || ""} />
-          <CapacitiesList
-            icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-            title="Known capacities"
-            items={profile?.skills_known || []}
-            customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-          />
-          <CapacitiesList
-            icon={darkMode ? EmojiIconWhite : EmojiIcon}
-            title="Available capacities"
-            items={profile?.skills_available || []}
-            customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-          />
-          <CapacitiesList
-            icon={darkMode ? TargetIconWhite : TargetIcon}
-            title="Wanted capacities"
-            items={profile?.skills_wanted || []}
-            customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-          />
-          <div className="flex flex-col gap-2 mt-[80px] ">
-            <div className="flex items-center gap-2 items-center">
-              <Image
-                src={darkMode ? LanguageIconWhite : LanguageIcon}
-                alt="Language icon"
-                width={42}
-                height={42}
-              />
-              <h2
-                className={`font-[Montserrat] text-[24px] font-bold ${
-                  darkMode ? "text-white" : "text-[#053749]"
-                }`}
-              >
-                Languages
-              </h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {profile?.language?.map((lang, index) => (
-                <div
-                  key={index}
-                  className={`rounded-[4px] px-[4px] py-[6px] ${
-                    darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+    <main className="flex-grow">
+      <div
+        className={`relative w-full overflow-x-hidden ${
+          darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
+        }`}
+      >
+        <section className={`max-w-[1440px] mx-[24px] px-4 py-8 mt-[16px]`}>
+          <div className={`flex flex-col mx-auto`}>
+            <ProfileHeader
+              username={profile?.user?.username || ""}
+              profileImage={profile?.profile_image || ""}
+            />
+            <MiniBio about={profile?.about || ""} />
+            <CapacitiesList
+              icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+              title="Known capacities"
+              items={profile?.skills_known || []}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+            />
+            <CapacitiesList
+              icon={darkMode ? EmojiIconWhite : EmojiIcon}
+              title="Available capacities"
+              items={profile?.skills_available || []}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+            />
+            <CapacitiesList
+              icon={darkMode ? TargetIconWhite : TargetIcon}
+              title="Wanted capacities"
+              items={profile?.skills_wanted || []}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+            />
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 items-center">
+                <Image
+                  src={darkMode ? LanguageIconWhite : LanguageIcon}
+                  alt="Language icon"
+                  width={42}
+                  height={42}
+                />
+                <h2
+                  className={`font-[Montserrat] text-[24px] font-bold ${
+                    darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  <span
-                    className={`font-[Montserrat] text-[24px] ${
-                      darkMode ? "text-white" : "text-[#053749]"
+                  Languages
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {profile?.language?.map((lang, index) => (
+                  <div
+                    key={index}
+                    className={`rounded-[4px] px-[4px] py-[6px] ${
+                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
                     }`}
                   >
-                    {languages[lang.id]} -{" "}
-                    {getProficiencyLabel(lang.proficiency)}
-                  </span>
-                </div>
-              ))}
+                    <span
+                      className={`font-[Montserrat] text-[24px] ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      {languages[lang.id]} -{" "}
+                      {getProficiencyLabel(lang.proficiency)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <ProfileItemsComponent
-            icon={darkMode ? WikiIconWhite : WikiIcon}
-            title="Alternative Wikimedia Account"
-            value={""}
-          />
-          <ProfileItemsComponent
-            icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
-            title="Affiliation"
-            value={
-              profile?.affiliation
-                ? affiliations[profile.affiliation[0]] || ""
-                : ""
-            }
-          />
-          <ProfileItemsComponent
-            icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-            title="Territory"
-            value={
-              profile?.territory ? territories[profile.territory[0]] || "" : ""
-            }
-          />
-          <ProfileItemsComponent
-            icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
-            title="Wikidata Item"
-            value={profile?.wikidata_qid || ""}
-          />
-          <div className="flex flex-row gap-2 mt-[80px] items-center">
-            <div className="relative h-[48px] w-[48px]">
-              <Image
-                src={darkMode ? WikiIconWhite : WikiIcon}
-                alt={"Wikidata Logo"}
-                fill
-                objectFit="contain"
-              />
-            </div>
-            <p
-              className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
-              }`}
-            >
-              Wikimedia Projects
-            </p>
-          </div>
-          <div className="flex flex-row gap-2 mt-[80px] items-center">
-            {profile?.wikimedia_project?.map((projectId) =>
-              projectId ? (
-                <div key={projectId} className="relative h-[48px] w-[48px]">
-                  <Image
-                    src={
-                      wikimediaProjectImages[projectId] ||
-                      (darkMode ? WikiIconWhite : WikiIcon)
-                    }
-                    alt={wikimediaProjects[projectId] || "Project icon"}
-                    fill
-                    objectFit="contain"
-                  />
-                </div>
-              ) : null
-            )}
-          </div>
-          <div className="flex flex-row gap-2 mt-[80px] items-center mb-[16px]">
-            <div className="relative h-[48px] w-[48px]">
-              <Image
-                src={darkMode ? WikiIconWhite : WikiIcon}
-                alt={"Wikidata Logo"}
-                fill
-                objectFit="contain"
-              />
-            </div>
-            <p
-              className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
-              }`}
-            >
-              Contact
-            </p>
-          </div>
-          <div className="flex w-full justify-center m-auto px-[34px] flex-row items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
-            <div className="relative h-[248px] w-[248px]">
-              <Image
-                src={ContactImageDesktop}
-                alt={"Contact Image"}
-                fill
-                objectFit="contain"
-              />
-            </div>
-            <BaseButton
-              label="Let's talk"
-              customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-              onClick={() => {}}
+            <ProfileItemsComponent
+              icon={darkMode ? WikiIconWhite : WikiIcon}
+              title="Alternative Wikimedia Account"
+              value={""}
             />
+            <ProfileItemsComponent
+              icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
+              title="Affiliation"
+              value={
+                profile?.affiliation
+                  ? affiliations[profile.affiliation[0]] || ""
+                  : ""
+              }
+            />
+            <ProfileItemsComponent
+              icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
+              title="Territory"
+              value={
+                profile?.territory
+                  ? territories[profile.territory[0]] || ""
+                  : ""
+              }
+            />
+            <ProfileItemsComponent
+              icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
+              title="Wikidata Item"
+              value={profile?.wikidata_qid || ""}
+            />
+            <div className="flex flex-row gap-2 mt-[80px] items-center">
+              <div className="relative h-[48px] w-[48px]">
+                <Image
+                  src={darkMode ? WikiIconWhite : WikiIcon}
+                  alt={"Wikidata Logo"}
+                  fill
+                  objectFit="contain"
+                />
+              </div>
+              <p
+                className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+                }`}
+              >
+                Wikimedia Projects
+              </p>
+            </div>
+            <div className="flex flex-row gap-2 mt-[80px] items-center">
+              {profile?.wikimedia_project?.map((projectId) =>
+                projectId ? (
+                  <div key={projectId} className="relative h-[48px] w-[48px]">
+                    <Image
+                      src={
+                        wikimediaProjectImages[projectId] ||
+                        (darkMode ? WikiIconWhite : WikiIcon)
+                      }
+                      alt={wikimediaProjects[projectId] || "Project icon"}
+                      fill
+                      objectFit="contain"
+                    />
+                  </div>
+                ) : null
+              )}
+            </div>
+            <div className="flex flex-row gap-2 mt-[80px] items-center mb-[16px]">
+              <div className="relative h-[48px] w-[48px]">
+                <Image
+                  src={darkMode ? WikiIconWhite : WikiIcon}
+                  alt={"Wikidata Logo"}
+                  fill
+                  objectFit="contain"
+                />
+              </div>
+              <p
+                className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+                }`}
+              >
+                Contact
+              </p>
+            </div>
+            <div className="flex w-full justify-center m-auto px-[34px] flex-row items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
+              <div className="relative h-[248px] w-[248px]">
+                <Image
+                  src={ContactImageDesktop}
+                  alt={"Contact Image"}
+                  fill
+                  objectFit="contain"
+                />
+              </div>
+              <BaseButton
+                label="Let's talk"
+                customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                onClick={() => {}}
+              />
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </main>
   );
 }
