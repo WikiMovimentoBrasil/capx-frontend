@@ -45,7 +45,6 @@ export default function CapacitySelectionModal({
 
   const handleCategorySelect = async (category: Capacity) => {
     try {
-      console.log("Selected category:", category);
       const categoryId = category.id || Number(category.code);
       const currentPathIndex = selectedPath.indexOf(categoryId);
 
@@ -57,7 +56,6 @@ export default function CapacitySelectionModal({
 
       if (!capacityHierarchy[categoryId]) {
         const children = await fetchCapacitiesByParent(categoryId);
-        console.log("Fetched children:", children);
 
         if (children && children.length > 0) {
           setSelectedPath((prev) => [...prev, categoryId]);
@@ -78,7 +76,6 @@ export default function CapacitySelectionModal({
   };
 
   const handleCapacitySelect = (capacity: Capacity) => {
-    console.log("Capacity selected:", capacity);
     setSelectedCapacity(capacity);
   };
 
@@ -90,7 +87,6 @@ export default function CapacitySelectionModal({
           id.toString()
         ),
       };
-      console.log("Confirming capacity selection:", capacityToReturn);
       onSelect(capacityToReturn);
       onClose();
     }
@@ -98,19 +94,14 @@ export default function CapacitySelectionModal({
 
   const getCurrentCapacities = useCallback(() => {
     if (selectedPath.length === 0) {
-      console.log("Returning root capacities:", rootCapacities);
       return rootCapacities;
     }
 
     const currentParentId = selectedPath[selectedPath.length - 1];
-    console.log("Getting capacities for parent:", currentParentId);
-    console.log("Full hierarchy:", capacityHierarchy);
 
     const currentCapacities = capacityHierarchy[currentParentId];
-    console.log("Found capacities for ID:", currentParentId, currentCapacities);
 
     if (!currentCapacities) {
-      console.log("No capacities found in hierarchy for ID:", currentParentId);
       return [];
     }
 
