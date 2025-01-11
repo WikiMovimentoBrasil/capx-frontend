@@ -1231,7 +1231,7 @@ export default function EditProfilePage() {
           isOpen={showCapacityModal}
           onClose={() => setShowCapacityModal(false)}
           onSelect={handleCapacitySelect}
-          title={`Add ${selectedCapacityType} capacities`}
+          title={`Choose ${selectedCapacityType} capacity`}
         />
       </>
     );
