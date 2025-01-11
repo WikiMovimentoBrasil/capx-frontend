@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -32,6 +32,10 @@ import TargetIconWhite from "@/public/static/images/target_white.svg";
 import WikimediaIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 import AddLinkIcon from "@/public/static/images/add_link.svg";
 import ImagesModeIcon from "@/public/static/images/images_mode.svg";
+import { Organization } from "@/types/organization";
+import { Capacity } from "@/types/capacity";
+import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -40,45 +44,35 @@ export default function EditOrganizationProfilePage() {
   const token = session?.user?.token;
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
-  const {
-    organization,
-    isLoading,
-    error,
-    fetchOrganization,
-    updateOrganization,
-  } = useOrganization(token);
+  const { organization, isLoading, error } = useOrganization(token);
 
-  const [formData, setFormData] = useState({
-    name: "AMartins (WMB)",
-    description: "Grupo de usuários Wiki Movimento Brasil",
-    logo_url: "",
-    report_link: "",
-    capacities: {
-      known: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-        "financial reporting",
-        "research",
-      ],
-      available: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-      ],
-      wanted: [
-        "communication",
-        "advocacy",
-        "social skill",
-        "budgeting",
-        "GLAM",
-      ],
-    },
+  const [formData, setFormData] = useState<Organization>({
+    id: 0,
+    display_name: "",
+    profile_image: "",
+    acronym: "",
+    meta_page: "",
+    mastodon: "",
+    tag_diff: "",
+    home_project: "",
+    type: 0,
+    territory: [],
+    managers: [],
+    known_capacities: [],
+    available_capacities: [],
+    wanted_capacities: [],
   });
+
+  useEffect(() => {
+    if (organization) {
+      setFormData({
+        ...organization,
+        known_capacities: organization.known_capacities || [],
+        available_capacities: organization.available_capacities || [],
+        wanted_capacities: organization.wanted_capacities || [],
+      });
+    }
+  }, [organization]);
 
   const [organizationData, setOrganizationData] = useState({
     name: "Wiki Movimento Brasil",
@@ -87,8 +81,59 @@ export default function EditOrganizationProfilePage() {
     report_link: "",
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCapacityType, setCurrentCapacityType] = useState<
+    "known" | "available" | "wanted"
+  >("known");
+
+  const handleAddCapacity = (type: "known" | "available" | "wanted") => {
+    setCurrentCapacityType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleCapacitySelect = (capacity: Capacity) => {
+    setFormData((prev) => {
+      const capacityField =
+        `${currentCapacityType}_capacities` as keyof typeof prev;
+      const currentCapacities = (prev[capacityField] as number[]) || [];
+
+      if (!currentCapacities.includes(capacity.id)) {
+        return {
+          ...prev,
+          [capacityField]: [...currentCapacities, capacity.id],
+        };
+      }
+      return prev;
+    });
+  };
+
+  const capacityIds = useMemo(
+    () =>
+      [
+        ...(formData?.known_capacities || []),
+        ...(formData?.available_capacities || []),
+        ...(formData?.wanted_capacities || []),
+      ].map((id) => Number(id)),
+    [formData]
+  );
+
+  const { getCapacityName } = useCapacityDetails(capacityIds);
+
+  const handleRemoveCapacity = (
+    type: "known" | "available" | "wanted",
+    index: number
+  ) => {
+    setFormData((prev) => {
+      const capacityField = `${type}_capacities` as keyof typeof prev;
+      const currentCapacities = [...((prev[capacityField] as number[]) || [])];
+      currentCapacities.splice(index, 1);
+
+      return {
+        ...prev,
+        [capacityField]: currentCapacities,
+      };
+    });
+  };
 
   if (isMobile) {
     return (
@@ -213,9 +258,12 @@ export default function EditOrganizationProfilePage() {
                     ? "bg-transparent border-white text-white placeholder-gray-400"
                     : "border-gray-300 text-gray-700"
                 }`}
-                value={formData.report_link}
+                value={organizationData.report_link}
                 onChange={(e) =>
-                  setFormData({ ...formData, report_link: e.target.value })
+                  setOrganizationData({
+                    ...organizationData,
+                    report_link: e.target.value,
+                  })
                 }
               />
               <p
@@ -248,22 +296,20 @@ export default function EditOrganizationProfilePage() {
                   </h2>
                 </div>
                 <div
-                  className={`flex flex-wrap gap-2 mt-2 px-1 py-[6px] rounded-[4px] ${
-                    darkMode
-                      ? "text-white bg-[#04222F]"
-                      : "text-[#053749] bg-transparent"
-                  }`}
+                  className={`flex flex-wrap gap-2 rounded-[4px] ${
+                    darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                  } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
                 >
-                  {formData.capacities.known.map((capacity, index) => (
+                  {formData?.known_capacities?.map((capacity, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-1 rounded-md"
                     >
                       <BaseButton
-                        onClick={() => {}}
-                        label={capacity}
-                        customClass="rounded-[4px] border-[1px] border-[solid] border-[#0070B9] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                        imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                        onClick={() => handleRemoveCapacity("known", index)}
+                        label={getCapacityName(capacity)}
+                        customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                        imageUrl={CloseIcon}
                         imageAlt="Close icon"
                         imageWidth={16}
                         imageHeight={16}
@@ -273,7 +319,7 @@ export default function EditOrganizationProfilePage() {
                 </div>
 
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={() => handleAddCapacity("known")}
                   label="Add capacities"
                   customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                     darkMode
@@ -321,16 +367,18 @@ export default function EditOrganizationProfilePage() {
                         : "text-[#053749] bg-transparent"
                     }`}
                   >
-                    {formData.capacities.available.map((capacity, index) => (
+                    {formData?.available_capacities?.map((capacity, index) => (
                       <div
                         key={index}
                         className="flex items-center gap-1 rounded-md"
                       >
                         <BaseButton
-                          onClick={() => {}}
-                          label={capacity}
+                          onClick={() =>
+                            handleRemoveCapacity("available", index)
+                          }
+                          label={getCapacityName(capacity)}
                           customClass="rounded-[4px] border-[1px] border-[solid] border-[#05A300] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                          imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                          imageUrl={CloseIcon}
                           imageAlt="Close icon"
                           imageWidth={16}
                           imageHeight={16}
@@ -339,7 +387,7 @@ export default function EditOrganizationProfilePage() {
                     ))}
                   </div>
                   <BaseButton
-                    onClick={() => {}}
+                    onClick={() => handleAddCapacity("available")}
                     label="Add capacities"
                     customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                       darkMode
@@ -388,16 +436,16 @@ export default function EditOrganizationProfilePage() {
                         : "text-[#053749] bg-transparent"
                     }`}
                   >
-                    {formData.capacities.wanted.map((capacity, index) => (
+                    {formData?.wanted_capacities?.map((capacity, index) => (
                       <div
                         key={index}
                         className="flex items-center gap-1 rounded-md"
                       >
                         <BaseButton
-                          onClick={() => {}}
-                          label={capacity}
+                          onClick={() => handleRemoveCapacity("wanted", index)}
+                          label={getCapacityName(capacity)}
                           customClass="rounded-[4px] border-[1px] border-[solid] border-[#D43831] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                          imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                          imageUrl={CloseIcon}
                           imageAlt="Close icon"
                           imageWidth={16}
                           imageHeight={16}
@@ -406,7 +454,7 @@ export default function EditOrganizationProfilePage() {
                     ))}
                   </div>
                   <BaseButton
-                    onClick={() => {}}
+                    onClick={() => handleAddCapacity("wanted")}
                     label="Add capacities"
                     customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                       darkMode
@@ -718,6 +766,12 @@ export default function EditOrganizationProfilePage() {
             </div>
           </div>
         </section>
+        <CapacitySelectionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSelect={handleCapacitySelect}
+          title={`Select ${currentCapacityType} capacities`}
+        />
       </div>
     );
   }
@@ -853,9 +907,9 @@ export default function EditOrganizationProfilePage() {
                   ? "bg-transparent border-white text-white placeholder-gray-400"
                   : "border-gray-300 text-[#829BA4]"
               }`}
-              value={formData.report_link}
+              value={formData.meta_page}
               onChange={(e) =>
-                setFormData({ ...formData, report_link: e.target.value })
+                setFormData({ ...formData, meta_page: e.target.value })
               }
             />
             <p
@@ -895,14 +949,16 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.capacities.known.map((capacity, index) => (
+                {formData.known_capacities?.map((capacityId, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
                   >
                     <BaseButton
-                      onClick={() => {}}
-                      label={capacity}
+                      onClick={() =>
+                        handleRemoveCapacity(currentCapacityType, index)
+                      }
+                      label={capacityId}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#0070B9] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -914,7 +970,7 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("known")}
                 label="Add capacities"
                 customClass={`rounded-[8px] !w-fit mt-2 flex !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
@@ -962,14 +1018,16 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.capacities.available.map((capacity, index) => (
+                {formData.available_capacities?.map((capacityId, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
                   >
                     <BaseButton
-                      onClick={() => {}}
-                      label={capacity}
+                      onClick={() =>
+                        handleRemoveCapacity(currentCapacityType, index)
+                      }
+                      label={capacityId}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#05A300] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -981,7 +1039,7 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("available")}
                 label="Add capacities"
                 customClass={`rounded-[8px] w-fit mt-2 flex !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
@@ -1029,14 +1087,16 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.capacities.wanted.map((capacity, index) => (
+                {formData.wanted_capacities?.map((capacityId, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
                   >
                     <BaseButton
-                      onClick={() => {}}
-                      label={capacity}
+                      onClick={() =>
+                        handleRemoveCapacity(currentCapacityType, index)
+                      }
+                      label={capacityId}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#D43831] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -1048,7 +1108,7 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <BaseButton
-                onClick={() => {}}
+                onClick={() => handleAddCapacity("wanted")}
                 label="Add capacities"
                 customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
@@ -1371,6 +1431,12 @@ export default function EditOrganizationProfilePage() {
           </div>
         </div>
       </section>
+      <CapacitySelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleCapacitySelect}
+        title={`Select ${currentCapacityType} capacities`}
+      />
     </div>
   );
 }
