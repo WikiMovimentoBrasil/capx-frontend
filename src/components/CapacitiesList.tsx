@@ -64,7 +64,7 @@ export function CapacitiesList({
   }
 
   return (
-    <div className="flex flex-col gap-[62px]">
+    <div className="flex flex-col gap-[62px] mb-4">
       <div className="flex flex-row gap-2 items-center">
         <div className="relative h-[42px] w-[42px]">
           <Image src={icon} alt={title} fill objectFit="contain" />
@@ -72,7 +72,7 @@ export function CapacitiesList({
         <h2
           className={
             customClass +
-            "font-extrabold text-[24px]" +
+            " font-extrabold text-[24px]" +
             (darkMode ? " text-capx-light-bg" : " text-capx-dark-box-bg")
           }
         >
@@ -91,15 +91,17 @@ export function CapacitiesList({
               key={index}
               className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] ${
                 title === "Known capacities"
-                  ? "bg-[#0070B9] text-white"
+                  ? "bg-[#0070B9] text-[24px] text-white"
                   : title === "Available capacities"
-                  ? "bg-[#05A300] text-white"
+                  ? "bg-[#05A300] text-[24px] text-white"
                   : title === "Wanted capacities"
-                  ? "bg-[#D43831] text-white"
+                  ? "bg-[#D43831] text-[24px] text-white"
                   : "bg-[#EFEFEF]"
               }`}
             >
-              <p className={customClass + "text-[24px] font-normal"}>{name}</p>
+              <p className={customClass + " !text-[24px] font-normal"}>
+                {name}
+              </p>
             </div>
           );
         })}

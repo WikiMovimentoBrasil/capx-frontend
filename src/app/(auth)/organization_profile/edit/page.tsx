@@ -723,7 +723,7 @@ export default function EditOrganizationProfilePage() {
   }
   return (
     <div
-      className={`w-full max-w-screen-xl mx-auto px-4 md:px-8 ${
+      className={`relative w-full overflow-x-hidden min-h-screen bg-white dark:bg-[#04222F] ${
         darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
       }`}
     >

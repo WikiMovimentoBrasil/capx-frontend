@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { Capacity, CapacityResponse, QueryData } from "@/types/capacity";
 
 export const capacityService = {
@@ -15,27 +15,14 @@ export const capacityService = {
     }
   },
 
-  async fetchCapacityByType(
-    type: string,
-    queryData: QueryData
-  ): Promise<Record<string, string>> {
+  fetchCapacityByType: async (type: string, config?: AxiosRequestConfig) => {
+    console.log("Service - Fetching capacity by type:", type);
     try {
-      const response = await axios.get(`/api/capacity/type/${type}`, {
-        params: {
-          language: queryData.params?.language,
-          type: type,
-        },
-        headers: queryData.headers,
-      });
-
-      if (!response.data || Object.keys(response.data).length === 0) {
-        console.warn(`No capacities found for type ${type}`);
-        return {};
-      }
-
+      const response = await axios.get(`/api/capacity/type/${type}`, config);
+      console.log("Service - Response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Failed to fetch capacity types:", error);
+      console.error("Service - Error:", error);
       throw error;
     }
   },
