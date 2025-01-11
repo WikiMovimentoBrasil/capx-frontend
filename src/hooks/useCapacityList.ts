@@ -31,8 +31,6 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     async (parentId: number | string) => {
       if (!token) return;
 
-      console.log("Fetching capacities for parent:", parentId);
-
       try {
         setIsLoading(true);
         const response = await capacityService.fetchCapacityByType(
@@ -43,17 +41,13 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           }
         );
 
-        console.log("API Response:", response);
-
         if (!response || typeof response !== "object") {
-          console.log("Invalid response");
           return [];
         }
 
         // Transformar o objeto em array de capacidades
         const formattedChildren = Object.entries(response).map(
           ([code, name]) => {
-            console.log("Formatting entry:", { code, name });
             return {
               id: Number(code),
               code: Number(code),
@@ -65,15 +59,12 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           }
         );
 
-        console.log("Formatted children before setting:", formattedChildren);
-
         // Atualizar o estado de forma síncrona para garantir que os dados estejam disponíveis
         setCapacityHierarchy((prev) => {
           const newHierarchy = {
             ...prev,
             [parentId]: formattedChildren,
           };
-          console.log("New hierarchy state:", newHierarchy);
           return newHierarchy;
         });
 
