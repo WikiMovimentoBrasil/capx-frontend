@@ -22,9 +22,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { organizationService } from "@/services/organizationProfileService";
-import { Organization } from "@/types/organization";
-import { useManagerStatus } from "@/hooks/useManagerStatus";
+import { useOrganization } from "@/hooks/useOrganizationProfile";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
@@ -32,32 +30,16 @@ export default function OrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
-  const { managedOrganizations, isLoading } = useManagerStatus();
-  const [organization, setOrganization] = useState<Organization | null>(null);
-  const [isOrgManager, setIsOrgManager] = useState(false);
+  const organizationId = 1;
+
+  const { organization, isLoading, error, isOrgManager } =
+    useOrganization(token);
 
   useEffect(() => {
-    if (token && organization?.id) {
-      setIsOrgManager(managedOrganizations.includes(organization.id));
+    if (error) {
+      console.error("Error fetching organization:", error);
     }
-  }, [token, organization?.id, managedOrganizations]);
-
-  useEffect(() => {
-    if (token && managedOrganizations.length > 0) {
-      organizationService
-        .fetchOrganization(managedOrganizations[0], token)
-        .then((orgData) => {
-          setOrganization(orgData);
-        })
-        .catch((error) => {
-          console.error("Error fetching organization details:", error);
-        });
-    }
-  }, [token, managedOrganizations]);
-
-  if (!isLoading && managedOrganizations.length === 0) {
-    return <div>You are not a manager of any organization</div>;
-  }
+  }, [error]);
 
   if (isMobile) {
     return (
@@ -102,21 +84,28 @@ export default function OrganizationProfilePage() {
                     </span>
                   </div>
 
-                  <p className="font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4">
+                  <p
+                    className={`font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4 ${
+                      darkMode ? "text-white" : "text-capx-dark-box-bg"
+                    }`}
+                  >
                     Grupo de usuários Wiki Movimento Brasil
                   </p>
 
                   {/* Logo */}
                   <div className="w-full">
-                    <Image
-                      src={WMBLogo}
-                      alt="Organization logo"
-                      width={isMobile ? 300 : 595}
-                      height={isMobile ? 165 : 326}
-                      priority
-                      style={{ width: "auto", height: "auto" }}
-                      className="w-full rounded-lg"
-                    />
+                    <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
+                      <div className="relative h-[51px] w-[127px]">
+                        <Image
+                          src={WMBLogo}
+                          alt="Organization logo"
+                          fill
+                          priority
+                          objectFit="contain"
+                          className="w-full rounded-lg"
+                        />
+                      </div>
+                    </div>
                   </div>
                   {isOrgManager && (
                     <BaseButton
@@ -137,15 +126,16 @@ export default function OrganizationProfilePage() {
               </div>
 
               {/* Report Activity Image */}
-              <div className="w-full flex-shrink-0 rounded-[4px] bg-[#04222F]">
-                <Image
-                  src={ReportActivityIcon}
-                  alt="Report activity icon"
-                  objectFit="contain"
-                  style={{ width: "auto", height: "auto" }}
-                  className="w-full p-6"
-                />
-                <div className="flex flex-col justify-center items-center gap-2 mb-10">
+              <div className="w-full flex flex-col flex-shrink-0 rounded-[4px] bg-[#04222F] justify-center items-center p-6">
+                <div className="relative w-[220px] h-[96px] mb-[30px]">
+                  <Image
+                    src={ReportActivityIcon}
+                    alt="Report activity icon"
+                    objectFit="contain"
+                    fill
+                  />
+                </div>
+                <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
                     Report of activities
                   </h2>
