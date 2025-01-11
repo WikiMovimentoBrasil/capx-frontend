@@ -30,7 +30,6 @@ export default function OrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
-  const organizationId = 1;
 
   const { organization, isLoading, error, isOrgManager } =
     useOrganization(token);

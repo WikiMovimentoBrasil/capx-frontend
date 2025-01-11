@@ -40,14 +40,23 @@ import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
-  const user = session?.user?.name;
   const token = session?.user?.token;
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
-  const { organization, isLoading, error } = useOrganization(token);
 
-  const [formData, setFormData] = useState<Organization>({
-    id: 0,
+  const {
+    organization,
+    isLoading,
+    error,
+    updateOrganization,
+    organizationId,
+    isOrgManager,
+  } = useOrganization(token);
+
+  console.log("Organization ID:", organizationId);
+  console.log("Is Org Manager:", isOrgManager);
+
+  const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
     profile_image: "",
     acronym: "",
@@ -66,13 +75,44 @@ export default function EditOrganizationProfilePage() {
   useEffect(() => {
     if (organization) {
       setFormData({
-        ...organization,
-        known_capacities: organization.known_capacities || [],
-        available_capacities: organization.available_capacities || [],
-        wanted_capacities: organization.wanted_capacities || [],
+        display_name: organization.display_name,
+        profile_image: organization.profile_image,
+        acronym: organization.acronym,
+        meta_page: organization.meta_page,
+        mastodon: organization.mastodon,
+        tag_diff: organization.tag_diff,
+        home_project: organization.home_project,
+        type: organization.type,
+        territory: organization.territory,
+        managers: organization.managers,
+        known_capacities: organization.known_capacities,
+        available_capacities: organization.available_capacities,
+        wanted_capacities: organization.wanted_capacities,
       });
     }
   }, [organization]);
+
+  const handleSubmit = async () => {
+    try {
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
+
+      if (!organizationId) {
+        console.error(
+          "No organization ID found. User might not be a manager of any organization."
+        );
+        return;
+      }
+
+      console.log("formData", formData);
+      await updateOrganization(formData);
+      router.push(`/organizations/${organizationId}`);
+    } catch (error) {
+      console.error("Error updating organization:", error);
+    }
+  };
 
   const [organizationData, setOrganizationData] = useState({
     name: "Wiki Movimento Brasil",
@@ -89,6 +129,38 @@ export default function EditOrganizationProfilePage() {
   const handleAddCapacity = (type: "known" | "available" | "wanted") => {
     setCurrentCapacityType(type);
     setIsModalOpen(true);
+  };
+
+  const handleAddProject = () => {
+    console.log("add project");
+  };
+
+  const handleRemoveProject = () => {
+    console.log("remove project");
+  };
+
+  const handleAddEvent = () => {
+    console.log("add event");
+  };
+
+  const handleRemoveEvent = () => {
+    console.log("remove event");
+  };
+
+  const handleAddLink = () => {
+    console.log("add link");
+  };
+
+  const handleRemoveLink = () => {
+    console.log("remove link");
+  };
+
+  const handleAddDocument = () => {
+    console.log("add document");
+  };
+
+  const handleRemoveDocument = () => {
+    console.log("remove document");
   };
 
   const handleCapacitySelect = (capacity: Capacity) => {
@@ -135,6 +207,17 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
+  if (!isOrgManager) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-center">
+          You are not a manager of any organization. Please contact an
+          administrator.
+        </p>
+      </div>
+    );
+  }
+
   if (isMobile) {
     return (
       <div
@@ -164,7 +247,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    {user}
+                    {session?.user?.name}
                   </h2>
                 </div>
                 <Image
@@ -215,13 +298,13 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               {/* Save/Cancel Buttons */}
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-[10px] mt-0">
                 <BaseButton
-                  onClick={() => {}}
-                  label="Save profile"
-                  customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px] w-auto h-auto"
+                  onClick={handleSubmit}
+                  label="Save organization"
+                  customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
                   imageUrl={SaveIcon}
-                  imageAlt="Save icon"
+                  imageAlt="Upload icon"
                   imageWidth={20}
                   imageHeight={20}
                 />
@@ -742,28 +825,6 @@ export default function EditOrganizationProfilePage() {
 
             {/* Contacts Section */}
             <ContactsSection />
-
-            {/* Save/Cancel Buttons */}
-            <div className="flex flex-col gap-2">
-              <BaseButton
-                onClick={() => {}}
-                label="Save profile"
-                customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px] h-auto w-auto"
-                imageUrl={SaveIcon}
-                imageAlt="Save icon"
-                imageWidth={24}
-                imageHeight={24}
-              />
-              <BaseButton
-                onClick={() => router.back()}
-                label="Cancel edit"
-                customClass="flex border rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
-                imageUrl={CancelIcon}
-                imageAlt="Cancel icon"
-                imageWidth={24}
-                imageHeight={24}
-              />
-            </div>
           </div>
         </section>
         <CapacitySelectionModal
@@ -829,7 +890,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  {user}
+                  {session?.user?.name}
                 </h2>
               </div>
 
@@ -862,7 +923,7 @@ export default function EditOrganizationProfilePage() {
               {/* Save/Cancel Buttons */}
               <div className="flex flex-col gap-4">
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={handleSubmit}
                   label="Save profile"
                   customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-[8px] font-[Montserrat] text-[24px] font-bold !px-[32px] !py-[16px] !w-3/4 h-auto !mb-0"
                   imageUrl={SaveIcon}
@@ -1411,7 +1472,7 @@ export default function EditOrganizationProfilePage() {
           {/* Save/Cancel Buttons */}
           <div className="flex flex-row gap-2 mt-6 w-1/2">
             <BaseButton
-              onClick={() => {}}
+              onClick={handleSubmit}
               label="Save profile"
               customClass="flex border w-1/2 rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#851970]  items-center justify-between text-white !px-[32px] !py-[16px] rounded-md font-[Montserrat] text-[24px] font-bold pb-[6px]"
               imageUrl={SaveIcon}
