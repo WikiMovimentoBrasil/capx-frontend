@@ -16,10 +16,8 @@ export const capacityService = {
   },
 
   fetchCapacityByType: async (type: string, config?: AxiosRequestConfig) => {
-    console.log("Service - Fetching capacity by type:", type);
     try {
       const response = await axios.get(`/api/capacity/type/${type}`, config);
-      console.log("Service - Response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Service - Error:", error);
