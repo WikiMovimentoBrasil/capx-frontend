@@ -48,16 +48,16 @@ export const ContactsSection = () => {
     return (
       <section className="w-full mx-auto">
         <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-[14px]">
-          <Image
-            src={WikimediaIcon}
-            alt="Wikimedia"
-            width={20}
-            height={20}
-            style={{ width: "auto", height: "auto" }}
-          />
+          <div className="relative w-[20px] h-[20px]">
+            <Image
+              src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+              alt="Wikimedia"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
           <h2
-            className={`font-[Montserrat] not-italic font-extrabold leading-[normal] text-[#003649] pl-2 ${
-              isMobile ? "text-[14px]" : " text-[24px]"
+            className={`font-[Montserrat] not-italic font-extrabold leading-[normal] ${
+              darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
             }`}
           >
             Contacts
@@ -67,7 +67,11 @@ export const ContactsSection = () => {
           {contacts.map((contact, index) => (
             <div
               key={index}
-              className="flex w-full pl-[6px] pr-[13px] py-[6px] items-center gap-[4px] rounded-[4px] bg-[#EFEFEF]"
+              className={`flex w-full px-[6px] py-[10px] items-center gap-[4px] rounded-[4px] ${
+                darkMode
+                  ? "bg-transparent border-[1px] border-[solid] border-white"
+                  : "bg-[#EFEFEF]"
+              }`}
             >
               <div className="relative w-[16px] h-[16px]">
                 <Image
@@ -77,7 +81,11 @@ export const ContactsSection = () => {
                   style={{ objectFit: "contain" }}
                 />
               </div>
-              <p className="text-[#053749] font-[Montserrat] text-[13px] not-italic font-normal leading-[normal]">
+              <p
+                className={` font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] ${
+                  darkMode ? "text-[#829BA4]" : "text-[#003649]"
+                }`}
+              >
                 {contact.name}
               </p>
             </div>
@@ -90,39 +98,42 @@ export const ContactsSection = () => {
   return (
     <section className="w-full max-w-screen-xl mx-auto py-8">
       <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
-        <Image
-          src={darkMode ? WikimediaIconWhite : WikimediaIcon}
-          alt="Wikimedia"
-          width={36}
-          height={36}
-          style={{ width: "auto", height: "auto" }}
-        />
+        <div className="relative w-[48px] h-[48px]">
+          <Image
+            src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+            alt="Wikimedia"
+            fill
+            style={{ objectFit: "contain" }}
+          />
+        </div>
         <h2
-          className={`font-[Montserrat] not-italic font-extrabold leading-[normal] ${
+          className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
             darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
-          } pl-2 ${isMobile ? "text-[14px]" : " text-[24px]"}`}
+          }`}
         >
           Contacts
         </h2>
       </div>
       <div className="flex flex-col gap-4">
-        {contacts.map((contact) => (
+        {contacts.map((contact, index) => (
           <div
+            key={index}
             className={`flex flex-row flex w-[1179px] px-[12px] py-[24px] items-center gap-[12px] rounded-[16px] ${
               darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
             }`}
           >
-            <Image
-              src={contact.icon}
-              alt={contact.name}
-              width={32}
-              height={32}
-              style={{ width: "auto", height: "auto" }}
-            />
+            <div className="relative w-[48px] h-[48px]">
+              <Image
+                src={contact.icon}
+                alt={contact.name}
+                fill
+                style={{ objectFit: "contain" }}
+              />
+            </div>
             <p
-              className={`text-center font-[Montserrat] not-italic font-normal leading-[normal] ${
+              className={`text-center font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] ${
                 darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
-              } ${isMobile ? "text-[13px]" : "text-[24px]"}`}
+              }`}
             >
               {contact.name}
             </p>

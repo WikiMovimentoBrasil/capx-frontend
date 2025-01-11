@@ -6,6 +6,7 @@ import CapXLogo from "../../public/static/images/capx_minimalistic_logo.svg";
 import DarkModeButton from "./DarkModeButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import ProfileSelect from "./ProfileSelect";
+
 export interface DesktopNavbarProps {
   pageContent: any;
   language: string;

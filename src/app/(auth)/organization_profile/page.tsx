@@ -160,6 +160,7 @@ export default function OrganizationProfilePage() {
               {/* Capacities Lists */}
               <div className="space-y-6 mt-4">
                 <CapacitiesList
+                  items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                   title="Known capacities"
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -167,6 +168,7 @@ export default function OrganizationProfilePage() {
                   }`}
                 />
                 <CapacitiesList
+                  items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
                   title="Available capacities"
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -174,6 +176,7 @@ export default function OrganizationProfilePage() {
                   }`}
                 />
                 <CapacitiesList
+                  items={organization?.wanted_capacities || []}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
                   title="Wanted capacities"
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -302,6 +305,7 @@ export default function OrganizationProfilePage() {
             {/* Capacities Lists */}
             <div className="space-y-6 mt-4">
               <CapacitiesList
+                items={organization?.known_capacities || []}
                 icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                 title="Known capacities"
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
@@ -309,6 +313,7 @@ export default function OrganizationProfilePage() {
                 }`}
               />
               <CapacitiesList
+                items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
                 title="Available capacities"
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
@@ -316,6 +321,7 @@ export default function OrganizationProfilePage() {
                 }`}
               />
               <CapacitiesList
+                items={organization?.wanted_capacities || []}
                 icon={darkMode ? TargetIconWhite : TargetIcon}
                 title="Wanted capacities"
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${

@@ -9,6 +9,9 @@ export interface Organization {
   type?: number;
   territory?: string[];
   managers?: string[];
+  known_capacities?: number[];
+  available_capacities?: number[];
+  wanted_capacities?: number[];
 }
 
 export interface OrganizationType {
