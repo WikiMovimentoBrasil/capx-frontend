@@ -9,8 +9,42 @@ export default function OAuth({ searchParams }) {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState("FINISHING LOGIN");
   const oauth_verifier = searchParams.oauth_verifier;
+  const oauth_token = searchParams.oauth_token;
 
   useEffect(() => {
+    async function checkToken() {
+      if (!oauth_token) router.push("/");
+      
+      try {
+        const response = await fetch("/api/check", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ oauth_token })
+        });
+        if (response.status === 200) {
+          const result = await response.json();
+          let hostname = document.location.hostname;
+          if (document.location.port !== "") {
+            hostname += ":" + document.location.port;
+          }
+          if (!result) router.push("/");
+
+          if (result === hostname) {
+            finishLogin();
+          } else if (result === "localhost:3000" || result === "127.0.0.1:3000") {
+            router.push("http://localhost:3000/oauth?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier);
+          } else if (result === "capx-test.toolforge.org") {
+            router.push("https://capx-test.toolforge.org/oauth?oauth_token=" + oauth_token + "&oauth_verifier=" + oauth_verifier);
+          }
+        }
+      } catch (error) {
+        console.error("An error occurred when trying to check the token: ", error);
+      }
+    }
+    
+
     async function finishLogin() {
       try {
         const oauth_token = localStorage.getItem("oauth_token");
@@ -35,7 +69,7 @@ export default function OAuth({ searchParams }) {
       }
       router.push("/");
     }
-    finishLogin();
+    checkToken();
   }, [oauth_verifier, router]);
 
   return (
