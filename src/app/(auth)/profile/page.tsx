@@ -139,8 +139,6 @@ export default function ProfilePage() {
     return labels[proficiency as keyof typeof labels] || "Not specified";
   };
 
-  console.log("profile", profile);
-
   if (isMobile) {
     return (
       <div

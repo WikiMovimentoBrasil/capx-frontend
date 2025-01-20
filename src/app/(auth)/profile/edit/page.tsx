@@ -59,6 +59,7 @@ import { Capacity } from "@/types/capacity";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const AVATAR_URLS = {
@@ -78,6 +79,32 @@ const AVATAR_URLS = {
     src: Avatar4Icon.src,
     url: `${BASE_URL}/static/images/capx_avatar_4.svg`,
   },
+};
+
+const fetchWikidataQid = async (name: string) => {
+  try {
+    const wikidataQuery = `
+      SELECT ?item ?names ?p18 WHERE {
+      VALUES ?names {
+        "${name}"
+      }
+      ?item wdt:P4174 ?names.
+      OPTIONAL { ?item wdt:P18 ?p18. }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "pt-br,pt,en". }
+    }`;
+    const encodedQuery = encodeURIComponent(wikidataQuery);
+    const response = await fetch(
+      `https://query.wikidata.org/sparql?query=${encodedQuery}&format=json`
+    );
+    const data = await response.json();
+
+    if (data.results.bindings.length > 0) {
+      return data.results.bindings[0].item.value.split("/").pop();
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching Wikidata Qid:", error);
+  }
 };
 
 const fetchWikidataImage = async (qid: string) => {
@@ -103,15 +130,6 @@ const fetchWikidataImage = async (qid: string) => {
     return null;
   }
 };
-
-interface LanguageProficiency {
-  id: number;
-  proficiency: string;
-}
-
-interface FormData {
-  language: LanguageProficiency[];
-}
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -178,6 +196,12 @@ export default function EditProfilePage() {
         affiliation: profile.affiliation ? profile.affiliation : [],
         territory: profile.territory ? profile.territory : undefined,
         profile_image: profile.profile_image || AVATAR_URLS[0].url,
+        wikidata_qid: profile.wikidata_qid,
+        wikimedia_project: profile.wikimedia_project || [],
+        language: profile.language || [],
+        skills_known: profile.skills_known || [],
+        skills_available: profile.skills_available || [],
+        skills_wanted: profile.skills_wanted || [],
       });
 
       if (profile.profile_image) {
@@ -235,43 +259,50 @@ export default function EditProfilePage() {
     const newWikidataSelected = !isWikidataSelected;
     setIsWikidataSelected(newWikidataSelected);
 
-    if (newWikidataSelected && formData.wikidata_qid) {
-      // Show loading state if necessary
-      const wikidataImage = await fetchWikidataImage(formData.wikidata_qid);
+    if (profile?.user.username) {
+      const wikidataQid = await fetchWikidataQid(profile.user.username);
 
-      if (wikidataImage) {
-        setSelectedAvatar({
-          id: -1,
-          src: wikidataImage,
-        });
-        setFormData((prev) => ({
-          ...prev,
-          profile_image: wikidataImage,
-        }));
+      if (newWikidataSelected && wikidataQid) {
+        // Show loading state if necessary
+        const wikidataImage = await fetchWikidataImage(wikidataQid); // Usando wikidataQid aqui
+
+        if (wikidataImage) {
+          setSelectedAvatar({
+            id: -1,
+            src: wikidataImage,
+          });
+          setFormData((prev) => ({
+            ...prev,
+            profile_image: wikidataImage,
+            wikidata_qid: wikidataQid, // Atualiza o campo wikidata_qid
+          }));
+        } else {
+          // If no image found in Wikidata, keep the current image
+          console.log("No Wikidata image found");
+        }
       } else {
-        // If no image found in Wikidata, keep the current image
-        console.log("No Wikidata image found");
-      }
-    } else {
-      // Reverting to profile image or default avatar
-      if (profile?.profile_image) {
-        setSelectedAvatar({
-          id: -1,
-          src: profile.profile_image,
-        });
-        setFormData((prev) => ({
-          ...prev,
-          profile_image: profile.profile_image,
-        }));
-      } else {
-        setSelectedAvatar({
-          id: 0,
-          src: AVATAR_URLS[0].src,
-        });
-        setFormData((prev) => ({
-          ...prev,
-          profile_image: AVATAR_URLS[0].src,
-        }));
+        // Reverting to profile image or default avatar
+        if (profile?.profile_image) {
+          setSelectedAvatar({
+            id: -1,
+            src: profile.profile_image,
+          });
+          setFormData((prev) => ({
+            ...prev,
+            profile_image: profile.profile_image,
+            wikidata_qid: "",
+          }));
+        } else {
+          setSelectedAvatar({
+            id: 0,
+            src: AVATAR_URLS[0].src,
+          });
+          setFormData((prev) => ({
+            ...prev,
+            profile_image: AVATAR_URLS[0].src,
+            wikidata_qid: "",
+          }));
+        }
       }
     }
   };
@@ -379,28 +410,11 @@ export default function EditProfilePage() {
     setShowCapacityModal(false);
   };
 
-  const handleAddLanguage = (languageId: number) => {
-    setFormData({
-      ...formData,
-      language: [
-        ...(formData.language || []),
-        { id: languageId, proficiency: "3" }, // Default proficiency level
-      ],
-    });
-  };
-
-  const getLanguageName = (languageId: number) => {
-    // This should fetch from your language mapping or API
-    const languageMap: { [key: number]: string } = {
-      1: "Brazilian Portuguese",
-      2: "Portuguese",
-      3: "English",
-      4: "Spanish",
-      5: "French",
-      6: "German",
-      7: "Japanese",
-    };
-    return languageMap[languageId] || "Unknown Language";
+  const handleAddProject = () => {
+    setFormData((prev) => ({
+      ...prev,
+      wikimedia_project: [...(prev.wikimedia_project || []), ""],
+    }));
   };
 
   if (isMobile) {
@@ -1176,9 +1190,52 @@ export default function EditProfilePage() {
                       />
                     </div>
                   </div>
+
+                  {formData.wikimedia_project
+                    ?.slice(1)
+                    .map((project, index) => (
+                      <div key={index} className="relative">
+                        <select
+                          value={project || ""}
+                          onChange={(e) => {
+                            const newProjects = [
+                              ...(formData.wikimedia_project || []),
+                            ];
+                            newProjects[index + 1] = e.target.value;
+                            setFormData({
+                              ...formData,
+                              wikimedia_project: newProjects,
+                            });
+                          }}
+                          className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                            darkMode
+                              ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                              : "border-[#053749] text-[#829BA4]"
+                          } border`}
+                        >
+                          <option value="">Insert project</option>
+                          {Object.entries(wikimediaProjects).map(
+                            ([id, name]) => (
+                              <option key={id} value={id}>
+                                {name}
+                              </option>
+                            )
+                          )}
+                        </select>
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                          <Image
+                            src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                            alt="Select"
+                            width={20}
+                            height={20}
+                          />
+                        </div>
+                      </div>
+                    ))}
+
                   <BaseButton
-                    onClick={() => {}}
-                    label="Add projects"
+                    onClick={handleAddProject}
+                    label="Add more projects"
                     customClass={`w-full flex ${
                       darkMode
                         ? "bg-capx-light-box-bg text-[#04222F]"
@@ -2009,9 +2066,49 @@ export default function EditProfilePage() {
                   />
                 </div>
               </div>
+
+              {/* Renderiza os campos de seleção adicionais para projetos */}
+              {formData.wikimedia_project?.slice(1).map((project, index) => (
+                <div key={index} className="relative">
+                  <select
+                    value={project || ""}
+                    onChange={(e) => {
+                      const newProjects = [
+                        ...(formData.wikimedia_project || []),
+                      ];
+                      newProjects[index + 1] = e.target.value;
+                      setFormData({
+                        ...formData,
+                        wikimedia_project: newProjects,
+                      });
+                    }}
+                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                      darkMode
+                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                        : "border-[#053749] text-[#829BA4]"
+                    } border`}
+                  >
+                    <option value="">Insert project</option>
+                    {Object.entries(wikimediaProjects).map(([id, name]) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <Image
+                      src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                      alt="Select"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+              ))}
+
               <BaseButton
-                onClick={() => {}}
-                label="Add projects"
+                onClick={handleAddProject}
+                label="Add more projects"
                 customClass={`w-full flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
