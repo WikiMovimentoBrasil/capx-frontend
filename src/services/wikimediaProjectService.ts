@@ -23,18 +23,17 @@ export const fetchWikimediaProjectImages = async (
     throw new Error("Project ID is required");
   }
 
-  const response = await axios.get<{ project_image: string }>(
-    `/api/projects/${projectId}`,
-    {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }
-  );
+  const response = await axios.get<{
+    wikimedia_project_picture: string;
+  }>(`/api/wikimedia_project/${projectId}`, {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  });
 
-  if (!response.data.project_image) {
+  if (!response.data.wikimedia_project_picture) {
     throw new Error("No image found for project");
   }
 
-  return response.data.project_image;
+  return response.data.wikimedia_project_picture;
 };

@@ -261,7 +261,7 @@ export default function ProfilePage() {
             <div className="flex flex-row gap-2">
               {profile?.wikimedia_project?.map((projectId) =>
                 projectId ? (
-                  <div key={projectId} className="relative h-[20px] w-[20px]">
+                  <div key={projectId} className="relative h-[72px] w-[72px]">
                     <Image
                       src={
                         wikimediaProjectImages[projectId] ||
