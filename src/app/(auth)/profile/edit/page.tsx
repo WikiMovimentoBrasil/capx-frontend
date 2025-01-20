@@ -859,11 +859,13 @@ export default function EditProfilePage() {
                               : "border-[#053749] text-[#829BA4]"
                           }`}
                         >
+                          <option value="0">Not proficient</option>
                           <option value="1">Basic</option>
                           <option value="2">Intermediate</option>
                           <option value="3">Advanced</option>
-                          <option value="4">Native</option>
-                          <option value="n">Prefer not to say</option>
+                          <option value="4">Almost native</option>
+                          <option value="5">Professional proficiency</option>
+                          <option value="n">Native</option>
                         </select>
                         <button
                           onClick={() => handleRemoveLanguage(index)}
@@ -1735,11 +1737,13 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       }`}
                     >
+                      <option value="0">Not proficient</option>
                       <option value="1">Basic</option>
                       <option value="2">Intermediate</option>
                       <option value="3">Advanced</option>
-                      <option value="4">Native</option>
-                      <option value="n">Prefer not to say</option>
+                      <option value="4">Almost native</option>
+                      <option value="5">Professional proficiency</option>
+                      <option value="n">Native</option>
                     </select>
                     <button
                       onClick={() => handleRemoveLanguage(index)}

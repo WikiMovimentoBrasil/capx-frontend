@@ -130,11 +130,13 @@ export default function ProfilePage() {
 
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
+      "0": "Not proficient",
       "1": "Basic",
       "2": "Intermediate",
       "3": "Advanced",
-      "4": "Native",
-      n: "Not specified",
+      "4": "Almost native",
+      "5": "Professional proficiency",
+      n: "Native",
     };
     return labels[proficiency as keyof typeof labels] || "Not specified";
   };
@@ -450,7 +452,7 @@ export default function ProfilePage() {
             <div className="flex flex-row gap-2 mt-[80px] items-center">
               {profile?.wikimedia_project?.map((projectId) =>
                 projectId ? (
-                  <div key={projectId} className="relative h-[48px] w-[48px]">
+                  <div key={projectId} className="relative h-[180px] w-[180px]">
                     <Image
                       src={
                         wikimediaProjectImages[projectId] ||
