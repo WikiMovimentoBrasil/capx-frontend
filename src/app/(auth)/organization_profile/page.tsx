@@ -175,16 +175,16 @@ export default function OrganizationProfilePage() {
               <div className="space-y-6 mt-4">
                 <ProjectsEventsList
                   title="Main projects"
-                  projectIds={organization?.projects || []}
+                  type="projects"
+                  itemIds={organization?.projects || []}
                   token={token}
                 />
-                {/*                 <ProjectsEventsList
+                <ProjectsEventsList
                   title="Events"
-                  items={organization?.events?.map((event) => ({
-                    image: event.image,
-                    link: event.link,
-                  }))}
-                /> */}
+                  type="events"
+                  itemIds={organization?.events || []}
+                  token={token}
+                />
               </div>
 
               {/* Contacts Section */}
@@ -328,8 +328,18 @@ export default function OrganizationProfilePage() {
 
             {/* Projects and Events */}
             <div className="space-y-6 mt-4">
-              <ProjectsEventsList title="Main projects" />
-              <ProjectsEventsList title="Events" />
+              <ProjectsEventsList
+                title="Main projects"
+                type="projects"
+                itemIds={organization?.projects || []}
+                token={token}
+              />
+              <ProjectsEventsList
+                title="Events"
+                type="events"
+                itemIds={organization?.events || []}
+                token={token}
+              />
             </div>
 
             {/* Contacts Section */}

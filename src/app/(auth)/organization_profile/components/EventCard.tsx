@@ -1,0 +1,67 @@
+import { useEvent } from "@/hooks/useEvents";
+import Image from "next/image";
+import BaseButton from "@/components/BaseButton";
+import { useTheme } from "@/contexts/ThemeContext";
+
+interface EventCardProps {
+  eventId: number;
+  token?: string;
+}
+
+export const EventCard = ({ eventId, token }: EventCardProps) => {
+  const { event, isLoading, error } = useEvent(eventId, token);
+  const { darkMode } = useTheme();
+
+  if (isLoading) {
+    return <div className="loading-skeleton">Loading...</div>;
+  }
+
+  if (error || !event) {
+    return null;
+  }
+
+  const getImageUrl = (url: string) => {
+    if (url.includes("commons.wikimedia.org/wiki/File:")) {
+      const fileName = url.split("File:").pop();
+      if (fileName) {
+        return `https://upload.wikimedia.org/wikipedia/commons/a/a0/${fileName}`;
+      }
+    }
+    return url;
+  };
+
+  const imageUrl = event.image_url ? getImageUrl(event.image_url) : null;
+
+  return (
+    <div
+      className={`rounded-[16px] w-[350px] flex-shrink-0 flex flex-col h-[400px] ${
+        darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+      }`}
+    >
+      <div className="p-6 flex items-center justify-center h-[250px]">
+        <div className="relative w-full h-[200px] flex items-center justify-center">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={event.name}
+              fill
+              style={{ objectFit: "contain" }}
+              className="p-4"
+            />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full text-gray-400">
+              No image available
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="p-6">
+        <BaseButton
+          customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
+          label="View event"
+          onClick={() => window.open(event.url, "_blank")}
+        />
+      </div>
+    </div>
+  );
+};

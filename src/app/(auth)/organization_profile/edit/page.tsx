@@ -37,6 +37,34 @@ import { Capacity } from "@/types/capacity";
 import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 
+interface FormData {
+  events: {
+    image: string;
+    link: string;
+  }[];
+  projects: {
+    image: string;
+    link: string;
+  }[];
+  documents: {
+    image: string;
+    link: string;
+  }[];
+  tag_diff: string[];
+  known_capacities: number[];
+  available_capacities: number[];
+  wanted_capacities: number[];
+  managers: number[];
+  territory: number[];
+  type: number;
+  display_name: string;
+  profile_image: string;
+  acronym: string;
+  meta_page: string;
+  mastodon: string;
+  home_project: string;
+}
+
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -150,10 +178,9 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddEvent = () => {
-    console.log("add event");
     setFormData((prev) => ({
       ...prev,
-      events: [...(prev.events || []), ""],
+      events: [...(prev.events || []), { image: "", link: "" }],
     }));
   };
 
@@ -206,6 +233,25 @@ export default function EditOrganizationProfilePage() {
         };
       }
       return prev;
+    });
+  };
+
+  const handleEventInputChange = (
+    index: number,
+    field: "image" | "link",
+    value: string
+  ) => {
+    setFormData((prev) => {
+      const updatedEvents = [...(prev.events || [])];
+      if (!updatedEvents[index]) {
+        updatedEvents[index] = { image: "", link: "" };
+      }
+      updatedEvents[index][field] = value;
+
+      return {
+        ...prev,
+        events: updatedEvents,
+      };
     });
   };
 
@@ -708,6 +754,10 @@ export default function EditOrganizationProfilePage() {
                   <input
                     type="text"
                     placeholder="Event Image"
+                    value={formData.events?.[0]?.image || ""}
+                    onChange={(e) =>
+                      handleEventInputChange(0, "image", e.target.value)
+                    }
                     className={`w-full bg-transparent border-none outline-none ${
                       darkMode
                         ? "text-white placeholder-gray-400"
@@ -725,7 +775,11 @@ export default function EditOrganizationProfilePage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Link of project"
+                    placeholder="Link of event"
+                    value={formData.events?.[0]?.link || ""}
+                    onChange={(e) =>
+                      handleEventInputChange(0, "link", e.target.value)
+                    }
                     className={`w-full bg-transparent border-none outline-none ${
                       darkMode
                         ? "text-white placeholder-gray-400"
