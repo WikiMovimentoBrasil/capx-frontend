@@ -141,19 +141,6 @@ export default function UserProfileView({ darkMode, userProfileData, showEditBut
               />
             </div>
           )}
-          {userProfileData.userData.language.length === 0 ? (null) : (
-            <div className="space-y-6 sm:space-y-4">
-              <ViewBoxTitle>
-                {pageContent["body-profile-section-title-language"]}
-              </ViewBoxTitle>
-              <UserProfileViewTagBox
-                darkMode={darkMode}
-                data={userProfileData.userData.language}
-                tagList={userProfileData.languageData}
-                endpoint={"tag/language"}
-              />
-            </div>
-          )}
           {userProfileData.userData.affiliation.length === 0 ? (null) : (
             <div className="space-y-6 sm:space-y-4">
               <ViewBoxTitle>

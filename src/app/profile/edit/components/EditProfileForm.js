@@ -304,27 +304,6 @@ export default function EditProfileForm({
             >
               {pageContent["form-profile-territory"]}
             </MultiSelectInput>
-            {/* Language */}
-            <MultiSelectInput
-              id={"language"}
-              key={"language"}
-              options={Object.entries(formData.languageData ?? {}).map(
-                (option) => ({
-                  value: parseInt(option[0]),
-                  label: option[1],
-                })
-              )}
-              selectedOptions={
-                formData.userData?.language?.map((option) => ({
-                  value: option,
-                  label: formData.languageData[option],
-                })) ?? []
-              }
-              onChange={handleMultiSelectInputChange}
-              placeholder={pageContent["form-profile-select"]}
-            >
-              {pageContent["form-profile-languages"]}
-            </MultiSelectInput>
             {/* Affilitation */}
             <MultiSelectInput
               id={"affiliation"}
