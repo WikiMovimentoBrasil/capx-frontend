@@ -1,0 +1,23 @@
+<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Wikimedia-logo_black 1" clip-path="url(#clip0_15066_15171)">
+<g id="Clip path group">
+<mask id="mask0_15066_15171" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="21" height="21">
+<g id="m">
+<path id="Vector" d="M11.124 9.71875V17.2188H9.87402V9.71875L0.499023 0.34375V20.9688H20.499V0.34375L11.124 9.71875Z" fill="white"/>
+</g>
+</mask>
+<g mask="url(#mask0_15066_15171)">
+<g id="Group">
+<path id="Vector_2" d="M10.499 16.5938C13.6056 16.5938 16.124 14.0754 16.124 10.9688C16.124 7.86215 13.6056 5.34375 10.499 5.34375C7.39242 5.34375 4.87402 7.86215 4.87402 10.9688C4.87402 14.0754 7.39242 16.5938 10.499 16.5938Z" fill="white"/>
+<path id="Vector_3" d="M10.499 19.0938C14.9863 19.0938 18.624 15.4561 18.624 10.9688C18.624 6.48144 14.9863 2.84375 10.499 2.84375C6.01171 2.84375 2.37402 6.48144 2.37402 10.9688C2.37402 15.4561 6.01171 19.0938 10.499 19.0938Z" stroke="white" stroke-width="2.5"/>
+</g>
+</g>
+</g>
+<path id="Vector_4" d="M10.499 7.84375C12.2249 7.84375 13.624 6.44464 13.624 4.71875C13.624 2.99286 12.2249 1.59375 10.499 1.59375C8.77313 1.59375 7.37402 2.99286 7.37402 4.71875C7.37402 6.44464 8.77313 7.84375 10.499 7.84375Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_15066_15171">
+<rect width="20" height="20" fill="white" transform="translate(0.499023 0.96875)"/>
+</clipPath>
+</defs>
+</svg>

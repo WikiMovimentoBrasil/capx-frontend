@@ -63,23 +63,11 @@ export default function UserProfileMainWrapper({
   }
 
   return (
-    <BaseWrapper
-      session={session}
-      language={language}
-      setLanguage={setLanguage}
-      pageContent={pageContent}
-      setPageContent={setPageContent}
+    <UserProfileView
       darkMode={darkMode}
-      setDarkMode={setDarkMode}
-      mobileMenuStatus={mobileMenuStatus}
-      setMobileMenuStatus={setMobileMenuStatus}
-    >
-      <UserProfileView
-        darkMode={darkMode}
-        userProfileData={profileData}
-        showEditButton={true}
-        pageContent={pageContent}
-      />
-    </BaseWrapper>
+      userProfileData={profileData}
+      showEditButton={true}
+      pageContent={pageContent}
+    />
   );
 }

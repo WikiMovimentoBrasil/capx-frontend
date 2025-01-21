@@ -3,7 +3,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CapXLogo from "../../../public/static/images/capx_logo.svg";
+import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
 
 interface OAuthProps {
   searchParams: {
@@ -84,6 +84,8 @@ export default function OAuth({ searchParams }: OAuthProps) {
           oauth_token,
           oauth_token_secret,
           oauth_verifier,
+          stored_token: oauth_token,
+          stored_token_secret: oauth_token_secret,
           redirect: false,
         });
 

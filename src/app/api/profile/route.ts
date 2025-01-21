@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const userId = searchParams.get("userId");
-  const username = searchParams.get("username");
 
   const authHeader = request.headers.get("authorization");
 
@@ -38,7 +37,6 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const userId = request.nextUrl.searchParams.get("userId");
-  const username = request.nextUrl.searchParams.get("username");
   let searchParams = new URLSearchParams(request.nextUrl.search);
   const formData = await request.json();
 
