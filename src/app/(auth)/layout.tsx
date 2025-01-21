@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import BaseWrapper from "@/components/BaseWrapper";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export default async function AuthLayout({
   children,

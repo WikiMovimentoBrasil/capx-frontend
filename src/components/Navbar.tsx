@@ -52,8 +52,6 @@ export default function Navbar({
       language={language}
       setLanguage={setLanguage}
       setPageContent={setPageContent}
-      darkMode={darkMode}
-      setDarkMode={setDarkMode}
       session={session}
     />
   );

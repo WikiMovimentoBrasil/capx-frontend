@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BaseSelect from "./BaseSelect";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 interface ProfileOption {
   value: string;
@@ -22,6 +23,7 @@ export default function ProfileSelect() {
   const router = useRouter();
   const [selectedProfile, setSelectedProfile] = useState<string>("user");
   const { darkMode } = useTheme();
+  const { isMobile } = useApp();
   const handleProfileChange = (selectedOption: {
     value: string;
     label: string;
@@ -46,6 +48,7 @@ export default function ProfileSelect() {
       name="My profiles"
       className="w-[200px] text-[20px] w-max"
       darkMode={darkMode}
+      isMobile={isMobile}
     />
   );
 }

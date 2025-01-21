@@ -140,16 +140,6 @@ export default function EditProfilePage() {
   const token = session?.user?.token;
   const userId = session?.user?.id;
 
-  useEffect(() => {
-    if (!token || !userId) {
-      router.push("/");
-    }
-  }, [token, userId, router]);
-
-  if (!token || !userId) {
-    return null;
-  }
-
   const { profile, isLoading, error, updateProfile } = useProfile(
     token,
     Number(userId)
@@ -160,15 +150,16 @@ export default function EditProfilePage() {
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { wikimediaProjects } = useWikimediaProject(token);
-
-  useEffect(() => {
-    const getSkills = async () => {
-      const skillsData = await fetchSkills();
-      setSkills(skillsData);
-    };
-    getSkills();
-  }, []);
-
+  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState({
+    id: 0,
+    src: NoAvatarIcon,
+  });
+  const [isWikidataSelected, setIsWikidataSelected] = useState(false);
+  const [showCapacityModal, setShowCapacityModal] = useState(false);
+  const [selectedCapacityType, setSelectedCapacityType] = useState<
+    "known" | "available" | "wanted"
+  >("known");
   const [formData, setFormData] = useState<Partial<Profile>>({
     about: "",
     affiliation: [],
@@ -187,6 +178,20 @@ export default function EditProfilePage() {
     wikidata_qid: "",
     wikimedia_project: [],
   });
+
+  useEffect(() => {
+    if (!token || !userId) {
+      router.push("/");
+    }
+  }, [token, userId, router]);
+
+  useEffect(() => {
+    const getSkills = async () => {
+      const skillsData = await fetchSkills();
+      setSkills(skillsData);
+    };
+    getSkills();
+  }, [fetchSkills]);
 
   // Update formData when profile data is loaded
   useEffect(() => {
@@ -232,13 +237,6 @@ export default function EditProfilePage() {
     }
   };
 
-  const [selectedAvatar, setSelectedAvatar] = useState({
-    id: 0,
-    src: NoAvatarIcon,
-  });
-
-  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
-
   const handleAvatarSelect = (avatarId: number) => {
     const selected = AVATAR_URLS[avatarId as keyof typeof AVATAR_URLS];
 
@@ -252,8 +250,6 @@ export default function EditProfilePage() {
       profile_image: selected.url,
     });
   };
-
-  const [isWikidataSelected, setIsWikidataSelected] = useState(false);
 
   const handleWikidataClick = async () => {
     const newWikidataSelected = !isWikidataSelected;
@@ -368,12 +364,6 @@ export default function EditProfilePage() {
       language: formData.language.filter((_, i) => i !== index),
     });
   };
-
-  const [showCapacityModal, setShowCapacityModal] = useState(false);
-
-  const [selectedCapacityType, setSelectedCapacityType] = useState<
-    "known" | "available" | "wanted"
-  >("known");
 
   const handleAddCapacity = (type: "known" | "available" | "wanted") => {
     setSelectedCapacityType(type);

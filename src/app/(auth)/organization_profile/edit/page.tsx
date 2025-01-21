@@ -718,8 +718,8 @@ export default function EditOrganizationProfilePage() {
                 } mt-1`}
               >
                 Show the community what your organization is working on. Share
-                up to four wikimedia links and their illustrative images' links
-                on commons.
+                up to four wikimedia links and their illustrative images&apos;
+                links on commons.
               </p>
             </div>
 
@@ -808,7 +808,8 @@ export default function EditOrganizationProfilePage() {
                 } mt-1`}
               >
                 Display your organization main events. Share up to four
-                wikimedia links and their illustrative images' links on commons.
+                wikimedia links and their illustrative images&apos; links on
+                commons.
               </p>
             </div>
 
@@ -902,8 +903,8 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                You can share up to four links of your organization's documents
-                from Wikimedia Commons.
+                You can share up to four links of your organization&apos;s
+                documents from Wikimedia Commons.
               </p>
             </div>
 
@@ -1357,8 +1358,8 @@ export default function EditOrganizationProfilePage() {
               } mt-1`}
             >
               Show the community what your organization is working on. Share up
-              to four wikimedia links and their illustrative images' links on
-              commons.
+              to four wikimedia links and their illustrative images&apos; links
+              on commons.
             </p>
           </div>
 
@@ -1441,7 +1442,7 @@ export default function EditOrganizationProfilePage() {
               } mt-1`}
             >
               Display your organization main events. Share up to four wikimedia
-              links and their illustrative images' links on commons.
+              links and their illustrative images&apos; links on commons.
             </p>
           </div>
 
@@ -1545,8 +1546,8 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              You can share up to four links of your organization's documents
-              from Wikimedia Commons.
+              You can share up to four links of your organization&apos;s
+              documents from Wikimedia Commons.
             </p>
           </div>
 
