@@ -5,7 +5,7 @@ export interface Organization {
   acronym?: string;
   meta_page?: string;
   mastodon?: string;
-  tag_diff?: string;
+  tag_diff?: any[];
   home_project?: string;
   update_date?: string;
   type?: number;
@@ -16,7 +16,6 @@ export interface Organization {
   wanted_capacities?: number[];
   projects?: any[];
   events?: any[];
-  news?: any[];
   documents?: any[];
   contacts?: any[];
 }

@@ -53,16 +53,16 @@ export default function EditOrganizationProfilePage() {
     isOrgManager,
   } = useOrganization(token);
 
-  console.log("Organization ID:", organizationId);
-  console.log("Is Org Manager:", isOrgManager);
-
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
     profile_image: "",
     acronym: "",
     meta_page: "",
     mastodon: "",
-    tag_diff: "",
+    tag_diff: [],
+    events: [],
+    documents: [],
+    projects: [],
     home_project: "",
     type: 0,
     territory: [],
@@ -81,6 +81,9 @@ export default function EditOrganizationProfilePage() {
         meta_page: organization.meta_page,
         mastodon: organization.mastodon,
         tag_diff: organization.tag_diff,
+        events: organization.events,
+        projects: organization.projects,
+        documents: organization.documents,
         home_project: organization.home_project,
         type: organization.type,
         territory: organization.territory,
@@ -108,7 +111,7 @@ export default function EditOrganizationProfilePage() {
 
       console.log("formData", formData);
       await updateOrganization(formData);
-      router.push(`/organizations/${organizationId}`);
+      router.push(`/organization_profile/`);
     } catch (error) {
       console.error("Error updating organization:", error);
     }
@@ -132,35 +135,62 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddProject = () => {
-    console.log("add project");
+    setFormData((prev) => ({
+      ...prev,
+      projects: [...(prev.projects || []), ""],
+    }));
   };
 
-  const handleRemoveProject = () => {
-    console.log("remove project");
+  const handleRemoveProject = (index: number) => {
+    setFormData((prev) => {
+      const newProjects = [...(prev.projects || [])];
+      newProjects.splice(index, 1);
+      return { ...prev, projects: newProjects };
+    });
   };
 
   const handleAddEvent = () => {
     console.log("add event");
+    setFormData((prev) => ({
+      ...prev,
+      events: [...(prev.events || []), ""],
+    }));
   };
 
-  const handleRemoveEvent = () => {
-    console.log("remove event");
+  const handleRemoveEvent = (index: number) => {
+    setFormData((prev) => {
+      const newEvents = [...(prev.events || [])];
+      newEvents.splice(index, 1);
+      return { ...prev, events: newEvents };
+    });
+  };
+
+  const handleAddDiffTag = () => {
+    console.log("add diff tag");
+    setFormData((prev) => {
+      const newState = {
+        ...prev,
+        tag_diff: [...(prev.tag_diff || []), ""],
+      };
+      console.log("newState", newState);
+      return newState;
+    });
   };
 
   const handleAddLink = () => {
     console.log("add link");
+    setFormData((prev) => ({
+      ...prev,
+      documents: [...(prev.documents || []), ""],
+    }));
   };
 
-  const handleRemoveLink = () => {
-    console.log("remove link");
-  };
-
-  const handleAddDocument = () => {
-    console.log("add document");
-  };
-
-  const handleRemoveDocument = () => {
-    console.log("remove document");
+  const handleRemoveLink = (index: number) => {
+    setFormData((prev) => {
+      const newDocuments = [...(prev.documents || [])];
+      newDocuments.splice(index, 1);
+      return { ...prev, documents: newDocuments };
+    });
   };
 
   const handleCapacitySelect = (capacity: Capacity) => {
@@ -623,8 +653,8 @@ export default function EditOrganizationProfilePage() {
               </div>
               <div className="flex items-center gap-1 rounded-md">
                 <BaseButton
-                  onClick={() => {}}
-                  label="Add projects"
+                  onClick={handleAddProject}
+                  label="Add more projects"
                   customClass={`rounded-[4px] !mb-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                     darkMode
                       ? "text-capx-dark-box-bg bg-[#EFEFEF]"
@@ -706,8 +736,8 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <BaseButton
-                onClick={() => {}}
-                label="Add events"
+                onClick={handleAddEvent}
+                label="Add more events"
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-capx-dark-box-bg bg-white"
@@ -754,8 +784,8 @@ export default function EditOrganizationProfilePage() {
               />
 
               <BaseButton
-                onClick={() => {}}
-                label="Add Diff tags"
+                onClick={handleAddDiffTag}
+                label="Add more Diff tags"
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-capx-dark-box-bg bg-white"
@@ -801,8 +831,8 @@ export default function EditOrganizationProfilePage() {
               />
 
               <BaseButton
-                onClick={() => {}}
-                label="Add link"
+                onClick={handleAddLink}
+                label="Add more links"
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-capx-dark-box-bg bg-white"

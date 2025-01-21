@@ -40,6 +40,7 @@ export default function OrganizationProfilePage() {
     }
   }, [error]);
 
+  console.log("organization", organization);
   if (isMobile) {
     return (
       <>
@@ -152,32 +153,38 @@ export default function OrganizationProfilePage() {
                   items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                   title="Known capacities"
-                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
-                    darkMode ? "text-white" : "text-capx-dark-box-bg"
-                  }`}
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]`}
                 />
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
                   title="Available capacities"
-                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
-                    darkMode ? "text-white" : "text-capx-dark-box-bg"
-                  }`}
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
+                    `}
                 />
                 <CapacitiesList
                   items={organization?.wanted_capacities || []}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
                   title="Wanted capacities"
-                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
-                    darkMode ? "text-white" : "text-capx-dark-box-bg"
-                  }`}
+                  customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
+                    `}
                 />
               </div>
 
               {/* Projects and Events */}
               <div className="space-y-6 mt-4">
-                <ProjectsEventsList title="Main projects" />
-                <ProjectsEventsList title="Events" />
+                <ProjectsEventsList
+                  title="Main projects"
+                  projectIds={organization?.projects || []}
+                  token={token}
+                />
+                {/*                 <ProjectsEventsList
+                  title="Events"
+                  items={organization?.events?.map((event) => ({
+                    image: event.image,
+                    link: event.link,
+                  }))}
+                /> */}
               </div>
 
               {/* Contacts Section */}
