@@ -39,6 +39,10 @@ export default function AuthButton({
     }
 
     try {
+      // Limpar tokens antigos antes de iniciar novo fluxo
+      localStorage.removeItem("oauth_token");
+      localStorage.removeItem("oauth_token_secret");
+
       const response = await axios.post("/api/login", null, {
         headers: {
           Accept: "application/json",
@@ -47,6 +51,7 @@ export default function AuthButton({
       });
 
       if (response.data?.redirect_url) {
+        // Armazenar os novos tokens
         localStorage.setItem("oauth_token", response.data.oauth_token);
         localStorage.setItem(
           "oauth_token_secret",
