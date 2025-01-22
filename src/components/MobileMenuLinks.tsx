@@ -206,7 +206,7 @@ export default function MobileMenuLinks({
                         <div
                           key={`submenu-item-${subIndex}`}
                           onClick={subItem.action}
-                          className={`flex items-center justify-between px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 cursor-pointer ${
+                          className={`flex items-center justify-between px-2 py-3 border-t border-[#053749] pt-2 cursor-pointer ${
                             darkMode
                               ? "text-capx-dark-text bg-capx-dark-bg"
                               : "text-capx-light-text bg-capx-light-bg"
