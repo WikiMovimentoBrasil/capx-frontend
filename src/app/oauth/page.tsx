@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession, SessionProvider } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
-import { SessionProvider } from "next-auth/react";
 
 function OAuthContent() {
   const router = useRouter();
@@ -23,14 +22,12 @@ function OAuthContent() {
   });
 
   useEffect(() => {
-    let mounted = true;
 
     async function checkToken() {
-      if (!oauth_token_request || !oauth_verifier || !mounted) {
+      if (!oauth_token_request || !oauth_verifier) {
         console.log("Missing required parameters:", {
           token: oauth_token_request,
           verifier: oauth_verifier,
-          mounted,
         });
         return;
       }
@@ -119,11 +116,6 @@ function OAuthContent() {
     }
 
     async function handleLogin() {
-      if (!oauth_verifier || !mounted) {
-        console.log("Missing verifier or component unmounted");
-        return null;
-      }
-
       try {
         const oauth_token = localStorage.getItem("oauth_token");
         const oauth_token_secret = localStorage.getItem("oauth_token_secret");
@@ -155,7 +147,7 @@ function OAuthContent() {
           throw new Error(result.error);
         }
 
-        if (mounted && result?.ok) {
+        if (result?.ok) {
           setLoginStatus("Login realizado, atualizando sessão...");
 
           // Aguarda a sessão ser atualizada
@@ -174,21 +166,11 @@ function OAuthContent() {
         return result;
       } catch (error) {
         console.error("Login error:", error);
-        if (mounted) {
-          setLoginStatus("LOGIN FAILED");
-          setTimeout(() => {
-            router.push("/");
-          }, 2000);
-        }
         return { error: error.message };
       }
     }
 
     checkToken();
-
-    return () => {
-      mounted = false;
-    };
   }, [oauth_verifier, oauth_token_request, router, status, session]);
 
   return (
