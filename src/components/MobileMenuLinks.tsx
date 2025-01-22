@@ -116,11 +116,6 @@ export default function MobileMenuLinks({
       image: ArrowDropDownBlack,
       isDarkBg: true,
     },
-    {
-      title: "Organization",
-      to: "/organization_profile",
-      active: true,
-    },
   ];
 
   const handleProfileClick = () => {
@@ -136,7 +131,7 @@ export default function MobileMenuLinks({
               return (
                 <div
                   key={`mobile-menu-container-${index}`}
-                  className="w-[95%] mx-[8px]"
+                  className="w-[100%] mx-[8px]"
                 >
                   <button
                     onClick={handleProfileClick}
@@ -206,12 +201,12 @@ export default function MobileMenuLinks({
                     )}
                   </button>
                   {isExpanded && (
-                    <div className="flex flex-col rounded-b-[4px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
+                    <div className="flex flex-col rounded-b-[4px] w-[90%] mx-[16px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
                       {subMenuItems.map((subItem, subIndex) => (
                         <div
                           key={`submenu-item-${subIndex}`}
                           onClick={subItem.action}
-                          className={`flex items-center justify-between w-full px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 cursor-pointer ${
+                          className={`flex items-center justify-between px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 cursor-pointer ${
                             darkMode
                               ? "text-capx-dark-text bg-capx-dark-bg"
                               : "text-capx-light-text bg-capx-light-bg"
