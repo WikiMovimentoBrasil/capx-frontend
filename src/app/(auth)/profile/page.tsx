@@ -35,8 +35,6 @@ import { useAffiliation } from "@/hooks/useAffiliation";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
 
-import { cookies } from "next/headers";
-
 const ProfileItemsComponent = ({
   icon,
   title,
@@ -127,12 +125,9 @@ export default function ProfilePage() {
     token,
     profile?.wikimedia_project || []
   );
-  /* 
-  const cookieStore = cookies();
-  const language = cookieStore.get("language")?.value ?? "en";
- */
-  if (isLoading) return <div>Loading...</div>;
 
+  /*   if (isLoading) return <div>Loading...</div>;
+   */
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
       "0": "Not proficient",
@@ -223,7 +218,7 @@ export default function ProfilePage() {
             <ProfileItemsComponent
               icon={darkMode ? WikiIconWhite : WikiIcon}
               title="Alternative Wikimedia Account"
-              value={""}
+              value={profile?.wiki_alt || ""}
             />
             <ProfileItemsComponent
               icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
