@@ -144,8 +144,7 @@ export default function EditProfilePage() {
     token,
     Number(userId)
   );
-  const { fetchSkills } = useSkills();
-  const [skills, setSkills] = useState(null);
+  const { skills, isSkillsLoading, skillsError } = useSkills();
   const { territories } = useTerritories(token);
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
@@ -184,14 +183,6 @@ export default function EditProfilePage() {
       router.push("/");
     }
   }, [token, userId, router]);
-
-  useEffect(() => {
-    const getSkills = async () => {
-      const skillsData = await fetchSkills();
-      setSkills(skillsData);
-    };
-    getSkills();
-  }, [fetchSkills]);
 
   // Update formData when profile data is loaded
   useEffect(() => {
