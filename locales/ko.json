@@ -7,12 +7,11 @@
 		]
 	},
 	"navbar-link-about": "소개",
-	"navbar-link-profile": "내 프로필",
 	"navbar-link-capacities": "용량 디렉터리",
 	"navbar-link-events": "행사",
-	"navbar-link-homepage": "홈페이지",
 	"navbar-link-reports": "보고서",
 	"body-home-section01-title-carousel": "능력, 지식, 기술, 서비스",
+	"body-loggedin-home-main-section-button02": "내 프로필",
 	"body-profile-gender-hehim": "그",
 	"body-profile-gender-sheher": "그녀",
 	"body-profile-gender-theythem": "그들",

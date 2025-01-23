@@ -5,9 +5,8 @@
 		]
 	},
 	"navbar-link-about": "Iwwer",
-	"navbar-link-profile": "Mäi Profil",
 	"navbar-link-events": "Evenementer",
-	"navbar-link-homepage": "Haaptsäit",
+	"body-loggedin-home-main-section-button02": "Mäi Profil",
 	"body-profile-gender-hehim": "Hien/Him",
 	"body-profile-edit-button": "Profil änneren",
 	"body-profile-box-title-wikidata-item": "Wikidata-Element",

@@ -6,9 +6,8 @@
 		]
 	},
 	"navbar-link-about": "Über",
-	"navbar-link-profile": "Mein Profil",
 	"navbar-link-events": "Ereignisse",
-	"navbar-link-homepage": "Startseite",
+	"body-loggedin-home-main-section-button02": "Mein Profil",
 	"body-profile-gender-hehim": "Er/Ihm",
 	"body-profile-gender-sheher": "Sie/Ihr",
 	"body-profile-gender-other": "Andere",

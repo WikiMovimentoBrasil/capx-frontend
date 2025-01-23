@@ -6,10 +6,10 @@
 		]
 	},
 	"navbar-link-about": "О проекте",
-	"navbar-link-profile": "Мой профиль",
 	"navbar-link-events": "События",
 	"body-home-section01-title-text": "Пространство для обмена",
 	"body-home-section01-description": "Общайтесь с коллегами, учитесь и делитесь своими знаниями на платформе, созданной для Движения Викимедиа.",
+	"body-loggedin-home-main-section-button02": "Мой профиль",
 	"body-profile-gender-other": "Другое",
 	"body-profile-box-title-wikidata-item": "Элемент Викиданных",
 	"body-profile-section-title-territory": "Территория",
