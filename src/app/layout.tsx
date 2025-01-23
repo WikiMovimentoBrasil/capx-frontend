@@ -1,7 +1,7 @@
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import { Metadata } from "next";
-import Providers from "./provider";
+import Providers from "./providers";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br">
+    <html lang="en">
       <body id="root" className="min-h-screen">
         <ThemeProvider>
           <SessionWrapper>
