@@ -52,7 +52,7 @@ export default function OrganizationProfilePage() {
           <section
             className={`w-full max-w-screen-xl mx-auto px-4 py-8 mt-[80px]`}
           >
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6">
               {/* Header Section */}
               <div className="flex flex-col gap-6">
                 {/* Content */}

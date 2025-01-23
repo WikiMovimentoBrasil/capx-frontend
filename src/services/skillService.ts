@@ -18,4 +18,15 @@ export const skillService = {
       throw error;
     }
   },
+  async fetchSkillById(id: string, queryData: QueryData) {
+    try {
+      const response = await axios.get(`/api/skill/${id}`, {
+        headers: queryData.headers,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch skill ${id}:`, error);
+      throw error;
+    }
+  },
 };

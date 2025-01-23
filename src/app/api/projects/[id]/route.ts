@@ -62,6 +62,32 @@ export async function POST(
   }
 }
 
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const authHeader = request.headers.get("authorization");
+  const id = params.id;
+  const body = await request.json();
+  try {
+    const response = await axios.put(
+      `${process.env.BASE_URL}/projects/${id}`,
+      body,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+    return NextResponse.json(response.data);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to update project" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

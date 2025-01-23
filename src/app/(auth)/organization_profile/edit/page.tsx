@@ -36,6 +36,7 @@ import { Organization } from "@/types/organization";
 import { Capacity } from "@/types/capacity";
 import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
+import { useProject } from "@/hooks/useProjects";
 
 interface FormData {
   events: {
@@ -90,7 +91,7 @@ export default function EditOrganizationProfilePage() {
     tag_diff: [],
     events: [],
     documents: [],
-    projects: [],
+    projects: [{ image: "", link: "" }],
     home_project: "",
     type: 0,
     territory: [],
@@ -165,7 +166,7 @@ export default function EditOrganizationProfilePage() {
   const handleAddProject = () => {
     setFormData((prev) => ({
       ...prev,
-      projects: [...(prev.projects || []), ""],
+      projects: [...(prev.projects || []), { image: "", link: "" }],
     }));
   };
 
@@ -658,56 +659,87 @@ export default function EditOrganizationProfilePage() {
                 </h2>
               </div>
 
-              <div className="flex w-full gap-2 mb-2">
-                <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                  <Image
-                    src={ImagesModeIcon}
-                    alt="Project image icon"
-                    width={16}
-                    height={16}
-                    className="opacity-50"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Project Image"
-                    className={`w-full bg-transparent border-none outline-none ${
-                      darkMode
-                        ? "text-white placeholder-gray-400"
-                        : "text-[#829BA4] placeholder-[#829BA4]"
-                    }`}
-                  />
-                </div>
+              <div className="flex flex-col w-full gap-2 mb-2">
+                {formData?.projects?.map((project, index) => (
+                  <div key={index} className="flex flex-row gap-2">
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent"
+                    >
+                      <Image
+                        src={ImagesModeIcon}
+                        alt="Project image icon"
+                        width={16}
+                        height={16}
+                        className="opacity-50"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Project Image"
+                        className={`w-full bg-transparent border-none outline-none ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                        value={project.image ?? ""}
+                        onChange={(e) => {
+                          const newProjects = [...(formData.projects || [])];
+                          newProjects[index] = {
+                            ...newProjects[index],
+                            image: e.target.value,
+                          };
+                          setFormData((prev) => ({
+                            ...prev,
+                            projects: newProjects,
+                          }));
+                        }}
+                      />
+                    </div>
 
-                <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                  <div className="relative w-[20px] h-[20px]">
-                    <Image
-                      src={AddLinkIcon}
-                      alt="Add link icon"
-                      objectFit="contain"
-                    />
+                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                      <div className="relative w-[20px] h-[20px]">
+                        <Image
+                          src={AddLinkIcon}
+                          alt="Add link icon"
+                          objectFit="contain"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Link of project"
+                        className={`w-full bg-transparent border-none outline-none ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                        value={project.link ?? ""}
+                        onChange={(e) => {
+                          const newProjects = [...(formData.projects || [])];
+                          newProjects[index] = {
+                            ...newProjects[index],
+                            link: e.target.value,
+                          };
+                          setFormData((prev) => ({
+                            ...prev,
+                            projects: newProjects,
+                          }));
+                        }}
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Link of project"
-                    className={`w-full bg-transparent border-none outline-none ${
-                      darkMode
-                        ? "text-white placeholder-gray-400"
-                        : "text-[#829BA4] placeholder-[#829BA4]"
-                    }`}
-                  />
-                </div>
+                ))}
               </div>
               <div className="flex items-center gap-1 rounded-md">
                 <BaseButton
                   onClick={handleAddProject}
                   label="Add more projects"
-                  customClass={`rounded-[4px] !mb-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                  customClass={`w-full flex ${
                     darkMode
-                      ? "text-capx-dark-box-bg bg-[#EFEFEF]"
-                      : "text-white bg-capx-dark-box-bg"
-                  }`}
+                      ? "bg-capx-light-box-bg text-[#04222F]"
+                      : "bg-[#053749] text-white"
+                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
                   imageUrl={darkMode ? AddIcon : AddIconWhite}
-                  imageAlt="Add icon"
+                  imageAlt="Add project"
                   imageWidth={20}
                   imageHeight={20}
                 />

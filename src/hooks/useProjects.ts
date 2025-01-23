@@ -32,9 +32,26 @@ export function useProject(projectId: number, token?: string) {
     fetchProject();
   }, [projectId, token]);
 
+  const updateProject = async (data: Partial<Project>) => {
+    if (!token || !projectId) return;
+    try {
+      const updatedProject = await projectsService.updateProject(
+        projectId,
+        token,
+        data
+      );
+      setProject(updatedProject);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to update project")
+      );
+    }
+  };
+
   return {
     project,
     isLoading,
     error,
+    updateProject,
   };
 }

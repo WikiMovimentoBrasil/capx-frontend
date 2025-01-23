@@ -1,9 +1,10 @@
+"use client";
+
 import { useState, useCallback, useEffect } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 
 export function useOrganization(token?: string, forceManager = true) {
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,6 +98,7 @@ export function useOrganization(token?: string, forceManager = true) {
             data
           );
         setOrganization(updatedOrg);
+        console.log("Updated Organization:", updatedOrg);
         return updatedOrg;
       } catch (err: any) {
         console.error("Full error:", err);
@@ -113,10 +115,7 @@ export function useOrganization(token?: string, forceManager = true) {
     [token, organizationId]
   );
 
-  console.log(isOrgManager);
-
   return {
-    organizations,
     organization,
     isLoading,
     error,

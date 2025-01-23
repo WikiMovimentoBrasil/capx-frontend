@@ -27,15 +27,15 @@ export const ProjectsEventsList = ({
   }
 
   return (
-    <section className="flex flex-col gap-4 mt-24">
-      <div className="flex flex-row gap-4">
-        <Image
-          src={darkMode ? WikimediaIconWhite : WikimediaIcon}
-          alt="Wikimedia icon"
-          width={36}
-          height={36}
-          style={{ width: "auto", height: "auto" }}
-        />
+    <section className="flex flex-col gap-4">
+      <div className="flex flex-row gap-4 items-center">
+        <div className="relative w-[20px] h-[20px]">
+          <Image
+            src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+            alt="Wikimedia icon"
+            style={{ width: "auto", height: "auto" }}
+          />
+        </div>
         <h2
           className={`text-center not-italic font-extrabold leading-[29px] font-[Montserrat] ${
             darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
