@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BaseSelect from "./BaseSelect";
-import { useTheme } from "@/contexts/ThemeContext";
-import { useApp } from "@/contexts/AppContext";
+import { useTheme } from "@/providers/ThemeProvider";
+import { useApp } from "@/providers/AppProvider";
 
 interface ProfileOption {
   value: string;

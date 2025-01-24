@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import LogoMobile from "@/public/static/images/capx_detailed_logo.svg";
 import LogoDesktop from "@/public/static/images/capx_minimalistic_logo.svg";
-import { useApp } from "@/contexts/AppContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/providers/AppProvider";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface FooterProps {
   pageContent: any;

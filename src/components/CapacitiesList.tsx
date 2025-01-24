@@ -1,8 +1,8 @@
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import Image from "next/image";
 import { useEffect } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
-import { useApp } from "@/contexts/AppContext";
+import { useTheme } from "@/providers/ThemeProvider";
+import { useApp } from "@/providers/AppProvider";
 
 interface CapacitiesListProps {
   icon: string;

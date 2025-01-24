@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import CallToActionSection from "../../components/CallToActionSection";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AppProvider } from "@/contexts/AppContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AppProvider } from "@/providers/AppProvider";
 
 // Mock do Next.js Router
 jest.mock("next/navigation", () => ({

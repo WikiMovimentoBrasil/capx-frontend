@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import DarkModeButton from "../../components/DarkModeButton";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AppProvider } from "@/contexts/AppContext";
-import * as ThemeContext from "@/contexts/ThemeContext";
+import DarkModeButton from "../../components/navigation/DarkModeButton";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AppProvider } from "@/providers/AppProvider";
+import * as ThemeContext from "@/providers/ThemeProvider";
 
 // Mock do Next.js Router
 jest.mock("next/navigation", () => ({

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BaseButton from "./BaseButton";
 import Image, { StaticImageData } from "next/image";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface PopupProps {
   onContinue: () => void;

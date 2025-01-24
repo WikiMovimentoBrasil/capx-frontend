@@ -10,8 +10,8 @@ import MediaWikiLogo from "@/public/static/images/mediawiki_logo.svg";
 import WikidataLogo from "@/public/static/images/wikidata_logo.svg";
 import WikifunctionsLogo from "@/public/static/images/wikifunctions_logo.svg";
 import CommonsLogo from "@/public/static/images/commons_logo.svg";
-import { useApp } from "@/contexts/AppContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/providers/AppProvider";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface MainSectionProps {
   pageContent: any;

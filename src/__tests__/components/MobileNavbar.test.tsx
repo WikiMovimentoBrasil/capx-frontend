@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import MobileNavbar from "../../components/MobileNavbar";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AppProvider } from "@/contexts/AppContext";
-import * as ThemeContext from "@/contexts/ThemeContext";
-import * as AppContext from "@/contexts/AppContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AppProvider } from "@/providers/AppProvider";
+import * as ThemeContext from "@/providers/ThemeProvider";
+import * as AppContext from "@/providers/AppProvider";
 import axios from "axios";
 
 // Mock do Next.js Router

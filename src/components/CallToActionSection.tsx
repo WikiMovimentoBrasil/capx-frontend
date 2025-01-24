@@ -2,8 +2,8 @@ import AuthButton from "@/components/AuthButton";
 import BaseButton from "./BaseButton";
 import Image from "next/image";
 import Illustration from "@/public/static/images/capx_people_illustration.svg";
-import { useApp } from "@/contexts/AppContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/providers/AppProvider";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface CallToActionSectionProps {
   pageContent: any;

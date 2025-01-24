@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import LanguageSelect from "../../components/LanguageSelect";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AppProvider } from "@/contexts/AppContext";
-import * as ThemeContext from "@/contexts/ThemeContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AppProvider } from "@/providers/AppProvider";
+import * as ThemeContext from "@/providers/ThemeProvider";
 import { useLanguage } from "@/hooks/useLanguage";
 
 // Mock do hook useLanguage

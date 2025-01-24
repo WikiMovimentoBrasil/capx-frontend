@@ -5,7 +5,7 @@ import axios from "axios";
 import BaseButton from "./BaseButton";
 import Popup from "./Popup";
 import capxPersonIcon from "../../public/static/images/capx_person_icon.svg";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface AuthButtonProps {
   message: string;

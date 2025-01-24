@@ -12,7 +12,7 @@ import UserProfileIcon from "@/public/static/images/check_box_outline_blank.svg"
 import UserProfileIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import OrgProfileIcon from "@/public/static/images/check_box.svg";
 import OrgProfileIconWhite from "@/public/static/images/check_box_light.svg";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface MenuItem {
   title: string;

@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import DesktopNavbar from "../../components/DesktopNavbar";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AppProvider } from "@/contexts/AppContext";
-import * as ThemeContext from "@/contexts/ThemeContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AppProvider } from "@/providers/AppProvider";
+import * as ThemeContext from "@/providers/ThemeProvider";
 import axios from "axios";
 
 // Mock do Next.js Router

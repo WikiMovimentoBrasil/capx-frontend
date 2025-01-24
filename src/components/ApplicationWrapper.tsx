@@ -1,5 +1,5 @@
 "use client";
-import { useApp } from "@/contexts/AppContext";
+import { useApp } from "@/providers/AppProvider";
 import BaseWrapper from "./BaseWrapper";
 import MainSection from "@/components/MainSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -8,10 +8,12 @@ import VideoSection from "@/components/VideoSection";
 
 interface ApplicationWrapperProps {
   pageContent: any;
+  initialLang: string;
 }
 
 export default function ApplicationWrapper({
   pageContent,
+  initialLang,
 }: ApplicationWrapperProps) {
   return (
     <BaseWrapper>

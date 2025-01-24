@@ -2,7 +2,7 @@ import illustration01 from "@/public/static/images/learn_capacities_illustration
 import illustration02 from "@/public/static/images/connect_wikimedians_illustration.svg";
 import illustration03 from "@/public/static/images/exchange_knowledge_illustration.svg";
 import Image, { StaticImageData } from "next/image";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/providers/ThemeProvider";
 
 const Row = (
   illustration: StaticImageData,

@@ -2,8 +2,8 @@ import Image from "next/image";
 import TabletIllustration from "@/public/static/images/tablet_illustration.svg";
 import TabletIllustrationWhite from "@/public/static/images/tablet_illustration_white.svg";
 import CapxPencilIllustration from "@/public/static/images/capx_pencil_illustration.svg";
-import { useApp } from "@/contexts/AppContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/providers/AppProvider";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface VideoSectionProps {
   pageContent: any;
