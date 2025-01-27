@@ -61,7 +61,7 @@ export default function EditOrganizationProfilePage() {
     error: projectsError,
   } = useProjects(organization?.projects, token);
 
-  const { createProject, updateProject } = useProject(0, token);
+  const { createProject, updateProject, deleteProject } = useProject(0, token);
 
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
@@ -202,6 +202,11 @@ export default function EditOrganizationProfilePage() {
     } catch (error) {
       console.error("Error updating organization:", error);
     }
+  };
+
+  const handleDeleteProject = async (projectId: number) => {
+    await deleteProject(projectId);
+    setProjectsData((prev) => prev.filter((p) => p.id !== projectId));
   };
 
   const [organizationData, setOrganizationData] = useState({
@@ -806,6 +811,15 @@ export default function EditOrganizationProfilePage() {
                           }}
                         />
                       </div>
+                      <button onClick={() => handleDeleteProject(project.id)}>
+                        <div className="relative w-[20px] h-[20px]">
+                          <Image
+                            src={darkMode ? CancelIconWhite : CancelIcon}
+                            alt="Delete icon"
+                            objectFit="contain"
+                          />
+                        </div>
+                      </button>
                     </div>
                   ))}
               </div>

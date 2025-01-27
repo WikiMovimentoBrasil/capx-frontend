@@ -48,8 +48,11 @@ export const projectsService = {
 
   async deleteProject(projectId: number, token: string): Promise<void> {
     try {
-      await axios.delete(`/api/projects/${projectId}`, {
-        headers: { Authorization: `Token ${token}` },
+      await axios.delete(`/api/projects/${projectId}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
       console.error("Error deleting project:", error);

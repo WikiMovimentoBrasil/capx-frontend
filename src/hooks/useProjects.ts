@@ -65,7 +65,7 @@ export function useProject(projectId: number, token?: string) {
     }
   };
 
-  const deleteProject = async () => {
+  const deleteProject = async (projectId: number) => {
     if (!token || !projectId) return;
     try {
       await projectsService.deleteProject(projectId, token);

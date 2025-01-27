@@ -97,10 +97,11 @@ export async function DELETE(
   const id = params.id;
   try {
     const response = await axios.delete(
-      `${process.env.BASE_URL}/projects/${id}`,
+      `${process.env.BASE_URL}/projects/${id}/`,
       {
         headers: {
           Authorization: authHeader,
+          "Content-Type": "application/json",
         },
       }
     );
