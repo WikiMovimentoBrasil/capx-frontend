@@ -48,7 +48,7 @@ export function useProject(projectId: number, token?: string) {
     }
   };
 
-  const updateProject = async (data: Partial<Project>) => {
+  const updateProject = async (projectId: number, data: Partial<Project>) => {
     if (!token || !projectId) return;
     try {
       const updatedProject = await projectsService.updateProject(
@@ -56,6 +56,7 @@ export function useProject(projectId: number, token?: string) {
         token,
         data
       );
+
       setProject(updatedProject);
     } catch (err) {
       setError(

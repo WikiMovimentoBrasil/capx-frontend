@@ -39,34 +39,6 @@ import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { Project } from "@/types/project";
 
-interface FormData {
-  events: {
-    image: string;
-    link: string;
-  }[];
-  projects: {
-    image: string;
-    link: string;
-  }[];
-  documents: {
-    image: string;
-    link: string;
-  }[];
-  tag_diff: string[];
-  known_capacities: number[];
-  available_capacities: number[];
-  wanted_capacities: number[];
-  managers: number[];
-  territory: number[];
-  type: number;
-  display_name: string;
-  profile_image: string;
-  acronym: string;
-  meta_page: string;
-  mastodon: string;
-  home_project: string;
-}
-
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -89,7 +61,7 @@ export default function EditOrganizationProfilePage() {
     error: projectsError,
   } = useProjects(organization?.projects, token);
 
-  const { createProject } = useProject(0, token);
+  const { createProject, updateProject } = useProject(0, token);
 
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
@@ -155,6 +127,25 @@ export default function EditOrganizationProfilePage() {
         return;
       }
 
+      const updateProjectPromises = projectsData
+        .filter((project) => project.id !== 0) // filtra apenas projetos existentes
+        .map(async (project) => {
+          try {
+            await updateProject(project.id, {
+              display_name: project.display_name,
+              profile_image: project.profile_image,
+              url: project.url,
+              description: project.description || "",
+              related_skills: project.related_skills,
+              organization: Number(organizationId),
+            });
+
+            return project.id;
+          } catch (error) {
+            console.error(`Error updating project ${project.id}:`, error);
+            return project.id; // retorna o ID original em caso de erro
+          }
+        });
       // Primeiro, criar novos projetos
       const projectPromises = projectsData
         .filter((project) => project.id === 0) // filtra apenas novos projetos
@@ -182,24 +173,20 @@ export default function EditOrganizationProfilePage() {
           }
         });
 
-      // Aguardar criação de todos os novos projetos
-      const newProjectIds = await Promise.all(projectPromises);
+      const [updatedProjectIds, newProjectIds] = await Promise.all([
+        Promise.all(updateProjectPromises),
+        Promise.all(projectPromises),
+      ]);
 
-      console.log("newProjectIds", newProjectIds);
-      // Combinar IDs existentes com novos IDs
-      const existingProjectIds = projectsData
+      /*       const existingProjectIds = projectsData
         .filter((project) => project.id !== 0)
-        .map((project) => project.id);
+        .map((project) => project.id); */
 
       const validNewProjectIds = newProjectIds.filter(
         (id): id is number => id !== null && id !== undefined
       );
 
-      console.log("validNewProjectIds:", validNewProjectIds); // Debug log
-      console.log("existingProjectIds:", existingProjectIds); // Debug log
-
-      const allProjectIds = [...existingProjectIds, ...validNewProjectIds];
-      console.log("allProjectIds:", allProjectIds); // Debug log
+      const allProjectIds = [...updatedProjectIds, ...validNewProjectIds];
 
       const updatedFormData = {
         ...formData,

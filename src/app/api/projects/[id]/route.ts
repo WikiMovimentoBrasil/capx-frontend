@@ -71,11 +71,12 @@ export async function PUT(
   const body = await request.json();
   try {
     const response = await axios.put(
-      `${process.env.BASE_URL}/projects/${id}`,
+      `${process.env.BASE_URL}/projects/${id}/`,
       body,
       {
         headers: {
           Authorization: authHeader,
+          "Content-Type": "application/json",
         },
       }
     );

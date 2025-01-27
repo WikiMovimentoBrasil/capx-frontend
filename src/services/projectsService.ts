@@ -21,8 +21,11 @@ export const projectsService = {
     data: Partial<Project>
   ): Promise<Project> {
     try {
-      const response = await axios.put(`/api/projects/${projectId}`, data, {
-        headers: { Authorization: `Token ${token}` },
+      const response = await axios.put(`/api/projects/${projectId}/`, data, {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
       });
       return response.data;
     } catch (error) {
