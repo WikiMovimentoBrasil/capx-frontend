@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Cigaryno",
 			"Meno25",
 			"Mohammed Qays",
 			"إزبيكييل",
@@ -10,6 +11,7 @@
 	"navbar-link-about": "حول",
 	"navbar-link-capacities": "دليل",
 	"navbar-link-events": "الأحداث",
+	"navbar-link-home": "الصفحة الرئيسية",
 	"navbar-link-reports": "تقارير",
 	"body-home-section01-title-text": "مساحة للتبادل",
 	"body-home-section01-title-carousel": "القدرة والمعرفة والمهارات والخدمات",
