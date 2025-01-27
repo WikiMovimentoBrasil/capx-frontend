@@ -32,6 +32,16 @@ export function useProject(projectId: number, token?: string) {
     fetchProject();
   }, [projectId, token]);
 
+  const createProject = async (data: Partial<Project>) => {
+    if (!token) return;
+    try {
+      const createdProject = await projectsService.createProject(token, data);
+      setProject(createdProject);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to create project"));
+    }
+  };
+
   const updateProject = async (data: Partial<Project>) => {
     if (!token || !projectId) return;
     try {
@@ -48,10 +58,22 @@ export function useProject(projectId: number, token?: string) {
     }
   };
 
+  const deleteProject = async () => {
+    if (!token || !projectId) return;
+    try {
+      await projectsService.deleteProject(projectId, token);
+      setProject(null);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to delete project"));
+    }
+  };
+
   return {
     project,
     isLoading,
     error,
     updateProject,
+    createProject,
+    deleteProject,
   };
 }
