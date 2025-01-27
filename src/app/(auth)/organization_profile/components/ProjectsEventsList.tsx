@@ -44,7 +44,7 @@ export const ProjectsEventsList = ({
           {title}
         </h2>
       </div>
-      <div className="flex flex-row gap-8 justify-start overflow-x-auto">
+      <div className="flex flex-row gap-8 justify-start overflow-x-auto scrollbar-hide">
         {itemIds.map((id) =>
           type === "projects" ? (
             <ProjectCard key={id} projectId={id} token={token} />

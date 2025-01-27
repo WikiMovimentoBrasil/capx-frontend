@@ -25,7 +25,9 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
     if (url.includes("commons.wikimedia.org/wiki/File:")) {
       const fileName = url.split("File:").pop();
       if (fileName) {
-        return `https://upload.wikimedia.org/wikipedia/commons/a/a0/${fileName}`;
+        return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
+          fileName
+        )}`;
       }
     }
     return url;

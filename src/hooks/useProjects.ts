@@ -36,9 +36,15 @@ export function useProject(projectId: number, token?: string) {
     if (!token) return;
     try {
       const createdProject = await projectsService.createProject(token, data);
+      if (!createdProject || !createdProject.id) {
+        throw new Error("Invalid project response from server");
+      }
       setProject(createdProject);
+      return createdProject;
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to create project"));
+      setError(
+        err instanceof Error ? err : new Error("Failed to create project")
+      );
     }
   };
 
@@ -64,7 +70,9 @@ export function useProject(projectId: number, token?: string) {
       await projectsService.deleteProject(projectId, token);
       setProject(null);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to delete project"));
+      setError(
+        err instanceof Error ? err : new Error("Failed to delete project")
+      );
     }
   };
 
@@ -76,4 +84,37 @@ export function useProject(projectId: number, token?: string) {
     createProject,
     deleteProject,
   };
+}
+
+export function useProjects(projectIds?: number[], token?: string) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (!token || !projectIds?.length) return;
+
+      setIsLoading(true);
+      try {
+        const projectPromises = projectIds.map((id) =>
+          projectsService.getProjectById(id, token)
+        );
+        const projectsData = await Promise.all(projectPromises);
+        setProjects(projectsData);
+        setError(null);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch projects")
+        );
+        setProjects([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, [projectIds, token]);
+
+  return { projects, isLoading, error };
 }

@@ -36,7 +36,8 @@ import { Organization } from "@/types/organization";
 import { Capacity } from "@/types/capacity";
 import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
-import { useProject } from "@/hooks/useProjects";
+import { useProject, useProjects } from "@/hooks/useProjects";
+import { Project } from "@/types/project";
 
 interface FormData {
   events: {
@@ -82,6 +83,14 @@ export default function EditOrganizationProfilePage() {
     isOrgManager,
   } = useOrganization(token);
 
+  const {
+    projects,
+    isLoading: isProjectsLoading,
+    error: projectsError,
+  } = useProjects(organization?.projects, token);
+
+  const { createProject } = useProject(0, token);
+
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
     profile_image: "",
@@ -91,7 +100,7 @@ export default function EditOrganizationProfilePage() {
     tag_diff: [],
     events: [],
     documents: [],
-    projects: [{ image: "", link: "" }],
+    projects: [],
     home_project: "",
     type: 0,
     territory: [],
@@ -100,6 +109,8 @@ export default function EditOrganizationProfilePage() {
     available_capacities: [],
     wanted_capacities: [],
   });
+
+  const [projectsData, setProjectsData] = useState<Project[]>([]);
 
   useEffect(() => {
     if (organization) {
@@ -124,6 +135,12 @@ export default function EditOrganizationProfilePage() {
     }
   }, [organization]);
 
+  useEffect(() => {
+    if (projects) {
+      setProjectsData(projects);
+    }
+  }, [projects]);
+
   const handleSubmit = async () => {
     try {
       if (!token) {
@@ -138,8 +155,62 @@ export default function EditOrganizationProfilePage() {
         return;
       }
 
-      console.log("formData", formData);
-      await updateOrganization(formData);
+      // Primeiro, criar novos projetos
+      const projectPromises = projectsData
+        .filter((project) => project.id === 0) // filtra apenas novos projetos
+        .map(async (project) => {
+          try {
+            const newProject = await createProject({
+              display_name: project.display_name,
+              profile_image: project.profile_image,
+              url: project.url,
+              description: project.description || "",
+              creation_date: new Date().toISOString(),
+              creator: Number(session?.user?.id),
+              related_skills: [],
+              organization: Number(organizationId),
+            });
+            console.log("Created project:", newProject); // Debug log
+            if (!newProject || !newProject.id) {
+              console.error("Invalid project response:", newProject);
+              return null;
+            }
+            return newProject?.id;
+          } catch (error) {
+            console.error("Error creating project:", error);
+            return null;
+          }
+        });
+
+      // Aguardar criação de todos os novos projetos
+      const newProjectIds = await Promise.all(projectPromises);
+
+      console.log("newProjectIds", newProjectIds);
+      // Combinar IDs existentes com novos IDs
+      const existingProjectIds = projectsData
+        .filter((project) => project.id !== 0)
+        .map((project) => project.id);
+
+      const validNewProjectIds = newProjectIds.filter(
+        (id): id is number => id !== null && id !== undefined
+      );
+
+      console.log("validNewProjectIds:", validNewProjectIds); // Debug log
+      console.log("existingProjectIds:", existingProjectIds); // Debug log
+
+      const allProjectIds = [...existingProjectIds, ...validNewProjectIds];
+      console.log("allProjectIds:", allProjectIds); // Debug log
+
+      const updatedFormData = {
+        ...formData,
+        projects: allProjectIds,
+      };
+
+      console.log("Updating organization with data:", updatedFormData);
+
+      console.log("formData", updatedFormData);
+
+      await updateOrganization(updatedFormData);
       router.push(`/organization_profile/`);
     } catch (error) {
       console.error("Error updating organization:", error);
@@ -164,10 +235,19 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddProject = () => {
-    setFormData((prev) => ({
-      ...prev,
-      projects: [...(prev.projects || []), { image: "", link: "" }],
-    }));
+    const newProject = {
+      id: 0, // temporary id for new projects
+      display_name: "",
+      profile_image: "",
+      description: "",
+      url: "",
+      creation_date: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+      related_skills: [],
+      organization: Number(organizationId),
+    };
+
+    setProjectsData((prev) => [...(prev || []), newProject]);
   };
 
   const handleRemoveProject = (index: number) => {
@@ -194,19 +274,16 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddDiffTag = () => {
-    console.log("add diff tag");
     setFormData((prev) => {
       const newState = {
         ...prev,
         tag_diff: [...(prev.tag_diff || []), ""],
       };
-      console.log("newState", newState);
       return newState;
     });
   };
 
   const handleAddLink = () => {
-    console.log("add link");
     setFormData((prev) => ({
       ...prev,
       documents: [...(prev.documents || []), ""],
@@ -660,74 +737,90 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <div className="flex flex-col w-full gap-2 mb-2">
-                {formData?.projects?.map((project, index) => (
-                  <div key={index} className="flex flex-row gap-2">
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent"
-                    >
-                      <Image
-                        src={ImagesModeIcon}
-                        alt="Project image icon"
-                        width={16}
-                        height={16}
-                        className="opacity-50"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Project Image"
-                        className={`w-full bg-transparent border-none outline-none ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={project.image ?? ""}
-                        onChange={(e) => {
-                          const newProjects = [...(formData.projects || [])];
-                          newProjects[index] = {
-                            ...newProjects[index],
-                            image: e.target.value,
-                          };
-                          setFormData((prev) => ({
-                            ...prev,
-                            projects: newProjects,
-                          }));
-                        }}
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                      <div className="relative w-[20px] h-[20px]">
-                        <Image
-                          src={AddLinkIcon}
-                          alt="Add link icon"
-                          objectFit="contain"
+                {Array.isArray(projectsData) &&
+                  projectsData?.map((project, index) => (
+                    <div key={index} className="flex flex-row gap-2">
+                      <div className="flex flex-row gap-2 w-1/2 items-center text-[12px] p-2 border rounded-md bg-transparent">
+                        <input
+                          type="text"
+                          placeholder="Project Name"
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                          value={project.display_name}
+                          onChange={(e) => {
+                            const newProjects = [...projectsData];
+                            newProjects[index] = {
+                              ...newProjects[index],
+                              display_name: e.target.value,
+                            };
+                            setProjectsData(newProjects);
+                          }}
                         />
                       </div>
-                      <input
-                        type="text"
-                        placeholder="Link of project"
-                        className={`w-full bg-transparent border-none outline-none ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={project.link ?? ""}
-                        onChange={(e) => {
-                          const newProjects = [...(formData.projects || [])];
-                          newProjects[index] = {
-                            ...newProjects[index],
-                            link: e.target.value,
-                          };
-                          setFormData((prev) => ({
-                            ...prev,
-                            projects: newProjects,
-                          }));
-                        }}
-                      />
+
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent"
+                      >
+                        <Image
+                          src={ImagesModeIcon}
+                          alt="Project image icon"
+                          width={16}
+                          height={16}
+                          className="opacity-50"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Project Image"
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                          value={project.profile_image ?? ""}
+                          onChange={(e) => {
+                            const newProjects = [...projectsData];
+                            newProjects[index] = {
+                              ...newProjects[index],
+                              profile_image: e.target.value,
+                            };
+                            setProjectsData(newProjects);
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                        <div className="relative w-[20px] h-[20px]">
+                          <Image
+                            src={AddLinkIcon}
+                            alt="Add link icon"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Link of project"
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                          value={project.url ?? ""}
+                          onChange={(e) => {
+                            const newProjects = [...projectsData];
+                            newProjects[index] = {
+                              ...newProjects[index],
+                              url: e.target.value,
+                            };
+                            setProjectsData(newProjects);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
               <div className="flex items-center gap-1 rounded-md">
                 <BaseButton
