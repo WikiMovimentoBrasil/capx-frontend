@@ -1049,8 +1049,8 @@ export default function EditOrganizationProfilePage() {
   }
   return (
     <div
-      className={`relative w-full overflow-x-hidden min-h-screen bg-white dark:bg-[#04222F] ${
-        darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
+      className={`relative w-full overflow-x-hidden min-h-screen ${
+        darkMode ? "bg-capx-dark-box-bg text-white" : "bg-white text-[#053749]"
       }`}
     >
       <section
