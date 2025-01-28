@@ -15,4 +15,28 @@ export const eventsService = {
       throw error;
     }
   },
+
+  async createEvent(event: Partial<Event>, token: string): Promise<Event> {
+    const response = await axios.post("/api/events/", event, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    return response.data;
+  },
+
+  async updateEvent(
+    eventId: number,
+    event: Partial<Event>,
+    token: string
+  ): Promise<Event> {
+    const response = await axios.put(`/api/events/${eventId}/`, event, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    return response.data;
+  },
+
+  async deleteEvent(eventId: number, token: string): Promise<void> {
+    await axios.delete(`/api/events/${eventId}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+  },
 };

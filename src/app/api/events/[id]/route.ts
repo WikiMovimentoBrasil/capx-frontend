@@ -35,3 +35,52 @@ export async function GET(
     );
   }
 }
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const authHeader = request.headers.get("authorization");
+  const id = params.id;
+
+  const event = await request.json();
+
+  try {
+    const response = await axios.put(
+      `${process.env.BASE_URL}/events/${id}/`,
+      event,
+      {
+        headers: { Authorization: `Token ${authHeader}` },
+      }
+    );
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: "Failed to update event with id " + id, details: error.message },
+      { status: error.response?.status || 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const authHeader = request.headers.get("authorization");
+  const id = params.id;
+
+  try {
+    const response = await axios.delete(
+      `${process.env.BASE_URL}/events/${id}/`,
+      {
+        headers: { Authorization: `Token ${authHeader}` },
+      }
+    );
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: "Failed to delete event with id " + id, details: error.message },
+      { status: error.response?.status || 500 }
+    );
+  }
+}

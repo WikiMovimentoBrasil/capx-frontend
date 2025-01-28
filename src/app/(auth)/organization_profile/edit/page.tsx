@@ -38,6 +38,8 @@ import CapacitySelectionModal from "../../profile/edit/components/CapacitySelect
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { Project } from "@/types/project";
+import { Event } from "@/types/event";
+import { useEvent, useEvents } from "@/hooks/useEvents";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -61,7 +63,22 @@ export default function EditOrganizationProfilePage() {
     error: projectsError,
   } = useProjects(organization?.projects, token);
 
-  const { createProject, updateProject, deleteProject } = useProject(0, token);
+  const {
+    events,
+    isLoading: isEventsLoading,
+    error: eventsError,
+  } = useEvents(organization?.events || [], token);
+
+  const projectId = 0; // temporary id for new projects
+
+  const { createProject, updateProject, deleteProject } = useProject(
+    projectId,
+    token
+  );
+
+  const eventId = 0; // temporary id for new events
+
+  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
 
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: "",
@@ -81,6 +98,8 @@ export default function EditOrganizationProfilePage() {
     available_capacities: [],
     wanted_capacities: [],
   });
+
+  const [eventsData, setEventsData] = useState<Event[]>([]);
 
   const [projectsData, setProjectsData] = useState<Project[]>([]);
 
@@ -112,6 +131,12 @@ export default function EditOrganizationProfilePage() {
       setProjectsData(projects);
     }
   }, [projects]);
+
+  useEffect(() => {
+    if (events) {
+      setEventsData(events);
+    }
+  }, [events]);
 
   const handleSubmit = async () => {
     try {
@@ -178,29 +203,97 @@ export default function EditOrganizationProfilePage() {
         Promise.all(projectPromises),
       ]);
 
-      /*       const existingProjectIds = projectsData
-        .filter((project) => project.id !== 0)
-        .map((project) => project.id); */
-
       const validNewProjectIds = newProjectIds.filter(
         (id): id is number => id !== null && id !== undefined
       );
 
       const allProjectIds = [...updatedProjectIds, ...validNewProjectIds];
 
+      const updateEventPromises = eventsData
+        .filter((event) => event.id !== 0)
+        .map(async (event) => {
+          console.log("Processing update for event:", event.id);
+          try {
+            await updateEvent(event.id, {
+              name: event.name,
+              image_url: event.image_url,
+              url: event.url,
+              organizations: [Number(organizationId)],
+              time_begin: event.time_begin,
+              time_end: event.time_end,
+            });
+            return event.id;
+          } catch (error) {
+            console.error(`Error updating event ${event.id}:`, error);
+            return null;
+          }
+        });
+
+      const eventPromises = eventsData
+        .filter((event) => event.id === 0)
+        .map(async (event) => {
+          console.log("Processing creation for new event");
+          try {
+            const newEvent = await createEvent({
+              name: event.name || "New Event",
+              image_url: event.image_url,
+              url: event.url.startsWith("http")
+                ? event.url
+                : `https://${event.url}`,
+              organizations: [Number(organizationId)],
+              time_begin: new Date().toISOString(),
+              time_end: new Date().toISOString(),
+              creator: Number(session?.user?.id),
+              team: [],
+              related_skills: [],
+              type_of_location: "IN_PERSON",
+              openstreetmap_id: event.openstreetmap_id || "",
+              wikidata_qid: event.wikidata_qid || "",
+            });
+            console.log("Created event with ID:", newEvent?.id);
+            return newEvent?.id || null;
+          } catch (error) {
+            console.error("Error creating event:", error);
+            return null;
+          }
+        });
+
+      console.log("Awaiting promises...");
+      const [updatedEventIds, newEventIds] = await Promise.all([
+        Promise.all(updateEventPromises || []),
+        Promise.all(eventPromises || []),
+      ]);
+
+      console.log("Promise results:", { updatedEventIds, newEventIds });
+
+      // Filtra IDs nulos e undefined
+      const validUpdatedIds = updatedEventIds.filter(
+        (id): id is number => id !== null && id !== undefined
+      );
+      const validNewIds = newEventIds.filter(
+        (id): id is number => id !== null && id !== undefined
+      );
+
+      const allEventIds = [...validUpdatedIds, ...validNewIds];
+      console.log("Final event IDs:", allEventIds);
+
       const updatedFormData = {
         ...formData,
+        events: allEventIds,
         projects: allProjectIds,
       };
 
-      console.log("Updating organization with data:", updatedFormData);
+      console.log("updatedFormData", updatedFormData);
 
-      console.log("formData", updatedFormData);
+      await updateOrganization({
+        ...updatedFormData,
+        events: allEventIds,
+        projects: allProjectIds,
+      });
 
-      await updateOrganization(updatedFormData);
       router.push(`/organization_profile/`);
     } catch (error) {
-      console.error("Error updating organization:", error);
+      console.error("Error processing event promises:", error);
     }
   };
 
@@ -251,10 +344,26 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddEvent = () => {
-    setFormData((prev) => ({
-      ...prev,
-      events: [...(prev.events || []), { image: "", link: "" }],
-    }));
+    const newEvent = {
+      id: 0,
+      name: "New Event",
+      type_of_location: "virtual",
+      url: "https://example.com",
+      image_url: "https://commons.wikimedia.org/wiki/File:example.svg",
+      time_begin: new Date().toISOString(),
+      time_end: new Date().toISOString(),
+      organization: Number(organizationId),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+      team: [],
+      description: "",
+      related_skills: [],
+      organizations: [],
+      openstreetmap_id: "",
+      wikidata_qid: "",
+    };
+    setEventsData((prev) => [...(prev || []), newEvent]);
   };
 
   const handleRemoveEvent = (index: number) => {
@@ -867,54 +976,87 @@ export default function EditOrganizationProfilePage() {
                   Events
                 </h2>
               </div>
-
-              <div className="flex w-full mb-2 gap-2">
-                <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                  <div className="relative w-[20px] h-[20px]">
-                    <Image
-                      src={ImagesModeIcon}
-                      alt="Project image icon"
-                      objectFit="contain"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Event Image"
-                    value={formData.events?.[0]?.image || ""}
-                    onChange={(e) =>
-                      handleEventInputChange(0, "image", e.target.value)
-                    }
-                    className={`w-full bg-transparent border-none outline-none ${
-                      darkMode
-                        ? "text-white placeholder-gray-400"
-                        : "text-[#829BA4] placeholder-[#829BA4]"
-                    }`}
-                  />
-                </div>
-                <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                  <div className="relative w-[20px] h-[20px]">
-                    <Image
-                      src={AddLinkIcon}
-                      alt="Add link icon"
-                      objectFit="contain"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Link of event"
-                    value={formData.events?.[0]?.link || ""}
-                    onChange={(e) =>
-                      handleEventInputChange(0, "link", e.target.value)
-                    }
-                    className={`w-full bg-transparent border-none outline-none ${
-                      darkMode
-                        ? "text-white placeholder-gray-400"
-                        : "text-[#829BA4] placeholder-[#829BA4]"
-                    }`}
-                  />
-                </div>
+              <div className="flex flex-col w-full gap-2 mb-2">
+                {Array.isArray(eventsData) &&
+                  eventsData?.map((event, index) => (
+                    <div key={index} className="flex flex-row gap-2">
+                      <div className="flex flex-row gap-2 w-1/2 items-center text-[12px] p-2 border rounded-md bg-transparent">
+                        <input
+                          type="text"
+                          placeholder="Event Name"
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                          value={event.name}
+                          onChange={(e) => {
+                            const newEvents = [...eventsData];
+                            newEvents[index] = {
+                              ...newEvents[index],
+                              name: e.target.value,
+                            };
+                            setEventsData(newEvents);
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-row gap-2 items-center p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                        <div className="relative w-[20px] h-[20px]">
+                          <Image
+                            src={ImagesModeIcon}
+                            alt="Project image icon"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Event Image"
+                          value={event.image_url || ""}
+                          onChange={(e) => {
+                            const newEvents = [...eventsData];
+                            newEvents[index] = {
+                              ...newEvents[index],
+                              image_url: e.target.value,
+                            };
+                            setEventsData(newEvents);
+                          }}
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                        <div className="relative w-[20px] h-[20px]">
+                          <Image
+                            src={AddLinkIcon}
+                            alt="Add link icon"
+                            objectFit="contain"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Link of event"
+                          value={event.url ?? ""}
+                          onChange={(e) => {
+                            const newEvents = [...eventsData];
+                            newEvents[index] = {
+                              ...newEvents[index],
+                              url: e.target.value,
+                            };
+                            setEventsData(newEvents);
+                          }}
+                          className={`w-full bg-transparent border-none outline-none ${
+                            darkMode
+                              ? "text-white placeholder-gray-400"
+                              : "text-[#829BA4] placeholder-[#829BA4]"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  ))}
               </div>
-
               <BaseButton
                 onClick={handleAddEvent}
                 label="Add more events"
@@ -1221,7 +1363,7 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.known_capacities?.map((capacityId, index) => (
+                {formData.known_capacities?.map((capacity, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
@@ -1230,7 +1372,7 @@ export default function EditOrganizationProfilePage() {
                       onClick={() =>
                         handleRemoveCapacity(currentCapacityType, index)
                       }
-                      label={capacityId}
+                      label={getCapacityName(capacity)}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#0070B9] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -1290,7 +1432,7 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.available_capacities?.map((capacityId, index) => (
+                {formData.available_capacities?.map((capacity, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
@@ -1299,7 +1441,7 @@ export default function EditOrganizationProfilePage() {
                       onClick={() =>
                         handleRemoveCapacity(currentCapacityType, index)
                       }
-                      label={capacityId}
+                      label={getCapacityName(capacity)}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#05A300] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -1359,7 +1501,7 @@ export default function EditOrganizationProfilePage() {
                     : "text-[#053749] bg-transparent"
                 }`}
               >
-                {formData.wanted_capacities?.map((capacityId, index) => (
+                {formData.wanted_capacities?.map((capacity, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-1 rounded-md"
@@ -1368,7 +1510,7 @@ export default function EditOrganizationProfilePage() {
                       onClick={() =>
                         handleRemoveCapacity(currentCapacityType, index)
                       }
-                      label={capacityId}
+                      label={getCapacityName(capacity)}
                       customClass={`rounded-[4px] border-[1px] border-[solid] border-[#D43831] flex p-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]`}
                       imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
@@ -1423,49 +1565,73 @@ export default function EditOrganizationProfilePage() {
               </h2>
             </div>
 
-            <div className="flex w-full gap-2 mb-2">
-              <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                <div className="relative w-[32px] h-[32px]">
-                  <Image
-                    src={ImagesModeIcon}
-                    alt="Project image icon"
-                    objectFit="contain"
-                    fill
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Project Image"
-                  className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                    darkMode
-                      ? "text-white placeholder-gray-400"
-                      : "text-[#829BA4] placeholder-[#829BA4]"
-                  }`}
-                />
-              </div>
-
-              <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                <div className="relative w-[32px] h-[32px]">
-                  <Image
-                    src={AddLinkIcon}
-                    alt="Add link icon"
-                    objectFit="contain"
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Link of project"
-                  className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                    darkMode
-                      ? "text-white placeholder-gray-400"
-                      : "text-[#829BA4] placeholder-[#829BA4]"
-                  }`}
-                />
-              </div>
+            <div className="flex w-full gap-2 mb-2 flex-col">
+              {Array.isArray(projectsData) &&
+                projectsData?.map((project, index) => (
+                  <div key={index} className="flex gap-2 p-2">
+                    <div className="flex flex-row gap-2 w-1/2 items-center text-[24px] p-2 border rounded-md bg-transparent">
+                      <input
+                        type="text"
+                        placeholder="Project Name"
+                        className={`w-full bg-transparent border-none outline-none ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                        value={project.display_name}
+                        onChange={(e) => {
+                          const newProjects = [...projectsData];
+                          newProjects[index] = {
+                            ...newProjects[index],
+                            display_name: e.target.value,
+                          };
+                          setProjectsData(newProjects);
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                      <div className="relative w-[32px] h-[32px]">
+                        <Image
+                          src={ImagesModeIcon}
+                          alt="Project image icon"
+                          objectFit="contain"
+                          fill
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Project Image"
+                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
+                      <div className="relative w-[32px] h-[32px]">
+                        <Image
+                          src={AddLinkIcon}
+                          alt="Add link icon"
+                          objectFit="contain"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Link of project"
+                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                ))}
             </div>
             <div className="flex items-center gap-1 rounded-md">
               <BaseButton
-                onClick={() => {}}
+                onClick={handleAddProject}
                 label="Add projects"
                 customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
@@ -1509,48 +1675,73 @@ export default function EditOrganizationProfilePage() {
               </h2>
             </div>
 
-            <div className="flex w-full mb-2 gap-2">
-              <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
-                <div className="relative w-[32px] h-[32px]">
-                  <Image
-                    src={ImagesModeIcon}
-                    alt="Event image icon"
-                    objectFit="contain"
-                    fill
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Event Image"
-                  className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                    darkMode
-                      ? "text-white placeholder-gray-400"
-                      : "text-[#829BA4] placeholder-[#829BA4]"
-                  }`}
-                />
-              </div>
-              <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
-                <div className="relative w-[32px] h-[32px]">
-                  <Image
-                    src={AddLinkIcon}
-                    alt="Add link icon"
-                    objectFit="contain"
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Link of project"
-                  className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                    darkMode
-                      ? "text-white placeholder-gray-400"
-                      : "text-[#829BA4] placeholder-[#829BA4]"
-                  }`}
-                />
-              </div>
+            <div className="flex w-full flex-col mb-2 gap-2">
+              {Array.isArray(eventsData) &&
+                eventsData?.map((event, index) => (
+                  <div key={index} className="flex gap-2 p-2">
+                    <div className="flex flex-row gap-2 w-1/2 items-center text-[24px] p-2 border rounded-md bg-transparent">
+                      <input
+                        type="text"
+                        placeholder="Event Name"
+                        className={`w-full bg-transparent border-none outline-none ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                        value={event.name}
+                        onChange={(e) => {
+                          const newEvents = [...eventsData];
+                          newEvents[index] = {
+                            ...newEvents[index],
+                            name: e.target.value,
+                          };
+                          setEventsData(newEvents);
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
+                      <div className="relative w-[32px] h-[32px]">
+                        <Image
+                          src={ImagesModeIcon}
+                          alt="Event image icon"
+                          objectFit="contain"
+                          fill
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Event Image"
+                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
+                      <div className="relative w-[32px] h-[32px]">
+                        <Image
+                          src={AddLinkIcon}
+                          alt="Add link icon"
+                          objectFit="contain"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Link of project"
+                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
+                          darkMode
+                            ? "text-white placeholder-gray-400"
+                            : "text-[#829BA4] placeholder-[#829BA4]"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                ))}
             </div>
 
             <BaseButton
-              onClick={() => {}}
+              onClick={handleAddEvent}
               label="Add events"
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
