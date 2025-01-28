@@ -56,7 +56,7 @@ export default function MobileMenu({ session, pageContent }: MobileMenuProps) {
         pageContent={pageContent}
         handleMenuStatus={() => setMobileMenuStatus(false)}
       />
-      <div className="w-[90%] mx-auto">
+      <div className="w-[92%] mx-auto">
         {session ? (
           <AuthButton
             message={pageContent["sign-out-button"]}
