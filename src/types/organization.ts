@@ -3,8 +3,6 @@ export interface Organization {
   display_name: string;
   profile_image?: string;
   acronym?: string;
-  meta_page?: string;
-  mastodon?: string;
   tag_diff?: any[];
   home_project?: string;
   update_date?: string;
@@ -14,10 +12,12 @@ export interface Organization {
   known_capacities?: number[];
   available_capacities?: number[];
   wanted_capacities?: number[];
-  projects?: any[];
-  events?: any[];
-  documents?: any[];
-  contacts?: any[];
+  events?: number[];
+  documents?: Document[];
+  email?: string;
+  website?: string;
+  mastodon?: string;
+  meta_page?: string;
 }
 
 export interface OrganizationType {
