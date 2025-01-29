@@ -118,6 +118,7 @@ export default function EditOrganizationProfilePage() {
   const [documentsData, setDocumentsData] = useState<Document[]>([]);
   const [diffTagsData, setDiffTagsData] = useState<News[]>([]);
 
+  const [newsData, setNewsData] = useState<News[]>([]);
   useEffect(() => {
     if (organization) {
       setFormData({
@@ -142,20 +143,40 @@ export default function EditOrganizationProfilePage() {
 
   useEffect(() => {
     if (organization) {
-      if (events && JSON.stringify(eventsData) !== JSON.stringify(events)) {
+      if (
+        events &&
+        JSON.stringify(eventsData) !== JSON.stringify(events) &&
+        events.length > 0
+      ) {
         setEventsData(events);
       }
       if (
         projects &&
-        JSON.stringify(projectsData) !== JSON.stringify(projects)
+        JSON.stringify(projectsData) !== JSON.stringify(projects) &&
+        projects.length > 0
       ) {
         setProjectsData(projects);
       }
       if (
         documents &&
-        JSON.stringify(documentsData) !== JSON.stringify(documents)
+        JSON.stringify(documentsData) !== JSON.stringify(documents) &&
+        documents.length > 0
       ) {
         setDocumentsData(documents);
+      }
+      if (
+        diffTagsData &&
+        JSON.stringify(diffTagsData) !== JSON.stringify(diffTagsData) &&
+        diffTagsData.length > 0
+      ) {
+        setDiffTagsData(diffTagsData);
+      }
+      if (
+        newsData &&
+        JSON.stringify(newsData) !== JSON.stringify(news) &&
+        news.length > 0
+      ) {
+        setNewsData(news);
       }
     }
   }, [organization, events, projects, documents]);
@@ -208,7 +229,6 @@ export default function EditOrganizationProfilePage() {
               related_skills: [],
               organization: Number(organizationId),
             });
-            console.log("Created project:", newProject); // Debug log
             if (!newProject || !newProject.id) {
               console.error("Invalid project response:", newProject);
               return null;
@@ -234,7 +254,6 @@ export default function EditOrganizationProfilePage() {
       const updateEventPromises = eventsData
         .filter((event) => event.id !== 0)
         .map(async (event) => {
-          console.log("Processing update for event:", event.id);
           try {
             await updateEvent(event.id, {
               name: event.name,
@@ -254,7 +273,6 @@ export default function EditOrganizationProfilePage() {
       const eventPromises = eventsData
         .filter((event) => event.id === 0)
         .map(async (event) => {
-          console.log("Processing creation for new event");
           try {
             const newEvent = await createEvent({
               name: event.name || "New Event",
@@ -272,7 +290,6 @@ export default function EditOrganizationProfilePage() {
               openstreetmap_id: event.openstreetmap_id || "",
               wikidata_qid: event.wikidata_qid || "",
             });
-            console.log("Created event with ID:", newEvent?.id);
             return newEvent?.id || null;
           } catch (error) {
             console.error("Error creating event:", error);
@@ -284,14 +301,11 @@ export default function EditOrganizationProfilePage() {
         await createDocument({ id: document.id, url: document.url });
       });
 
-      console.log("Awaiting promises...");
       const [updatedEventIds, newEventIds] = await Promise.all([
         Promise.all(updateEventPromises || []),
         Promise.all(eventPromises || []),
         Promise.all(documentPromises || []),
       ]);
-
-      console.log("Promise results:", { updatedEventIds, newEventIds });
 
       // Filtra IDs nulos e undefined
       const validUpdatedIds = updatedEventIds.filter(
@@ -302,15 +316,12 @@ export default function EditOrganizationProfilePage() {
       );
 
       const allEventIds = [...validUpdatedIds, ...validNewIds];
-      console.log("Final event IDs:", allEventIds);
 
       const updatedFormData = {
         ...formData,
         events: allEventIds,
         projects: allProjectIds,
       };
-
-      console.log("updatedFormData", updatedFormData);
 
       await updateOrganization({
         ...updatedFormData,
@@ -406,6 +417,9 @@ export default function EditOrganizationProfilePage() {
     const newTag = {
       id: 0,
       tag: "Add a diff tag",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      creator: Number(session?.user?.id),
     };
     setDiffTagsData((prev) => [...(prev || []), newTag]);
   };
@@ -485,7 +499,7 @@ export default function EditOrganizationProfilePage() {
     console.log("handleAddDocument");
     const newDocument: Document = {
       id: 0,
-      url: "",
+      url: "https://commons.wikimedia.org/wiki/File:example.svg",
     };
     setDocumentsData((prev) => [...(prev || []), newDocument]);
   };
@@ -1126,13 +1140,28 @@ export default function EditOrganizationProfilePage() {
                   News
                 </h2>
               </div>
-
-              <input
-                type="text"
-                placeholder="Add a Diff Tag"
-                className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
-              />
-
+              <div className="flex flex-col w-full gap-2 mb-2">
+                {Array.isArray(diffTagsData) &&
+                  diffTagsData?.map((news, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        key={index}
+                        type="text"
+                        placeholder="Add a Diff Tag"
+                        className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
+                        value={news.tag || ""}
+                        onChange={(e) => {
+                          const newNews = [...diffTagsData];
+                          newNews[index] = {
+                            ...newNews[index],
+                            tag: e.target.value,
+                          };
+                          setDiffTagsData(newNews);
+                        }}
+                      />
+                    </div>
+                  ))}
+              </div>
               <BaseButton
                 onClick={handleAddDiffTag}
                 label="Add more Diff tags"
@@ -1173,12 +1202,27 @@ export default function EditOrganizationProfilePage() {
                   Documents
                 </h2>
               </div>
-
-              <input
-                type="text"
-                placeholder="Insert link"
-                className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
-              />
+              <div className="flex flex-col w-full gap-2 mb-2">
+                {Array.isArray(documentsData) &&
+                  documentsData?.map((document, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Insert link"
+                        className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
+                        value={document.url || ""}
+                        onChange={(e) => {
+                          const newDocuments = [...documentsData];
+                          newDocuments[index] = {
+                            ...newDocuments[index],
+                            url: e.target.value,
+                          };
+                          setDocumentsData(newDocuments);
+                        }}
+                      />
+                    </div>
+                  ))}
+              </div>
 
               <BaseButton
                 onClick={handleAddDocument}
@@ -1803,15 +1847,31 @@ export default function EditOrganizationProfilePage() {
               </h2>
             </div>
 
-            <input
-              type="text"
-              placeholder="Add a Diff Tag"
-              className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
-                darkMode
-                  ? "bg-transparent border-white text-white placeholder-gray-400"
-                  : "border-white text-[#829BA4] placeholder-[#829BA4]"
-              }`}
-            />
+            <div className="flex flex-col w-full gap-2 mb-2">
+              {Array.isArray(diffTagsData) &&
+                diffTagsData?.map((news, index) => (
+                  <div key={index} className="flex flex-row gap-2">
+                    <input
+                      type="text"
+                      value={news.tag || ""}
+                      onChange={(e) => {
+                        const newNews = [...diffTagsData];
+                        newNews[index] = {
+                          ...newNews[index],
+                          tag: e.target.value,
+                        };
+                        setDiffTagsData(newNews);
+                      }}
+                      placeholder="Add a Diff Tag"
+                      className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
+                        darkMode
+                          ? "bg-transparent border-white text-white placeholder-gray-400"
+                          : "border-white text-[#829BA4] placeholder-[#829BA4]"
+                      }`}
+                    />
+                  </div>
+                ))}
+            </div>
 
             <BaseButton
               onClick={handleAddDiffTag}
@@ -1855,15 +1915,31 @@ export default function EditOrganizationProfilePage() {
               </h2>
             </div>
 
-            <input
-              type="text"
-              placeholder="Insert link"
-              className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
-                darkMode
-                  ? "bg-transparent border-white text-white placeholder-gray-400"
-                  : "border-white text-[#829BA4] placeholder-[#829BA4]"
-              }`}
-            />
+            <div className="flex flex-col w-full gap-2 mb-2">
+              {Array.isArray(documentsData) &&
+                documentsData?.map((document, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Insert link"
+                      className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
+                        darkMode
+                          ? "bg-transparent border-white text-white placeholder-gray-400"
+                          : "border-white text-[#829BA4] placeholder-[#829BA4]"
+                      }`}
+                      value={document.url || ""}
+                      onChange={(e) => {
+                        const newDocuments = [...documentsData];
+                        newDocuments[index] = {
+                          ...newDocuments[index],
+                          url: e.target.value,
+                        };
+                        setDocumentsData(newDocuments);
+                      }}
+                    />
+                  </div>
+                ))}
+            </div>
 
             <BaseButton
               onClick={handleAddDocument}
