@@ -50,8 +50,7 @@ export default function DesktopNavbar({
                 priority
                 src={CapXLogo}
                 alt="Capacity Exchange logo"
-                className="w-[100px] h-[100px]"
-                objectFit="contain"
+                className="w-[100px] h-[100px] object-contain"
               />
             </div>
           </NextLink>

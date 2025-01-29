@@ -37,10 +37,13 @@ import { Capacity } from "@/types/capacity";
 import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import { useProject, useProjects } from "@/hooks/useProjects";
+import { useDocument } from "@/hooks/useDocument";
 import { Project } from "@/types/project";
 import { Event } from "@/types/event";
 import { useEvent, useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
+import { News } from "@/types/news";
+import { Document } from "@/types/document";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -73,6 +76,14 @@ export default function EditOrganizationProfilePage() {
   const { news, loading, fetchNews, fetchSingleNews, createNews, deleteNews } =
     useNews(token);
 
+  const {
+    documents,
+    loading: isDocumentsLoading,
+    error: documentsError,
+    createDocument,
+    deleteDocument,
+  } = useDocument(token);
+
   const projectId = 0; // temporary id for new projects
 
   const { createProject, updateProject, deleteProject } = useProject(
@@ -103,8 +114,9 @@ export default function EditOrganizationProfilePage() {
   });
 
   const [eventsData, setEventsData] = useState<Event[]>([]);
-
   const [projectsData, setProjectsData] = useState<Project[]>([]);
+  const [documentsData, setDocumentsData] = useState<Document[]>([]);
+  const [diffTagsData, setDiffTagsData] = useState<News[]>([]);
 
   useEffect(() => {
     if (organization) {
@@ -129,16 +141,24 @@ export default function EditOrganizationProfilePage() {
   }, [organization]);
 
   useEffect(() => {
-    if (projects) {
-      setProjectsData(projects);
+    if (organization) {
+      if (events && JSON.stringify(eventsData) !== JSON.stringify(events)) {
+        setEventsData(events);
+      }
+      if (
+        projects &&
+        JSON.stringify(projectsData) !== JSON.stringify(projects)
+      ) {
+        setProjectsData(projects);
+      }
+      if (
+        documents &&
+        JSON.stringify(documentsData) !== JSON.stringify(documents)
+      ) {
+        setDocumentsData(documents);
+      }
     }
-  }, [projects]);
-
-  useEffect(() => {
-    if (events) {
-      setEventsData(events);
-    }
-  }, [events]);
+  }, [organization, events, projects, documents]);
 
   const handleSubmit = async () => {
     try {
@@ -173,7 +193,7 @@ export default function EditOrganizationProfilePage() {
             return project.id; // retorna o ID original em caso de erro
           }
         });
-      // Primeiro, criar novos projetos
+
       const projectPromises = projectsData
         .filter((project) => project.id === 0) // filtra apenas novos projetos
         .map(async (project) => {
@@ -260,10 +280,15 @@ export default function EditOrganizationProfilePage() {
           }
         });
 
+      const documentPromises = documentsData.map(async (document) => {
+        await createDocument({ id: document.id, url: document.url });
+      });
+
       console.log("Awaiting promises...");
       const [updatedEventIds, newEventIds] = await Promise.all([
         Promise.all(updateEventPromises || []),
         Promise.all(eventPromises || []),
+        Promise.all(documentPromises || []),
       ]);
 
       console.log("Promise results:", { updatedEventIds, newEventIds });
@@ -377,23 +402,12 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddDiffTag = () => {
-    setFormData((prev) => {
-      const newState = {
-        ...prev,
-        tag_diff: [...(prev.tag_diff || []), ""],
-      };
-      return newState;
-    });
-  };
-
-  const handleAddLink = () => {
-    setFormData((prev) => ({
-      ...prev,
-      documents: [
-        ...(prev.documents || []),
-        { url: "" } as unknown as Document,
-      ],
-    }));
+    console.log("handleAddDiffTag");
+    const newTag = {
+      id: 0,
+      tag: "Add a diff tag",
+    };
+    setDiffTagsData((prev) => [...(prev || []), newTag]);
   };
 
   const handleRemoveLink = (index: number) => {
@@ -465,6 +479,15 @@ export default function EditOrganizationProfilePage() {
         [capacityField]: currentCapacities,
       };
     });
+  };
+
+  const handleAddDocument = () => {
+    console.log("handleAddDocument");
+    const newDocument: Document = {
+      id: 0,
+      url: "",
+    };
+    setDocumentsData((prev) => [...(prev || []), newDocument]);
   };
 
   if (!isOrgManager) {
@@ -550,8 +573,7 @@ export default function EditOrganizationProfilePage() {
                     alt="Organization logo"
                     width={127}
                     height={51}
-                    className="w-full rounded-lg"
-                    objectFit="contain"
+                    className="w-full rounded-lg object-contain"
                     priority
                   />
                 </div>
@@ -586,7 +608,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? ReportIconWhite : ReportIcon}
                     alt="Report icon"
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 <h2 className={`font-[Montserrat] text-[14px] font-bold`}>
@@ -601,7 +623,7 @@ export default function EditOrganizationProfilePage() {
                     ? "bg-transparent border-white text-white placeholder-gray-400"
                     : "border-gray-300 text-gray-700"
                 }`}
-                value={organizationData.report_link}
+                value={organizationData.report_link || ""}
                 onChange={(e) =>
                   setOrganizationData({
                     ...organizationData,
@@ -627,7 +649,7 @@ export default function EditOrganizationProfilePage() {
                     <Image
                       src={darkMode ? NeurologyIconWhite : NeurologyIcon}
                       alt="Neurology icon"
-                      objectFit="contain"
+                      className="object-contain"
                     />
                   </div>
                   <h2
@@ -691,7 +713,7 @@ export default function EditOrganizationProfilePage() {
                     <Image
                       src={darkMode ? EmojiIconWhite : EmojiIcon}
                       alt="Emoji icon"
-                      objectFit="contain"
+                      className="object-contain"
                     />
                   </div>
                   <h2
@@ -760,7 +782,7 @@ export default function EditOrganizationProfilePage() {
                     <Image
                       src={darkMode ? TargetIconWhite : TargetIcon}
                       alt="Target icon"
-                      objectFit="contain"
+                      className="object-contain"
                     />
                   </div>
                   <h2
@@ -855,7 +877,7 @@ export default function EditOrganizationProfilePage() {
                               ? "text-white placeholder-gray-400"
                               : "text-[#829BA4] placeholder-[#829BA4]"
                           }`}
-                          value={project.display_name}
+                          value={project.display_name || ""}
                           onChange={(e) => {
                             const newProjects = [...projectsData];
                             newProjects[index] = {
@@ -886,7 +908,7 @@ export default function EditOrganizationProfilePage() {
                               ? "text-white placeholder-gray-400"
                               : "text-[#829BA4] placeholder-[#829BA4]"
                           }`}
-                          value={project.profile_image ?? ""}
+                          value={project.profile_image || ""}
                           onChange={(e) => {
                             const newProjects = [...projectsData];
                             newProjects[index] = {
@@ -903,7 +925,7 @@ export default function EditOrganizationProfilePage() {
                           <Image
                             src={AddLinkIcon}
                             alt="Add link icon"
-                            objectFit="contain"
+                            className="object-contain"
                           />
                         </div>
                         <input
@@ -914,7 +936,7 @@ export default function EditOrganizationProfilePage() {
                               ? "text-white placeholder-gray-400"
                               : "text-[#829BA4] placeholder-[#829BA4]"
                           }`}
-                          value={project.url ?? ""}
+                          value={project.url || ""}
                           onChange={(e) => {
                             const newProjects = [...projectsData];
                             newProjects[index] = {
@@ -930,7 +952,7 @@ export default function EditOrganizationProfilePage() {
                           <Image
                             src={darkMode ? CancelIconWhite : CancelIcon}
                             alt="Delete icon"
-                            objectFit="contain"
+                            className="object-contain"
                           />
                         </div>
                       </button>
@@ -970,7 +992,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                     alt="Event icon"
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -994,7 +1016,7 @@ export default function EditOrganizationProfilePage() {
                               ? "text-white placeholder-gray-400"
                               : "text-[#829BA4] placeholder-[#829BA4]"
                           }`}
-                          value={event.name}
+                          value={event.name || ""}
                           onChange={(e) => {
                             const newEvents = [...eventsData];
                             newEvents[index] = {
@@ -1010,7 +1032,7 @@ export default function EditOrganizationProfilePage() {
                           <Image
                             src={ImagesModeIcon}
                             alt="Project image icon"
-                            objectFit="contain"
+                            className="object-contain"
                           />
                         </div>
                         <input
@@ -1037,13 +1059,13 @@ export default function EditOrganizationProfilePage() {
                           <Image
                             src={AddLinkIcon}
                             alt="Add link icon"
-                            objectFit="contain"
+                            className="object-contain"
                           />
                         </div>
                         <input
                           type="text"
                           placeholder="Link of event"
-                          value={event.url ?? ""}
+                          value={event.url || ""}
                           onChange={(e) => {
                             const newEvents = [...eventsData];
                             newEvents[index] = {
@@ -1093,7 +1115,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                     alt="News icon"
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -1140,7 +1162,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                     alt="Document icon"
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -1159,7 +1181,7 @@ export default function EditOrganizationProfilePage() {
               />
 
               <BaseButton
-                onClick={handleAddLink}
+                onClick={handleAddDocument}
                 label="Add more links"
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                   darkMode
@@ -1215,8 +1237,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={WMBLogo}
                     alt="Organization logo"
-                    objectFit="contain"
-                    className="w-full rounded-lg"
+                    className="object-contain w-full rounded-lg"
                     priority
                   />
                 </div>
@@ -1227,8 +1248,7 @@ export default function EditOrganizationProfilePage() {
                 <Image
                   src={AvatarIcon}
                   alt="Avatar"
-                  objectFit="contain"
-                  className="w-full rounded-lg"
+                  className="object-contain w-full rounded-lg"
                 />
               </div>
               <div
@@ -1257,7 +1277,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? UserCircleIconWhite : UserCircleIcon}
                     alt="User circle icon"
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
 
@@ -1308,8 +1328,7 @@ export default function EditOrganizationProfilePage() {
                 <Image
                   src={darkMode ? ReportIconWhite : ReportIcon}
                   alt="Report icon"
-                  fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </div>
               <h2
@@ -1326,7 +1345,7 @@ export default function EditOrganizationProfilePage() {
                   ? "bg-transparent border-white text-white placeholder-gray-400"
                   : "border-gray-300 text-[#829BA4]"
               }`}
-              value={formData.meta_page}
+              value={formData.meta_page || ""}
               onChange={(e) =>
                 setFormData({ ...formData, meta_page: e.target.value })
               }
@@ -1349,8 +1368,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? NeurologyIconWhite : NeurologyIcon}
                     alt="Neurology icon"
-                    objectFit="contain"
-                    fill
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -1418,8 +1436,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? EmojiIconWhite : EmojiIcon}
                     alt="Emoji icon"
-                    objectFit="contain"
-                    fill
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -1487,8 +1504,7 @@ export default function EditOrganizationProfilePage() {
                   <Image
                     src={darkMode ? TargetIconWhite : TargetIcon}
                     alt="Target icon"
-                    fill
-                    objectFit="contain"
+                    className="object-contain"
                   />
                 </div>
                 <h2
@@ -1557,8 +1573,7 @@ export default function EditOrganizationProfilePage() {
                 <Image
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="Project icon"
-                  fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </div>
               <h2
@@ -1583,7 +1598,7 @@ export default function EditOrganizationProfilePage() {
                             ? "text-white placeholder-gray-400"
                             : "text-[#829BA4] placeholder-[#829BA4]"
                         }`}
-                        value={project.display_name}
+                        value={project.display_name || ""}
                         onChange={(e) => {
                           const newProjects = [...projectsData];
                           newProjects[index] = {
@@ -1599,8 +1614,7 @@ export default function EditOrganizationProfilePage() {
                         <Image
                           src={ImagesModeIcon}
                           alt="Project image icon"
-                          objectFit="contain"
-                          fill
+                          className="object-contain"
                         />
                       </div>
                       <input
@@ -1618,7 +1632,7 @@ export default function EditOrganizationProfilePage() {
                         <Image
                           src={AddLinkIcon}
                           alt="Add link icon"
-                          objectFit="contain"
+                          className="object-contain"
                         />
                       </div>
                       <input
@@ -1668,7 +1682,7 @@ export default function EditOrganizationProfilePage() {
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="Event icon"
                   fill
-                  objectFit="contain"
+                  className="object-contain"
                 />
               </div>
               <h2
@@ -1693,7 +1707,7 @@ export default function EditOrganizationProfilePage() {
                             ? "text-white placeholder-gray-400"
                             : "text-[#829BA4] placeholder-[#829BA4]"
                         }`}
-                        value={event.name}
+                        value={event.name || ""}
                         onChange={(e) => {
                           const newEvents = [...eventsData];
                           newEvents[index] = {
@@ -1709,8 +1723,7 @@ export default function EditOrganizationProfilePage() {
                         <Image
                           src={ImagesModeIcon}
                           alt="Event image icon"
-                          objectFit="contain"
-                          fill
+                          className="object-contain"
                         />
                       </div>
                       <input
@@ -1728,7 +1741,7 @@ export default function EditOrganizationProfilePage() {
                         <Image
                           src={AddLinkIcon}
                           alt="Add link icon"
-                          objectFit="contain"
+                          className="object-contain"
                         />
                       </div>
                       <input
@@ -1775,8 +1788,7 @@ export default function EditOrganizationProfilePage() {
                 <Image
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="News icon"
-                  fill
-                  style={{ objectFit: "contain" }}
+                  className="object-contain"
                 />
               </div>
               <h2
@@ -1799,7 +1811,7 @@ export default function EditOrganizationProfilePage() {
             />
 
             <BaseButton
-              onClick={() => {}}
+              onClick={handleAddDiffTag}
               label="Add Diff tags"
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
@@ -1827,8 +1839,7 @@ export default function EditOrganizationProfilePage() {
                 <Image
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="Document icon"
-                  fill
-                  style={{ objectFit: "contain" }}
+                  className="object-contain"
                 />
               </div>
               <h2
@@ -1851,7 +1862,7 @@ export default function EditOrganizationProfilePage() {
             />
 
             <BaseButton
-              onClick={() => {}}
+              onClick={handleAddDocument}
               label="Add link"
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode

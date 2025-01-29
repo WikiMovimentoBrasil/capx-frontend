@@ -21,7 +21,7 @@ import { ContactsSection } from "./components/ContactsSection";
 import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 
 export default function OrganizationProfilePage() {
@@ -40,7 +40,6 @@ export default function OrganizationProfilePage() {
     }
   }, [error]);
 
-  console.log("organization", organization);
   if (isMobile) {
     return (
       <>
@@ -101,8 +100,7 @@ export default function OrganizationProfilePage() {
                           alt="Organization logo"
                           fill
                           priority
-                          objectFit="contain"
-                          className="w-full rounded-lg"
+                          className="object-contain w-full rounded-lg"
                         />
                       </div>
                     </div>
@@ -131,8 +129,7 @@ export default function OrganizationProfilePage() {
                   <Image
                     src={ReportActivityIcon}
                     alt="Report activity icon"
-                    objectFit="contain"
-                    fill
+                    className="object-contain"
                   />
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
@@ -176,7 +173,7 @@ export default function OrganizationProfilePage() {
                 <ProjectsEventsList
                   title="Main projects"
                   type="projects"
-                  itemIds={organization?.projects || []}
+                  itemIds={organization?.tag_diff || []}
                   token={token}
                 />
                 <ProjectsEventsList
@@ -215,10 +212,8 @@ export default function OrganizationProfilePage() {
                   <Image
                     src={WMBLogo}
                     alt="Organization logo"
-                    objectFit="contain"
-                    style={{ width: "auto", height: "auto" }}
+                    className="object-contain"
                     priority
-                    className="w-full rounded-lg"
                   />
                 </div>
               </div>
@@ -282,8 +277,7 @@ export default function OrganizationProfilePage() {
                 <Image
                   src={ReportActivityIcon}
                   alt="Report activity icon"
-                  objectFit="contain"
-                  className="w-full"
+                  className="object-contain"
                 />
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
@@ -331,7 +325,7 @@ export default function OrganizationProfilePage() {
               <ProjectsEventsList
                 title="Main projects"
                 type="projects"
-                itemIds={organization?.projects || []}
+                itemIds={organization?.tag_diff || []}
                 token={token}
               />
               <ProjectsEventsList

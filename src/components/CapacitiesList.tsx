@@ -26,7 +26,7 @@ export function CapacitiesList({
       <div className="flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <div className="relative h-[20px] w-[20px]">
-            <Image src={icon} alt={title} fill objectFit="contain" />
+            <Image src={icon} alt={title} className="object-contain" />
           </div>
           <h2
             className={
@@ -67,12 +67,12 @@ export function CapacitiesList({
     <div className="flex flex-col gap-[62px] mb-4">
       <div className="flex flex-row gap-2 items-center">
         <div className="relative h-[42px] w-[42px]">
-          <Image src={icon} alt={title} fill objectFit="contain" />
+          <Image src={icon} alt={title} className="object-contain" />
         </div>
         <h2
           className={
             customClass +
-            " font-extrabold text-[24px]" +
+            "font-extrabold text-[24px]" +
             (darkMode ? " text-capx-light-bg" : " text-capx-dark-box-bg")
           }
         >
