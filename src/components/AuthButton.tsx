@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import axios from "axios";
+import axiosInstance from "@/services/axiosInstance";
 import BaseButton from "./BaseButton";
 import Popup from "./Popup";
 import capxPersonIcon from "../../public/static/images/capx_person_icon.svg";
@@ -43,7 +43,7 @@ export default function AuthButton({
       localStorage.removeItem("oauth_token");
       localStorage.removeItem("oauth_token_secret");
 
-      const response = await axios.post("/api/login", null, {
+      const response = await axiosInstance.post("/api/login", null, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
