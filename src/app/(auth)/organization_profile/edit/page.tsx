@@ -1329,6 +1329,7 @@ export default function EditOrganizationProfilePage() {
                   src={darkMode ? ReportIconWhite : ReportIcon}
                   alt="Report icon"
                   className="object-contain"
+                  fill
                 />
               </div>
               <h2
@@ -1574,6 +1575,7 @@ export default function EditOrganizationProfilePage() {
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="Project icon"
                   className="object-contain"
+                  fill
                 />
               </div>
               <h2
@@ -1789,6 +1791,7 @@ export default function EditOrganizationProfilePage() {
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="News icon"
                   className="object-contain"
+                  fill
                 />
               </div>
               <h2
@@ -1840,6 +1843,7 @@ export default function EditOrganizationProfilePage() {
                   src={darkMode ? WikimediaIconWhite : WikimediaIcon}
                   alt="Document icon"
                   className="object-contain"
+                  fill
                 />
               </div>
               <h2
