@@ -1223,7 +1223,7 @@ export default function EditOrganizationProfilePage() {
       }`}
     >
       <section
-        className={`w-full mx-auto px-4 py-8 ${
+        className={`w-full mx-auto px-8 py-8 ${
           isMobile ? "mt-[80px]" : "mt-[64px]"
         }`}
       >

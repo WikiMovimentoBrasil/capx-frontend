@@ -56,7 +56,7 @@ export default function DesktopNavbar({
           </NextLink>
         </div>
         {session ? (
-          <div className="flex flex-row xl:flex items-center justify-start gap-[43px] ml-[90px]">
+          <div className="flex flex-row xl:flex items-center justify-start gap-[43px] ml-[50px]">
             {menuItems.map((item, index) => (
               <NextLink
                 key={"navbar-link-" + index.toString()}
