@@ -40,6 +40,7 @@ import { useProject, useProjects } from "@/hooks/useProjects";
 import { Project } from "@/types/project";
 import { Event } from "@/types/event";
 import { useEvent, useEvents } from "@/hooks/useEvents";
+import { useNews } from "@/hooks/useNews";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -61,13 +62,16 @@ export default function EditOrganizationProfilePage() {
     projects,
     isLoading: isProjectsLoading,
     error: projectsError,
-  } = useProjects(organization?.projects, token);
+  } = useProjects(organization?.tag_diff, token);
 
   const {
     events,
     isLoading: isEventsLoading,
     error: eventsError,
-  } = useEvents(organization?.events || [], token);
+  } = useEvents((organization?.events || []) as unknown as Event[], token);
+
+  const { news, loading, fetchNews, fetchSingleNews, createNews, deleteNews } =
+    useNews(token);
 
   const projectId = 0; // temporary id for new projects
 
@@ -89,7 +93,6 @@ export default function EditOrganizationProfilePage() {
     tag_diff: [],
     events: [],
     documents: [],
-    projects: [],
     home_project: "",
     type: 0,
     territory: [],
@@ -113,7 +116,6 @@ export default function EditOrganizationProfilePage() {
         mastodon: organization.mastodon,
         tag_diff: organization.tag_diff,
         events: organization.events,
-        projects: organization.projects,
         documents: organization.documents,
         home_project: organization.home_project,
         type: organization.type,
@@ -288,7 +290,7 @@ export default function EditOrganizationProfilePage() {
       await updateOrganization({
         ...updatedFormData,
         events: allEventIds,
-        projects: allProjectIds,
+        tag_diff: allProjectIds,
       });
 
       router.push(`/organization_profile/`);
@@ -337,9 +339,9 @@ export default function EditOrganizationProfilePage() {
 
   const handleRemoveProject = (index: number) => {
     setFormData((prev) => {
-      const newProjects = [...(prev.projects || [])];
+      const newProjects = [...(prev.tag_diff || [])];
       newProjects.splice(index, 1);
-      return { ...prev, projects: newProjects };
+      return { ...prev, tag_diff: newProjects };
     });
   };
 
@@ -387,7 +389,10 @@ export default function EditOrganizationProfilePage() {
   const handleAddLink = () => {
     setFormData((prev) => ({
       ...prev,
-      documents: [...(prev.documents || []), ""],
+      documents: [
+        ...(prev.documents || []),
+        { url: "" } as unknown as Document,
+      ],
     }));
   };
 
@@ -414,7 +419,7 @@ export default function EditOrganizationProfilePage() {
       return prev;
     });
   };
-
+  /* 
   const handleEventInputChange = (
     index: number,
     field: "image" | "link",
@@ -433,7 +438,7 @@ export default function EditOrganizationProfilePage() {
       };
     });
   };
-
+ */
   const capacityIds = useMemo(
     () =>
       [
