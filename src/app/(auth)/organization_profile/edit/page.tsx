@@ -1888,7 +1888,7 @@ export default function EditOrganizationProfilePage() {
           <ContactsSection />
 
           {/* Save/Cancel Buttons */}
-          <div className="flex flex-row gap-2 mt-6 w-1/2">
+          <div className="flex flex-row gap-2 mt-6 w-[75%]">
             <BaseButton
               onClick={handleSubmit}
               label="Save profile"
