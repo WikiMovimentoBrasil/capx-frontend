@@ -6,10 +6,6 @@ import CapXLogo from "../../public/static/images/capx_minimalistic_logo.svg";
 import DarkModeButton from "./DarkModeButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import ProfileSelect from "./ProfileSelect";
-import { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
-import router from "next/router";
-// import { Session } from "next-auth";
 
 export interface DesktopNavbarProps {
   pageContent: any;
@@ -24,96 +20,9 @@ export default function DesktopNavbar({
   language,
   setLanguage,
   setPageContent,
-  session
+  session,
 }: DesktopNavbarProps) {
   const { darkMode, setDarkMode } = useTheme();
-  // const { data: session, status } = useSession(); // status pode ser "loading", "authenticated" ou "unauthenticated"
-  // const { data: session, status } = useSession(); // Usando diretamente a sessão fornecida pelo useSession
-  // const [currentSession, setCurrentSession] = useState<any>(session);  // Armazenando a sessão no estado
-
-  // let currentSession = session;
-
-
-  // useEffect(() => {
-  //   console.log("Sessão atualizada:", session); // Para depuração
-  // }, [session]); 
-
-
-  // useEffect(() => {
-  //   // Lógica aqui se precisar fazer algo quando o status da sessão mudar
-  //   if (status === "authenticated") {
-  //     console.log("Usuário autenticado", session);
-  //   } else if (status === "unauthenticated") {
-  //     console.log("Usuário não autenticado");
-  //   }
-  // }, [status, session]);
-
-    // Atualiza currentSession quando a sessão mudar
-    // useEffect(() => {
-    //   if (session) {
-    //     setCurrentSession(session);
-    //   } else {
-    //     setCurrentSession(null);
-    //   }
-    // }, [session]); 
-
-    // useEffect(() => {
-    //   console.log("Current session updated:", currentSession);
-    // }, [currentSession]); // Para verificar se a currentSession foi atualizada corretamente
-  
-
-
-  // useEffect(() => {
-  //   const fetchSession = async () => {
-  //     const current = await getSession();
-  //     console.log("Fetched session:", current);
-  //     return current;
-  //   };
-
-  //   currentSession = fetchSession().finally(() => {
-  //     console.log("currentSession session:", currentSession);
-  //   });
-  //   console.log("currentSession session:", currentSession);
-  // }, [currentSession]);
-  
-  // console.log("DesktopNavbar session", currentSession);
-
-
-  // useEffect(() => {
-  //   console.log("useEffect do DESKTOPNAV:", currentSession);
-  //   const fetchSession = async () => {
-  //     const session = await getSession();
-  //     console.log("Fetched session:", session);
-  //     setCurrentSession(session); // Atualiza o estado com a sessão
-  //   };
-
-  //   fetchSession();
-  // }, []); 
-
-  // useEffect(() => {
-  //   // Verifica se já há uma sessão
-  //   if (currentSession) return;
-
-  //   const fetchSession = async () => {
-  //     const session = await getSession();
-  //     console.log("Fetched session:", session);
-  //     setCurrentSession(session); // Atualiza o estado com a sessão
-  //   };
-
-  //   fetchSession();
-  // }, [currentSession]);
-
-  // useEffect(() => {
-  //   if (session && !currentSession) { // Verifica se a sessão já foi carregada
-  //     console.log("Fetched session:", session);
-  //     setCurrentSession(session);  // Atualiza o estado com a sessão
-  //   }
-  // }, [session, currentSession]);  
-
-  // if (status === "loading") {
-  //   // Exiba um carregamento ou placeholder enquanto a sessão é carregada
-  //   return <div>Loading...</div>;
-  // }
 
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },

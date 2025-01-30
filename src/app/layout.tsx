@@ -22,13 +22,13 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body id="root" className="min-h-screen">
-      <SessionWrapper>
-          <ThemeProvider>
-              <AppProvider>
-                <Providers>{children}</Providers>
-              </AppProvider>
-          </ThemeProvider>
-        </SessionWrapper>
+        <ThemeProvider>
+          <SessionWrapper>
+            <AppProvider>
+              <Providers>{children}</Providers>
+            </AppProvider>
+          </SessionWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

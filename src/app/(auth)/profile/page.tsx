@@ -131,8 +131,6 @@ export default function ProfilePage() {
   const cookieStore = cookies();
   const language = cookieStore.get("language")?.value ?? "en";
  */
-  console.log(" ProfileContent session", session);
-  
   if (isLoading) return <div>Loading...</div>;
 
   const getProficiencyLabel = (proficiency: string) => {
