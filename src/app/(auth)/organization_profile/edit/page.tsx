@@ -32,7 +32,13 @@ import TargetIconWhite from "@/public/static/images/target_white.svg";
 import WikimediaIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 import AddLinkIcon from "@/public/static/images/add_link.svg";
 import ImagesModeIcon from "@/public/static/images/images_mode.svg";
-import { Organization } from "@/types/organization";
+import ContactMetaIcon from "@/public/static/images/contact_meta.svg";
+import ContactMetaIconWhite from "@/public/static/images/contact_meta_white.svg";
+import ContactEmailIcon from "@/public/static/images/contact_alternate_email.svg";
+import ContactEmailIconWhite from "@/public/static/images/contact_alternate_email_white.svg";
+import ContactPortalIcon from "@/public/static/images/contact_captive_portal.svg";
+import ContactPortalIconWhite from "@/public/static/images/contact_captive_portal_white.svg";
+import { Organization, OrganizationType } from "@/types/organization";
 import { Capacity } from "@/types/capacity";
 import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
@@ -41,9 +47,10 @@ import { useDocument } from "@/hooks/useDocument";
 import { Project } from "@/types/project";
 import { Event } from "@/types/event";
 import { useEvent, useEvents } from "@/hooks/useEvents";
-import { useNews } from "@/hooks/useNews";
-import { News } from "@/types/news";
-import { Document } from "@/types/document";
+import { tagDiff } from "@/types/tagDiff";
+import { OrganizationDocument } from "@/types/document";
+import { Contacts } from "@/types/contacts";
+import { useTagDiff } from "@/hooks/useTagDiff";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -73,8 +80,8 @@ export default function EditOrganizationProfilePage() {
     error: eventsError,
   } = useEvents((organization?.events || []) as unknown as Event[], token);
 
-  const { news, loading, fetchNews, fetchSingleNews, createNews, deleteNews } =
-    useNews(token);
+  const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
+    useTagDiff(token);
 
   const {
     documents,
@@ -104,6 +111,7 @@ export default function EditOrganizationProfilePage() {
     tag_diff: [],
     events: [],
     documents: [],
+    projects: [],
     home_project: "",
     type: 0,
     territory: [],
@@ -115,19 +123,29 @@ export default function EditOrganizationProfilePage() {
 
   const [eventsData, setEventsData] = useState<Event[]>([]);
   const [projectsData, setProjectsData] = useState<Project[]>([]);
-  const [documentsData, setDocumentsData] = useState<Document[]>([]);
-  const [diffTagsData, setDiffTagsData] = useState<News[]>([]);
+  const [documentsData, setDocumentsData] = useState<OrganizationDocument[]>(
+    []
+  );
+  const [diffTagsData, setDiffTagsData] = useState<tagDiff[]>([]);
+  const [contactsData, setContactsData] = useState<Contacts>({
+    id: "",
+    email: "",
+    meta_page: "",
+    website: "",
+  });
 
-  const [newsData, setNewsData] = useState<News[]>([]);
   useEffect(() => {
     if (organization) {
       setFormData({
         display_name: organization.display_name,
         profile_image: organization.profile_image,
         acronym: organization.acronym,
-        meta_page: organization.meta_page,
+        meta_page: organization.meta_page || "",
+        email: organization.email || "",
+        website: organization.website || "",
         mastodon: organization.mastodon,
         tag_diff: organization.tag_diff,
+        projects: organization.projects,
         events: organization.events,
         documents: organization.documents,
         home_project: organization.home_project,
@@ -140,6 +158,15 @@ export default function EditOrganizationProfilePage() {
       });
     }
   }, [organization]);
+
+  const validUpdatedIds = (updatedIds: number[]) => {
+    return updatedIds.filter(
+      (id): id is number => id !== null && id !== undefined
+    );
+  };
+  const validNewIds = (newIds: number[]) => {
+    return newIds.filter((id): id is number => id !== null && id !== undefined);
+  };
 
   useEffect(() => {
     if (organization) {
@@ -171,15 +198,8 @@ export default function EditOrganizationProfilePage() {
       ) {
         setDiffTagsData(diffTagsData);
       }
-      if (
-        newsData &&
-        JSON.stringify(newsData) !== JSON.stringify(news) &&
-        news.length > 0
-      ) {
-        setNewsData(news);
-      }
     }
-  }, [organization, events, projects, documents]);
+  }, [organization, events, projects, documents, tagDiff]);
 
   const handleSubmit = async () => {
     try {
@@ -196,7 +216,7 @@ export default function EditOrganizationProfilePage() {
       }
 
       const updateProjectPromises = projectsData
-        .filter((project) => project.id !== 0) // filtra apenas projetos existentes
+        .filter((project) => project.id !== 0)
         .map(async (project) => {
           try {
             await updateProject(project.id, {
@@ -211,12 +231,12 @@ export default function EditOrganizationProfilePage() {
             return project.id;
           } catch (error) {
             console.error(`Error updating project ${project.id}:`, error);
-            return project.id; // retorna o ID original em caso de erro
+            return project.id;
           }
         });
 
       const projectPromises = projectsData
-        .filter((project) => project.id === 0) // filtra apenas novos projetos
+        .filter((project) => project.id === 0)
         .map(async (project) => {
           try {
             const newProject = await createProject({
@@ -240,94 +260,151 @@ export default function EditOrganizationProfilePage() {
           }
         });
 
+      const eventResults = await Promise.all(
+        eventsData.map(async (event) => {
+          try {
+            if (event.id === 0) {
+              const eventPayload = {
+                name: event.name || "New Event",
+                image_url: event.image_url,
+                url: event.url.startsWith("http")
+                  ? event.url
+                  : `https://${event.url}`,
+                organizations: [Number(organizationId)],
+                time_begin: new Date().toISOString(),
+                time_end: new Date().toISOString(),
+                creator: Number(session?.user?.id),
+                team: [],
+                related_skills: [],
+                type_of_location: "virtual",
+                openstreetmap_id: event.openstreetmap_id || "",
+                wikidata_qid: event.wikidata_qid || "",
+              };
+
+              const response = await createEvent(eventPayload);
+
+              if (!response || !response.id) {
+                console.error("Invalid event response:", response);
+                return null;
+              }
+
+              return response.id;
+            } else {
+              await updateEvent(event.id, {
+                name: event.name,
+                image_url: event.image_url,
+                url: event.url,
+                organizations: [Number(organizationId)],
+                time_begin: event.time_begin,
+                time_end: event.time_end,
+              });
+              return event.id;
+            }
+          } catch (error) {
+            console.error("Error processing event:", error);
+            return null;
+          }
+        })
+      );
+
+      const tagResults = await Promise.all(
+        diffTagsData.map(async (tag) => {
+          try {
+            if (tag.id === 0) {
+              const tagPayload = {
+                tag: tag.tag,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                creator: Number(session?.user?.id),
+              };
+
+              const response = await createTag(tagPayload);
+
+              if (!response || !response.id) {
+                console.error("Invalid tag response:", response);
+                throw new Error("Invalid response from tag creation");
+              }
+
+              return response.id;
+            } else {
+              return tag.id;
+            }
+          } catch (error) {
+            console.error("Error processing tag:", error);
+            return null;
+          }
+        })
+      );
+
+      const documentResults = await Promise.all(
+        documentsData.map(async (document) => {
+          try {
+            if (document.id === 0) {
+              const documentPayload = {
+                url: document.url,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                creator: Number(session?.user?.id),
+              };
+
+              const response = await createDocument(
+                documentPayload as Partial<OrganizationDocument>
+              );
+
+              if (!response || !response.id) {
+                console.error("Invalid document response:", response);
+                throw new Error("Invalid response from document creation");
+              }
+
+              return response.id;
+            } else {
+              return document.id;
+            }
+          } catch (error) {
+            console.error("Error processing document:", error);
+            return null;
+          }
+        })
+      );
+
+      const validDocumentIds = documentResults.filter(
+        (id): id is number => id !== null && id !== undefined
+      );
+
+      const validTagIds = tagResults.filter(
+        (id): id is number => id !== null && id !== undefined
+      );
+
       const [updatedProjectIds, newProjectIds] = await Promise.all([
         Promise.all(updateProjectPromises),
         Promise.all(projectPromises),
       ]);
 
-      const validNewProjectIds = newProjectIds.filter(
+      const validUpdatedProjectIds = validUpdatedIds(
+        updatedProjectIds as number[]
+      );
+
+      const validNewProjectIds = validNewIds(newProjectIds as number[]);
+
+      const validEventIds = eventResults.filter(
         (id): id is number => id !== null && id !== undefined
       );
 
-      const allProjectIds = [...updatedProjectIds, ...validNewProjectIds];
-
-      const updateEventPromises = eventsData
-        .filter((event) => event.id !== 0)
-        .map(async (event) => {
-          try {
-            await updateEvent(event.id, {
-              name: event.name,
-              image_url: event.image_url,
-              url: event.url,
-              organizations: [Number(organizationId)],
-              time_begin: event.time_begin,
-              time_end: event.time_end,
-            });
-            return event.id;
-          } catch (error) {
-            console.error(`Error updating event ${event.id}:`, error);
-            return null;
-          }
-        });
-
-      const eventPromises = eventsData
-        .filter((event) => event.id === 0)
-        .map(async (event) => {
-          try {
-            const newEvent = await createEvent({
-              name: event.name || "New Event",
-              image_url: event.image_url,
-              url: event.url.startsWith("http")
-                ? event.url
-                : `https://${event.url}`,
-              organizations: [Number(organizationId)],
-              time_begin: new Date().toISOString(),
-              time_end: new Date().toISOString(),
-              creator: Number(session?.user?.id),
-              team: [],
-              related_skills: [],
-              type_of_location: "IN_PERSON",
-              openstreetmap_id: event.openstreetmap_id || "",
-              wikidata_qid: event.wikidata_qid || "",
-            });
-            return newEvent?.id || null;
-          } catch (error) {
-            console.error("Error creating event:", error);
-            return null;
-          }
-        });
-
-      const documentPromises = documentsData.map(async (document) => {
-        await createDocument({ id: document.id, url: document.url });
-      });
-
-      const [updatedEventIds, newEventIds] = await Promise.all([
-        Promise.all(updateEventPromises || []),
-        Promise.all(eventPromises || []),
-        Promise.all(documentPromises || []),
-      ]);
-
-      // Filtra IDs nulos e undefined
-      const validUpdatedIds = updatedEventIds.filter(
-        (id): id is number => id !== null && id !== undefined
-      );
-      const validNewIds = newEventIds.filter(
-        (id): id is number => id !== null && id !== undefined
-      );
-
-      const allEventIds = [...validUpdatedIds, ...validNewIds];
+      const allProjectIds = [...validUpdatedProjectIds, ...validNewProjectIds];
 
       const updatedFormData = {
         ...formData,
-        events: allEventIds,
+        events: validEventIds,
         projects: allProjectIds,
+        tag_diff: validTagIds,
+        documents: validDocumentIds.map((id) => ({ id })),
+        meta_page: contactsData.meta_page,
+        email: contactsData.email,
+        website: contactsData.website,
       };
+      console.log("Updating organization with data:", updatedFormData);
 
-      await updateOrganization({
-        ...updatedFormData,
-        events: allEventIds,
-        tag_diff: allProjectIds,
-      });
+      await updateOrganization(updatedFormData as Partial<OrganizationType>);
 
       router.push(`/organization_profile/`);
     } catch (error) {
@@ -335,9 +412,44 @@ export default function EditOrganizationProfilePage() {
     }
   };
 
+  const handleRemoveDiffTag = (index: number) => {
+    setDiffTagsData((prev) => {
+      const newTags = [...prev];
+      newTags.splice(index, 1);
+      return newTags;
+    });
+  };
   const handleDeleteProject = async (projectId: number) => {
     await deleteProject(projectId);
     setProjectsData((prev) => prev.filter((p) => p.id !== projectId));
+  };
+
+  const handleProjectChange = (index: number, field: string, value: string) => {
+    const newProjects = [...projectsData];
+    newProjects[index] = {
+      ...newProjects[index],
+      [field]: value,
+    };
+    setProjectsData(newProjects);
+  };
+
+  const handleEventChange = (index: number, field: string, value: string) => {
+    const newEvents = [...eventsData];
+    newEvents[index] = {
+      ...newEvents[index],
+      [field]: value,
+    };
+    setEventsData(newEvents);
+  };
+
+  const handleDiffTagChange = (index: number, field: string, value: string) => {
+    const newDiffTags = [...diffTagsData];
+    newDiffTags[index] = {
+      ...newDiffTags[index],
+      [field]: value,
+      updated_at: new Date().toISOString(),
+    };
+    setDiffTagsData(newDiffTags);
   };
 
   const [organizationData, setOrganizationData] = useState({
@@ -412,16 +524,23 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
-  const handleAddDiffTag = () => {
-    console.log("handleAddDiffTag");
-    const newTag = {
-      id: 0,
-      tag: "Add a diff tag",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      creator: Number(session?.user?.id),
-    };
-    setDiffTagsData((prev) => [...(prev || []), newTag]);
+  const handleAddDiffTag = async () => {
+    try {
+      const newTag = {
+        id: 0,
+        tag: "Add a diff tag",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        creator: Number(session?.user?.id),
+      };
+      setDiffTagsData((prev) => [...(prev || []), newTag]);
+      setFormData((prev) => ({
+        ...prev,
+        tag_diff: [...(prev.tag_diff || []), newTag.id],
+      }));
+    } catch (error) {
+      console.error("Error creating diff tag:", error);
+    }
   };
 
   const handleRemoveLink = (index: number) => {
@@ -496,12 +615,32 @@ export default function EditOrganizationProfilePage() {
   };
 
   const handleAddDocument = () => {
-    console.log("handleAddDocument");
-    const newDocument: Document = {
+    const newDocument: OrganizationDocument = {
       id: 0,
       url: "https://commons.wikimedia.org/wiki/File:example.svg",
     };
     setDocumentsData((prev) => [...(prev || []), newDocument]);
+  };
+
+  const handleRemoveDocument = (index: number) => {
+    setDocumentsData((prev) => {
+      const newDocs = [...prev];
+      newDocs.splice(index, 1);
+      return newDocs;
+    });
+  };
+
+  const handleDocumentChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
+    const newDocuments = [...documentsData];
+    newDocuments[index] = {
+      ...newDocuments[index],
+      [field]: value,
+    };
+    setDocumentsData(newDocuments);
   };
 
   if (!isOrgManager) {
@@ -547,13 +686,13 @@ export default function EditOrganizationProfilePage() {
                     {session?.user?.name}
                   </h2>
                 </div>
-                <Image
-                  src={AvatarIcon}
-                  alt="Avatar"
-                  width={70}
-                  height={70}
-                  className="w-auto h-auto"
-                />
+                <div className="relative w-[75px] h-[75px]">
+                  <Image
+                    src={AvatarIcon}
+                    alt="Avatar"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Image
@@ -893,12 +1032,11 @@ export default function EditOrganizationProfilePage() {
                           }`}
                           value={project.display_name || ""}
                           onChange={(e) => {
-                            const newProjects = [...projectsData];
-                            newProjects[index] = {
-                              ...newProjects[index],
-                              display_name: e.target.value,
-                            };
-                            setProjectsData(newProjects);
+                            handleProjectChange(
+                              index,
+                              "display_name",
+                              e.target.value
+                            );
                           }}
                         />
                       </div>
@@ -924,12 +1062,11 @@ export default function EditOrganizationProfilePage() {
                           }`}
                           value={project.profile_image || ""}
                           onChange={(e) => {
-                            const newProjects = [...projectsData];
-                            newProjects[index] = {
-                              ...newProjects[index],
-                              profile_image: e.target.value,
-                            };
-                            setProjectsData(newProjects);
+                            handleProjectChange(
+                              index,
+                              "profile_image",
+                              e.target.value
+                            );
                           }}
                         />
                       </div>
@@ -952,12 +1089,7 @@ export default function EditOrganizationProfilePage() {
                           }`}
                           value={project.url || ""}
                           onChange={(e) => {
-                            const newProjects = [...projectsData];
-                            newProjects[index] = {
-                              ...newProjects[index],
-                              url: e.target.value,
-                            };
-                            setProjectsData(newProjects);
+                            handleProjectChange(index, "url", e.target.value);
                           }}
                         />
                       </div>
@@ -1032,12 +1164,7 @@ export default function EditOrganizationProfilePage() {
                           }`}
                           value={event.name || ""}
                           onChange={(e) => {
-                            const newEvents = [...eventsData];
-                            newEvents[index] = {
-                              ...newEvents[index],
-                              name: e.target.value,
-                            };
-                            setEventsData(newEvents);
+                            handleEventChange(index, "name", e.target.value);
                           }}
                         />
                       </div>
@@ -1054,12 +1181,11 @@ export default function EditOrganizationProfilePage() {
                           placeholder="Event Image"
                           value={event.image_url || ""}
                           onChange={(e) => {
-                            const newEvents = [...eventsData];
-                            newEvents[index] = {
-                              ...newEvents[index],
-                              image_url: e.target.value,
-                            };
-                            setEventsData(newEvents);
+                            handleEventChange(
+                              index,
+                              "image_url",
+                              e.target.value
+                            );
                           }}
                           className={`w-full bg-transparent border-none outline-none ${
                             darkMode
@@ -1081,12 +1207,7 @@ export default function EditOrganizationProfilePage() {
                           placeholder="Link of event"
                           value={event.url || ""}
                           onChange={(e) => {
-                            const newEvents = [...eventsData];
-                            newEvents[index] = {
-                              ...newEvents[index],
-                              url: e.target.value,
-                            };
-                            setEventsData(newEvents);
+                            handleEventChange(index, "url", e.target.value);
                           }}
                           className={`w-full bg-transparent border-none outline-none ${
                             darkMode
@@ -1159,6 +1280,15 @@ export default function EditOrganizationProfilePage() {
                           setDiffTagsData(newNews);
                         }}
                       />
+                      <button onClick={() => handleRemoveDiffTag(index)}>
+                        <div className="relative w-[20px] h-[20px]">
+                          <Image
+                            src={darkMode ? CancelIconWhite : CancelIcon}
+                            alt="Delete icon"
+                            className="object-contain"
+                          />
+                        </div>
+                      </button>
                     </div>
                   ))}
               </div>
@@ -1246,9 +1376,6 @@ export default function EditOrganizationProfilePage() {
                 documents from Wikimedia Commons.
               </p>
             </div>
-
-            {/* Contacts Section */}
-            <ContactsSection />
           </div>
         </section>
         <CapacitySelectionModal
@@ -1855,12 +1982,7 @@ export default function EditOrganizationProfilePage() {
                       type="text"
                       value={news.tag || ""}
                       onChange={(e) => {
-                        const newNews = [...diffTagsData];
-                        newNews[index] = {
-                          ...newNews[index],
-                          tag: e.target.value,
-                        };
-                        setDiffTagsData(newNews);
+                        handleDiffTagChange(index, "tag", e.target.value);
                       }}
                       placeholder="Add a Diff Tag"
                       className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
@@ -1868,6 +1990,15 @@ export default function EditOrganizationProfilePage() {
                           ? "bg-transparent border-white text-white placeholder-gray-400"
                           : "border-white text-[#829BA4] placeholder-[#829BA4]"
                       }`}
+                    />
+                    <BaseButton
+                      onClick={() => handleRemoveDiffTag(index)}
+                      label=""
+                      customClass="p-2"
+                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                      imageAlt="Remove tag"
+                      imageWidth={20}
+                      imageHeight={20}
                     />
                   </div>
                 ))}
@@ -1965,7 +2096,126 @@ export default function EditOrganizationProfilePage() {
           </div>
 
           {/* Contacts Section */}
-          <ContactsSection />
+
+          <section className="w-full max-w-screen-xl py-8">
+            <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
+              <div className="relative w-[48px] h-[48px]">
+                <Image
+                  src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+                  alt="Wikimedia"
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </div>
+              <h2
+                className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                }`}
+              >
+                Contacts
+              </h2>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div
+                className={`flex flex-row border-[1px] border-[solid] w-full px-[12px] py-[24px] items-center gap-[12px] rounded-[16px] ${
+                  darkMode
+                    ? "bg-capx-dark-box-bg border-white"
+                    : "bg-[#FFF] border-capx-dark-box-bg"
+                }`}
+              >
+                <div className="relative w-[48px] h-[48px]">
+                  <Image
+                    src={darkMode ? ContactMetaIconWhite : ContactMetaIcon}
+                    alt="Contact Meta"
+                    fill
+                    className={`object-contain ${
+                      darkMode ? "bg-capx-dark-box-bg" : "bg-white"
+                    }`}
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Metawiki"
+                  className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                    darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                  }`}
+                  value={contactsData.meta_page}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    console.log("Metawiki value:", newValue);
+                    setContactsData((prev) => ({
+                      ...prev,
+                      meta_page: newValue,
+                    }));
+                  }}
+                />
+              </div>
+              <div
+                className={`flex flex-row border-[1px] border-[solid] w-full px-[12px] py-[24px] items-center gap-[12px] rounded-[16px] ${
+                  darkMode
+                    ? "bg-capx-dark-box-bg border-white"
+                    : "bg-[#FFF] border-capx-dark-box-bg"
+                }`}
+              >
+                <div className="relative w-[48px] h-[48px]">
+                  <Image
+                    src={darkMode ? ContactEmailIconWhite : ContactEmailIcon}
+                    alt="Contact Email"
+                    fill
+                    className="objectFit"
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                    darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                  }`}
+                  value={contactsData.email}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    console.log("Email value:", newValue);
+                    setContactsData((prev) => ({
+                      ...prev,
+                      email: newValue,
+                    }));
+                  }}
+                />
+              </div>
+              <div
+                className={`flex flex-row border-[1px] border-[solid] w-full px-[12px] py-[24px] items-center gap-[12px] rounded-[16px] ${
+                  darkMode
+                    ? "bg-capx-dark-box-bg border-white"
+                    : "bg-[#FFF] border-capx-dark-box-bg"
+                }`}
+              >
+                <div className="relative w-[48px] h-[48px]">
+                  <Image
+                    src={darkMode ? ContactPortalIconWhite : ContactPortalIcon}
+                    alt="Contact Website"
+                    fill
+                    className="objectFit"
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Website"
+                  className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                    darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                  }`}
+                  value={contactsData.website}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    console.log("Website value:", newValue);
+                    setContactsData((prev) => ({
+                      ...prev,
+                      website: newValue,
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+          </section>
 
           {/* Save/Cancel Buttons */}
           <div className="flex flex-row gap-2 mt-6 w-[50%] md:w-[75%] lg:w-[50%]">

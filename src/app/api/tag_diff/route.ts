@@ -24,30 +24,47 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  const body = await request.json();
-
+export async function POST(request: Request) {
   try {
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+      throw new Error("No authorization header");
+    }
+
+    const tagData = await request.json();
+    console.log("API Route - Creating tag_diff with:", tagData);
+
     const response = await axios.post(
       `${process.env.BASE_URL}/tag_diff/`,
-      body,
+      tagData,
       {
         headers: {
           Authorization: authHeader,
+          "Content-Type": "application/json",
         },
       }
     );
+
+    console.log("API Route - Backend response:", response.data);
+
+    if (!response.data) {
+      throw new Error("Empty response from backend");
+    }
+
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error("Error details:", {
-      status: error.response?.status,
-      data: error.response?.data,
+    console.error("API Route - Error:", {
       message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
     });
+
     return NextResponse.json(
-      { error: "Failed to create news" },
-      { status: 500 }
+      {
+        error: "Failed to create tag_diff",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
     );
   }
 }

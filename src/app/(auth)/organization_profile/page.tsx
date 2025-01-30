@@ -18,6 +18,7 @@ import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_w
 import EditIconWhite from "@/public/static/images/edit_white.svg";
 import { ProjectsEventsList } from "./components/ProjectsEventsList";
 import { ContactsSection } from "./components/ContactsSection";
+import { NewsSection } from "./components/NewsSection";
 import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -38,7 +39,8 @@ export default function OrganizationProfilePage() {
     if (error) {
       console.error("Error fetching organization:", error);
     }
-  }, [error]);
+    console.log("organization", organization);
+  }, [error, organization]);
 
   if (isMobile) {
     return (
@@ -184,8 +186,15 @@ export default function OrganizationProfilePage() {
                 />
               </div>
 
+              {/* News Section */}
+              <NewsSection ids={organization?.tag_diff || []} />
+
               {/* Contacts Section */}
-              <ContactsSection />
+              <ContactsSection
+                email={organization?.email || ""}
+                meta_page={organization?.meta_page || ""}
+                website={organization?.website || ""}
+              />
             </div>
           </section>
         </div>
@@ -257,7 +266,7 @@ export default function OrganizationProfilePage() {
                   <BaseButton
                     onClick={() => router.push("/organization_profile/edit")}
                     label="Edit organization profile"
-                    customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
+                    customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
                         ? "border-white text-white"
                         : "border-capx-dark-box-bg text-capx-light-text"
@@ -336,8 +345,15 @@ export default function OrganizationProfilePage() {
               />
             </div>
 
+            {/* News Section */}
+            <NewsSection ids={organization?.tag_diff || []} />
+
             {/* Contacts Section */}
-            <ContactsSection />
+            <ContactsSection
+              email={organization?.email || ""}
+              meta_page={organization?.meta_page || ""}
+              website={organization?.website || ""}
+            />
           </div>
         </section>
       </div>
