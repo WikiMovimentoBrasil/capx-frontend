@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { signIn, useSession, SessionProvider } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { signIn, useSession, SessionProvider, getSession } from "next-auth/react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
 
@@ -10,6 +10,10 @@ function OAuthContent() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [loginStatus, setLoginStatus] = useState<string | null>("Iniciando...");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [hasCheckedToken, setHasCheckedToken] = useState(false);
+  const isCheckingTokenRef = useRef(false);  // Ref para controlar a execução do checkToken
+  const [hasReloaded, setHasReloaded] = useState(false);
 
   const oauth_verifier = searchParams.get("oauth_verifier");
   const oauth_token_request = searchParams.get("oauth_token");
@@ -21,19 +25,70 @@ function OAuthContent() {
     stored_secret: localStorage.getItem("oauth_token_secret"),
   });
 
+  // useEffect(() => {
+  //   console.log("USEEFFECT - session:", session, "status:", status);
+
+  //   if (status === "authenticated" && session) {
+  //     localStorage.removeItem("oauth_token");
+  //     localStorage.removeItem("oauth_token_secret");
+  //     router.replace("/home");
+  //   }
+  // }, [status, session]);
+
+  // useEffect(() => {
+  //   console.log("hasReloaded", hasReloaded);
+  //   if (status === "authenticated" && session && !hasReloaded) {
+  //     setHasReloaded(true); // Marca que a página foi recarregada
+  //     console.log("hasReloaded TRUE AQUI", hasReloaded);
+  //     console.log("hasReloaded TRUE AQUI session", session);
+  //     localStorage.removeItem("oauth_token");
+  //     localStorage.removeItem("oauth_token_secret");
+  
+  //     router.replace("/home");
+  //     // Força o recarregamento da página
+  //     // window.location.reload();
+  //   }
+  // }, [status, session, hasReloaded]);
+
   useEffect(() => {
+    if (status === "authenticated" && session && !hasReloaded) {
+      setHasReloaded(true);
+      localStorage.removeItem("oauth_token");
+      localStorage.removeItem("oauth_token_secret");
+      // router.push("/home");
+  
+      // Forneça um pequeno atraso para garantir que o estado da sessão foi atualizado
+      // setTimeout(() => {
+      //   router.replace("/home");
+      // }, 1000); // 1 segundo de atraso
+    }
+  }, [status, session, hasReloaded]);
+
+  useEffect(() => {
+    if (hasCheckedToken || !oauth_token_request || !oauth_verifier || isCheckingTokenRef.current) {
+      // Evita chamar checkToken se já foi feito, ou se os parâmetros não estão presentes
+      return;
+    }
+
+    isCheckingTokenRef.current = true; // Marca o início do processo de verificação
+
+    console.log("oauth_verifier", oauth_verifier);
+    console.log("oauth_token_request", oauth_token_request);
+    console.log("router", router);
 
     async function checkToken() {
-      if (!oauth_token_request || !oauth_verifier) {
-        console.log("Missing required parameters:", {
-          token: oauth_token_request,
-          verifier: oauth_verifier,
-        });
-        return;
-      }
+      console.log("chamando check token");
 
-      console.log("Checking token");
       try {
+        if (!oauth_token_request || !oauth_verifier) {
+          console.log("Missing required parameters:", {
+            token: oauth_token_request,
+            verifier: oauth_verifier,
+          });
+          return;
+        }
+
+        console.log("Checking token");
         const response = await fetch("/api/check/", {
           method: "POST",
           headers: {
@@ -49,12 +104,10 @@ function OAuthContent() {
             hostname += `:${document.location.port}`;
           }
 
-          // Atualiza o token no localStorage e aguarda a atualização
           if (localStorage.getItem("oauth_token") !== oauth_token_request) {
             console.log("Token mismatch, updating stored token");
             localStorage.setItem("oauth_token", oauth_token_request);
-            // Pequeno delay para garantir que o localStorage foi atualizado
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));  // Aguarda o localStorage ser atualizado
           }
 
           const stored_secret = localStorage.getItem("oauth_token_secret");
@@ -64,13 +117,10 @@ function OAuthContent() {
             verifier: oauth_verifier,
           });
 
-          // Verifica o hostname e os tokens antes de prosseguir
           const isValidHost =
             result.extra === hostname ||
-            (hostname === "localhost:3000" &&
-              result.extra === "127.0.0.1:3000") ||
-            (hostname === "127.0.0.1:3000" &&
-              result.extra === "localhost:3000");
+            (hostname === "localhost:3000" && result.extra === "127.0.0.1:3000") ||
+            (hostname === "127.0.0.1:3000" && result.extra === "localhost:3000");
 
           if (isValidHost) {
             console.log("Hostname matches or equivalent");
@@ -82,96 +132,75 @@ function OAuthContent() {
             }
 
             console.log("All tokens present, proceeding with login");
-            try {
-              const loginResult = await handleLogin();
-              if (loginResult?.error) {
-                throw new Error(loginResult.error);
-              }
-            } catch (error) {
-              console.error("Login failed:", error);
-              router.push("/");
-            }
-            return;
-          }
-
-          // Se precisamos redirecionar
-          console.log("Hostname mismatch, redirecting");
-          if (
-            result.extra === "localhost:3000" ||
-            result.extra === "127.0.0.1:3000"
-          ) {
-            router.push(
-              `http://localhost:3000/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
-            );
-          } else if (result.extra === "capx-test.toolforge.org") {
-            router.push(
-              `https://capx-test.toolforge.org/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
-            );
+            await handleLogin();  // Chama o login apenas uma vez
+          } else {
+            console.log("Hostname mismatch, redirecting");
+            router.push(`http://localhost:3000/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`);
           }
         }
       } catch (error) {
         console.error("Token check error:", error);
         router.push("/");
-      }
-    }
-
-    async function handleLogin() {
-      try {
-        const oauth_token = localStorage.getItem("oauth_token");
-        const oauth_token_secret = localStorage.getItem("oauth_token_secret");
-
-        if (!oauth_token || !oauth_token_secret) {
-          throw new Error("Missing OAuth tokens");
-        }
-
-        setLoginStatus("FINISHING LOGIN");
-        console.log("Starting login with credentials:", {
-          oauth_token,
-          oauth_verifier,
-          stored_token: oauth_token,
-          stored_token_secret: oauth_token_secret,
-        });
-
-        const result = await signIn("credentials", {
-          oauth_token,
-          oauth_token_secret,
-          oauth_verifier,
-          stored_token: oauth_token,
-          stored_token_secret: oauth_token_secret,
-          redirect: false,
-        });
-
-        console.log("SignIn result:", result);
-
-        if (result?.error) {
-          throw new Error(result.error);
-        }
-
-        if (result?.ok) {
-          setLoginStatus("Login realizado, atualizando sessão...");
-
-          // Aguarda a sessão ser atualizada
-          for (let i = 0; i < 10; i++) {
-            if (status === "authenticated" && session) {
-              localStorage.removeItem("oauth_token");
-              localStorage.removeItem("oauth_token_secret");
-              router.replace("/home");
-              return result;
-            }
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          }
-          throw new Error("Timeout waiting for session update");
-        }
-
-        return result;
-      } catch (error) {
-        console.error("Login error:", error);
-        return { error: error.message };
+      } finally {
+        isCheckingTokenRef.current = false; // Marca o fim do processo de verificação
+        setHasCheckedToken(true);  // Marca como checado
       }
     }
 
     checkToken();
-  }, [oauth_verifier, oauth_token_request, router, status, session]);
+  }, [oauth_token_request, oauth_verifier, hasCheckedToken, router]);
+
+  async function handleLogin() {
+    if (isLoggingIn) return;  // Evita login múltiplos
+    try {
+      setIsLoggingIn(true);
+
+      const oauth_token = localStorage.getItem("oauth_token");
+      const oauth_token_secret = localStorage.getItem("oauth_token_secret");
+
+      if (!oauth_token || !oauth_token_secret) {
+        throw new Error("Missing OAuth tokens");
+      }
+
+      setLoginStatus("Finalizando Login...");
+      console.log("Starting login with credentials:", {
+        oauth_token,
+        oauth_verifier,
+        stored_token: oauth_token,
+        stored_token_secret: oauth_token_secret,
+      });
+
+      const result = await signIn("credentials", {
+        oauth_token,
+        oauth_token_secret,
+        oauth_verifier,
+        stored_token: oauth_token,
+        stored_token_secret: oauth_token_secret,
+        redirect: true,
+        callbackUrl: "/home", 
+      });
+
+      console.log("SignIn result:", result);
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      if (result?.ok) {
+        setLoginStatus("Login realizado, atualizando sessão...");
+
+        const session = await getSession(); // Garanta que a sessão está atualizada
+        console.log("Sessão atualizada:", session);
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Login error:", error);
+      return { error: error.message };
+    } finally {
+      setIsLoggingIn(false);  // Libera o estado após tentar
+    }
+  }
 
   return (
     <section className="flex w-screen h-screen font-montserrat">

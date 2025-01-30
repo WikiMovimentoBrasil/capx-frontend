@@ -13,6 +13,7 @@ export default function BaseWrapper({ children }: BaseWrapperProps) {
   const { language, setLanguage, pageContent, setPageContent } = useApp();
   const { data: session } = useSession();
   const { darkMode } = useTheme();
+  console.log("BaseWrapper session", session);
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar

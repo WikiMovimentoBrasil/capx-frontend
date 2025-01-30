@@ -116,6 +116,9 @@ export default function ProfileContent({ pageContent }) {
     token,
     Number(session?.user?.id)
   );
+
+  console.log(" ProfileContent session", session);
+
   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { territories } = useTerritories(token);

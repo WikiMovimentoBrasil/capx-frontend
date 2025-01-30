@@ -140,6 +140,8 @@ export default function EditProfilePage() {
   const token = session?.user?.token;
   const userId = session?.user?.id;
 
+  console.log(" EditProfilePage session", session);
+
   const { profile, isLoading, error, updateProfile } = useProfile(
     token,
     Number(userId)
