@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -25,7 +25,6 @@ import AddIcon from "@/public/static/images/add_dark.svg";
 import AddIconWhite from "@/public/static/images/add.svg";
 import WikimediaIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import AvatarIcon from "@/public/static/images/avatar.svg";
-import { ContactsSection } from "../components/ContactsSection";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
 import TargetIconWhite from "@/public/static/images/target_white.svg";
@@ -51,6 +50,7 @@ import { tagDiff } from "@/types/tagDiff";
 import { OrganizationDocument } from "@/types/document";
 import { Contacts } from "@/types/contacts";
 import { useTagDiff } from "@/hooks/useTagDiff";
+import ProjectsFormItem from "../components/ProjectsFormItem";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -58,7 +58,9 @@ export default function EditOrganizationProfilePage() {
   const token = session?.user?.token;
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Organization setters
   const {
     organization,
     isLoading,
@@ -68,21 +70,52 @@ export default function EditOrganizationProfilePage() {
     isOrgManager,
   } = useOrganization(token);
 
+  // Projects setters
+
+  interface ProjectState extends Project {
+    isNew?: boolean;
+  }
+
   const {
     projects,
     isLoading: isProjectsLoading,
     error: projectsError,
-  } = useProjects(organization?.tag_diff, token);
+  } = useProjects(organization?.projects, token);
 
+  // Use ref para controlar se os dados já foram carregados
+  const projectsLoaded = useRef(false);
+
+  // Estado para projetos existentes e novos
+  const [projectsData, setProjectsData] = useState<Project[]>([]);
+  const [newProjects, setNewProjects] = useState<Project[]>([]);
+  const [projectId, setProjectId] = useState<number>(0);
+  const { createProject, updateProject, deleteProject } = useProject(
+    projectId,
+    token
+  );
+
+  const [editedProjects, setEditedProjects] = useState<{
+    [key: number]: boolean;
+  }>({});
+
+  // Events setters
   const {
     events,
     isLoading: isEventsLoading,
     error: eventsError,
   } = useEvents((organization?.events || []) as unknown as Event[], token);
 
+  const eventId = 0; // temporary id for new events
+  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+  const [eventsData, setEventsData] = useState<Event[]>([]);
+
+  // Tags setters
   const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
     useTagDiff(token);
 
+  const [diffTagsData, setDiffTagsData] = useState<tagDiff[]>([]);
+
+  // Documents setters
   const {
     documents,
     loading: isDocumentsLoading,
@@ -91,42 +124,11 @@ export default function EditOrganizationProfilePage() {
     deleteDocument,
   } = useDocument(token);
 
-  const projectId = 0; // temporary id for new projects
-
-  const { createProject, updateProject, deleteProject } = useProject(
-    projectId,
-    token
-  );
-
-  const eventId = 0; // temporary id for new events
-
-  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
-
-  const [formData, setFormData] = useState<Partial<Organization>>({
-    display_name: "",
-    profile_image: "",
-    acronym: "",
-    meta_page: "",
-    mastodon: "",
-    tag_diff: [],
-    events: [],
-    documents: [],
-    projects: [],
-    home_project: "",
-    type: 0,
-    territory: [],
-    managers: [],
-    known_capacities: [],
-    available_capacities: [],
-    wanted_capacities: [],
-  });
-
-  const [eventsData, setEventsData] = useState<Event[]>([]);
-  const [projectsData, setProjectsData] = useState<Project[]>([]);
   const [documentsData, setDocumentsData] = useState<OrganizationDocument[]>(
     []
   );
-  const [diffTagsData, setDiffTagsData] = useState<tagDiff[]>([]);
+
+  // Contacts setters
   const [contactsData, setContactsData] = useState<Contacts>({
     id: "",
     email: "",
@@ -134,30 +136,153 @@ export default function EditOrganizationProfilePage() {
     website: "",
   });
 
+  // Form data
+  const [formData, setFormData] = useState<Partial<Organization>>({
+    display_name: organization?.display_name || "",
+    profile_image: organization?.profile_image || "",
+    acronym: organization?.acronym || "",
+    meta_page: organization?.meta_page || "",
+    mastodon: organization?.mastodon || "",
+    tag_diff: organization?.tag_diff || [],
+    events: organization?.events || [],
+    documents: organization?.documents || [],
+    projects: organization?.projects || [],
+    home_project: organization?.home_project || "",
+    type: organization?.type || 0,
+    territory: organization?.territory || [],
+    managers: organization?.managers || [],
+    known_capacities: organization?.known_capacities || [],
+    available_capacities: organization?.available_capacities || [],
+    wanted_capacities: organization?.wanted_capacities || [],
+  });
+
+  // Log para debug dos projetos carregados
   useEffect(() => {
-    if (organization) {
+    console.log("Projects from hook:", projects);
+  }, [projects]);
+
+  // Efeito para carregar projetos existentes apenas uma vez
+  useEffect(() => {
+    if (organization && projects && !projectsLoaded.current) {
+      console.log("Loading initial projects:", projects);
+      setProjectsData(projects);
+      projectsLoaded.current = true;
+    }
+  }, [organization, projects]);
+
+  // Debug do estado atual
+  useEffect(() => {
+    console.log("Current projectsData:", projectsData);
+    console.log("Current newProjects:", newProjects);
+    console.log("All projects:", [...projectsData, ...newProjects]);
+  }, [projectsData, newProjects]);
+
+  // Use effect to initialize the form data
+  useEffect(() => {
+    if (organization && !isInitialized && !isProjectsLoading) {
+      // Merge existing projects with new projects
+
+      if (organization.projects && organization.projects.length > 0) {
+        const existingProjects = projects?.map((project) => ({
+          ...project,
+          isNew: false,
+        }));
+
+        console.log("Existing projects:", existingProjects); // Debug
+
+        setProjectsData(existingProjects);
+      }
+
       setFormData({
-        display_name: organization.display_name,
-        profile_image: organization.profile_image,
-        acronym: organization.acronym,
+        display_name: organization.display_name || "",
+        profile_image: organization.profile_image || "",
+        acronym: organization.acronym || "",
         meta_page: organization.meta_page || "",
         email: organization.email || "",
         website: organization.website || "",
-        mastodon: organization.mastodon,
-        tag_diff: organization.tag_diff,
-        projects: organization.projects,
-        events: organization.events,
-        documents: organization.documents,
-        home_project: organization.home_project,
-        type: organization.type,
-        territory: organization.territory,
-        managers: organization.managers,
-        known_capacities: organization.known_capacities,
-        available_capacities: organization.available_capacities,
-        wanted_capacities: organization.wanted_capacities,
+        mastodon: organization.mastodon || "",
+        tag_diff: organization.tag_diff || [],
+        projects: organization.projects || [],
+        events: organization.events || [],
+        documents: organization.documents || [],
+        home_project: organization.home_project || "",
+        type: organization.type || 0,
+        territory: organization.territory || [],
+        managers: organization.managers || [],
+        known_capacities: organization.known_capacities || [],
+        available_capacities: organization.available_capacities || [],
+        wanted_capacities: organization.wanted_capacities || [],
       });
+
+      // Inicializa os dados dos eventos
+      if (organization.events && organization.events.length > 0) {
+        if (events) {
+          setEventsData(events);
+        }
+      }
+
+      // Inicializa os dados dos projetos
+      if (organization.tag_diff && organization.tag_diff.length > 0) {
+        if (projects) {
+          setProjectsData(projects);
+        }
+      }
+
+      // Inicializa os dados dos documentos
+      if (organization.documents && organization.documents.length > 0) {
+        if (documents) {
+          setDocumentsData(documents);
+        }
+      }
+
+      // Inicializa os dados das tags
+      if (organization.tag_diff && organization.tag_diff.length > 0) {
+        if (tagDiff) {
+          setDiffTagsData(tagDiff);
+        }
+      }
+
+      // Inicializa os dados de contato
+      if (organization) {
+        setContactsData({
+          id: organization.id?.toString() || "",
+          email: organization.email || "",
+          meta_page: organization.meta_page || "",
+          website: organization.website || "",
+        });
+      }
+      setIsInitialized(true);
     }
-  }, [organization]);
+  }, [
+    organization,
+    isInitialized,
+    events,
+    projects,
+    isProjectsLoading,
+    documents,
+    tagDiff,
+  ]);
+
+  useEffect(() => {
+    console.log("Current projectsData:", projectsData);
+  }, [projectsData]);
+
+  useEffect(() => {
+    if (organization) {
+      if (events && events.length > 0) {
+        setEventsData(events);
+      }
+      if (projects && projects.length > 0) {
+        setProjectsData(projects);
+      }
+      if (documents && documents.length > 0) {
+        setDocumentsData(documents);
+      }
+      if (tagDiff && tagDiff.length > 0) {
+        setDiffTagsData(tagDiff);
+      }
+    }
+  }, [organization, events, projects, documents, tagDiff]);
 
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
@@ -412,6 +537,8 @@ export default function EditOrganizationProfilePage() {
     }
   };
 
+  // Handlers
+
   const handleRemoveDiffTag = (index: number) => {
     setDiffTagsData((prev) => {
       const newTags = [...prev];
@@ -419,19 +546,45 @@ export default function EditOrganizationProfilePage() {
       return newTags;
     });
   };
-  const handleDeleteProject = async (projectId: number) => {
-    await deleteProject(projectId);
-    setProjectsData((prev) => prev.filter((p) => p.id !== projectId));
-  };
+  const handleDeleteProject = useCallback((projectId: number) => {
+    if (projectId === 0) {
+      setNewProjects((prev) => {
+        console.log("Removing new project");
+        return prev.filter(
+          (p) => p !== prev.find((project) => project.id === projectId)
+        );
+      });
+    } else {
+      setProjectsData((prev) => {
+        console.log("Removing existing project");
+        return prev.filter((p) => p.id !== projectId);
+      });
+    }
+  }, []);
 
-  const handleProjectChange = (index: number, field: string, value: string) => {
-    const newProjects = [...projectsData];
-    newProjects[index] = {
-      ...newProjects[index],
-      [field]: value,
-    };
-    setProjectsData(newProjects);
-  };
+  const handleProjectChange = useCallback(
+    (index: number, field: keyof Project, value: string) => {
+      const isNewProject = index >= projectsData.length;
+
+      if (isNewProject) {
+        const newIndex = index - projectsData.length;
+        setNewProjects((prev) => {
+          const updated = [...prev];
+          updated[newIndex] = { ...updated[newIndex], [field]: value };
+          console.log("Updated new project:", updated);
+          return updated;
+        });
+      } else {
+        setProjectsData((prev) => {
+          const updated = [...prev];
+          updated[index] = { ...updated[index], [field]: value };
+          console.log("Updated existing project:", updated);
+          return updated;
+        });
+      }
+    },
+    [projectsData.length]
+  );
 
   const handleEventChange = (index: number, field: string, value: string) => {
     const newEvents = [...eventsData];
@@ -469,21 +622,25 @@ export default function EditOrganizationProfilePage() {
     setIsModalOpen(true);
   };
 
-  const handleAddProject = () => {
-    const newProject = {
-      id: 0, // temporary id for new projects
+  // Handler para adicionar novo projeto
+  const handleAddProject = useCallback(() => {
+    const newProject: Project = {
+      id: 0,
       display_name: "",
       profile_image: "",
-      description: "",
       url: "",
+      description: "",
+      organization: Number(organizationId),
       creation_date: new Date().toISOString(),
       creator: Number(session?.user?.id),
       related_skills: [],
-      organization: Number(organizationId),
     };
 
-    setProjectsData((prev) => [...(prev || []), newProject]);
-  };
+    setNewProjects((prev) => {
+      console.log("Adding new project to newProjects:", [...prev, newProject]);
+      return [...prev, newProject];
+    });
+  }, [organizationId, session?.user?.id]);
 
   const handleRemoveProject = (index: number) => {
     setFormData((prev) => {
@@ -1019,89 +1176,19 @@ export default function EditOrganizationProfilePage() {
 
               <div className="flex flex-col w-full gap-2 mb-2">
                 {Array.isArray(projectsData) &&
-                  projectsData?.map((project, index) => (
-                    <div key={index} className="flex flex-row gap-2">
+                  projectsData.map((project, index) => (
+                    <div key={project.id} className="flex flex-row gap-2">
                       <div className="flex flex-row gap-2 w-1/2 items-center text-[12px] p-2 border rounded-md bg-transparent">
-                        <input
-                          type="text"
-                          placeholder="Project Name"
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                          value={project.display_name || ""}
-                          onChange={(e) => {
-                            handleProjectChange(
-                              index,
-                              "display_name",
-                              e.target.value
-                            );
+                        <ProjectsFormItem
+                          key={project.id}
+                          project={project}
+                          index={index}
+                          onDelete={() => {
+                            handleDeleteProject(project.id);
                           }}
+                          onChange={handleProjectChange}
                         />
                       </div>
-
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent"
-                      >
-                        <Image
-                          src={ImagesModeIcon}
-                          alt="Project image icon"
-                          width={16}
-                          height={16}
-                          className="opacity-50"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Project Image"
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                          value={project.profile_image || ""}
-                          onChange={(e) => {
-                            handleProjectChange(
-                              index,
-                              "profile_image",
-                              e.target.value
-                            );
-                          }}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                        <div className="relative w-[20px] h-[20px]">
-                          <Image
-                            src={AddLinkIcon}
-                            alt="Add link icon"
-                            className="object-contain"
-                          />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Link of project"
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                          value={project.url || ""}
-                          onChange={(e) => {
-                            handleProjectChange(index, "url", e.target.value);
-                          }}
-                        />
-                      </div>
-                      <button onClick={() => handleDeleteProject(project.id)}>
-                        <div className="relative w-[20px] h-[20px]">
-                          <Image
-                            src={darkMode ? CancelIconWhite : CancelIcon}
-                            alt="Delete icon"
-                            className="object-contain"
-                          />
-                        </div>
-                      </button>
                     </div>
                   ))}
               </div>
@@ -1798,6 +1885,15 @@ export default function EditOrganizationProfilePage() {
                             ? "text-white placeholder-gray-400"
                             : "text-[#829BA4] placeholder-[#829BA4]"
                         }`}
+                        value={project.profile_image || ""}
+                        onChange={(e) => {
+                          const newProjects = [...projectsData];
+                          newProjects[index] = {
+                            ...newProjects[index],
+                            profile_image: e.target.value,
+                          };
+                          setProjectsData(newProjects);
+                        }}
                       />
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
@@ -1816,6 +1912,15 @@ export default function EditOrganizationProfilePage() {
                             ? "text-white placeholder-gray-400"
                             : "text-[#829BA4] placeholder-[#829BA4]"
                         }`}
+                        value={project.profile_image || ""}
+                        onChange={(e) => {
+                          const newProjects = [...projectsData];
+                          newProjects[index] = {
+                            ...newProjects[index],
+                            profile_image: e.target.value,
+                          };
+                          setProjectsData(newProjects);
+                        }}
                       />
                     </div>
                   </div>

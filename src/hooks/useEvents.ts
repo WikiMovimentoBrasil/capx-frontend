@@ -32,16 +32,15 @@ export function useEvent(eventId?: number, token?: string) {
   const createEvent = async (data: Partial<Event>) => {
     if (!token) return;
     try {
-      const createdEvent = await eventsService.createEvent(data, token);
-      if (!createdEvent || createdEvent.id) {
-        throw new Error("Invalid event response from server");
-      }
-      setEvent(createdEvent);
-      return createdEvent;
+      const response = await eventsService.createEvent(data, token);
+      console.log("Service response:", response);
+      return response;
     } catch (error) {
+      console.error("Error in createEvent hook:", error);
       setError(
         error instanceof Error ? error : new Error("Failed to create event")
       );
+      throw error;
     }
   };
 

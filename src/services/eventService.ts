@@ -17,10 +17,15 @@ export const eventsService = {
   },
 
   async createEvent(event: Partial<Event>, token: string): Promise<Event> {
-    const response = await axios.post("/api/events/", event, {
-      headers: { Authorization: `Token ${token}` },
-    });
-    return response.data;
+    try {
+      const response = await axios.post("/api/events/", event, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating event:", error);
+      throw error;
+    }
   },
 
   async updateEvent(

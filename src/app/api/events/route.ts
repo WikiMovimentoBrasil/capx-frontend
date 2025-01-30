@@ -32,14 +32,6 @@ export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const event = await request.json();
   try {
-    console.log("Creating event:", {
-      url: `${process.env.BASE_URL}/events/`,
-      headers: {
-        Authorization: authHeader ? "Present" : "Missing",
-      },
-      event: event,
-    });
-
     const response = await axios.post(
       `${process.env.BASE_URL}/events/`,
       event,
@@ -50,6 +42,7 @@ export async function POST(request: NextRequest) {
         },
       }
     );
+
     return NextResponse.json(response.data);
   } catch (error: any) {
     console.error("Event creation error:", {

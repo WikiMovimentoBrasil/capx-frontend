@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { documentService } from "@/services/documentService";
-import { Document } from "@/types/document";
+import { OrganizationDocument } from "@/types/document";
 
 export const useDocument = (token?: string, id?: number) => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<OrganizationDocument[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,9 +35,20 @@ export const useDocument = (token?: string, id?: number) => {
     setLoading(false);
   };
 
-  const createDocument = async (document: Partial<Document>) => {
-    const newDocument = await documentService.createDocument(token, document);
-    setDocuments((prevDocuments) => [...prevDocuments, newDocument]);
+  const createDocument = async (data: Partial<OrganizationDocument>) => {
+    if (!token) {
+      console.error("createDocument: No token provided");
+      return;
+    }
+    try {
+      console.log("useDocument - Creating document with:", data);
+      const response = await documentService.createDocument(token, data);
+      console.log("useDocument - Response:", response);
+      return response;
+    } catch (error) {
+      console.error("useDocument - Error:", error);
+      throw error;
+    }
   };
 
   const deleteDocument = async (id: number) => {
