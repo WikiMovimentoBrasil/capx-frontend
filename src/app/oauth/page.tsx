@@ -66,15 +66,9 @@ function OAuthContent() {
 
           const stored_secret = localStorage.getItem("oauth_token_secret");
           // Verifica o hostname e os tokens antes de prosseguir
-          const isValidHost =
-            result.extra === hostname ||
-            (hostname === "localhost:3000" &&
-              result.extra === "127.0.0.1:3000") ||
-            (hostname === "127.0.0.1:3000" &&
-              result.extra === "localhost:3000");
 
-          if (isValidHost) {
-            console.log("Hostname matches or equivalent");
+          if (result.extra === hostname) {
+            console.log("Hostname matches");
 
             if (!stored_secret) {
               console.log("No secret found, redirecting to start");
@@ -86,7 +80,8 @@ function OAuthContent() {
             await handleLogin();
           } else {
             console.log("Hostname mismatch, redirecting");
-            router.push(`http://localhost:3000/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`);
+            let protocol = result.extra === "capx-test.toolforge.org" ? "https" : "http";
+            router.push(`${protocol}://${result.extra}/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`);
           }
         }
       } catch (error) {
