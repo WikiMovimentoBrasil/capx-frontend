@@ -35,9 +35,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
           )
           .map((tag) => tag.tag);
 
-        console.log(validTags);
         if (!validTags.length) {
-          console.log("Nenhuma tag válida encontrada");
           setPosts([]);
           return;
         }
@@ -46,17 +44,12 @@ export const NewsSection = ({ ids }: NewsProps) => {
           validTags.map(async (tag) => {
             const formattedTag = tag.toLowerCase().replace(/\s+/g, "-");
             const url = `https://public-api.wordpress.com/rest/v1.1/sites/175527200/posts/?tag=${formattedTag}`;
-            console.log("Fetching URL:", url); // Debug URL
-
             const response = await fetch(url);
             const data = await response.json();
-            console.log("WordPress response:", data); // Debug response
 
             return data.posts || [];
           })
         );
-
-        console.log("All posts:", allPosts);
 
         const combinedPosts = allPosts.flat();
         const uniquePosts = Array.from(
@@ -112,7 +105,8 @@ export const NewsSection = ({ ids }: NewsProps) => {
                 src={post.featured_image}
                 alt={post.title}
                 fill
-                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover w-full h-full"
               />
             </div>
             <h1
