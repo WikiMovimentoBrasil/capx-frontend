@@ -4,6 +4,7 @@
 			"Saraiki"
 		]
 	},
+	"navbar-link-profiles": "میݙیاں پروفائلاں",
 	"navbar-link-capacities": "ڈائریکٹری",
 	"navbar-link-home": "گھر",
 	"navbar-link-reports": "رپورٹاں",
@@ -49,6 +50,7 @@
 	"oh-no-message": "اوہو، کو!",
 	"body-profile-languages-title": "زباناں",
 	"body-profile-wanted-capacities-title": "مطلوبہ صلاحیتاں",
+	"body-profile-wikimedia-projects-title": "وکیمیڈیا منصوبے",
 	"body-profile-contact-title": "رابطہ",
 	"edit-profile-save": "فائل بچاؤ"
 }
