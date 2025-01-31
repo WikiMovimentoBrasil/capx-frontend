@@ -13,9 +13,10 @@ import { useApp } from "@/contexts/AppContext";
 import IconCloseMobileMenuLightMode from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Session } from "@/types/user";
 
 interface MobileNavbarProps {
-  session: any;
+  session: Session;
   pageContent: any;
   language: string;
   setLanguage: (language: string) => void;

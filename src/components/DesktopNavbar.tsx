@@ -6,13 +6,14 @@ import CapXLogo from "../../public/static/images/capx_minimalistic_logo.svg";
 import DarkModeButton from "./DarkModeButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import ProfileSelect from "./ProfileSelect";
+import { Session } from "@/types/user";
 
 export interface DesktopNavbarProps {
   pageContent: any;
   language: string;
   setLanguage: (language: string) => void;
   setPageContent: (pageContent: any) => void;
-  session: any;
+  session: Session;
 }
 
 export default function DesktopNavbar({
@@ -23,7 +24,7 @@ export default function DesktopNavbar({
   session,
 }: DesktopNavbarProps) {
   const { darkMode, setDarkMode } = useTheme();
-
+  console.log(session);
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
     {
