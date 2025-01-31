@@ -8,6 +8,18 @@ interface Social {
   value: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  token: string;
+  first_login: boolean;
+}
+
+export interface Session {
+  user: User;
+  expires: string;
+}
+
 interface UserData {
   id: number;
   username: string;
