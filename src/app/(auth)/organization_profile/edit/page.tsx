@@ -51,6 +51,7 @@ import { OrganizationDocument } from "@/types/document";
 import { Contacts } from "@/types/contacts";
 import { useTagDiff } from "@/hooks/useTagDiff";
 import ProjectsFormItem from "../components/ProjectsFormItem";
+import { Session } from "next-auth";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -82,11 +83,11 @@ export default function EditOrganizationProfilePage() {
     error: projectsError,
   } = useProjects(organization?.projects, token);
 
-  // Use ref para controlar se os dados já foram carregados
+  // Estado único para projetos
+  const [projectsData, setProjectsData] = useState<Project[]>([]);
   const projectsLoaded = useRef(false);
 
   // Estado para projetos existentes e novos
-  const [projectsData, setProjectsData] = useState<Project[]>([]);
   const [newProjects, setNewProjects] = useState<Project[]>([]);
   const [projectId, setProjectId] = useState<number>(0);
   const { createProject, updateProject, deleteProject } = useProject(
@@ -97,6 +98,43 @@ export default function EditOrganizationProfilePage() {
   const [editedProjects, setEditedProjects] = useState<{
     [key: number]: boolean;
   }>({});
+
+  // Log do estado inicial
+  console.log("Initial organization:", organization);
+  console.log("Initial projects:", projects);
+  console.log("Is loading:", isProjectsLoading);
+
+  // Efeito único para carregar projetos
+  useEffect(() => {
+    console.log("Effect running with:", {
+      projectsLoaded: projectsLoaded.current,
+      isProjectsLoading,
+      hasOrganization: !!organization,
+      organizationProjects: organization?.projects,
+      hasProjects: !!projects,
+      projectsLength: projects?.length,
+    });
+
+    // Reseta o estado quando não temos dados
+    if (!organization || !projects) {
+      projectsLoaded.current = false;
+      return;
+    }
+
+    // Carrega os projetos apenas quando temos todos os dados necessários
+    if (
+      !projectsLoaded.current &&
+      !isProjectsLoading &&
+      organization?.projects &&
+      organization?.projects?.length > 0 &&
+      projects &&
+      projects.length > 0
+    ) {
+      console.log("✅ Loading projects:", projects);
+      setProjectsData(projects);
+      projectsLoaded.current = true;
+    }
+  }, [organization, projects, isProjectsLoading]);
 
   // Events setters
   const {
@@ -156,42 +194,33 @@ export default function EditOrganizationProfilePage() {
     wanted_capacities: organization?.wanted_capacities || [],
   });
 
-  // Log para debug dos projetos carregados
-  useEffect(() => {
-    console.log("Projects from hook:", projects);
-  }, [projects]);
-
-  // Efeito para carregar projetos existentes apenas uma vez
-  useEffect(() => {
-    if (organization && projects && !projectsLoaded.current) {
-      console.log("Loading initial projects:", projects);
+  // Efeito único para carregar dados iniciais
+  /*   useEffect(() => {
+    if (!projectsLoaded.current && projects) {
+      console.log("Initial load - Setting projects:", projects);
       setProjectsData(projects);
       projectsLoaded.current = true;
     }
-  }, [organization, projects]);
+  }, [projects]); */
 
-  // Debug do estado atual
-  useEffect(() => {
-    console.log("Current projectsData:", projectsData);
-    console.log("Current newProjects:", newProjects);
-    console.log("All projects:", [...projectsData, ...newProjects]);
-  }, [projectsData, newProjects]);
+  // Efeito para carregar projetos existentes
+  /*   useEffect(() => {
+    if (organization?.projects && !projectsLoaded.current) {
+      console.log(
+        "Loading initial projects from organization:",
+        organization.projects
+      );
+      setProjectsData(projects || []);
+      projectsLoaded.current = true;
+    }
+  }, [organization, projects]); */
+
+  console.log(organization);
 
   // Use effect to initialize the form data
   useEffect(() => {
-    if (organization && !isInitialized && !isProjectsLoading) {
+    if (organization && !isInitialized) {
       // Merge existing projects with new projects
-
-      if (organization.projects && organization.projects.length > 0) {
-        const existingProjects = projects?.map((project) => ({
-          ...project,
-          isNew: false,
-        }));
-
-        console.log("Existing projects:", existingProjects); // Debug
-
-        setProjectsData(existingProjects);
-      }
 
       setFormData({
         display_name: organization.display_name || "",
@@ -224,7 +253,7 @@ export default function EditOrganizationProfilePage() {
       // Inicializa os dados dos projetos
       if (organization.tag_diff && organization.tag_diff.length > 0) {
         if (projects) {
-          setProjectsData(projects);
+          /* setProjectsData(projects); */
         }
       }
 
@@ -263,11 +292,7 @@ export default function EditOrganizationProfilePage() {
     tagDiff,
   ]);
 
-  useEffect(() => {
-    console.log("Current projectsData:", projectsData);
-  }, [projectsData]);
-
-  useEffect(() => {
+  /*   useEffect(() => {
     if (organization) {
       if (events && events.length > 0) {
         setEventsData(events);
@@ -282,7 +307,7 @@ export default function EditOrganizationProfilePage() {
         setDiffTagsData(tagDiff);
       }
     }
-  }, [organization, events, projects, documents, tagDiff]);
+  }, [organization, events, projects, documents, tagDiff]); */
 
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
@@ -293,7 +318,7 @@ export default function EditOrganizationProfilePage() {
     return newIds.filter((id): id is number => id !== null && id !== undefined);
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (organization) {
       if (
         events &&
@@ -324,7 +349,7 @@ export default function EditOrganizationProfilePage() {
         setDiffTagsData(diffTagsData);
       }
     }
-  }, [organization, events, projects, documents, tagDiff]);
+  }, [organization, events, projects, documents, tagDiff]); */
 
   const handleSubmit = async () => {
     try {
@@ -546,45 +571,43 @@ export default function EditOrganizationProfilePage() {
       return newTags;
     });
   };
-  const handleDeleteProject = useCallback((projectId: number) => {
-    if (projectId === 0) {
-      setNewProjects((prev) => {
-        console.log("Removing new project");
-        return prev.filter(
-          (p) => p !== prev.find((project) => project.id === projectId)
-        );
-      });
-    } else {
-      setProjectsData((prev) => {
-        console.log("Removing existing project");
-        return prev.filter((p) => p.id !== projectId);
-      });
-    }
-  }, []);
-
-  const handleProjectChange = useCallback(
-    (index: number, field: keyof Project, value: string) => {
-      const isNewProject = index >= projectsData.length;
-
-      if (isNewProject) {
-        const newIndex = index - projectsData.length;
-        setNewProjects((prev) => {
-          const updated = [...prev];
-          updated[newIndex] = { ...updated[newIndex], [field]: value };
-          console.log("Updated new project:", updated);
-          return updated;
-        });
-      } else {
+  const handleDeleteProject = async (projectId: number) => {
+    try {
+      if (projectId === 0) {
         setProjectsData((prev) => {
-          const updated = [...prev];
-          updated[index] = { ...updated[index], [field]: value };
-          console.log("Updated existing project:", updated);
-          return updated;
+          const index = prev.findIndex((p) => p.id === 0);
+          if (index !== -1) {
+            const updated = [...prev];
+            updated.splice(index, 1);
+            return updated;
+          }
+          return prev;
         });
+        return;
       }
-    },
-    [projectsData.length]
-  );
+
+      await deleteProject(projectId);
+
+      setProjectsData((prev) => prev.filter((p) => p.id !== projectId));
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
+  const handleProjectChange = (
+    index: number,
+    field: keyof Project,
+    value: string
+  ) => {
+    setProjectsData((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return updated;
+    });
+  };
 
   const handleEventChange = (index: number, field: string, value: string) => {
     const newEvents = [...eventsData];
@@ -623,9 +646,9 @@ export default function EditOrganizationProfilePage() {
   };
 
   // Handler para adicionar novo projeto
-  const handleAddProject = useCallback(() => {
+  const handleAddProject = () => {
     const newProject: Project = {
-      id: 0,
+      id: 0, // id 0 indica novo projeto
       display_name: "",
       profile_image: "",
       url: "",
@@ -636,11 +659,8 @@ export default function EditOrganizationProfilePage() {
       related_skills: [],
     };
 
-    setNewProjects((prev) => {
-      console.log("Adding new project to newProjects:", [...prev, newProject]);
-      return [...prev, newProject];
-    });
-  }, [organizationId, session?.user?.id]);
+    setProjectsData((prev) => [...prev, newProject]);
+  };
 
   const handleRemoveProject = (index: number) => {
     setFormData((prev) => {
@@ -1175,32 +1195,26 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               <div className="flex flex-col w-full gap-2 mb-2">
-                {Array.isArray(projectsData) &&
-                  projectsData.map((project, index) => (
-                    <div key={project.id} className="flex flex-row gap-2">
-                      <div className="flex flex-row gap-2 w-1/2 items-center text-[12px] p-2 border rounded-md bg-transparent">
-                        <ProjectsFormItem
-                          key={project.id}
-                          project={project}
-                          index={index}
-                          onDelete={() => {
-                            handleDeleteProject(project.id);
-                          }}
-                          onChange={handleProjectChange}
-                        />
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              <div className="flex items-center gap-1 rounded-md">
+                {projectsData.map((project, index) => (
+                  <ProjectsFormItem
+                    key={project.id === 0 ? `new-${index}` : project.id}
+                    project={project}
+                    index={index}
+                    onDelete={handleDeleteProject}
+                    onChange={handleProjectChange}
+                  />
+                ))}
                 <BaseButton
-                  onClick={handleAddProject}
+                  onClick={() => {
+                    console.log("Add button clicked");
+                    handleAddProject();
+                  }}
                   label="Add more projects"
                   customClass={`w-full flex ${
                     darkMode
                       ? "bg-capx-light-box-bg text-[#04222F]"
                       : "bg-[#053749] text-white"
-                  } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                  }`}
                   imageUrl={darkMode ? AddIcon : AddIconWhite}
                   imageAlt="Add project"
                   imageWidth={20}
@@ -1846,89 +1860,20 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             <div className="flex w-full gap-2 mb-2 flex-col">
-              {Array.isArray(projectsData) &&
-                projectsData?.map((project, index) => (
-                  <div key={index} className="flex gap-2 p-2">
-                    <div className="flex flex-row gap-2 w-1/2 items-center text-[24px] p-2 border rounded-md bg-transparent">
-                      <input
-                        type="text"
-                        placeholder="Project Name"
-                        className={`w-full bg-transparent border-none outline-none ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={project.display_name || ""}
-                        onChange={(e) => {
-                          const newProjects = [...projectsData];
-                          newProjects[index] = {
-                            ...newProjects[index],
-                            display_name: e.target.value,
-                          };
-                          setProjectsData(newProjects);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                      <div className="relative w-[32px] h-[32px]">
-                        <Image
-                          src={ImagesModeIcon}
-                          alt="Project image icon"
-                          className="object-contain"
-                        />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Project Image"
-                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={project.profile_image || ""}
-                        onChange={(e) => {
-                          const newProjects = [...projectsData];
-                          newProjects[index] = {
-                            ...newProjects[index],
-                            profile_image: e.target.value,
-                          };
-                          setProjectsData(newProjects);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                      <div className="relative w-[32px] h-[32px]">
-                        <Image
-                          src={AddLinkIcon}
-                          alt="Add link icon"
-                          className="object-contain"
-                        />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Link of project"
-                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={project.profile_image || ""}
-                        onChange={(e) => {
-                          const newProjects = [...projectsData];
-                          newProjects[index] = {
-                            ...newProjects[index],
-                            profile_image: e.target.value,
-                          };
-                          setProjectsData(newProjects);
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-            </div>
-            <div className="flex items-center gap-1 rounded-md">
+              {projectsData.map((project, index) => (
+                <ProjectsFormItem
+                  key={project.id === 0 ? `new-${index}` : project.id}
+                  project={project}
+                  index={index}
+                  onDelete={handleDeleteProject}
+                  onChange={handleProjectChange}
+                />
+              ))}
               <BaseButton
-                onClick={handleAddProject}
+                onClick={() => {
+                  console.log("Add button clicked");
+                  handleAddProject();
+                }}
                 label="Add projects"
                 customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
