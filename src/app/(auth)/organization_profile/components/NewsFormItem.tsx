@@ -2,13 +2,13 @@ import { useTheme } from "@/contexts/ThemeContext";
 import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
 import Image from "next/image";
-import { Post } from "@/types/news";
+import { tagDiff } from "@/types/tagDiff";
 
 interface NewsFormItemProps {
-  news: Post;
+  news: tagDiff;
   index: number;
   onDelete: (index: number) => void;
-  onChange: (index: number, field: keyof Post, value: string) => void;
+  onChange: (index: number, field: string, value: string) => void;
 }
 
 const NewsFormItem = ({
@@ -26,8 +26,8 @@ const NewsFormItem = ({
           <input
             type="text"
             placeholder="Add a Diff Tag"
-            value={news.title || ""}
-            onChange={(e) => onChange(index, "title", e.target.value)}
+            value={news.tag || ""}
+            onChange={(e) => onChange(index, "tag", e.target.value)}
             className={`w-full bg-transparent border-none outline-none text-[16px] md:text-[24px] ${
               darkMode
                 ? "text-white placeholder-gray-400"

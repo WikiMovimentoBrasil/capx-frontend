@@ -32,7 +32,6 @@ export async function POST(request: Request) {
     }
 
     const tagData = await request.json();
-    console.log("API Route - Creating tag_diff with:", tagData);
 
     const response = await axios.post(
       `${process.env.BASE_URL}/tag_diff/`,
@@ -44,8 +43,6 @@ export async function POST(request: Request) {
         },
       }
     );
-
-    console.log("API Route - Backend response:", response.data);
 
     if (!response.data) {
       throw new Error("Empty response from backend");
