@@ -1,38 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { documentService } from "@/services/documentService";
-import { OrganizationDocument } from "@/types/document";
+import {
+  OrganizationDocument,
+  WikimediaDocumentResponse,
+  WikimediaDocument,
+} from "@/types/document";
 
 export const useDocument = (token?: string, id?: number) => {
-  const [documents, setDocuments] = useState<OrganizationDocument[]>([]);
+  const [documents, setDocuments] = useState<WikimediaDocument[]>([]);
+  const [document, setDocument] = useState<WikimediaDocument | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!token || !id) {
-    return {
-      documents: [],
-      loading: false,
-      error: null,
-      fetchDocuments: () => {},
-      fetchSingleDocument: () => {},
-      createDocument: () => {},
-      deleteDocument: () => {},
-    };
-  }
+  const fetchWikimediaData = async (document: OrganizationDocument) => {
+    try {
+      // Extrair o nome do arquivo da URL
+      let fileName = "";
 
-  const fetchDocuments = async () => {
+      if (document.url?.includes("commons.wikimedia.org/wiki/File:")) {
+        fileName = document.url?.split("File:")[1];
+      } else if (
+        document.url?.includes("upload.wikimedia.org/wikipedia/commons/")
+      ) {
+        const parts = document.url?.split("/");
+        fileName = parts[parts.length - 1];
+      } else {
+        fileName = document.url || "";
+      }
+
+      // Adicionar o formato=json e origin=* para CORS
+      const apiUrl = `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&formatversion=2&format=json&iiprop=url%7Cmetadata&iiurlheight=200&titles=File:${encodeURIComponent(
+        fileName
+      )}&origin=*`;
+
+      console.log("Fetching Wikimedia data from:", apiUrl);
+      const response = await fetch(apiUrl);
+      const data: WikimediaDocumentResponse = await response.json();
+
+      if (data.query?.pages?.[0]) {
+        const page = data.query.pages[0];
+        const imageInfo = page.imageinfo?.[0];
+
+        return {
+          ...document,
+          title: page.title.replace("File:", ""),
+          imageUrl: imageInfo?.thumburl,
+          fullUrl: imageInfo?.url,
+          metadata: imageInfo?.metadata,
+          thumburl: imageInfo?.thumburl,
+        };
+      }
+      return document;
+    } catch (error) {
+      console.error("Error fetching Wikimedia data:", error);
+      return document;
+    }
+  };
+
+  const fetchAllDocuments = async () => {
+    if (!token) return;
     setLoading(true);
-    const documents = await documentService.fetchAllDocuments(token);
-    setDocuments(documents);
-    setLoading(false);
+    try {
+      const basicDocuments = await documentService.fetchAllDocuments(token);
+      const enrichedDocuments = await Promise.all(
+        basicDocuments.map((doc) => fetchWikimediaData(doc))
+      );
+      setDocuments(enrichedDocuments);
+      return enrichedDocuments;
+    } catch (error) {
+      console.error("Error fetching all documents:", error);
+      setError("Failed to fetch documents");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchSingleDocument = async () => {
+    if (!token || !id) return;
+
     setLoading(true);
-    const document = await documentService.fetchSingleDocument(token, id);
-    setDocuments((prevDocuments) => [...prevDocuments, document]);
-    setLoading(false);
+    try {
+      const basicDocument = await documentService.fetchSingleDocument(
+        token,
+        id
+      );
+      if (basicDocument) {
+        const enrichedDocument = await fetchWikimediaData(basicDocument);
+        setDocument(enrichedDocument);
+        return enrichedDocument;
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
+      setError("Failed to fetch document");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const createDocument = async (data: Partial<OrganizationDocument>) => {
@@ -41,9 +105,22 @@ export const useDocument = (token?: string, id?: number) => {
       return;
     }
     try {
-      console.log("useDocument - Creating document with:", data);
-      const response = await documentService.createDocument(token, data);
+      const documentPayload = {
+        url: data.url,
+      };
+
+      console.log("useDocument - Creating document with:", documentPayload);
+      const response = await documentService.createDocument(
+        token,
+        documentPayload
+      );
       console.log("useDocument - Response:", response);
+
+      if (response && response.id) {
+        const enrichedDocument = await fetchWikimediaData(response);
+        setDocument(enrichedDocument);
+      }
+
       return response;
     } catch (error) {
       console.error("useDocument - Error:", error);
@@ -52,15 +129,37 @@ export const useDocument = (token?: string, id?: number) => {
   };
 
   const deleteDocument = async (id: number) => {
-    await documentService.deleteDocument(token, id);
-    setDocuments((prevDocuments) => prevDocuments.filter((d) => d.id !== id));
+    if (!token) return;
+
+    try {
+      await documentService.deleteDocument(token, id);
+      setDocument(null);
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      throw error;
+    }
   };
 
+  // Carregar todos os documentos ao inicializar
+  useEffect(() => {
+    if (token && !id) {
+      fetchAllDocuments();
+    }
+  }, [token]);
+
+  // Carregar documento específico quando o ID mudar
+  useEffect(() => {
+    if (id) {
+      fetchSingleDocument();
+    }
+  }, [id, token]);
+
   return {
-    documents,
+    documents, // Lista completa de documentos
+    document, // Documento único quando ID é fornecido
     loading,
     error,
-    fetchDocuments,
+    fetchAllDocuments,
     fetchSingleDocument,
     createDocument,
     deleteDocument,

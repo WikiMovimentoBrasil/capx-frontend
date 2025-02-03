@@ -2,45 +2,68 @@ import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-
   try {
-    const response = await axios.get(`${process.env.BASE_URL}/document/`, {
+    const token = request.headers.get("Authorization");
+    if (!token) {
+      return NextResponse.json(
+        { error: "No authorization token provided" },
+        { status: 401 }
+      );
+    }
+
+    const backendUrl = process.env.BASE_URL;
+    const response = await axios.get(`${backendUrl}/document/`, {
       headers: {
-        Authorization: authHeader,
+        Authorization: token,
+        "Content-Type": "application/json",
       },
     });
+
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error("Error details:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    });
     return NextResponse.json(
-      { error: "Failed to fetch documents" },
-      { status: 500 }
+      { error: "Failed to fetch documents", details: error.response?.data },
+      { status: error.response?.status || 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  const body = await request.json();
-
   try {
-    const response = await axios.post(
-      `${process.env.BASE_URL}/document/`,
-      body,
-      {
-        headers: { Authorization: authHeader },
-      }
-    );
+    const token = request.headers.get("Authorization");
+    if (!token) {
+      return NextResponse.json(
+        { error: "No authorization token provided" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    console.log("API route - Creating document with:", body);
+
+    const backendUrl = process.env.BASE_URL;
+    const response = await axios.post(`${backendUrl}/document/`, body, {
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("API route - Backend response:", response.data);
     return NextResponse.json(response.data);
   } catch (error: any) {
+    console.error("API route - Document creation error:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
+
     return NextResponse.json(
-      { error: "Failed to create document" },
-      { status: 500 }
+      {
+        error: "Failed to create document",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
     );
   }
 }
