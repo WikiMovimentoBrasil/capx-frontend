@@ -51,7 +51,9 @@ import { OrganizationDocument } from "@/types/document";
 import { Contacts } from "@/types/contacts";
 import { useTagDiff } from "@/hooks/useTagDiff";
 import ProjectsFormItem from "../components/ProjectsFormItem";
-import { Session } from "next-auth";
+import EventsFormItem from "../components/EventsFormItem";
+import NewsFormItem from "../components/NewsFormItem";
+import DocumentFormItem from "../components/DocumentFormItem";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -73,21 +75,17 @@ export default function EditOrganizationProfilePage() {
 
   // Projects setters
 
-  interface ProjectState extends Project {
-    isNew?: boolean;
-  }
-
   const {
     projects,
     isLoading: isProjectsLoading,
     error: projectsError,
   } = useProjects(organization?.projects, token);
 
-  // Estado único para projetos
+  // State for projects
   const [projectsData, setProjectsData] = useState<Project[]>([]);
   const projectsLoaded = useRef(false);
 
-  // Estado para projetos existentes e novos
+  // State for existing and new projects
   const [newProjects, setNewProjects] = useState<Project[]>([]);
   const [projectId, setProjectId] = useState<number>(0);
   const { createProject, updateProject, deleteProject } = useProject(
@@ -99,29 +97,13 @@ export default function EditOrganizationProfilePage() {
     [key: number]: boolean;
   }>({});
 
-  // Log do estado inicial
-  console.log("Initial organization:", organization);
-  console.log("Initial projects:", projects);
-  console.log("Is loading:", isProjectsLoading);
-
-  // Efeito único para carregar projetos
+  // Effect to load projects
   useEffect(() => {
-    console.log("Effect running with:", {
-      projectsLoaded: projectsLoaded.current,
-      isProjectsLoading,
-      hasOrganization: !!organization,
-      organizationProjects: organization?.projects,
-      hasProjects: !!projects,
-      projectsLength: projects?.length,
-    });
-
-    // Reseta o estado quando não temos dados
     if (!organization || !projects) {
       projectsLoaded.current = false;
       return;
     }
 
-    // Carrega os projetos apenas quando temos todos os dados necessários
     if (
       !projectsLoaded.current &&
       !isProjectsLoading &&
@@ -130,22 +112,51 @@ export default function EditOrganizationProfilePage() {
       projects &&
       projects.length > 0
     ) {
-      console.log("✅ Loading projects:", projects);
       setProjectsData(projects);
       projectsLoaded.current = true;
     }
   }, [organization, projects, isProjectsLoading]);
 
   // Events setters
+
   const {
     events,
     isLoading: isEventsLoading,
     error: eventsError,
-  } = useEvents((organization?.events || []) as unknown as Event[], token);
+  } = useEvents(organization?.events, token);
 
-  const eventId = 0; // temporary id for new events
-  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+  // State for events
   const [eventsData, setEventsData] = useState<Event[]>([]);
+  const eventsLoaded = useRef(false);
+
+  // State for existing and new events
+  const [newEvents, setNewEvents] = useState<Event[]>([]);
+  const [eventId, setEventId] = useState<number>(0);
+  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+
+  const [editedEvents, setEditedEvents] = useState<{
+    [key: number]: boolean;
+  }>({});
+
+  // Effect to load events
+  useEffect(() => {
+    if (!organization || !events) {
+      eventsLoaded.current = false;
+      return;
+    }
+
+    if (
+      !eventsLoaded.current &&
+      !isEventsLoading &&
+      organization?.events &&
+      organization?.events?.length > 0 &&
+      events &&
+      events.length > 0
+    ) {
+      setEventsData(events);
+      eventsLoaded.current = true;
+    }
+  }, [organization, events, isEventsLoading]);
 
   // Tags setters
   const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
@@ -194,29 +205,6 @@ export default function EditOrganizationProfilePage() {
     wanted_capacities: organization?.wanted_capacities || [],
   });
 
-  // Efeito único para carregar dados iniciais
-  /*   useEffect(() => {
-    if (!projectsLoaded.current && projects) {
-      console.log("Initial load - Setting projects:", projects);
-      setProjectsData(projects);
-      projectsLoaded.current = true;
-    }
-  }, [projects]); */
-
-  // Efeito para carregar projetos existentes
-  /*   useEffect(() => {
-    if (organization?.projects && !projectsLoaded.current) {
-      console.log(
-        "Loading initial projects from organization:",
-        organization.projects
-      );
-      setProjectsData(projects || []);
-      projectsLoaded.current = true;
-    }
-  }, [organization, projects]); */
-
-  console.log(organization);
-
   // Use effect to initialize the form data
   useEffect(() => {
     if (organization && !isInitialized) {
@@ -252,22 +240,37 @@ export default function EditOrganizationProfilePage() {
 
       // Inicializa os dados dos projetos
       if (organization.tag_diff && organization.tag_diff.length > 0) {
-        if (projects) {
-          /* setProjectsData(projects); */
-        }
+        const fetchTagsData = async () => {
+          try {
+            const tagPromises = organization?.tag_diff?.map((tagId) =>
+              fetchSingleTag(tagId)
+            );
+            const tagsResults = await Promise.all(tagPromises || []);
+            const validTags = tagsResults
+              .filter(
+                (tag): tag is NonNullable<typeof tag> =>
+                  tag !== undefined && tag !== null
+              )
+              .map((tagData) => ({
+                id: tagData.id,
+                tag: tagData.tag,
+                created_at: tagData.created_at || new Date().toISOString(),
+                updated_at: tagData.updated_at || new Date().toISOString(),
+              }));
+            setDiffTagsData(validTags);
+          } catch (error) {
+            console.error("Error fetching tags:", error);
+          }
+        };
+
+        fetchTagsData();
       }
 
       // Inicializa os dados dos documentos
       if (organization.documents && organization.documents.length > 0) {
+        const { documents } = useDocument(token);
         if (documents) {
           setDocumentsData(documents);
-        }
-      }
-
-      // Inicializa os dados das tags
-      if (organization.tag_diff && organization.tag_diff.length > 0) {
-        if (tagDiff) {
-          setDiffTagsData(tagDiff);
         }
       }
 
@@ -292,23 +295,6 @@ export default function EditOrganizationProfilePage() {
     tagDiff,
   ]);
 
-  /*   useEffect(() => {
-    if (organization) {
-      if (events && events.length > 0) {
-        setEventsData(events);
-      }
-      if (projects && projects.length > 0) {
-        setProjectsData(projects);
-      }
-      if (documents && documents.length > 0) {
-        setDocumentsData(documents);
-      }
-      if (tagDiff && tagDiff.length > 0) {
-        setDiffTagsData(tagDiff);
-      }
-    }
-  }, [organization, events, projects, documents, tagDiff]); */
-
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
       (id): id is number => id !== null && id !== undefined
@@ -317,39 +303,6 @@ export default function EditOrganizationProfilePage() {
   const validNewIds = (newIds: number[]) => {
     return newIds.filter((id): id is number => id !== null && id !== undefined);
   };
-
-  /*   useEffect(() => {
-    if (organization) {
-      if (
-        events &&
-        JSON.stringify(eventsData) !== JSON.stringify(events) &&
-        events.length > 0
-      ) {
-        setEventsData(events);
-      }
-      if (
-        projects &&
-        JSON.stringify(projectsData) !== JSON.stringify(projects) &&
-        projects.length > 0
-      ) {
-        setProjectsData(projects);
-      }
-      if (
-        documents &&
-        JSON.stringify(documentsData) !== JSON.stringify(documents) &&
-        documents.length > 0
-      ) {
-        setDocumentsData(documents);
-      }
-      if (
-        diffTagsData &&
-        JSON.stringify(diffTagsData) !== JSON.stringify(diffTagsData) &&
-        diffTagsData.length > 0
-      ) {
-        setDiffTagsData(diffTagsData);
-      }
-    }
-  }, [organization, events, projects, documents, tagDiff]); */
 
   const handleSubmit = async () => {
     try {
@@ -410,57 +363,80 @@ export default function EditOrganizationProfilePage() {
           }
         });
 
-      const eventResults = await Promise.all(
-        eventsData.map(async (event) => {
+      const [updatedProjectIds, newProjectIds] = await Promise.all([
+        Promise.all(updateProjectPromises),
+        Promise.all(projectPromises),
+      ]);
+
+      const validUpdatedProjectIds = validUpdatedIds(
+        updatedProjectIds as number[]
+      );
+      const validNewProjectIds = validNewIds(newProjectIds as number[]);
+      const allProjectIds = [...validUpdatedProjectIds, ...validNewProjectIds];
+
+      const updateEventPromises = eventsData
+        .filter((event) => event.id !== 0)
+        .map(async (event) => {
           try {
-            if (event.id === 0) {
-              const eventPayload = {
-                name: event.name || "New Event",
-                image_url: event.image_url,
-                url: event.url.startsWith("http")
-                  ? event.url
-                  : `https://${event.url}`,
-                organizations: [Number(organizationId)],
-                time_begin: new Date().toISOString(),
-                time_end: new Date().toISOString(),
-                creator: Number(session?.user?.id),
-                team: [],
-                related_skills: [],
-                type_of_location: "virtual",
-                openstreetmap_id: event.openstreetmap_id || "",
-                wikidata_qid: event.wikidata_qid || "",
-              };
-
-              const response = await createEvent(eventPayload);
-
-              if (!response || !response.id) {
-                console.error("Invalid event response:", response);
-                return null;
-              }
-
-              return response.id;
-            } else {
-              await updateEvent(event.id, {
-                name: event.name,
-                image_url: event.image_url,
-                url: event.url,
-                organizations: [Number(organizationId)],
-                time_begin: event.time_begin,
-                time_end: event.time_end,
-              });
-              return event.id;
-            }
+            await updateEvent(event.id, {
+              name: event.name,
+              image_url: event.image_url,
+              url: event.url,
+              organizations: [Number(organizationId)],
+              time_begin: event.time_begin,
+              time_end: event.time_end,
+            });
+            return event.id;
           } catch (error) {
-            console.error("Error processing event:", error);
+            console.error(`Error updating event ${event.id}:`, error);
+            return event.id;
+          }
+        });
+
+      const eventPromises = eventsData
+        .filter((event) => event.id === 0)
+        .map(async (event) => {
+          try {
+            const newEvent = await createEvent({
+              name: event.name,
+              image_url: event.image_url,
+              url: event.url,
+              organizations: [Number(organizationId)],
+              time_begin: event.time_begin,
+              time_end: event.time_end,
+              creator: Number(session?.user?.id),
+              team: [],
+              related_skills: [],
+              type_of_location: "virtual",
+              openstreetmap_id: event.openstreetmap_id || "",
+              wikidata_qid: event.wikidata_qid || "",
+            });
+
+            if (!newEvent || !newEvent.id) {
+              console.error("Invalid event response:", newEvent);
+              return null;
+            }
+            return newEvent.id;
+          } catch (error) {
+            console.error("Error creating event:", error);
             return null;
           }
-        })
-      );
+        });
+
+      const [updatedEventIds, newEventIds] = await Promise.all([
+        Promise.all(updateEventPromises),
+        Promise.all(eventPromises),
+      ]);
+
+      const validUpdatedEventIds = validUpdatedIds(updatedEventIds as number[]);
+      const validNewEventIds = validNewIds(newEventIds as number[]);
+      const allEventIds = [...validUpdatedEventIds, ...validNewEventIds];
 
       const tagResults = await Promise.all(
         diffTagsData.map(async (tag) => {
           try {
-            if (tag.id === 0) {
+            // If it's a new tag (negative ID)
+            if (tag.id < 0) {
               const tagPayload = {
                 tag: tag.tag,
                 created_at: new Date().toISOString(),
@@ -477,6 +453,7 @@ export default function EditOrganizationProfilePage() {
 
               return response.id;
             } else {
+              // If it's an existing tag, just return its ID
               return tag.id;
             }
           } catch (error) {
@@ -492,14 +469,9 @@ export default function EditOrganizationProfilePage() {
             if (document.id === 0) {
               const documentPayload = {
                 url: document.url,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                creator: Number(session?.user?.id),
               };
 
-              const response = await createDocument(
-                documentPayload as Partial<OrganizationDocument>
-              );
+              const response = await createDocument(documentPayload);
 
               if (!response || !response.id) {
                 console.error("Invalid document response:", response);
@@ -525,29 +497,12 @@ export default function EditOrganizationProfilePage() {
         (id): id is number => id !== null && id !== undefined
       );
 
-      const [updatedProjectIds, newProjectIds] = await Promise.all([
-        Promise.all(updateProjectPromises),
-        Promise.all(projectPromises),
-      ]);
-
-      const validUpdatedProjectIds = validUpdatedIds(
-        updatedProjectIds as number[]
-      );
-
-      const validNewProjectIds = validNewIds(newProjectIds as number[]);
-
-      const validEventIds = eventResults.filter(
-        (id): id is number => id !== null && id !== undefined
-      );
-
-      const allProjectIds = [...validUpdatedProjectIds, ...validNewProjectIds];
-
       const updatedFormData = {
         ...formData,
-        events: validEventIds,
+        events: allEventIds,
         projects: allProjectIds,
         tag_diff: validTagIds,
-        documents: validDocumentIds.map((id) => ({ id })),
+        documents: validDocumentIds,
         meta_page: contactsData.meta_page,
         email: contactsData.email,
         website: contactsData.website,
@@ -555,22 +510,34 @@ export default function EditOrganizationProfilePage() {
       console.log("Updating organization with data:", updatedFormData);
 
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      router.push(`/organization_profile/`);
+      router.push(`/organization_profile?t=${Date.now()}`);
     } catch (error) {
-      console.error("Error processing event promises:", error);
+      console.error("Error processing form:", error);
     }
   };
 
   // Handlers
 
-  const handleRemoveDiffTag = (index: number) => {
-    setDiffTagsData((prev) => {
-      const newTags = [...prev];
-      newTags.splice(index, 1);
-      return newTags;
-    });
+  // Projects handlers
+
+  const handleAddProject = () => {
+    const newProject: Project = {
+      id: 0, // id 0 indica novo projeto
+      display_name: "",
+      profile_image: "",
+      url: "",
+      description: "",
+      organization: Number(organizationId),
+      creation_date: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+      related_skills: [],
+    };
+
+    setProjectsData((prev) => [...prev, newProject]);
   };
+
   const handleDeleteProject = async (projectId: number) => {
     try {
       if (projectId === 0) {
@@ -609,66 +576,7 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
-  const handleEventChange = (index: number, field: string, value: string) => {
-    const newEvents = [...eventsData];
-    newEvents[index] = {
-      ...newEvents[index],
-      [field]: value,
-    };
-    setEventsData(newEvents);
-  };
-
-  const handleDiffTagChange = (index: number, field: string, value: string) => {
-    const newDiffTags = [...diffTagsData];
-    newDiffTags[index] = {
-      ...newDiffTags[index],
-      [field]: value,
-      updated_at: new Date().toISOString(),
-    };
-    setDiffTagsData(newDiffTags);
-  };
-
-  const [organizationData, setOrganizationData] = useState({
-    name: "Wiki Movimento Brasil",
-    description: "Grupo de usuários Wiki Movimento Brasil",
-    logo_url: "",
-    report_link: "",
-  });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentCapacityType, setCurrentCapacityType] = useState<
-    "known" | "available" | "wanted"
-  >("known");
-
-  const handleAddCapacity = (type: "known" | "available" | "wanted") => {
-    setCurrentCapacityType(type);
-    setIsModalOpen(true);
-  };
-
-  // Handler para adicionar novo projeto
-  const handleAddProject = () => {
-    const newProject: Project = {
-      id: 0, // id 0 indica novo projeto
-      display_name: "",
-      profile_image: "",
-      url: "",
-      description: "",
-      organization: Number(organizationId),
-      creation_date: new Date().toISOString(),
-      creator: Number(session?.user?.id),
-      related_skills: [],
-    };
-
-    setProjectsData((prev) => [...prev, newProject]);
-  };
-
-  const handleRemoveProject = (index: number) => {
-    setFormData((prev) => {
-      const newProjects = [...(prev.tag_diff || [])];
-      newProjects.splice(index, 1);
-      return { ...prev, tag_diff: newProjects };
-    });
-  };
+  // Events handlers
 
   const handleAddEvent = () => {
     const newEvent = {
@@ -690,34 +598,91 @@ export default function EditOrganizationProfilePage() {
       openstreetmap_id: "",
       wikidata_qid: "",
     };
-    setEventsData((prev) => [...(prev || []), newEvent]);
+    setEventsData((prev) => [...prev, newEvent]);
   };
 
-  const handleRemoveEvent = (index: number) => {
-    setFormData((prev) => {
-      const newEvents = [...(prev.events || [])];
-      newEvents.splice(index, 1);
-      return { ...prev, events: newEvents };
+  const handleDeleteEvent = async (eventId: number) => {
+    try {
+      if (eventId === 0) {
+        setEventsData((prev) => {
+          const index = prev.findIndex((e) => e.id === 0);
+          if (index !== -1) {
+            const updated = [...prev];
+            updated.splice(index, 1);
+            return updated;
+          }
+          return prev;
+        });
+        return;
+      }
+
+      await deleteEvent(eventId);
+
+      setEventsData((prev) => prev.filter((e) => e.id !== eventId));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };
+
+  const handleEventChange = (
+    index: number,
+    field: keyof Event,
+    value: string
+  ) => {
+    setEventsData((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return updated;
     });
   };
 
-  const handleAddDiffTag = async () => {
-    try {
-      const newTag = {
-        id: 0,
-        tag: "Add a diff tag",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        creator: Number(session?.user?.id),
-      };
-      setDiffTagsData((prev) => [...(prev || []), newTag]);
-      setFormData((prev) => ({
-        ...prev,
-        tag_diff: [...(prev.tag_diff || []), newTag.id],
-      }));
-    } catch (error) {
-      console.error("Error creating diff tag:", error);
-    }
+  // Diff tags handlers
+
+  const handleAddDiffTag = () => {
+    const newTag = {
+      id: Math.floor(Math.random() * -1000), // Temporary negative ID for new tags
+      tag: "", // Empty string instead of default text
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+    };
+    setDiffTagsData((prev) => [...(prev || []), newTag]);
+  };
+
+  const handleDiffTagChange = (index: number, field: string, value: string) => {
+    const newDiffTags = [...diffTagsData];
+    newDiffTags[index] = {
+      ...newDiffTags[index],
+      [field]: value,
+      updated_at: new Date().toISOString(),
+    };
+    setDiffTagsData(newDiffTags);
+  };
+
+  const handleDeleteDiffTag = (index: number) => {
+    const newDiffTags = [...diffTagsData];
+    newDiffTags.splice(index, 1);
+    setDiffTagsData(newDiffTags);
+  };
+
+  const [organizationData, setOrganizationData] = useState({
+    name: "Wiki Movimento Brasil",
+    description: "Grupo de usuários Wiki Movimento Brasil",
+    logo_url: "",
+    report_link: "",
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCapacityType, setCurrentCapacityType] = useState<
+    "known" | "available" | "wanted"
+  >("known");
+
+  const handleAddCapacity = (type: "known" | "available" | "wanted") => {
+    setCurrentCapacityType(type);
+    setIsModalOpen(true);
   };
 
   const handleRemoveLink = (index: number) => {
@@ -743,6 +708,7 @@ export default function EditOrganizationProfilePage() {
       return prev;
     });
   };
+
   /* 
   const handleEventInputChange = (
     index: number,
@@ -763,6 +729,7 @@ export default function EditOrganizationProfilePage() {
     });
   };
  */
+
   const capacityIds = useMemo(
     () =>
       [
@@ -799,7 +766,7 @@ export default function EditOrganizationProfilePage() {
     setDocumentsData((prev) => [...(prev || []), newDocument]);
   };
 
-  const handleRemoveDocument = (index: number) => {
+  const handleDeleteDocument = (index: number) => {
     setDocumentsData((prev) => {
       const newDocs = [...prev];
       newDocs.splice(index, 1);
@@ -1206,11 +1173,10 @@ export default function EditOrganizationProfilePage() {
                 ))}
                 <BaseButton
                   onClick={() => {
-                    console.log("Add button clicked");
                     handleAddProject();
                   }}
                   label="Add more projects"
-                  customClass={`w-full flex ${
+                  customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
                     darkMode
                       ? "bg-capx-light-box-bg text-[#04222F]"
                       : "bg-[#053749] text-white"
@@ -1251,88 +1217,30 @@ export default function EditOrganizationProfilePage() {
                 </h2>
               </div>
               <div className="flex flex-col w-full gap-2 mb-2">
-                {Array.isArray(eventsData) &&
-                  eventsData?.map((event, index) => (
-                    <div key={index} className="flex flex-row gap-2">
-                      <div className="flex flex-row gap-2 w-1/2 items-center text-[12px] p-2 border rounded-md bg-transparent">
-                        <input
-                          type="text"
-                          placeholder="Event Name"
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                          value={event.name || ""}
-                          onChange={(e) => {
-                            handleEventChange(index, "name", e.target.value);
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-row gap-2 items-center p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                        <div className="relative w-[20px] h-[20px]">
-                          <Image
-                            src={ImagesModeIcon}
-                            alt="Project image icon"
-                            className="object-contain"
-                          />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Event Image"
-                          value={event.image_url || ""}
-                          onChange={(e) => {
-                            handleEventChange(
-                              index,
-                              "image_url",
-                              e.target.value
-                            );
-                          }}
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 p-2 text-[12px] border rounded-md w-1/2 bg-transparent">
-                        <div className="relative w-[20px] h-[20px]">
-                          <Image
-                            src={AddLinkIcon}
-                            alt="Add link icon"
-                            className="object-contain"
-                          />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Link of event"
-                          value={event.url || ""}
-                          onChange={(e) => {
-                            handleEventChange(index, "url", e.target.value);
-                          }}
-                          className={`w-full bg-transparent border-none outline-none ${
-                            darkMode
-                              ? "text-white placeholder-gray-400"
-                              : "text-[#829BA4] placeholder-[#829BA4]"
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                {eventsData?.map((event, index) => (
+                  <EventsFormItem
+                    key={event.id === 0 ? `new-${index}` : event.id}
+                    event={event}
+                    index={index}
+                    onDelete={handleDeleteEvent}
+                    onChange={handleEventChange}
+                  />
+                ))}
+                <BaseButton
+                  onClick={handleAddEvent}
+                  label="Add more events"
+                  customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
+                    darkMode
+                      ? "text-capx-dark-box-bg bg-white"
+                      : "text-white bg-capx-dark-box-bg"
+                  }`}
+                  imageUrl={darkMode ? AddIcon : AddIconWhite}
+                  imageAlt="Add icon"
+                  imageWidth={20}
+                  imageHeight={20}
+                />
               </div>
-              <BaseButton
-                onClick={handleAddEvent}
-                label="Add more events"
-                customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
-                  darkMode
-                    ? "text-capx-dark-box-bg bg-white"
-                    : "text-white bg-capx-dark-box-bg"
-                }`}
-                imageUrl={darkMode ? AddIcon : AddIconWhite}
-                imageAlt="Add icon"
-                imageWidth={20}
-                imageHeight={20}
-              />
+
               <p
                 className={`text-[12px] ${
                   darkMode ? "text-white" : "text-[#053749]"
@@ -1363,35 +1271,15 @@ export default function EditOrganizationProfilePage() {
                 </h2>
               </div>
               <div className="flex flex-col w-full gap-2 mb-2">
-                {Array.isArray(diffTagsData) &&
-                  diffTagsData?.map((news, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        key={index}
-                        type="text"
-                        placeholder="Add a Diff Tag"
-                        className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
-                        value={news.tag || ""}
-                        onChange={(e) => {
-                          const newNews = [...diffTagsData];
-                          newNews[index] = {
-                            ...newNews[index],
-                            tag: e.target.value,
-                          };
-                          setDiffTagsData(newNews);
-                        }}
-                      />
-                      <button onClick={() => handleRemoveDiffTag(index)}>
-                        <div className="relative w-[20px] h-[20px]">
-                          <Image
-                            src={darkMode ? CancelIconWhite : CancelIcon}
-                            alt="Delete icon"
-                            className="object-contain"
-                          />
-                        </div>
-                      </button>
-                    </div>
-                  ))}
+                {diffTagsData?.map((tag, index) => (
+                  <NewsFormItem
+                    key={index}
+                    news={tag}
+                    index={index}
+                    onDelete={handleDeleteDiffTag}
+                    onChange={handleDiffTagChange}
+                  />
+                ))}
               </div>
               <BaseButton
                 onClick={handleAddDiffTag}
@@ -1451,6 +1339,17 @@ export default function EditOrganizationProfilePage() {
                           setDocumentsData(newDocuments);
                         }}
                       />
+                      <button onClick={() => handleDeleteEvent(index)}>
+                        <div className="relative w-[24px] h-[24px]">
+                          <Image
+                            src={darkMode ? CancelIconWhite : CancelIcon}
+                            alt="Delete icon"
+                            className="object-contain"
+                            width={24}
+                            height={24}
+                          />
+                        </div>
+                      </button>
                     </div>
                   ))}
               </div>
@@ -1871,7 +1770,6 @@ export default function EditOrganizationProfilePage() {
               ))}
               <BaseButton
                 onClick={() => {
-                  console.log("Add button clicked");
                   handleAddProject();
                 }}
                 label="Add projects"
@@ -1918,82 +1816,29 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             <div className="flex w-full flex-col mb-2 gap-2">
-              {Array.isArray(eventsData) &&
-                eventsData?.map((event, index) => (
-                  <div key={index} className="flex gap-2 p-2">
-                    <div className="flex flex-row gap-2 w-1/2 items-center text-[24px] p-2 border rounded-md bg-transparent">
-                      <input
-                        type="text"
-                        placeholder="Event Name"
-                        className={`w-full bg-transparent border-none outline-none ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                        value={event.name || ""}
-                        onChange={(e) => {
-                          const newEvents = [...eventsData];
-                          newEvents[index] = {
-                            ...newEvents[index],
-                            name: e.target.value,
-                          };
-                          setEventsData(newEvents);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
-                      <div className="relative w-[32px] h-[32px]">
-                        <Image
-                          src={ImagesModeIcon}
-                          alt="Event image icon"
-                          className="object-contain"
-                        />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Event Image"
-                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[12px] md:text-[14px] border rounded-md w-1/2 bg-transparent">
-                      <div className="relative w-[32px] h-[32px]">
-                        <Image
-                          src={AddLinkIcon}
-                          alt="Add link icon"
-                          className="object-contain"
-                        />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Link of project"
-                        className={`w-full bg-transparent border-none outline-none text-[24px] ${
-                          darkMode
-                            ? "text-white placeholder-gray-400"
-                            : "text-[#829BA4] placeholder-[#829BA4]"
-                        }`}
-                      />
-                    </div>
-                  </div>
-                ))}
+              {eventsData?.map((event, index) => (
+                <EventsFormItem
+                  key={event.id === 0 ? `new-${index}` : event.id}
+                  event={event}
+                  index={index}
+                  onDelete={handleDeleteEvent}
+                  onChange={handleEventChange}
+                />
+              ))}
+              <BaseButton
+                onClick={handleAddEvent}
+                label="Add events"
+                customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode
+                    ? "text-[#053749] bg-[#EFEFEF]"
+                    : "text-white bg-capx-dark-box-bg"
+                }`}
+                imageUrl={darkMode ? AddIcon : AddIconWhite}
+                imageAlt="Add icon"
+                imageWidth={32}
+                imageHeight={32}
+              />
             </div>
-
-            <BaseButton
-              onClick={handleAddEvent}
-              label="Add events"
-              customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                darkMode
-                  ? "text-[#053749] bg-[#EFEFEF]"
-                  : "text-white bg-capx-dark-box-bg"
-              }`}
-              imageUrl={darkMode ? AddIcon : AddIconWhite}
-              imageAlt="Add icon"
-              imageWidth={32}
-              imageHeight={32}
-            />
             <p
               className={`text-[20px] ${
                 darkMode ? "text-white" : "text-[#053749]"
@@ -2025,33 +1870,15 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             <div className="flex flex-col w-full gap-2 mb-2">
-              {Array.isArray(diffTagsData) &&
-                diffTagsData?.map((news, index) => (
-                  <div key={index} className="flex flex-row gap-2">
-                    <input
-                      type="text"
-                      value={news.tag || ""}
-                      onChange={(e) => {
-                        handleDiffTagChange(index, "tag", e.target.value);
-                      }}
-                      placeholder="Add a Diff Tag"
-                      className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
-                        darkMode
-                          ? "bg-transparent border-white text-white placeholder-gray-400"
-                          : "border-white text-[#829BA4] placeholder-[#829BA4]"
-                      }`}
-                    />
-                    <BaseButton
-                      onClick={() => handleRemoveDiffTag(index)}
-                      label=""
-                      customClass="p-2"
-                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
-                      imageAlt="Remove tag"
-                      imageWidth={20}
-                      imageHeight={20}
-                    />
-                  </div>
-                ))}
+              {diffTagsData?.map((tag, index) => (
+                <NewsFormItem
+                  key={tag.id === 0 ? `new-${index}` : tag.id}
+                  news={tag}
+                  index={index}
+                  onDelete={handleDeleteDiffTag}
+                  onChange={handleDiffTagChange}
+                />
+              ))}
             </div>
 
             <BaseButton
@@ -2097,29 +1924,15 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             <div className="flex flex-col w-full gap-2 mb-2">
-              {Array.isArray(documentsData) &&
-                documentsData?.map((document, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      placeholder="Insert link"
-                      className={`w-full p-2 md:p-3 text-[24px] border rounded-md mb-2 ${
-                        darkMode
-                          ? "bg-transparent border-white text-white placeholder-gray-400"
-                          : "border-white text-[#829BA4] placeholder-[#829BA4]"
-                      }`}
-                      value={document.url || ""}
-                      onChange={(e) => {
-                        const newDocuments = [...documentsData];
-                        newDocuments[index] = {
-                          ...newDocuments[index],
-                          url: e.target.value,
-                        };
-                        setDocumentsData(newDocuments);
-                      }}
-                    />
-                  </div>
-                ))}
+              {documentsData?.map((document, index) => (
+                <DocumentFormItem
+                  key={index}
+                  document={document}
+                  index={index}
+                  onDelete={handleDeleteDocument}
+                  onChange={handleDocumentChange}
+                />
+              ))}
             </div>
 
             <BaseButton
@@ -2192,7 +2005,6 @@ export default function EditOrganizationProfilePage() {
                   value={contactsData.meta_page}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    console.log("Metawiki value:", newValue);
                     setContactsData((prev) => ({
                       ...prev,
                       meta_page: newValue,
@@ -2224,7 +2036,6 @@ export default function EditOrganizationProfilePage() {
                   value={contactsData.email}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    console.log("Email value:", newValue);
                     setContactsData((prev) => ({
                       ...prev,
                       email: newValue,
@@ -2256,7 +2067,6 @@ export default function EditOrganizationProfilePage() {
                   value={contactsData.website}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    console.log("Website value:", newValue);
                     setContactsData((prev) => ({
                       ...prev,
                       website: newValue,

@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
+import { DocumentsList } from "./components/DocumentsList";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
@@ -32,8 +33,15 @@ export default function OrganizationProfilePage() {
   const { data: session } = useSession();
   const token = session?.user?.token;
 
-  const { organization, isLoading, error, isOrgManager } =
+  const { organization, isLoading, error, isOrgManager, refetch } =
     useOrganization(token);
+
+  useEffect(() => {
+    const refreshData = async () => {
+      await refetch();
+    };
+    refreshData();
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -175,7 +183,7 @@ export default function OrganizationProfilePage() {
                 <ProjectsEventsList
                   title="Main projects"
                   type="projects"
-                  itemIds={organization?.tag_diff || []}
+                  itemIds={organization?.projects || []}
                   token={token}
                 />
                 <ProjectsEventsList
@@ -287,6 +295,9 @@ export default function OrganizationProfilePage() {
                   src={ReportActivityIcon}
                   alt="Report activity icon"
                   className="object-contain"
+                  width={619}
+                  height={271}
+                  priority
                 />
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
@@ -334,7 +345,7 @@ export default function OrganizationProfilePage() {
               <ProjectsEventsList
                 title="Main projects"
                 type="projects"
-                itemIds={organization?.tag_diff || []}
+                itemIds={organization?.projects || []}
                 token={token}
               />
               <ProjectsEventsList
@@ -347,6 +358,14 @@ export default function OrganizationProfilePage() {
 
             {/* News Section */}
             <NewsSection ids={organization?.tag_diff || []} />
+
+            {/* Documents Section */}
+            <DocumentsList
+              title="Documents"
+              type="documents"
+              items={organization?.documents || []}
+              token={token}
+            />
 
             {/* Contacts Section */}
             <ContactsSection

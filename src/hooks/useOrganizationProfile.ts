@@ -90,8 +90,15 @@ export function useOrganization(token?: string, forceManager = true) {
             organizationId,
             data
           );
-        setOrganization(updatedOrg);
-        return updatedOrg;
+
+        const refreshedOrg =
+          await organizationProfileService.getOrganizationById(
+            token,
+            organizationId
+          );
+
+        setOrganization(refreshedOrg);
+        return refreshedOrg;
       } catch (err: any) {
         console.error("Full error:", err);
         const errorMessage =
@@ -111,6 +118,7 @@ export function useOrganization(token?: string, forceManager = true) {
     organization,
     isLoading,
     error,
+    refetch: fetchOrganizationById,
     isOrgManager,
     organizationId,
     fetchUserProfile,

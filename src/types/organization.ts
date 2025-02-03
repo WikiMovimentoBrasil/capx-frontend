@@ -15,7 +15,7 @@ export interface Organization {
   available_capacities?: number[];
   wanted_capacities?: number[];
   events?: number[];
-  documents?: OrganizationDocument[];
+  documents?: number[];
   email?: string;
   website?: string;
   mastodon?: string;
