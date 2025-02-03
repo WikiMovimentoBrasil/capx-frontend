@@ -4,22 +4,22 @@ import AddLinkIcon from "@/public/static/images/add_link.svg";
 import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
 import Image from "next/image";
-import { Project } from "@/types/project";
+import { Event } from "@/types/event";
 import { useApp } from "@/contexts/AppContext";
 
-interface ProjectFormItemProps {
-  project: Project;
+interface EventFormItemProps {
+  event: Event;
   index: number;
   onDelete: (id: number) => void;
-  onChange: (index: number, field: keyof Project, value: string) => void;
+  onChange: (index: number, field: keyof Event, value: string) => void;
 }
 
-const ProjectFormItem = ({
-  project,
+const EventFormItem = ({
+  event,
   index,
   onDelete,
   onChange,
-}: ProjectFormItemProps) => {
+}: EventFormItemProps) => {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
 
@@ -30,9 +30,9 @@ const ProjectFormItem = ({
           <div className="flex flex-row gap-2 w-full items-center text-[12px] md:text-[24px] text-[16px] p-2 border rounded-md bg-transparent">
             <input
               type="text"
-              placeholder="Project Name"
-              value={project.display_name || ""}
-              onChange={(e) => onChange(index, "display_name", e.target.value)}
+              placeholder="Event Name"
+              value={event.name || ""}
+              onChange={(e) => onChange(index, "name", e.target.value)}
               className={`w-full bg-transparent border-none outline-none text-[12px] md:text-[24px] ${
                 darkMode
                   ? "text-white placeholder-gray-400"
@@ -58,10 +58,8 @@ const ProjectFormItem = ({
                     ? "text-white placeholder-gray-400"
                     : "text-[#829BA4] placeholder-[#829BA4]"
                 }`}
-                value={project.profile_image}
-                onChange={(e) =>
-                  onChange(index, "profile_image", e.target.value)
-                }
+                value={event.image_url}
+                onChange={(e) => onChange(index, "image_url", e.target.value)}
               />
             </div>
             <div className="flex items-center gap-2 p-2 text-[12px] md:text-[24px] border rounded-md w-full md:w-1/2 bg-transparent">
@@ -82,13 +80,13 @@ const ProjectFormItem = ({
                     ? "text-white placeholder-gray-400"
                     : "text-[#829BA4] placeholder-[#829BA4]"
                 }`}
-                value={project.url}
+                value={event.url}
                 onChange={(e) => onChange(index, "url", e.target.value)}
               />
             </div>
           </div>
         </div>
-        <button onClick={() => onDelete(project.id)}>
+        <button onClick={() => onDelete(event.id)}>
           <div className="relative w-[24px] h-[24px]">
             <Image
               src={darkMode ? CancelIconWhite : CancelIcon}
@@ -102,15 +100,16 @@ const ProjectFormItem = ({
       </div>
     );
   }
+
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col gap-2 w-full">
         <div className="flex flex-row gap-2 w-full items-center text-[24px] p-2 border rounded-md bg-transparent">
           <input
             type="text"
-            placeholder="Project Name"
-            value={project.display_name || ""}
-            onChange={(e) => onChange(index, "display_name", e.target.value)}
+            placeholder="Event Name"
+            value={event.name || ""}
+            onChange={(e) => onChange(index, "name", e.target.value)}
             className={`w-full bg-transparent border-none outline-none ${
               darkMode
                 ? "text-white placeholder-gray-400"
@@ -135,11 +134,11 @@ const ProjectFormItem = ({
                   ? "text-white placeholder-gray-400"
                   : "text-[#829BA4] placeholder-[#829BA4]"
               }`}
-              value={project.profile_image}
-              onChange={(e) => onChange(index, "profile_image", e.target.value)}
+              value={event.image_url}
+              onChange={(e) => onChange(index, "image_url", e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 p-2 text-[24px] border rounded-md w-1/2 bg-transparent">
+          <div className="flex items-center gap-2 p-2 text-[24px] border rounded-md items-center w-1/2 bg-transparent">
             <div className="relative w-[32px] h-[32px]">
               <Image
                 src={AddLinkIcon}
@@ -152,19 +151,19 @@ const ProjectFormItem = ({
             <input
               type="text"
               placeholder="Link of project"
-              className={`w-full bg-transparent border-none outline-none ${
+              className={`w-full bg-transparent border-none items-center text-[24px] outline-none ${
                 darkMode
                   ? "text-white placeholder-gray-400"
                   : "text-[#829BA4] placeholder-[#829BA4]"
               }`}
-              value={project.url}
+              value={event.url}
               onChange={(e) => onChange(index, "url", e.target.value)}
             />
           </div>
         </div>
       </div>
-      <button onClick={() => onDelete(project.id)}>
-        <div className="relative w-[32px] h-[32px]">
+      <button onClick={() => onDelete(event.id)}>
+        <div className="relative w-[32px] h-[32px] items-center">
           <Image
             src={darkMode ? CancelIconWhite : CancelIcon}
             alt="Delete icon"
@@ -178,4 +177,4 @@ const ProjectFormItem = ({
   );
 };
 
-export default ProjectFormItem;
+export default EventFormItem;
