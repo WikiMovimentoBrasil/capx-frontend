@@ -4,9 +4,12 @@
 			"Saraiki"
 		]
 	},
-	"navbar-link-profile": "میݙی پروفائل",
-	"navbar-link-homepage": "مُکھ پناں",
+	"navbar-link-profiles": "میݙیاں پروفائلاں",
+	"navbar-link-capacities": "ڈائریکٹری",
+	"navbar-link-home": "گھر",
 	"navbar-link-reports": "رپورٹاں",
+	"body-home-section01-call-to-action-button02": "کھاتہ کھولو",
+	"body-loggedin-home-main-section-button02": "میݙی پروفائل",
 	"body-profile-gender-other": "ٻیا",
 	"body-profile-edit-button": "پروفائل وچ تبدیلی کرو",
 	"body-profile-section-title-territory": "علاقہ",
@@ -14,13 +17,14 @@
 	"body-profile-section-title-affiliation": "الحاق",
 	"body-profile-section-title-team": "ٹیم",
 	"body-profile-section-title-wikimedia-project": "وکیمیڈیا منصوبہ",
+	"body-profile-section-title-contact": "رابطہ",
 	"body-profile-delete-message": "پک کرݨ کیتے آپݨاں ورتݨ ناں ٹائپ کرو:",
 	"body-capacity-wanted-user-list-title": "شیئر کرݨ آلے:",
 	"body-capacity-known-user-list-title": "سکھݨ آلے:",
 	"footer-link-wikimedia": "میٹا وکیمیڈیا",
 	"aria-language-input": "زبان چݨو",
-	"sign-out-button": "سائن آؤٹ",
-	"sign-in-button": "سائن ان",
+	"sign-out-button": "لاگ آؤٹ",
+	"sign-in-button": "لاگ ان",
 	"form-talk-page": "ڳالھ مہاڑ ورقہ",
 	"form-contact": "رابطہ",
 	"form-profile-select": "چݨو",
@@ -43,5 +47,10 @@
 	"form-report-description": "تفصیل",
 	"form-report-date": "تخلیق دی تریخ",
 	"form-report-update-button": "رپورٹ اپ ڈیٹ کرو",
-	"oh-no-message": "اوہو، کو!"
+	"oh-no-message": "اوہو، کو!",
+	"body-profile-languages-title": "زباناں",
+	"body-profile-wanted-capacities-title": "مطلوبہ صلاحیتاں",
+	"body-profile-wikimedia-projects-title": "وکیمیڈیا منصوبے",
+	"body-profile-contact-title": "رابطہ",
+	"edit-profile-save": "فائل بچاؤ"
 }

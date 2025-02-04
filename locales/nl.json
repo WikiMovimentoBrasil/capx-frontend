@@ -1,19 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
+			"McDutchie",
 			"Siebrand"
 		]
 	},
 	"navbar-link-about": "Over",
-	"navbar-link-profile": "Mijn profiel",
-	"navbar-link-capacities": "Capaciteitsregister",
+	"navbar-link-capacities": "Gids",
 	"navbar-link-events": "Evenementen",
-	"navbar-link-homepage": "Startpagina",
 	"navbar-link-reports": "Rapportages",
 	"body-home-section01-title-text": "Een ruimte voor uitwisseling",
 	"body-home-section01-title-carousel": "capaciteit, kennis, vaardigheden, diensten",
 	"body-home-section01-description": "Maak contact met collega's, leer en deel capaciteit in een platform dat gemaakt is voor en door de Wikimediabeweging.",
-	"body-home-section01-button": "Doe mee aan de Capaciteitsuitwisseling!",
+	"body-home-section01-button": "Doe mee aan de uitwisseling!",
+	"body-loggedin-home-main-section-button02": "Mijn profiel",
 	"body-profile-gender-hehim": "Hij/zijn",
 	"body-profile-gender-sheher": "Zij/haar",
 	"body-profile-gender-theythem": "hen/hun",
