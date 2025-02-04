@@ -8,29 +8,56 @@ import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_w
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import AvatarIcon from "@/public/static/images/avatar.svg";
+import { Avatar } from "@/services/avatarService";
+import { useMemo, useState, useEffect } from "react";
+import { useAvatars } from "@/hooks/useAvatars";
 
 interface ProfileHeaderProps {
-  username?: string;
-  profileImage?: string;
+  username: string;
+  profileImage: string;
+  avatar: number;
 }
 
 export default function ProfileHeader({
   username,
   profileImage,
+  avatar,
 }: ProfileHeaderProps) {
   const router = useRouter();
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
+  const { getAvatarById } = useAvatars();
+  const [avatarUrl, setAvatarUrl] = useState<string>(
+    profileImage || AvatarIcon
+  );
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (typeof avatar === "number" && avatar > 0) {
+        try {
+          const avatarData = await getAvatarById(avatar);
+          if (avatarData?.avatar_url) {
+            setAvatarUrl(avatarData.avatar_url);
+          }
+        } catch (error) {
+          console.error("Error fetching avatar:", error);
+        }
+      }
+    };
+
+    fetchAvatar();
+  }, [avatar, getAvatarById]);
 
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
         <div className="relative w-[100px] h-[100px]">
           <Image
-            src={profileImage || AvatarIcon}
+            src={avatarUrl || AvatarIcon}
             alt="User profile"
             fill
-            className="object-cover"
+            className="object-cover border rounded-[4px]"
+            unoptimized={!!avatarUrl}
           />
         </div>
         <h1
@@ -76,10 +103,11 @@ export default function ProfileHeader({
     <div className="flex flex-row gap-[96px] mb-[96px]">
       <div className="relative w-[250px] h-[250px]">
         <Image
-          src={AvatarIcon}
+          src={avatarUrl}
           alt="User profile"
           fill
-          className="object-cover"
+          className="object-cover border rounded-[8px]"
+          unoptimized={true}
         />
       </div>
       <div className="flex flex-col gap-6">

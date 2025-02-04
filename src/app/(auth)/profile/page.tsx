@@ -114,7 +114,7 @@ export default function ProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const token = session?.user?.token;
-  const { profile, isLoading, error } = useProfile(
+  const { profile, isLoading, error, refetch } = useProfile(
     token,
     Number(session?.user?.id)
   );
@@ -158,7 +158,8 @@ export default function ProfilePage() {
           >
             <ProfileHeader
               username={profile?.user?.username || ""}
-              profileImage={profile?.profile_image || ""}
+              profileImage={profile?.profile_image}
+              avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList
@@ -352,7 +353,8 @@ export default function ProfilePage() {
           <div className={`flex flex-col mx-auto`}>
             <ProfileHeader
               username={profile?.user?.username || ""}
-              profileImage={profile?.profile_image || ""}
+              profileImage={profile?.profile_image}
+              avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList

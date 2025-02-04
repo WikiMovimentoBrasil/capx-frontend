@@ -29,25 +29,17 @@ function OAuthContent() {
 
   useEffect(() => {
     if (!oauth_token_request || !oauth_verifier || isCheckingTokenRef.current) {
-      // Evita chamar checkToken se já foi feito, ou se os parâmetros não estão presentes.
-      // Dessa forma evitamos chamar o login mais de uma vez, e evitamos erro 401 do next-auth.
       return;
     }
 
-    // Início do processo de verificação
     isCheckingTokenRef.current = true;
 
     async function checkToken() {
       try {
         if (!oauth_token_request || !oauth_verifier) {
-          console.log("Missing required parameters:", {
-            token: oauth_token_request,
-            verifier: oauth_verifier,
-          });
           return;
         }
 
-        console.log("Checking token");
         const response = await fetch("/api/check/", {
           method: "POST",
           headers: {
@@ -72,17 +64,13 @@ function OAuthContent() {
           // Verifica o hostname e os tokens antes de prosseguir
 
           if (result.extra === hostname) {
-            console.log("Hostname matches");
-
             if (!stored_secret) {
               router.push("/");
               return;
             }
 
-            console.log("All tokens present, proceeding with login");
             await handleLogin();
           } else {
-            console.log("Hostname mismatch, redirecting");
             let protocol =
               result.extra === "capx-test.toolforge.org" ? "https" : "http";
             router.push(

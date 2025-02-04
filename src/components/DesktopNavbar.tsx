@@ -24,7 +24,6 @@ export default function DesktopNavbar({
   session,
 }: DesktopNavbarProps) {
   const { darkMode, setDarkMode } = useTheme();
-  console.log(session);
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
 

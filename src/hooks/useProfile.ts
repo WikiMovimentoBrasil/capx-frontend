@@ -3,35 +3,34 @@ import axios from "axios";
 import { Profile } from "@/types/profile";
 import { profileService } from "@/services/profileService";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 
 export function useProfile(token: string | undefined, userId: number) {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchProfile = useCallback(async () => {
-    if (!token || !userId) return;
-
-    try {
-      setIsLoading(true);
+  const { data, isLoading, error, refetch, ...rest } = useQuery({
+    queryKey: ["profile", token, userId],
+    queryFn: async () => {
       const response = await profileService.fetchUserProfile({
         headers: {
           Authorization: `Token ${token}`,
         },
-        params: {
-          userId: userId,
-        },
       });
-      const latestProfile = Array.isArray(response)
-        ? response[response.length - 1]
-        : response;
-      setProfile(latestProfile);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, userId]);
+
+      if (Array.isArray(response)) {
+        let profile = response.find(
+          (p) => p.user.id === userId && p.avatar !== null
+        );
+
+        if (!profile) {
+          profile = response.find((p) => p.user.id === userId);
+        }
+
+        return profile;
+      }
+
+      return response;
+    },
+    enabled: !!token && !!userId,
+  });
 
   const updateProfile = async (profileData: Partial<Profile>) => {
     if (!token || !userId) {
@@ -47,16 +46,18 @@ export function useProfile(token: string | undefined, userId: number) {
       const updatedProfile = Array.isArray(response)
         ? response[response.length - 1]
         : response;
-      setProfile(updatedProfile);
       return updatedProfile;
     } catch (err) {
       throw err;
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
-
-  return { profile, isLoading, error, fetchProfile, updateProfile };
+  return {
+    profile: data,
+    isLoading,
+    error,
+    refetch,
+    ...rest,
+    updateProfile,
+  };
 }
