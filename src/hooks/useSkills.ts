@@ -23,7 +23,7 @@ export function useSkills() {
     enabled: !!token, // Only fetch skills if there is a token
   });
 
-  const fetchSkillById = (id: string) => {
+  const useSkillById = (id: string) => {
     return useQuery({
       queryKey: ["skill", id, token],
       queryFn: () =>
@@ -36,5 +36,5 @@ export function useSkills() {
     });
   };
 
-  return { skills, isSkillsLoading, skillsError, fetchSkillById };
+  return { skills, isSkillsLoading, skillsError, useSkillById };
 }
