@@ -21,15 +21,25 @@ export const EventCard = ({ eventId, token }: EventCardProps) => {
   }
 
   const getImageUrl = (url: string) => {
-    if (url.includes("commons.wikimedia.org/wiki/File:")) {
-      const fileName = url.split("File:").pop();
-      if (fileName) {
-        return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
-          fileName
-        )}`;
+    try {
+      if (url.includes("commons.wikimedia.org/wiki/File:")) {
+        // Extrai o nome do arquivo da URL
+        const fileName = url.split("File:")[1];
+        if (fileName) {
+          // Usa a API de thumbnails do Wikimedia Commons
+          return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
+            fileName
+          )}&width=800`;
+        }
+      } else if (url.includes("upload.wikimedia.org")) {
+        // Se já for uma URL direta do upload.wikimedia.org, retorna ela mesma
+        return url;
       }
+      return url;
+    } catch (error) {
+      console.error("Error processing image URL:", error);
+      return url;
     }
-    return url;
   };
 
   const imageUrl = event.image_url ? getImageUrl(event.image_url) : null;

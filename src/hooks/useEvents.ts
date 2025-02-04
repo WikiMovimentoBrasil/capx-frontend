@@ -33,10 +33,12 @@ export function useEvent(eventId?: number, token?: string) {
     if (!token) return;
     try {
       const response = await eventsService.createEvent(data, token);
-      console.log("Service response:", response);
+      if (!response || !response.id) {
+        throw new Error("Invalid event response from server");
+      }
+      setEvent(response);
       return response;
     } catch (error) {
-      console.error("Error in createEvent hook:", error);
       setError(
         error instanceof Error ? error : new Error("Failed to create event")
       );
@@ -47,7 +49,13 @@ export function useEvent(eventId?: number, token?: string) {
   const updateEvent = async (eventId: number, data: Partial<Event>) => {
     if (!token || !eventId) return;
     try {
-      await eventsService.updateEvent(eventId, data, token);
+      console.log("Token being used:", token);
+      console.log("Event data being sent:", data);
+      const response = await eventsService.updateEvent(eventId, data, token);
+      if (!response || !response.id) {
+        throw new Error("Invalid event response from server");
+      }
+      setEvent(response);
     } catch (error) {
       setError(
         error instanceof Error ? error : new Error("Failed to update event")
@@ -55,7 +63,7 @@ export function useEvent(eventId?: number, token?: string) {
     }
   };
 
-  const deleteEvent = async (eventId: number, token: string) => {
+  const deleteEvent = async (eventId: number) => {
     if (!token || !eventId) return;
     try {
       await eventsService.deleteEvent(eventId, token);
@@ -77,34 +85,35 @@ export function useEvent(eventId?: number, token?: string) {
   };
 }
 
-export function useEvents(events: Event[], token?: string) {
-  const [eventsData, setEventsData] = useState<Event[]>([]);
+export function useEvents(eventIds?: number[], token?: string) {
+  const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      if (!token || !events?.length) return;
+      if (!token || !eventIds?.length) return;
 
       setIsLoading(true);
       try {
-        const eventPromises = events.map((event) =>
-          eventsService.getEventById(event.id, token)
+        const eventPromises = eventIds.map((id) =>
+          eventsService.getEventById(id, token)
         );
         const eventsData = await Promise.all(eventPromises);
-        setEventsData(eventsData);
+        setEvents(eventsData);
         setError(null);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch events")
         );
+        setEvents([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchEvents();
-  }, [events, token]);
+  }, [eventIds, token]);
 
   return {
     events,

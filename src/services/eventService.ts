@@ -33,8 +33,17 @@ export const eventsService = {
     event: Partial<Event>,
     token: string
   ): Promise<Event> {
-    const response = await axios.put(`/api/events/${eventId}/`, event, {
-      headers: { Authorization: `Token ${token}` },
+    console.log("Updating event with payload:", event);
+    const payload = {
+      ...event,
+      type_of_location: event.type_of_location || "virtual",
+    };
+
+    const response = await axios.put(`/api/events/${eventId}/`, payload, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
     });
     return response.data;
   },
