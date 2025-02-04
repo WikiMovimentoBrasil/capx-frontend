@@ -24,7 +24,7 @@ export function CapacitiesList({
   if (isMobile) {
     return (
       <div className="flex flex-col gap-2">
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 items-center">
           <div className="relative h-[20px] w-[20px]">
             <Image src={icon} alt={title} className="object-contain" />
           </div>
@@ -66,8 +66,8 @@ export function CapacitiesList({
   return (
     <div className="flex flex-col gap-[62px] mb-4">
       <div className="flex flex-row gap-2 items-center">
-        <div className="relative h-[42px] w-[42px]">
-          <Image src={icon} alt={title} className="object-contain" />
+        <div className="relative h-[42px] w-[42px] items-center">
+          <Image src={icon} alt={title} className="object-contain" fill />
         </div>
         <h2
           className={

@@ -100,7 +100,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image01-description"
@@ -115,7 +120,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image02-description"
@@ -130,7 +140,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image03-description"
