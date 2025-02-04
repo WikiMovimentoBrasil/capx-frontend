@@ -265,7 +265,6 @@ export default function EditProfilePage() {
           }));
         } else {
           // If no image found in Wikidata, keep the current image
-          console.log("No Wikidata image found");
         }
       } else {
         // Reverting to profile image or default avatar

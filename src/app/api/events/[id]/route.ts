@@ -44,9 +44,6 @@ export async function PUT(
     const body = await request.json();
     const authHeader = request.headers.get("authorization");
 
-    console.log("Request body in API route:", body);
-    console.log("Auth header:", authHeader);
-
     const payload = {
       ...body,
       type_of_location: body.type_of_location || "virtual",

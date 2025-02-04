@@ -53,9 +53,7 @@ export const useTagDiff = (token?: string, id?: number) => {
     }
     try {
       setLoading(true);
-      console.log("useTagDiff - Creating tag with:", data);
       const response = await tagDiffService.createTag(data, token);
-      console.log("useTagDiff - Response:", response);
       return response;
     } catch (error) {
       console.error("useTagDiff - Error:", error);

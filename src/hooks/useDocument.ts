@@ -108,12 +108,10 @@ export const useDocument = (token?: string, id?: number) => {
         url: data.url,
       };
 
-      console.log("useDocument - Creating document with:", documentPayload);
       const response = await documentService.createDocument(
         token,
         documentPayload
       );
-      console.log("useDocument - Response:", response);
 
       if (response && response.id) {
         const enrichedDocument = await fetchWikimediaData(response);

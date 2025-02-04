@@ -38,8 +38,6 @@ export const organizationProfileService = {
         : [],
     };
 
-    console.log("Sending payload:", payload);
-
     const response = await axios.put(`/api/organizations/${id}/`, payload, {
       headers: {
         Authorization: `Token ${token}`,

@@ -49,8 +49,6 @@ export function useEvent(eventId?: number, token?: string) {
   const updateEvent = async (eventId: number, data: Partial<Event>) => {
     if (!token || !eventId) return;
     try {
-      console.log("Token being used:", token);
-      console.log("Event data being sent:", data);
       const response = await eventsService.updateEvent(eventId, data, token);
       if (!response || !response.id) {
         throw new Error("Invalid event response from server");

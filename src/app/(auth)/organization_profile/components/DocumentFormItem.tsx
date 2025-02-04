@@ -24,7 +24,6 @@ const DocumentFormItem = ({
   const token = session?.user?.token;
   const { document: documentData } = useDocument(token, document.id);
 
-  console.log("document", document);
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col gap-2 w-full">

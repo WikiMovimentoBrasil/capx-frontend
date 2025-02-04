@@ -9,7 +9,6 @@ export const useWikimediaProject = (
   token: string | undefined,
   projectIds?: string[]
 ) => {
-  console.log("projectIds", projectIds);
   const [wikimediaProjects, setWikimediaProjects] = useState<WikimediaProjects>(
     {}
   );
@@ -38,7 +37,6 @@ export const useWikimediaProject = (
     loadWikimediaProjects();
   }, [token]);
 
-  console.log("wikimediaProjects", wikimediaProjects);
   useEffect(() => {
     if (projectIds?.length) {
       const loadWikimediaProjectImages = async () => {
@@ -47,7 +45,6 @@ export const useWikimediaProject = (
           for (const projectId of projectIds) {
             if (projectId) {
               const image = await fetchWikimediaProjectImages(projectId, token);
-              console.log("image", image);
               images[projectId] = image;
             }
           }

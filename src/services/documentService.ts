@@ -30,7 +30,6 @@ export const documentService = {
     document: Partial<OrganizationDocument>
   ): Promise<OrganizationDocument> {
     try {
-      console.log("Creating document with payload:", document);
       const response = await axios.post<OrganizationDocument>(
         "/api/documents",
         document,
@@ -41,7 +40,6 @@ export const documentService = {
           },
         }
       );
-      console.log("Create document response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error details:", error.response?.data);

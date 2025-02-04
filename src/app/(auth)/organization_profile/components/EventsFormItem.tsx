@@ -14,19 +14,14 @@ interface EventFormItemProps {
   onChange: (index: number, field: keyof Event, value: string) => void;
 }
 
-console.log("event", event);
-
 const validateImageUrl = (url: string) => {
   if (!url) return url;
 
   try {
-    // Remove qualquer caractere @ do início da URL
     url = url.replace(/^@/, "");
 
-    // Verifica se é uma URL válida
     const urlObj = new URL(url);
 
-    // Verifica se é uma URL do Wikimedia Commons
     if (
       urlObj.hostname === "commons.wikimedia.org" &&
       url.includes("/wiki/File:")
@@ -38,8 +33,6 @@ const validateImageUrl = (url: string) => {
     ) {
       return url;
     }
-    console.log("URL válida:", urlObj);
-    // Se não for uma URL do Commons válida, retorna vazia
     return "";
   } catch {
     return "";

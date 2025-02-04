@@ -14,25 +14,12 @@ function OAuthContent() {
   const oauth_verifier = searchParams.get("oauth_verifier");
   const oauth_token_request = searchParams.get("oauth_token");
 
-  console.log("OAuth page loaded", {
-    oauth_verifier,
-    oauth_token_request,
-    stored_token: localStorage.getItem("oauth_token"),
-    stored_secret: localStorage.getItem("oauth_token_secret"),
-  });
-
   useEffect(() => {
-
     async function checkToken() {
       if (!oauth_token_request || !oauth_verifier) {
-        console.log("Missing required parameters:", {
-          token: oauth_token_request,
-          verifier: oauth_verifier,
-        });
         return;
       }
 
-      console.log("Checking token");
       try {
         const response = await fetch("/api/check/", {
           method: "POST",
@@ -49,20 +36,12 @@ function OAuthContent() {
             hostname += `:${document.location.port}`;
           }
 
-          // Atualiza o token no localStorage e aguarda a atualização
           if (localStorage.getItem("oauth_token") !== oauth_token_request) {
-            console.log("Token mismatch, updating stored token");
             localStorage.setItem("oauth_token", oauth_token_request);
-            // Pequeno delay para garantir que o localStorage foi atualizado
             await new Promise((resolve) => setTimeout(resolve, 100));
           }
 
           const stored_secret = localStorage.getItem("oauth_token_secret");
-          console.log("Current stored tokens:", {
-            token: localStorage.getItem("oauth_token"),
-            secret: stored_secret,
-            verifier: oauth_verifier,
-          });
 
           // Verifica o hostname e os tokens antes de prosseguir
           const isValidHost =
@@ -73,15 +52,11 @@ function OAuthContent() {
               result.extra === "localhost:3000");
 
           if (isValidHost) {
-            console.log("Hostname matches or equivalent");
-
             if (!stored_secret) {
-              console.log("No secret found, redirecting to start");
               router.push("/");
               return;
             }
 
-            console.log("All tokens present, proceeding with login");
             try {
               const loginResult = await handleLogin();
               if (loginResult?.error) {
@@ -94,8 +69,6 @@ function OAuthContent() {
             return;
           }
 
-          // Se precisamos redirecionar
-          console.log("Hostname mismatch, redirecting");
           if (
             result.extra === "localhost:3000" ||
             result.extra === "127.0.0.1:3000"
@@ -125,12 +98,6 @@ function OAuthContent() {
         }
 
         setLoginStatus("FINISHING LOGIN");
-        console.log("Starting login with credentials:", {
-          oauth_token,
-          oauth_verifier,
-          stored_token: oauth_token,
-          stored_token_secret: oauth_token_secret,
-        });
 
         const result = await signIn("credentials", {
           oauth_token,
@@ -141,8 +108,6 @@ function OAuthContent() {
           redirect: false,
         });
 
-        console.log("SignIn result:", result);
-
         if (result?.error) {
           throw new Error(result.error);
         }
@@ -150,7 +115,6 @@ function OAuthContent() {
         if (result?.ok) {
           setLoginStatus("Login realizado, atualizando sessão...");
 
-          // Aguarda a sessão ser atualizada
           for (let i = 0; i < 10; i++) {
             if (status === "authenticated" && session) {
               localStorage.removeItem("oauth_token");

@@ -26,8 +26,6 @@ export const DocumentsList = ({
     return null;
   }
 
-  console.log("itemsUrls", items);
-
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 items-center">

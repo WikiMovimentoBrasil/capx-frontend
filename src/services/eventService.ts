@@ -33,7 +33,6 @@ export const eventsService = {
     event: Partial<Event>,
     token: string
   ): Promise<Event> {
-    console.log("Updating event with payload:", event);
     const payload = {
       ...event,
       type_of_location: event.type_of_location || "virtual",

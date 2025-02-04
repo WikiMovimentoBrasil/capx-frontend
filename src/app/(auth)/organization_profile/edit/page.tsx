@@ -514,7 +514,6 @@ export default function EditOrganizationProfilePage() {
         email: contactsData.email,
         website: contactsData.website,
       };
-      console.log("Updating organization with data:", updatedFormData);
 
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
       await new Promise((resolve) => setTimeout(resolve, 1000));

@@ -39,7 +39,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log("API route - Creating document with:", body);
 
     const backendUrl = process.env.BASE_URL;
     const response = await axios.post(`${backendUrl}/document/`, body, {
@@ -49,7 +48,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log("API route - Backend response:", response.data);
     return NextResponse.json(response.data);
   } catch (error: any) {
     console.error("API route - Document creation error:", {

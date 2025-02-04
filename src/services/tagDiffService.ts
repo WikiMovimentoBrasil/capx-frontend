@@ -16,7 +16,6 @@ export const tagDiffService = {
   },
   async createTag(tag: Partial<tagDiff>, token: string): Promise<tagDiff> {
     try {
-      console.log("TagDiffService - Creating news with data:", tag);
       const response = await axios.post("/api/tag_diff/", tag, {
         headers: {
           Authorization: `Token ${token}`,
@@ -26,10 +25,8 @@ export const tagDiffService = {
       if (!response.data) {
         throw new Error("Empty response from server");
       }
-      console.log("TagDiffService - Received response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("TagDiffService - Error creating news:", error);
       throw error;
     }
   },
