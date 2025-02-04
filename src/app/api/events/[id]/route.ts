@@ -40,23 +40,37 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const authHeader = request.headers.get("authorization");
-  const id = params.id;
-
-  const event = await request.json();
-
   try {
-    const response = await axios.put(
-      `${process.env.BASE_URL}/events/${id}/`,
-      event,
+    const body = await request.json();
+    const authHeader = request.headers.get("authorization");
+
+    console.log("Request body in API route:", body);
+    console.log("Auth header:", authHeader);
+
+    const payload = {
+      ...body,
+      type_of_location: body.type_of_location || "virtual",
+    };
+
+    const updateResponse = await axios.put(
+      `${process.env.BASE_URL}/events/${params.id}/`,
+      payload,
       {
-        headers: { Authorization: `Token ${authHeader}` },
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/json",
+        },
       }
     );
-    return NextResponse.json(response.data);
+
+    return NextResponse.json(updateResponse.data);
   } catch (error: any) {
+    console.error("Error details:", error.response?.data || error);
     return NextResponse.json(
-      { error: "Failed to update event with id " + id, details: error.message },
+      {
+        error: `Failed to update event with id ${params.id}`,
+        details: error.response?.data || error.message,
+      },
       { status: error.response?.status || 500 }
     );
   }
