@@ -63,6 +63,15 @@ export default function EditOrganizationProfilePage() {
   const { isMobile } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Documents setters
+  const {
+    documents,
+    loading: isDocumentsLoading,
+    error: documentsError,
+    createDocument,
+    deleteDocument,
+  } = useDocument(token);
+
   // Organization setters
   const {
     organization,
@@ -165,13 +174,6 @@ export default function EditOrganizationProfilePage() {
   const [diffTagsData, setDiffTagsData] = useState<tagDiff[]>([]);
 
   // Documents setters
-  const {
-    documents,
-    loading: isDocumentsLoading,
-    error: documentsError,
-    createDocument,
-    deleteDocument,
-  } = useDocument(token);
 
   const [documentsData, setDocumentsData] = useState<OrganizationDocument[]>(
     []
@@ -267,11 +269,16 @@ export default function EditOrganizationProfilePage() {
       }
 
       // Inicializa os dados dos documentos
-      if (organization.documents && organization.documents.length > 0) {
-        const { documents } = useDocument(token);
-        if (documents) {
-          setDocumentsData(documents);
-        }
+      if (
+        organization.documents &&
+        organization.documents.length > 0 &&
+        documents
+      ) {
+        const existingDocuments = organization.documents.map((docId) => ({
+          id: docId,
+          url: documents?.find((d) => d.id === docId)?.url || "",
+        }));
+        setDocumentsData(existingDocuments);
       }
 
       // Inicializa os dados de contato
@@ -624,17 +631,32 @@ export default function EditOrganizationProfilePage() {
     }
   };
 
-  const handleEventChange = (
+  const handleEventChange = async (
     index: number,
     field: keyof Event,
     value: string
   ) => {
+    const event = eventsData[index];
+    const updatedEvent = {
+      ...event,
+      [field]: value,
+      type_of_location: event.type_of_location || "virtual",
+    };
+
+    // Primeiro atualiza no backend se for um evento existente
+    if (event.id > 0 && token) {
+      try {
+        await updateEvent(event.id, updatedEvent);
+      } catch (error) {
+        console.error("Error updating event:", error);
+        return; // Se falhar a atualização, não atualiza o estado local
+      }
+    }
+
+    // Depois atualiza o estado local
     setEventsData((prev) => {
       const updated = [...prev];
-      updated[index] = {
-        ...updated[index],
-        [field]: value,
-      };
+      updated[index] = updatedEvent;
       return updated;
     });
   };
@@ -685,14 +707,6 @@ export default function EditOrganizationProfilePage() {
     setIsModalOpen(true);
   };
 
-  const handleRemoveLink = (index: number) => {
-    setFormData((prev) => {
-      const newDocuments = [...(prev.documents || [])];
-      newDocuments.splice(index, 1);
-      return { ...prev, documents: newDocuments };
-    });
-  };
-
   const handleCapacitySelect = (capacity: Capacity) => {
     setFormData((prev) => {
       const capacityField =
@@ -708,27 +722,6 @@ export default function EditOrganizationProfilePage() {
       return prev;
     });
   };
-
-  /* 
-  const handleEventInputChange = (
-    index: number,
-    field: "image" | "link",
-    value: string
-  ) => {
-    setFormData((prev) => {
-      const updatedEvents = [...(prev.events || [])];
-      if (!updatedEvents[index]) {
-        updatedEvents[index] = { image: "", link: "" };
-      }
-      updatedEvents[index][field] = value;
-
-      return {
-        ...prev,
-        events: updatedEvents,
-      };
-    });
-  };
- */
 
   const capacityIds = useMemo(
     () =>
@@ -1220,7 +1213,7 @@ export default function EditOrganizationProfilePage() {
                 {eventsData?.map((event, index) => (
                   <EventsFormItem
                     key={event.id === 0 ? `new-${index}` : event.id}
-                    event={event}
+                    eventData={event}
                     index={index}
                     onDelete={handleDeleteEvent}
                     onChange={handleEventChange}
@@ -1819,7 +1812,7 @@ export default function EditOrganizationProfilePage() {
               {eventsData?.map((event, index) => (
                 <EventsFormItem
                   key={event.id === 0 ? `new-${index}` : event.id}
-                  event={event}
+                  eventData={event}
                   index={index}
                   onDelete={handleDeleteEvent}
                   onChange={handleEventChange}

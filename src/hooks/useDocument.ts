@@ -35,7 +35,6 @@ export const useDocument = (token?: string, id?: number) => {
         fileName
       )}&origin=*`;
 
-      console.log("Fetching Wikimedia data from:", apiUrl);
       const response = await fetch(apiUrl);
       const data: WikimediaDocumentResponse = await response.json();
 
