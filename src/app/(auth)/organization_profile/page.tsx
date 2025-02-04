@@ -36,6 +36,26 @@ export default function OrganizationProfilePage() {
   const { organization, isLoading, error, isOrgManager, refetch } =
     useOrganization(token);
 
+  const formatWikiImageUrl = (url: string | undefined): string => {
+    if (!url) return "";
+
+    if (url.includes("upload.wikimedia.org")) {
+      return url;
+    }
+
+    if (url.includes("commons.wikimedia.org")) {
+      return url.replace("/wiki/File:", "/wiki/Special:FilePath/");
+    }
+
+    if (url.startsWith("File:")) {
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${url.replace(
+        "File:",
+        ""
+      )}`;
+    }
+
+    return url;
+  };
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
@@ -224,13 +244,20 @@ export default function OrganizationProfilePage() {
             <div className="flex flex-row gap-6">
               {/* Logo */}
               <div className="w-full">
-                <div className="relative h-[326px] w-[595px]">
-                  <Image
-                    src={WMBLogo}
-                    alt="Organization logo"
-                    className="object-contain"
-                    priority
-                  />
+                <div className="relative h-[326px] w-[595px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center">
+                  {organization?.profile_image ? (
+                    <Image
+                      src={formatWikiImageUrl(organization.profile_image)}
+                      alt="Organization logo"
+                      className="object-contain p-24"
+                      fill
+                      priority
+                    />
+                  ) : (
+                    <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-400">Logo não disponível</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

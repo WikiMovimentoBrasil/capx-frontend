@@ -40,7 +40,7 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
   return (
     <div
       className={`rounded-[16px] w-[350px] flex-shrink-0 flex flex-col h-[400px] ${
-        darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+        darkMode ? "bg-[#EFEFEF]" : "bg-[#EFEFEF]"
       }`}
     >
       <div className="p-6 flex items-center justify-center h-[250px]">

@@ -530,7 +530,7 @@ export default function EditOrganizationProfilePage() {
 
   const handleAddProject = () => {
     const newProject: Project = {
-      id: 0, // id 0 indica novo projeto
+      id: 0,
       display_name: "",
       profile_image: "",
       url: "",
@@ -963,7 +963,7 @@ export default function EditOrganizationProfilePage() {
                         onClick={() => handleRemoveCapacity("known", index)}
                         label={getCapacityName(capacity)}
                         customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                        imageUrl={CloseIcon}
+                        imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                         imageAlt="Close icon"
                         imageWidth={16}
                         imageHeight={16}
@@ -1032,7 +1032,7 @@ export default function EditOrganizationProfilePage() {
                           }
                           label={getCapacityName(capacity)}
                           customClass="rounded-[4px] border-[1px] border-[solid] border-[#05A300] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                          imageUrl={CloseIcon}
+                          imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                           imageAlt="Close icon"
                           imageWidth={16}
                           imageHeight={16}
@@ -1099,7 +1099,7 @@ export default function EditOrganizationProfilePage() {
                           onClick={() => handleRemoveCapacity("wanted", index)}
                           label={getCapacityName(capacity)}
                           customClass="rounded-[4px] border-[1px] border-[solid] border-[#D43831] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
-                          imageUrl={CloseIcon}
+                          imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                           imageAlt="Close icon"
                           imageWidth={16}
                           imageHeight={16}
