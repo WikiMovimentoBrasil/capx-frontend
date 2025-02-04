@@ -5,14 +5,8 @@ import Illustration from "@/public/static/images/capx_people_illustration.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 
-interface CallToActionSectionProps {
-  pageContent: any;
-}
-
-export default function CallToActionSection({
-  pageContent,
-}: CallToActionSectionProps) {
-  const { isMobile } = useApp();
+export default function CallToActionSection() {
+  const { isMobile, pageContent } = useApp();
   const { darkMode } = useTheme();
 
   if (isMobile) {
