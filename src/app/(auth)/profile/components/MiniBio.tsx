@@ -10,7 +10,7 @@ interface MiniBioProps {
 
 export default function MiniBio({ about }: MiniBioProps) {
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   if (isMobile) {
     return (
@@ -22,7 +22,7 @@ export default function MiniBio({ about }: MiniBioProps) {
         <div className="flex items-center gap-2">
           <Image
             src={darkMode ? PersonBookIconWhite : PersonBookIcon}
-            alt="Mini bio"
+            alt={pageContent["edit-profile-mini-bio"]}
             width={20}
             height={20}
           />
@@ -31,7 +31,7 @@ export default function MiniBio({ about }: MiniBioProps) {
               darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
             }`}
           >
-            Mini bio
+            {pageContent["edit-profile-mini-bio"]}
           </h2>
         </div>
         <p
@@ -54,7 +54,7 @@ export default function MiniBio({ about }: MiniBioProps) {
       <div className="flex items-center gap-2">
         <Image
           src={darkMode ? PersonBookIconWhite : PersonBookIcon}
-          alt="Mini bio"
+          alt={pageContent["edit-profile-mini-bio"]}
           width={42}
           height={42}
         />
@@ -63,7 +63,7 @@ export default function MiniBio({ about }: MiniBioProps) {
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
           }`}
         >
-          Mini bio
+          {pageContent["edit-profile-mini-bio"]}
         </h2>
       </div>
       <p
