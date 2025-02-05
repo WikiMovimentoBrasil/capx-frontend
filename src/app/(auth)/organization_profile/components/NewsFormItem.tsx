@@ -19,7 +19,7 @@ const NewsFormItem = ({
   onChange,
 }: NewsFormItemProps) => {
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   if (isMobile) {
     return (
@@ -28,7 +28,7 @@ const NewsFormItem = ({
           <div className="flex flex-row gap-2 w-full items-center text-[12px] p-2 border rounded-md bg-transparent">
             <input
               type="text"
-              placeholder="Add a Diff Tag"
+              placeholder={pageContent["organization-profile-add-a-diff-tag"]}
               value={news.tag || ""}
               onChange={(e) => onChange(index, "tag", e.target.value)}
               className={`w-full bg-transparent border-none outline-none text-[12px] ${
@@ -60,7 +60,7 @@ const NewsFormItem = ({
         <div className="flex flex-row gap-2 w-full items-center text-[24px] md:text-[24px] text-[16px] p-2 border rounded-md bg-transparent">
           <input
             type="text"
-            placeholder="Add a Diff Tag"
+            placeholder={pageContent["organization-profile-add-a-diff-tag"]}
             value={news.tag || ""}
             onChange={(e) => onChange(index, "tag", e.target.value)}
             className={`w-full bg-transparent border-none outline-none text-[16px] md:text-[24px] ${
