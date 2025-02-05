@@ -112,7 +112,7 @@ const ProfileItemsComponent = ({
 export default function ProfilePage() {
   const { data: session } = useSession();
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const token = session?.user?.token;
   const { profile, isLoading, error } = useProfile(
     token,
@@ -130,13 +130,13 @@ export default function ProfilePage() {
    */
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
-      "0": "Not proficient",
-      "1": "Basic",
-      "2": "Intermediate",
-      "3": "Advanced",
-      "4": "Almost native",
-      "5": "Professional proficiency",
-      n: "Native",
+      "0": pageContent["profiency-level-not-proficient"],
+      "1": pageContent["profiency-level-basic"],
+      "2": pageContent["profiency-level-intermediate"],
+      "3": pageContent["profiency-level-advanced"],
+      "4": pageContent["profiency-level-almost-native"],
+      "5": pageContent["profiency-level-professional"],
+      n: pageContent["profiency-level-native"],
     };
     return labels[proficiency as keyof typeof labels] || "Not specified";
   };
@@ -163,19 +163,19 @@ export default function ProfilePage() {
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-              title="Known capacities"
+              title={pageContent["body-profile-known-capacities-title"]}
               items={profile?.skills_known || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
             <CapacitiesList
               icon={darkMode ? EmojiIconWhite : EmojiIcon}
-              title="Available capacities"
+              title={pageContent["body-profile-available-capacities-title"]}
               items={profile?.skills_available || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
             <CapacitiesList
               icon={darkMode ? TargetIconWhite : TargetIcon}
-              title="Wanted capacities"
+              title={pageContent["body-profile-wanted-capacities-title"]}
               items={profile?.skills_wanted || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
@@ -192,7 +192,7 @@ export default function ProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Languages
+                  {pageContent["body-profile-languages-title"]}
                 </h2>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -217,12 +217,12 @@ export default function ProfilePage() {
             </div>
             <ProfileItemsComponent
               icon={darkMode ? WikiIconWhite : WikiIcon}
-              title="Alternative Wikimedia Account"
+              title={pageContent["body-profile-box-title-alt-wiki-acc"]}
               value={profile?.wiki_alt || ""}
             />
             <ProfileItemsComponent
               icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
-              title="Affiliation"
+              title={pageContent["body-profile-section-title-affiliation"]}
               value={
                 profile?.affiliation
                   ? affiliations[profile.affiliation[0]] || ""
@@ -231,7 +231,7 @@ export default function ProfilePage() {
             />
             <ProfileItemsComponent
               icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-              title="Territory"
+              title={pageContent["body-profile-section-title-territory"]}
               value={
                 profile?.territory
                   ? territories[profile.territory[0]] || ""
@@ -240,7 +240,7 @@ export default function ProfilePage() {
             />
             <ProfileItemsComponent
               icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
-              title="Wikidata Item"
+              title={pageContent["body-profile-box-title-wikidata-item"]}
               value={profile?.wikidata_qid || ""}
             />
             <div className="flex flex-row gap-2">
@@ -257,7 +257,7 @@ export default function ProfilePage() {
                   darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
                 }`}
               >
-                Wikimedia Projects
+                {pageContent["body-profile-wikimedia-projects-title"]}
               </p>
             </div>
             <div className="flex flex-row gap-2">
@@ -291,7 +291,7 @@ export default function ProfilePage() {
                   darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
                 }`}
               >
-                Contact
+                {pageContent["body-profile-section-title-contact"]}
               </p>
             </div>
 
@@ -306,7 +306,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <BaseButton
-                  label="Let's talk"
+                  label={pageContent["body-profile-section-lets-talk"]}
                   customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                   onClick={() => {}}
                 />
@@ -324,7 +324,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <BaseButton
-                  label="Let's talk"
+                  label={pageContent["body-profile-section-lets-talk"]}
                   customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                   onClick={() => {}}
                 />
@@ -352,19 +352,19 @@ export default function ProfilePage() {
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-              title="Known capacities"
+              title={pageContent["body-profile-known-capacities-title"]}
               items={profile?.skills_known || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
             <CapacitiesList
               icon={darkMode ? EmojiIconWhite : EmojiIcon}
-              title="Available capacities"
+              title={pageContent["body-profile-available-capacities-title"]}
               items={profile?.skills_available || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
             <CapacitiesList
               icon={darkMode ? TargetIconWhite : TargetIcon}
-              title="Wanted capacities"
+              title={pageContent["body-profile-wanted-capacities-title"]}
               items={profile?.skills_wanted || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
@@ -381,7 +381,7 @@ export default function ProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Languages
+                  {pageContent["body-profile-languages-title"]}
                 </h2>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -406,12 +406,12 @@ export default function ProfilePage() {
             </div>
             <ProfileItemsComponent
               icon={darkMode ? WikiIconWhite : WikiIcon}
-              title="Alternative Wikimedia Account"
+              title={pageContent["body-profile-box-title-alt-wiki-acc"]}
               value={""}
             />
             <ProfileItemsComponent
               icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
-              title="Affiliation"
+              title={pageContent["body-profile-section-title-affiliation"]}
               value={
                 profile?.affiliation
                   ? affiliations[profile.affiliation[0]] || ""
@@ -420,7 +420,7 @@ export default function ProfilePage() {
             />
             <ProfileItemsComponent
               icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-              title="Territory"
+              title={pageContent["body-profile-section-title-territory"]}
               value={
                 profile?.territory
                   ? territories[profile.territory[0]] || ""
@@ -429,7 +429,7 @@ export default function ProfilePage() {
             />
             <ProfileItemsComponent
               icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
-              title="Wikidata Item"
+              title={pageContent["body-profile-box-title-wikidata-item"]}
               value={profile?.wikidata_qid || ""}
             />
             <div className="flex flex-row gap-2 mt-[80px] items-center">
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                   darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
                 }`}
               >
-                Wikimedia Projects
+                {pageContent["body-profile-wikimedia-projects-title"]}
               </p>
             </div>
             <div className="flex flex-row gap-2 mt-[80px] items-center">
@@ -480,7 +480,7 @@ export default function ProfilePage() {
                   darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
                 }`}
               >
-                Contact
+                {pageContent["body-profile-section-title-contact"]}
               </p>
             </div>
             <div className="flex w-full justify-center m-auto px-[34px] flex-row items-center gap-[31px] rounded-[4px] bg-[#0070B9]">
@@ -493,7 +493,7 @@ export default function ProfilePage() {
                 />
               </div>
               <BaseButton
-                label="Let's talk"
+                label={pageContent["body-profile-section-lets-talk"]}
                 customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                 onClick={() => {}}
               />

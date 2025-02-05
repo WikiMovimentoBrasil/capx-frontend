@@ -20,7 +20,7 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const router = useRouter();
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   if (isMobile) {
     return (
@@ -38,7 +38,7 @@ export default function ProfileHeader({
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
           }`}
         >
-          Welcome!
+          {pageContent["edit-profile-welcome"]}
         </h1>
         <div className="flex items-center gap-2">
           <Image
@@ -57,7 +57,7 @@ export default function ProfileHeader({
         </div>
         <BaseButton
           onClick={() => router.push("/profile/edit")}
-          label="Edit user profile"
+          label={pageContent["body-profile-edit-user-button"]}
           customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
             darkMode
               ? "text-capx-light-bg border-capx-light-bg"
@@ -88,7 +88,7 @@ export default function ProfileHeader({
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
           }`}
         >
-          Welcome!
+          {pageContent["edit-profile-welcome"]}
         </h1>
         <div className="flex items-center gap-2">
           <Image
@@ -107,7 +107,7 @@ export default function ProfileHeader({
         </div>
         <BaseButton
           onClick={() => router.push("/profile/edit")}
-          label="Edit user profile"
+          label={pageContent["body-profile-edit-user-button"]}
           customClass={`w-full font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
             darkMode
               ? "text-capx-light-bg border-capx-light-bg"

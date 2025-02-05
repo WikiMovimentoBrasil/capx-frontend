@@ -58,7 +58,7 @@ export default function EditOrganizationProfilePage() {
   const { data: session } = useSession();
   const token = session?.user?.token;
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Organization setters
@@ -629,8 +629,8 @@ export default function EditOrganizationProfilePage() {
   };
 
   const [organizationData, setOrganizationData] = useState({
-    name: "Wiki Movimento Brasil",
-    description: "Grupo de usuários Wiki Movimento Brasil",
+    name: pageContent["organization-profile-wiki-title"],
+    description: pageContent["organization-profile-wiki-subtitle"],
     logo_url: "",
     report_link: "",
   });
@@ -853,7 +853,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Welcome!
+                    {pageContent["edit-profile-welcome"]}
                   </h1>
                   <h2
                     className={`font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] ${
@@ -942,7 +942,7 @@ export default function EditOrganizationProfilePage() {
                   />
                 </div>
                 <h2 className={`font-[Montserrat] text-[14px] font-bold`}>
-                  Report of activities
+                  {pageContent["organization-profile-report-activities-title"]}
                 </h2>
               </div>
               <input
@@ -987,7 +987,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Known capacities
+                    {pageContent["body-profile-known-capacities-title"]}
                   </h2>
                 </div>
                 <div
@@ -1051,7 +1051,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Available capacities
+                    {pageContent["body-profile-available-capacities-title"]}
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -1120,7 +1120,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Wanted capacities
+                    {pageContent["body-profile-wanted-capacities-title"]}
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -1166,8 +1166,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     } `}
                   >
-                    Select skills you are willing to learn from the Capacity
-                    Directory. Try to choose the most specific ones
+                    {pageContent["edit-profile-wanted-capacities"]}
                   </p>
                 </div>
               </div>
@@ -1533,7 +1532,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Welcome!
+                  {pageContent["edit-profile-welcome"]}
                 </h1>
                 <h2
                   className={`font-[Montserrat] not-italic font-extrabold leading-[normal] ${
@@ -1607,7 +1606,7 @@ export default function EditOrganizationProfilePage() {
               <h2
                 className={`font-[Montserrat] text-[14px] md:text-[24px] font-bold`}
               >
-                Report of activities
+                {pageContent["organization-profile-report-activities-title"]}
               </h2>
             </div>
             <input
@@ -1649,7 +1648,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Known capacities
+                  {pageContent["body-profile-known-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1717,7 +1716,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Available capacities
+                  {pageContent["body-profile-available-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1785,7 +1784,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Wanted capacities
+                  {pageContent["body-profile-wanted-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1833,8 +1832,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Select skills you are willing to learn from the Capacity
-                Directory. Try to choose the most specific ones
+                {pageContent["edit-profile-wanted-capacities"]}
               </p>
             </div>
           </div>

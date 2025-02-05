@@ -27,7 +27,7 @@ import { useOrganization } from "@/hooks/useOrganizationProfile";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
@@ -63,7 +63,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-capx-dark-text" : "text-capx-light-text"
                     }`}
                   >
-                    Welcome!
+                    {pageContent["edit-profile-welcome"]}
                   </h1>
 
                   <div className="flex items-center gap-2 mb-2">
@@ -90,7 +90,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    Grupo de usuários Wiki Movimento Brasil
+                    {pageContent["organization-profile-wiki-subtitle"]}`
                   </p>
 
                   {/* Logo */}
@@ -136,7 +136,7 @@ export default function OrganizationProfilePage() {
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
-                    Report of activities
+                    {pageContent["organization-profile-report-activities-title"]}
                   </h2>
                   <BaseButton
                     onClick={() => {}}
@@ -151,20 +151,20 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                  title="Known capacities"
+                  title={pageContent["body-profile-known-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]`}
                 />
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title="Available capacities"
+                  title={pageContent["body-profile-section-title-available-capacity"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
                 <CapacitiesList
                   items={organization?.wanted_capacities || []}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
-                  title="Wanted capacities"
+                  title={pageContent["body-profile-wanted-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
@@ -173,13 +173,13 @@ export default function OrganizationProfilePage() {
               {/* Projects and Events */}
               <div className="space-y-6 mt-4">
                 <ProjectsEventsList
-                  title="Main projects"
+                  title={pageContent["body-profile-section-main-projects"]}
                   type="projects"
                   itemIds={organization?.tag_diff || []}
                   token={token}
                 />
                 <ProjectsEventsList
-                  title="Events"
+                  title={pageContent["body-profile-section-title-events"]}
                   type="events"
                   itemIds={organization?.events || []}
                   token={token}
@@ -234,7 +234,7 @@ export default function OrganizationProfilePage() {
                     darkMode ? "text-capx-dark-text" : "text-capx-light-text"
                   }`}
                 >
-                  Welcome!
+                  {pageContent["edit-profile-welcome"]}
                 </h1>
 
                 <div className="flex items-center gap-2 mb-2">
@@ -250,7 +250,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    Wiki Movimento Brasil
+                    {pageContent["organization-profile-wiki-title"]}
                   </span>
                 </div>
 
@@ -259,13 +259,13 @@ export default function OrganizationProfilePage() {
                     darkMode ? "text-white" : "text-capx-dark-box-bg"
                   }`}
                 >
-                  Grupo de usuários Wiki Movimento Brasil
+                  {pageContent["organization-profile-wiki-subtitle"]}
                 </p>
 
                 {isOrgManager && (
                   <BaseButton
                     onClick={() => router.push("/organization_profile/edit")}
-                    label="Edit organization profile"
+                    label={pageContent["body-profile-edit-organization-button"]}
                     customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
                         ? "border-white text-white"
@@ -291,7 +291,7 @@ export default function OrganizationProfilePage() {
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2 className="text-[#FFF] text-[30px] not-italic font-extrabold leading-[37px] mb-6">
-                  Report of activities
+                  {pageContent["organization-profile-report-activities-title"]}
                 </h2>
                 <BaseButton
                   onClick={() => {}}
@@ -306,7 +306,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.known_capacities || []}
                 icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                title="Known capacities"
+                title={pageContent["body-profile-known-capacities-title"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -314,7 +314,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title="Available capacities"
+                title={pageContent["body-profile-section-title-available-capacity"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -322,7 +322,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.wanted_capacities || []}
                 icon={darkMode ? TargetIconWhite : TargetIcon}
-                title="Wanted capacities"
+                title={pageContent["body-profile-wanted-capacities-title"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -332,13 +332,13 @@ export default function OrganizationProfilePage() {
             {/* Projects and Events */}
             <div className="space-y-6 mt-4">
               <ProjectsEventsList
-                title="Main projects"
+                title={pageContent["body-profile-section-title-main-projects"]}
                 type="projects"
                 itemIds={organization?.tag_diff || []}
                 token={token}
               />
               <ProjectsEventsList
-                title="Events"
+                title={pageContent["body-profile-section-title-events"]}
                 type="events"
                 itemIds={organization?.events || []}
                 token={token}
