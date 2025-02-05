@@ -23,19 +23,35 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   try {
     const response = await axios.post(
-      `${process.env.BASE_URL}/projects`,
+      `${process.env.BASE_URL}/projects/`,
       body,
       {
         headers: {
           Authorization: authHeader,
+          "Content-Type": "application/json",
         },
       }
     );
+    if (!response.data || !response.data.id) {
+      throw new Error("Invalid response from server: missing project data");
+    }
     return NextResponse.json(response.data);
   } catch (error) {
+    console.error("Project creation error:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      body: body,
+      headers: {
+        Authorization: authHeader ? "Present" : "Missing",
+      },
+    });
     return NextResponse.json(
-      { error: "Failed to create project" },
-      { status: 500 }
+      {
+        details: error.response?.data || error.message,
+        status: error.response?.status || 500,
+      },
+      { status: error.response?.status || 500 }
     );
   }
 }

@@ -24,15 +24,9 @@ export default function DesktopNavbar({
   session,
 }: DesktopNavbarProps) {
   const { darkMode, setDarkMode } = useTheme();
-  console.log(session);
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
-    {
-      title: pageContent["navbar-link-capacities"],
-      to: "/capacity",
-      active: true,
-    },
-    { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
+
     {
       title: pageContent["navbar-link-organization"],
       to: "/organization_profile",
@@ -56,14 +50,13 @@ export default function DesktopNavbar({
                 priority
                 src={CapXLogo}
                 alt="Capacity Exchange logo"
-                className="w-[100px] h-[100px]"
-                objectFit="contain"
+                className="w-[100px] h-[100px] object-contain"
               />
             </div>
           </NextLink>
         </div>
         {session ? (
-          <div className="flex flex-[0.5] flex-row xl:flex items-center justify-end gap-[43px] ml-[90px]">
+          <div className="flex flex-row xl:flex items-center justify-start gap-[43px] ml-[50px]">
             {menuItems.map((item, index) => (
               <NextLink
                 key={"navbar-link-" + index.toString()}

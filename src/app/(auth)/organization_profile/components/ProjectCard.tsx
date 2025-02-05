@@ -25,7 +25,9 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
     if (url.includes("commons.wikimedia.org/wiki/File:")) {
       const fileName = url.split("File:").pop();
       if (fileName) {
-        return `https://upload.wikimedia.org/wikipedia/commons/a/a0/${fileName}`;
+        return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
+          fileName
+        )}`;
       }
     }
     return url;
@@ -38,7 +40,7 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
   return (
     <div
       className={`rounded-[16px] w-[350px] flex-shrink-0 flex flex-col h-[400px] ${
-        darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+        darkMode ? "bg-[#EFEFEF]" : "bg-[#EFEFEF]"
       }`}
     >
       <div className="p-6 flex items-center justify-center h-[250px]">

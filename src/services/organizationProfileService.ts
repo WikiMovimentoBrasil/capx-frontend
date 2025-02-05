@@ -28,13 +28,24 @@ export const organizationProfileService = {
     id: number,
     data: Partial<Organization>
   ) {
-    console.log("Token being sent:", token); // Debug
-    const response = await axios.put(`/api/organizations/${id}`, data, {
+    // Ensure events is included in the payload
+    const payload = {
+      ...data,
+      events: Array.isArray(data.events)
+        ? data.events.map((event: any) =>
+            typeof event === "object" ? event.id : event
+          )
+        : [],
+    };
+
+    const response = await axios.put(`/api/organizations/${id}/`, payload, {
       headers: {
         Authorization: `Token ${token}`,
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
+
     return response.data;
   },
 };

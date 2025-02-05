@@ -83,7 +83,12 @@ export default function AuthenticatedMainSection({
     >
       <div className="flex flex-col items-center justify-between w-full py-16 md:py-32 gap-16">
         <div className="flex items-center w-full">
-          <h1 className="text-[#FFF] font-[Montserrat] text-[72px] not-italic font-extrabold leading-[88px]">
+          <h1
+            className={
+              (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+              " font-[Montserrat] text-[72px] not-italic font-extrabold leading-[88px]"
+            }
+          >
             {pageContent["body-loggedin-home-secondary-section-title"]}
           </h1>
         </div>
@@ -95,7 +100,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image01-description"
@@ -110,7 +120,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image02-description"
@@ -125,7 +140,12 @@ export default function AuthenticatedMainSection({
               width={520}
               height={520}
             />
-            <p className="text-capx-light-bg text-center text-[48px] not-italic font-normal leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " text-center text-[48px] not-italic font-normal leading-[59px]"
+              }
+            >
               {
                 pageContent[
                   "body-loggedin-home-secondary-section-image03-description"
@@ -203,13 +223,28 @@ export default function AuthenticatedMainSection({
       <section className="flex flex-col items-center justify-start w-full mx-auto ">
         <div className="flex flex-row items-center justify-between w-full py-[128px] gap-8 px-[132px]">
           <div className="flex flex-col items-center md:items-start w-full md:w-1/2 lg:w-2/3">
-            <h1 className="text-[#053749] font-[Montserrat] text-[72px] not-italic font-extrabold leading-[88px]">
+            <h1
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " font-[Montserrat] text-[72px] not-italic font-extrabold leading-[88px]"
+              }
+            >
               {pageContent["body-loggedin-home-main-section-title"]}
             </h1>
-            <p className="text-[#053749] font-[Montserrat] text-[48px] not-italic font-extrabold leading-[59px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " font-[Montserrat] text-[48px] not-italic font-extrabold leading-[59px]"
+              }
+            >
               {pageContent["body-loggedin-home-main-section-description"]}
             </p>
-            <p className="text-[#000] font-[Montserrat] text-[30px] not-italic font-normal leading-[normal] my-[24px]">
+            <p
+              className={
+                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                " font-[Montserrat] text-[30px] not-italic font-normal leading-[normal] my-[24px]"
+              }
+            >
               {pageContent["body-home-section01-description"]}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full items-start mt-[24px]">
@@ -228,7 +263,9 @@ export default function AuthenticatedMainSection({
           <div className="w-1/2 lg:w-1/3">
             <Image
               priority={true}
-              src={MainSectionIllustration}
+              src={
+                darkMode ? MainSectionIllustrationDark : MainSectionIllustration
+              }
               alt="Main illustration"
               height={520}
               width={520}

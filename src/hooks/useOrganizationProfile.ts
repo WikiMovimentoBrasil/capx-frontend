@@ -1,9 +1,10 @@
+"use client";
+
 import { useState, useCallback, useEffect } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 
 export function useOrganization(token?: string, forceManager = true) {
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +12,6 @@ export function useOrganization(token?: string, forceManager = true) {
   const [organizationId, setOrganizationId] = useState<number | null>(null);
 
   const fetchUserProfile = useCallback(async () => {
-    console.log("Fetching user profile...");
     if (!token) return;
 
     try {
@@ -19,29 +19,26 @@ export function useOrganization(token?: string, forceManager = true) {
       const userProfile = await organizationProfileService.getUserProfile(
         token
       );
-      console.log("User Profile:", userProfile);
 
-      // Verifica se algum dos perfis é gerente
       const isManager = userProfile.some(
         (profile) => profile.is_manager && profile.is_manager.length > 0
       );
 
       if (isManager) {
-        // Se algum perfil for gerente, defina o ID da organização
         const managedOrgId = userProfile.find(
           (profile) => profile.is_manager && profile.is_manager.length > 0
         )?.is_manager[0];
         setOrganizationId(managedOrgId);
-        setIsOrgManager(true); // Definido como true se algum perfil for gerente
+        setIsOrgManager(true);
       } else {
-        setIsOrgManager(false); // Definido aqui se não for gerente
+        setIsOrgManager(false);
         setOrganizationId(null);
       }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to fetch user profile"
       );
-      setIsOrgManager(false); // Definido aqui se ocorrer erro
+      setIsOrgManager(false);
       setOrganizationId(null);
     } finally {
       setIsLoading(false);
@@ -85,9 +82,6 @@ export function useOrganization(token?: string, forceManager = true) {
         throw new Error("Missing token or organization ID");
       }
 
-      console.log("Token in hook:", token); // Debug
-      console.log("Organization ID:", organizationId); // Debug
-
       try {
         setIsLoading(true);
         const updatedOrg =
@@ -96,8 +90,15 @@ export function useOrganization(token?: string, forceManager = true) {
             organizationId,
             data
           );
-        setOrganization(updatedOrg);
-        return updatedOrg;
+
+        const refreshedOrg =
+          await organizationProfileService.getOrganizationById(
+            token,
+            organizationId
+          );
+
+        setOrganization(refreshedOrg);
+        return refreshedOrg;
       } catch (err: any) {
         console.error("Full error:", err);
         const errorMessage =
@@ -113,13 +114,11 @@ export function useOrganization(token?: string, forceManager = true) {
     [token, organizationId]
   );
 
-  console.log(isOrgManager);
-
   return {
-    organizations,
     organization,
     isLoading,
     error,
+    refetch: fetchOrganizationById,
     isOrgManager,
     organizationId,
     fetchUserProfile,

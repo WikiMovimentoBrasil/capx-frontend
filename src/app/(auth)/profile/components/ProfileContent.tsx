@@ -13,6 +13,9 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
+import AvatarSelectionPopup from "./AvatarSelectionPopup";
+import { useState, useEffect, useMemo } from "react";
+import { useAvatars } from "@/hooks/useAvatars";
 
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
@@ -112,10 +115,28 @@ export default function ProfileContent({ pageContent }) {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const token = session?.user?.token;
-  const { profile, isLoading, error } = useProfile(
-    token,
-    Number(session?.user?.id)
-  );
+  const userId = Number(session?.user?.id);
+
+  const {
+    profile,
+    isLoading: profileLoading,
+    error: profileError,
+    refetch,
+    updateProfile,
+  } = useProfile(token, userId);
+
+  // Use useMemo para garantir que os dados do profile estejam prontos
+  const profileData = useMemo(() => {
+    if (!profile) return null;
+
+    return {
+      username: profile.user?.username,
+      profileImage: profile.profile_image,
+      avatar: Number(profile.avatar),
+    };
+  }, [profile]);
+
+  const { avatars, isLoading: avatarsLoading } = useAvatars();
   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { territories } = useTerritories(token);
@@ -123,8 +144,18 @@ export default function ProfileContent({ pageContent }) {
     token,
     profile?.wikimedia_project || []
   );
+  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (profileLoading || avatarsLoading) return <div>Loading...</div>;
+
+  if (profileError) {
+    console.error("Profile error:", profileError);
+    return <div>Error loading profile</div>;
+  }
+
+  if (!profileData) {
+    return <div>No profile data available</div>;
+  }
 
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
@@ -139,15 +170,30 @@ export default function ProfileContent({ pageContent }) {
     return labels[proficiency as keyof typeof labels] || "Not specified";
   };
 
-  // Resto do código de renderização do ProfilePage
-  // Copiar todo o JSX do return do ProfilePage para aqui
+  const handleAvatarSelect = async (avatarId: number) => {
+    try {
+      await updateProfile({
+        avatar: avatarId,
+        profile_image: "",
+      });
+
+      await refetch();
+      setShowAvatarPopup(false);
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+    }
+  };
+
   return (
-    <div
-      className={`relative w-full overflow-x-hidden ${
-        darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
-      }`}
-    >
-      {/* Copiar todo o conteúdo do return do ProfilePage */}
+    <div>
+      <ProfileHeader {...profileData} />
+      {showAvatarPopup && (
+        <AvatarSelectionPopup
+          onClose={() => setShowAvatarPopup(false)}
+          onSelect={handleAvatarSelect}
+          selectedAvatarId={profile?.avatar || 0}
+        />
+      )}
     </div>
   );
 }

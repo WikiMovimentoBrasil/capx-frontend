@@ -1,43 +1,55 @@
 import Image from "next/image";
 import BaseButton from "@/components/BaseButton";
-import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
-import Avatar1Icon from "@/public/static/images/capx_avatar_1.svg";
-import Avatar3Icon from "@/public/static/images/capx_avatar_3.svg";
-import Avatar4Icon from "@/public/static/images/capx_avatar_4.svg";
 import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import { useState } from "react";
+import { useAvatars } from "@/hooks/useAvatars";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface AvatarSelectionPopupProps {
   onClose: () => void;
   onSelect: (avatarId: number) => void;
   selectedAvatarId: number;
+  onUpdate?: () => void;
 }
 
 export default function AvatarSelectionPopup({
   onClose,
   onSelect,
   selectedAvatarId,
+  onUpdate,
 }: AvatarSelectionPopupProps) {
-  const avatars = [
-    { id: 0, src: NoAvatarIcon, alt: "No avatar" },
-    { id: 1, src: Avatar1Icon, alt: "Avatar 1" },
-    { id: 3, src: Avatar3Icon, alt: "Avatar 3" },
-    { id: 4, src: Avatar4Icon, alt: "Avatar 4" },
-  ];
-
+  const { avatars, isLoading } = useAvatars();
   const [tempSelectedId, setTempSelectedId] = useState(selectedAvatarId);
+  const { darkMode } = useTheme();
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     onSelect(tempSelectedId);
+    if (onUpdate) {
+      onUpdate();
+    }
     onClose();
   };
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg">
+          <p>Loading avatars...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 w-[90%] max-w-[500px] rounded-lg shadow-xl p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-[#053749] font-[Montserrat] text-[16px] font-bold">
+      <div
+        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
+          darkMode ? "bg-[#053749] text-white" : "bg-white text-[#053749]"
+        } z-50 rounded-lg shadow-xl h-[477px] w-[273px] flex flex-col`}
+      >
+        <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <h2 className={`font-[Montserrat] text-[16px] font-bold`}>
             Choose an option
           </h2>
           <button
@@ -48,44 +60,52 @@ export default function AvatarSelectionPopup({
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {avatars.map((avatar) => (
-            <button
-              key={avatar.id}
-              onClick={() => setTempSelectedId(avatar.id)}
-              className="flex justify-center"
-            >
-              <div
-                className={`w-[100px] h-[100px] border-2 rounded-lg transition-colors ${
-                  tempSelectedId === avatar.id
-                    ? "border-[#851970]"
-                    : "border-transparent hover:border-[#851970]"
-                }`}
+        <div className="overflow-y-auto flex-1 p-6">
+          <div className="grid grid-cols-2 gap-4">
+            {avatars?.map((avatar) => (
+              <button
+                key={avatar.id}
+                onClick={() => setTempSelectedId(avatar.id)}
+                className="flex justify-center"
               >
-                <div className="relative w-full h-full">
-                  <Image
-                    src={avatar.src}
-                    alt={avatar.alt}
-                    fill
-                    className="object-contain"
-                  />
+                <div
+                  className={`w-[100px] h-[100px] border rounded-lg transition-colors ${
+                    tempSelectedId === avatar.id
+                      ? "border-2 border-[#851970]"
+                      : "border border-black hover:border-[#851970]"
+                  }`}
+                >
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={avatar.avatar_url}
+                      alt={`Avatar ${avatar.id}`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="flex gap-4">
-          <BaseButton
-            onClick={onClose}
-            label="Close tab"
-            customClass="flex-1 border border-[#053749] text-[#053749] rounded-md py-2 font-[Montserrat] text-[14px] font-bold"
-          />
-          <BaseButton
-            onClick={handleUpdate}
-            label="Update"
-            customClass="flex-1 bg-[#851970] text-white rounded-md py-2 font-[Montserrat] text-[14px] font-bold"
-          />
+        <div className="p-6 border-t border-gray-200">
+          <div className="flex gap-4">
+            <BaseButton
+              onClick={onClose}
+              label="Close tab"
+              customClass={`flex-1 border ${
+                darkMode
+                  ? "border-white text-white"
+                  : "border-[#053749] text-[#053749]"
+              } rounded-md py-2 font-[Montserrat] text-[14px] font-bold`}
+            />
+            <BaseButton
+              onClick={handleUpdate}
+              label="Update"
+              customClass="flex-1 bg-[#851970] text-white rounded-md py-2 font-[Montserrat] text-[14px] font-bold"
+            />
+          </div>
         </div>
       </div>
     </>

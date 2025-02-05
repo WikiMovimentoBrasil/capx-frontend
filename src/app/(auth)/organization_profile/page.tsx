@@ -18,11 +18,13 @@ import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_w
 import EditIconWhite from "@/public/static/images/edit_white.svg";
 import { ProjectsEventsList } from "./components/ProjectsEventsList";
 import { ContactsSection } from "./components/ContactsSection";
+import { NewsSection } from "./components/NewsSection";
 import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
+import { DocumentsList } from "./components/DocumentsList";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
@@ -31,16 +33,42 @@ export default function OrganizationProfilePage() {
   const { data: session } = useSession();
   const token = session?.user?.token;
 
-  const { organization, isLoading, error, isOrgManager } =
+  const { organization, isLoading, error, isOrgManager, refetch } =
     useOrganization(token);
+
+  const formatWikiImageUrl = (url: string | undefined): string => {
+    if (!url) return "";
+
+    if (url.includes("upload.wikimedia.org")) {
+      return url;
+    }
+
+    if (url.includes("commons.wikimedia.org")) {
+      return url.replace("/wiki/File:", "/wiki/Special:FilePath/");
+    }
+
+    if (url.startsWith("File:")) {
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${url.replace(
+        "File:",
+        ""
+      )}`;
+    }
+
+    return url;
+  };
+  useEffect(() => {
+    const refreshData = async () => {
+      await refetch();
+    };
+    refreshData();
+  }, []);
 
   useEffect(() => {
     if (error) {
       console.error("Error fetching organization:", error);
     }
-  }, [error]);
+  }, [error, organization]);
 
-  console.log("organization", organization);
   if (isMobile) {
     return (
       <>
@@ -52,7 +80,7 @@ export default function OrganizationProfilePage() {
           <section
             className={`w-full max-w-screen-xl mx-auto px-4 py-8 mt-[80px]`}
           >
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6">
               {/* Header Section */}
               <div className="flex flex-col gap-6">
                 {/* Content */}
@@ -101,8 +129,7 @@ export default function OrganizationProfilePage() {
                           alt="Organization logo"
                           fill
                           priority
-                          objectFit="contain"
-                          className="w-full rounded-lg"
+                          className="object-contain w-full rounded-lg"
                         />
                       </div>
                     </div>
@@ -131,8 +158,7 @@ export default function OrganizationProfilePage() {
                   <Image
                     src={ReportActivityIcon}
                     alt="Report activity icon"
-                    objectFit="contain"
-                    fill
+                    className="object-contain"
                   />
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
@@ -187,8 +213,15 @@ export default function OrganizationProfilePage() {
                 />
               </div>
 
+              {/* News Section */}
+              <NewsSection ids={organization?.tag_diff || []} />
+
               {/* Contacts Section */}
-              <ContactsSection />
+              <ContactsSection
+                email={organization?.email || ""}
+                meta_page={organization?.meta_page || ""}
+                website={organization?.website || ""}
+              />
             </div>
           </section>
         </div>
@@ -211,15 +244,20 @@ export default function OrganizationProfilePage() {
             <div className="flex flex-row gap-6">
               {/* Logo */}
               <div className="w-full">
-                <div className="relative h-[326px] w-[595px]">
-                  <Image
-                    src={WMBLogo}
-                    alt="Organization logo"
-                    objectFit="contain"
-                    style={{ width: "auto", height: "auto" }}
-                    priority
-                    className="w-full rounded-lg"
-                  />
+                <div className="relative h-[326px] w-[595px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center">
+                  {organization?.profile_image ? (
+                    <Image
+                      src={formatWikiImageUrl(organization.profile_image)}
+                      alt="Organization logo"
+                      className="object-contain p-24"
+                      fill
+                      priority
+                    />
+                  ) : (
+                    <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-400">Logo não disponível</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -262,7 +300,7 @@ export default function OrganizationProfilePage() {
                   <BaseButton
                     onClick={() => router.push("/organization_profile/edit")}
                     label="Edit organization profile"
-                    customClass={`w-2/3 font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
+                    customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
                         ? "border-white text-white"
                         : "border-capx-dark-box-bg text-capx-light-text"
@@ -282,8 +320,10 @@ export default function OrganizationProfilePage() {
                 <Image
                   src={ReportActivityIcon}
                   alt="Report activity icon"
-                  objectFit="contain"
-                  className="w-full"
+                  className="object-contain"
+                  width={619}
+                  height={271}
+                  priority
                 />
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
@@ -342,8 +382,23 @@ export default function OrganizationProfilePage() {
               />
             </div>
 
+            {/* News Section */}
+            <NewsSection ids={organization?.tag_diff || []} />
+
+            {/* Documents Section */}
+            <DocumentsList
+              title="Documents"
+              type="documents"
+              items={organization?.documents || []}
+              token={token}
+            />
+
             {/* Contacts Section */}
-            <ContactsSection />
+            <ContactsSection
+              email={organization?.email || ""}
+              meta_page={organization?.meta_page || ""}
+              website={organization?.website || ""}
+            />
           </div>
         </section>
       </div>

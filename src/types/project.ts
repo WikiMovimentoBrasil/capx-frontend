@@ -1,6 +1,6 @@
 export interface Project {
   id: number;
-  organizations: number[];
+  organization: number;
   display_name: string;
   profile_image: string;
   description: string;

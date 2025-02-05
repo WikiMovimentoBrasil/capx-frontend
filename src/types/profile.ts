@@ -10,6 +10,7 @@ export interface Profile {
   name: string;
   about: string;
   affiliation: string[];
+  avatar: number | null | undefined;
   contact?: string;
   display_name?: string;
   language: LanguageProficiency[];

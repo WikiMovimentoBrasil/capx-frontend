@@ -10,36 +10,46 @@ import ContactPortalIconWhite from "@/public/static/images/contact_captive_porta
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 
-export const ContactsSection = () => {
+interface ContactsSectionProps {
+  email: string;
+  meta_page: string;
+  website: string;
+}
+
+export const ContactsSection = ({
+  email,
+  meta_page,
+  website,
+}: ContactsSectionProps) => {
   const { isMobile } = useApp();
   const { darkMode } = useTheme();
 
   const contacts = [
     {
-      name: "Meta-wiki (Wiki Movimento Brasil)",
+      name: meta_page,
       icon: darkMode ? ContactMetaIconWhite : ContactMetaIcon,
     },
     {
-      name: "wmnobrasil@wmnobrasil.org",
+      name: email,
       icon: darkMode ? ContactEmailIconWhite : ContactEmailIcon,
     },
     {
-      name: "wmnobrasil.org",
+      name: website,
       icon: darkMode ? ContactPortalIconWhite : ContactPortalIcon,
     },
   ];
 
   const mobileContacts = [
     {
-      name: "Meta-wiki",
+      name: meta_page,
       icon: darkMode ? ContactMetaIconWhite : ContactMetaIcon,
     },
     {
-      name: "Email",
+      name: email,
       icon: darkMode ? ContactEmailIconWhite : ContactEmailIcon,
     },
     {
-      name: "Website",
+      name: website,
       icon: darkMode ? ContactPortalIconWhite : ContactPortalIcon,
     },
   ];
@@ -96,14 +106,14 @@ export const ContactsSection = () => {
   }
 
   return (
-    <section className="w-full max-w-screen-xl mx-auto py-8">
+    <section className="w-full max-w-screen-xl py-8">
       <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
         <div className="relative w-[48px] h-[48px]">
           <Image
             src={darkMode ? WikimediaIconWhite : WikimediaIcon}
             alt="Wikimedia"
             fill
-            style={{ objectFit: "contain" }}
+            className="object-contain"
           />
         </div>
         <h2
@@ -127,7 +137,7 @@ export const ContactsSection = () => {
                 src={contact.icon}
                 alt={contact.name}
                 fill
-                style={{ objectFit: "contain" }}
+                className="object-contain"
               />
             </div>
             <p

@@ -35,15 +35,11 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  console.log("PUT request received for organization:", params.id);
   try {
     const body = await request.json();
     const authHeader = request.headers.get("authorization");
 
-    console.log("Request body:", body);
-    console.log("Auth header:", authHeader);
-
-    const response = await axios.put(
+    const updateResponse = await axios.put(
       `${process.env.BASE_URL}/organizations/${params.id}/`,
       body,
       {
@@ -55,9 +51,9 @@ export async function PUT(
       }
     );
 
-    return NextResponse.json(response.data);
+    return NextResponse.json(updateResponse.data);
   } catch (error: any) {
-    console.error("Error details:", error.response || error);
+    console.error("Error details:", error.response?.data || error);
     return NextResponse.json(
       {
         error: "Failed to update organization",
