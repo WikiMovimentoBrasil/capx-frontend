@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { capacityService } from "@/services/capacityService";
 import { useSession } from "next-auth/react";
 import { Capacity } from "@/types/capacity";
+import { useApp } from "@/contexts/AppContext";
 
 export function useCapacityDetails(
   capacityIds: (string | number | Capacity)[]
@@ -10,6 +11,7 @@ export function useCapacityDetails(
     {}
   );
   const { data: session } = useSession();
+  const { pageContent } = useApp();
 
   useEffect(() => {
     if (!session?.user?.token || !capacityIds?.length) return;
@@ -50,7 +52,7 @@ export function useCapacityDetails(
     capacityNames,
     getCapacityName: useCallback(
       (capacity: Capacity | number | string) => {
-        if (!capacity) return "Loading...";
+        if (!capacity) return pageContent["loading"];
         const id =
           typeof capacity === "object"
             ? Number(capacity.code)

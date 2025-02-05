@@ -15,7 +15,7 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
   const { pageContent } = useApp();
 
   if (isLoading) {
-    return <div className="loading-skeleton">Loading...</div>;
+    return <div className="loading-skeleton">{pageContent["loading"]}</div>;
   }
 
   if (error || !project) {

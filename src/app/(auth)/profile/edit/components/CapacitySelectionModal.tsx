@@ -187,7 +187,7 @@ export default function CapacitySelectionModal({
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                Loading...
+                {pageContent["loading"]}
               </div>
             ) : getCurrentCapacities().length > 0 ? (
               getCurrentCapacities().map((capacity) => (

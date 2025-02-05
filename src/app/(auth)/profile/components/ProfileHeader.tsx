@@ -84,7 +84,7 @@ export default function ProfileHeader({
               darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
             }`}
           >
-            {username || "Loading..."}
+            {username || pageContent["loading"]}
           </span>
         </div>
         <BaseButton
@@ -136,7 +136,7 @@ export default function ProfileHeader({
               darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
             }`}
           >
-            {username || "Loading..."}
+            {username || pageContent["loading"]}
           </span>
         </div>
         <BaseButton

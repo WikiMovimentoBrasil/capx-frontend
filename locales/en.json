@@ -1,4 +1,5 @@
 {
+  "loading": "Loading...",
   "complete-your-profile": "Complete your profile for a better experience",
   "auth-dialog-content": "You are being redirected to the unified login on Meta-Wiki",
   "auth-dialog-button-continue": "Continue",

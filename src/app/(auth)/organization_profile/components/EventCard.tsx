@@ -15,7 +15,7 @@ export const EventCard = ({ eventId, token }: EventCardProps) => {
   const { pageContent } = useApp();
 
   if (isLoading) {
-    return <div className="loading-skeleton">Loading...</div>;
+    return <div className="loading-skeleton">{pageContent["loading"]}</div>;
   }
 
   if (error || !event) {

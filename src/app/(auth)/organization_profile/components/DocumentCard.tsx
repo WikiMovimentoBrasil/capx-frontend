@@ -16,7 +16,7 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
   const { pageContent } = useApp();
 
   if (loading) {
-    return <div className="loading-skeleton">Loading...</div>;
+    return <div className="loading-skeleton">{pageContent["loading"]}</div>;
   }
 
   if (error || !document) {

@@ -102,7 +102,7 @@ export default function OrganizationProfilePage() {
                           : "text-capx-light-text"
                       }`}
                     >
-                      {organization?.display_name || "Loading..."}
+                      {organization?.display_name || pageContent["loading"]}
                     </span>
                   </div>
 
