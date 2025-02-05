@@ -57,27 +57,7 @@ import { Capacity } from "@/types/capacity";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
-
-const AVATAR_URLS = {
-  0: {
-    src: NoAvatarIcon.src,
-    url: `${BASE_URL}/static/images/no_avatar.svg`,
-  },
-  1: {
-    src: Avatar1Icon.src,
-    url: `${BASE_URL}/static/images/capx_avatar_1.svg`,
-  },
-  3: {
-    src: Avatar3Icon.src,
-    url: `${BASE_URL}/static/images/capx_avatar_3.svg`,
-  },
-  4: {
-    src: Avatar4Icon.src,
-    url: `${BASE_URL}/static/images/capx_avatar_4.svg`,
-  },
-};
+import { useAvatars } from "@/hooks/useAvatars";
 
 const fetchWikidataQid = async (name: string) => {
   try {
@@ -142,16 +122,16 @@ export default function EditProfileContent({
   const { data: session } = useSession();
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
+  const { avatars } = useAvatars();
   const username = session?.user?.name;
   const token = session?.user?.token || initialSession?.user?.token;
   const userId = session?.user?.id;
 
-  const { profile, isLoading, error, updateProfile } = useProfile(
+  const { profile, isLoading, error, updateProfile, refetch } = useProfile(
     token,
     Number(userId)
   );
-  const { fetchSkills } = useSkills();
-  const [skills, setSkills] = useState(null);
+  const { skills, isSkillsLoading, skillsError } = useSkills();
   const { territories } = useTerritories(token);
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
@@ -172,7 +152,7 @@ export default function EditProfileContent({
     contact: "",
     display_name: "",
     language: [],
-    profile_image: `${process.env.NEXT_PUBLIC_API_URL}${AVATAR_URLS[0].url}`,
+    profile_image: "",
     pronoun: "",
     skills_available: [],
     skills_known: [],
@@ -191,14 +171,6 @@ export default function EditProfileContent({
     }
   }, [token, userId, router]);
 
-  useEffect(() => {
-    const getSkills = async () => {
-      const skillsData = await fetchSkills();
-      setSkills(skillsData);
-    };
-    getSkills();
-  }, [fetchSkills]);
-
   // Update formData when profile data is loaded
   useEffect(() => {
     if (profile) {
@@ -206,7 +178,7 @@ export default function EditProfileContent({
         ...profile,
         affiliation: profile.affiliation ? profile.affiliation : [],
         territory: profile.territory ? profile.territory : undefined,
-        profile_image: profile.profile_image || AVATAR_URLS[0].url,
+        profile_image: profile.profile_image || "",
         wikidata_qid: profile.wikidata_qid,
         wikimedia_project: profile.wikimedia_project || [],
         language: profile.language || [],
@@ -223,7 +195,7 @@ export default function EditProfileContent({
       } else {
         setSelectedAvatar({
           id: 0,
-          src: AVATAR_URLS[0].src,
+          src: "",
         });
       }
     }
@@ -244,17 +216,20 @@ export default function EditProfileContent({
   };
 
   const handleAvatarSelect = (avatarId: number) => {
-    const selected = AVATAR_URLS[avatarId as keyof typeof AVATAR_URLS];
+    setFormData((prev) => ({
+      ...prev,
+      avatar: avatarId,
+    }));
 
-    setSelectedAvatar({
-      id: avatarId,
-      src: selected.src,
-    });
-
-    setFormData({
-      ...formData,
-      profile_image: selected.url,
-    });
+    const selectedAvatarUrl = avatars?.find(
+      (avatar) => avatar.id === avatarId
+    )?.avatar_url;
+    if (selectedAvatarUrl) {
+      setSelectedAvatar({
+        id: avatarId,
+        src: selectedAvatarUrl,
+      });
+    }
   };
 
   const handleWikidataClick = async () => {
@@ -265,45 +240,55 @@ export default function EditProfileContent({
       const wikidataQid = await fetchWikidataQid(profile.user.username);
 
       if (newWikidataSelected && wikidataQid) {
-        // Show loading state if necessary
-        const wikidataImage = await fetchWikidataImage(wikidataQid); // Usando wikidataQid aqui
+        const wikidataImage = await fetchWikidataImage(wikidataQid);
 
         if (wikidataImage) {
+          // Atualiza o estado local
           setSelectedAvatar({
             id: -1,
             src: wikidataImage,
           });
-          setFormData((prev) => ({
-            ...prev,
+
+          // Prepara os dados para atualização
+          const updatedData = {
+            ...formData,
             profile_image: wikidataImage,
-            wikidata_qid: wikidataQid, // Atualiza o campo wikidata_qid
-          }));
-        } else {
-          // If no image found in Wikidata, keep the current image
-          console.log("No Wikidata image found");
+            wikidata_qid: wikidataQid,
+            avatar: null, // Remove o avatar quando usar imagem do Wikidata
+          };
+
+          setFormData(updatedData);
+
+          // Atualiza imediatamente no backend
+          try {
+            await updateProfile(updatedData);
+            await refetch(); // Recarrega os dados do perfil
+          } catch (error) {
+            console.error("Error updating profile with Wikidata image:", error);
+          }
         }
       } else {
-        // Reverting to profile image or default avatar
-        if (profile?.profile_image) {
-          setSelectedAvatar({
-            id: -1,
-            src: profile.profile_image,
-          });
-          setFormData((prev) => ({
-            ...prev,
-            profile_image: profile.profile_image,
-            wikidata_qid: "",
-          }));
-        } else {
-          setSelectedAvatar({
-            id: 0,
-            src: AVATAR_URLS[0].src,
-          });
-          setFormData((prev) => ({
-            ...prev,
-            profile_image: AVATAR_URLS[0].src,
-            wikidata_qid: "",
-          }));
+        // Reverting to default state
+        const updatedData = {
+          ...formData,
+          profile_image: "",
+          wikidata_qid: "",
+          avatar: null,
+        };
+
+        setSelectedAvatar({
+          id: 0,
+          src: "",
+        });
+
+        setFormData(updatedData);
+
+        // Atualiza imediatamente no backend
+        try {
+          await updateProfile(updatedData);
+          await refetch();
+        } catch (error) {
+          console.error("Error updating profile:", error);
         }
       }
     }
@@ -512,6 +497,7 @@ export default function EditProfileContent({
                     onClose={() => setShowAvatarPopup(false)}
                     onSelect={handleAvatarSelect}
                     selectedAvatarId={selectedAvatar.id}
+                    onUpdate={refetch}
                   />
                 )}
 

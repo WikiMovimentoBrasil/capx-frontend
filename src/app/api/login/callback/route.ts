@@ -4,12 +4,10 @@ import axios from "axios";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log("Received callback payload:", body); // Debug log
 
     const { oauth_token, oauth_verifier, stored_token, stored_token_secret } =
       body;
 
-    // Validação mais flexível
     if (!oauth_token || !oauth_verifier || !stored_token_secret) {
       console.error("Missing required parameters:", {
         oauth_token,
@@ -22,7 +20,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Faz a chamada para o backend com os parâmetros necessários
     const response = await axios.post(process.env.LOGIN_STEP03_URL as string, {
       oauth_token,
       oauth_verifier,

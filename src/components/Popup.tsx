@@ -4,12 +4,12 @@ import Image, { StaticImageData } from "next/image";
 import { useTheme } from "@/providers/ThemeProvider";
 
 interface PopupProps {
-  onContinue: () => void;
+  onContinue?: () => void;
   onClose: () => void;
-  image: StaticImageData;
+  image?: StaticImageData;
   title: string;
-  closeButtonLabel: string;
-  continueButtonLabel: string;
+  closeButtonLabel?: string;
+  continueButtonLabel?: string;
   children?: React.ReactNode;
   customClass?: string;
 }
@@ -26,17 +26,24 @@ const Popup = ({
 }: PopupProps) => {
   const { darkMode } = useTheme();
   const [isOpen, setIsOpen] = useState(true);
+  const noop = () => {};
 
   const onCloseTab = () => {
     setIsOpen(false);
     onClose();
   };
 
+  const onOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCloseTab();
+    }
+  };
+
   return (
     <div className={customClass}>
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onOverlayClick} />
           <div
             className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
             w-[90%] md:w-[880px] xl:w-[1024px]
@@ -68,12 +75,13 @@ const Popup = ({
                 darkMode ? "bg-[#005B3F]" : "bg-white"
               }`}
             >
-              <Image
+              {image && (<Image
                 src={image}
                 alt="Popup Illustration"
                 className="w-full max-w-[300px] h-auto mb-8"
                 priority
-              />
+              />)}
+
               <h2
                 className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${
                   darkMode ? "text-white" : "text-[#053749]"
@@ -81,21 +89,29 @@ const Popup = ({
               >
                 {title}
               </h2>
+
+               {/* Show children components */}
+              <div className="mb-8">{children}</div>
+
               <div className="flex flex-row gap-4 w-full">
-                <BaseButton
-                  customClass={`flex-1 ${
-                    darkMode
-                      ? "bg-transparent hover:bg-capx-primary-green border-capx-light-bg border-2 text-capx-light-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
-                      : "bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
-                  }`}
-                  label={closeButtonLabel}
-                  onClick={onCloseTab}
-                />
-                <BaseButton
-                  customClass="flex-1 bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
-                  label={continueButtonLabel}
-                  onClick={onContinue}
-                />
+                {continueButtonLabel && (
+                  <BaseButton
+                    customClass={`flex-1 ${
+                      darkMode
+                        ? "bg-transparent hover:bg-capx-primary-green border-capx-light-bg border-2 text-capx-light-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                        : "bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                    }`}
+                    label={closeButtonLabel}
+                    onClick={onCloseTab}
+                  />
+                )}
+                {continueButtonLabel && (
+                  <BaseButton
+                    customClass="flex-1 bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-[14px] py-2 px-4"
+                    label={continueButtonLabel}
+                    onClick={onContinue ?? noop}
+                  />
+                )}
               </div>
             </div>
 
@@ -103,12 +119,14 @@ const Popup = ({
             <div className="hidden md:flex flex-col h-full p-8">
               <div className="flex flex-row flex-1 mb-8">
                 <div className="w-1/2 flex justify-center items-center mr-8 mb-8">
-                  <Image
-                    src={image}
-                    alt="Popup Illustration"
-                    className="w-full max-w-[300px] xl:max-w-[400px] h-auto"
-                    priority
-                  />
+                  {image && (
+                    <Image
+                      src={image}
+                      alt="Popup Illustration"
+                      className="w-full max-w-[300px] xl:max-w-[400px] h-auto"
+                      priority
+                    />
+                  )}
                 </div>
 
                 <div className="w-1/2 flex items-center justify-center">
@@ -119,17 +137,25 @@ const Popup = ({
                   </h2>
                 </div>
               </div>
+
+              {/* Show children components */}
+              <div className="mb-8">{children}</div>
+
               <div className="flex flex-row justify-start gap-4">
-                <BaseButton
-                  customClass="bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-xl py-2 px-8"
-                  label={closeButtonLabel}
-                  onClick={onCloseTab}
-                />
-                <BaseButton
-                  customClass="bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-xl py-2 px-8"
-                  label={continueButtonLabel}
-                  onClick={onContinue}
-                />
+                {closeButtonLabel && (
+                  <BaseButton
+                    customClass="bg-capx-light-bg hover:bg-capx-primary-green border-capx-dark-box-bg border-2 text-capx-dark-box-bg font-extrabold rounded-lg text-center text-xl py-2 px-8"
+                    label={closeButtonLabel}
+                    onClick={onCloseTab}
+                  />
+                )}
+                {continueButtonLabel && (
+                  <BaseButton
+                    customClass="bg-capx-secondary-purple hover:bg-capx-primary-green text-white hover:text-capx-dark-bg font-extrabold rounded-lg text-center text-xl py-2 px-8"
+                    label={continueButtonLabel}
+                    onClick={onContinue ?? noop}
+                  />
+                )}
               </div>
             </div>
           </div>

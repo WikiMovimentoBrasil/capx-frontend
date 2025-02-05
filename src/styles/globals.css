@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
- /* Specifying ChunkFive as custom font */
- @font-face {
+/* Specifying ChunkFive as custom font */
+@font-face {
   font-family: "ChunkFive Ex";
   src: url("../../public/static/fonts/Chunkfive.ttf");
   font-weight: 400;
@@ -32,14 +32,15 @@
   font-style: extrabold;
 }
 
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .modal {
@@ -68,6 +69,16 @@ html, body {
   z-index: 1000;
 }
 
-textarea::placeholder, input::placeholder {
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE e Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+textarea::placeholder,
+input::placeholder {
   color: #757575;
 }

@@ -48,7 +48,7 @@ const ProfileItemsComponent = ({
   if (isMobile) {
     return (
       <>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 items-center">
           <div className="relative h-[20px] w-[20px]">
             <Image src={icon} alt={title} fill objectFit="contain" />
           </div>
@@ -78,7 +78,7 @@ const ProfileItemsComponent = ({
   }
   return (
     <>
-      <div className="flex flex-row gap-[80px] mt-[80px]">
+      <div className="flex flex-row gap-2 mt-[80px] items-center">
         <div className="relative h-[48px] w-[48px]">
           <Image src={icon} alt={title} fill objectFit="contain" />
         </div>
@@ -117,8 +117,8 @@ export default function ProfileContent({
   const { data: session } = useSession();
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
-  const token = session?.user?.token || initialSession?.user?.token;
-  const { profile, isLoading, error } = useProfile(
+  const token = session?.user?.token;
+  const { profile, isLoading, error, refetch } = useProfile(
     token,
     Number(session?.user?.id || initialSession?.user?.id)
   );
@@ -129,12 +129,9 @@ export default function ProfileContent({
     token,
     profile?.wikimedia_project || []
   );
-  /* 
-  const cookieStore = cookies();
-  const language = cookieStore.get("language")?.value ?? "en";
- */
-  if (isLoading) return <div>Loading...</div>;
 
+  /*   if (isLoading) return <div>Loading...</div>;
+   */
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
       "0": "Not proficient",
@@ -165,7 +162,8 @@ export default function ProfileContent({
           >
             <ProfileHeader
               username={profile?.user?.username || ""}
-              profileImage={profile?.profile_image || ""}
+              profileImage={profile?.profile_image}
+              avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList
@@ -225,7 +223,7 @@ export default function ProfileContent({
             <ProfileItemsComponent
               icon={darkMode ? WikiIconWhite : WikiIcon}
               title="Alternative Wikimedia Account"
-              value={""}
+              value={profile?.wiki_alt || ""}
             />
             <ProfileItemsComponent
               icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
@@ -270,15 +268,20 @@ export default function ProfileContent({
             <div className="flex flex-row gap-2">
               {profile?.wikimedia_project?.map((projectId) =>
                 projectId ? (
-                  <div key={projectId} className="relative h-[72px] w-[72px]">
+                  <div
+                    key={projectId}
+                    className={`relative h-[123px] w-[98px] rounded-[16px] flex items-center justify-center ${
+                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                    }`}
+                  >
                     <Image
                       src={
                         wikimediaProjectImages[projectId] ||
                         (darkMode ? WikiIconWhite : WikiIcon)
                       }
+                      className="object-contain p-[12px]"
                       alt={wikimediaProjects[projectId] || "Project icon"}
                       fill
-                      objectFit="contain"
                     />
                   </div>
                 ) : null
@@ -354,7 +357,8 @@ export default function ProfileContent({
           <div className={`flex flex-col mx-auto`}>
             <ProfileHeader
               username={profile?.user?.username || ""}
-              profileImage={profile?.profile_image || ""}
+              profileImage={profile?.profile_image}
+              avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
             <CapacitiesList
@@ -375,7 +379,7 @@ export default function ProfileContent({
               items={profile?.skills_wanted || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 mt-[80px]">
               <div className="flex items-center gap-2 items-center">
                 <Image
                   src={darkMode ? LanguageIconWhite : LanguageIcon}
@@ -414,7 +418,7 @@ export default function ProfileContent({
             <ProfileItemsComponent
               icon={darkMode ? WikiIconWhite : WikiIcon}
               title="Alternative Wikimedia Account"
-              value={""}
+              value={profile?.wiki_alt || ""}
             />
             <ProfileItemsComponent
               icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
@@ -456,18 +460,23 @@ export default function ProfileContent({
                 Wikimedia Projects
               </p>
             </div>
-            <div className="flex flex-row gap-2 mt-[80px] items-center">
+            <div className="flex flex-row gap-5 mt-[80px] items-center">
               {profile?.wikimedia_project?.map((projectId) =>
                 projectId ? (
-                  <div key={projectId} className="relative h-[180px] w-[180px]">
+                  <div
+                    key={projectId}
+                    className={`relative h-[250px] w-[180px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center ${
+                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                    }`}
+                  >
                     <Image
                       src={
                         wikimediaProjectImages[projectId] ||
                         (darkMode ? WikiIconWhite : WikiIcon)
                       }
                       alt={wikimediaProjects[projectId] || "Project icon"}
+                      className="object-contain p-[24px]"
                       fill
-                      objectFit="contain"
                     />
                   </div>
                 ) : null

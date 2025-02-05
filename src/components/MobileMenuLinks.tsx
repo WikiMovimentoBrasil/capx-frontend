@@ -98,9 +98,13 @@ export default function MobileMenuLinks({
     {
       title: pageContent["navbar-link-capacities"],
       to: "/capacities",
-      active: true,
+      active: false,
     },
-    { title: pageContent["navbar-link-reports"], to: "/reports", active: true },
+    {
+      title: pageContent["navbar-link-reports"],
+      to: "/reports",
+      active: false,
+    },
     {
       title: pageContent["navbar-link-dark-mode"],
       action: () => {
@@ -115,11 +119,6 @@ export default function MobileMenuLinks({
       active: true,
       image: ArrowDropDownBlack,
       isDarkBg: true,
-    },
-    {
-      title: "Organization",
-      to: "/organization_profile",
-      active: true,
     },
   ];
 
@@ -136,11 +135,11 @@ export default function MobileMenuLinks({
               return (
                 <div
                   key={`mobile-menu-container-${index}`}
-                  className="w-[95%] mx-[8px]"
+                  className="w-[100%] mx-[8px]"
                 >
                   <button
                     onClick={handleProfileClick}
-                    className={`flex items-center justify-between px-2 py-1 rounded-[4px] border transition-all duration-300 w-[90%] ml-[16px] mr-[16px] ${
+                    className={`flex items-center justify-between px-2 py-1 rounded-[4px] border transition-all duration-300 w-[92%] ml-[16px] mr-[16px] ${
                       darkMode
                         ? "bg-capx-dark-bg text-capx-light-text border-capx-light-text"
                         : "bg-capx-light-bg text-capx-dark-text border-capx-dark-bg"
@@ -166,7 +165,7 @@ export default function MobileMenuLinks({
                         width={24}
                         height={24}
                         style={{ width: "auto", height: "auto" }}
-                        className={`ml-4 transition-transform duration-300 ${
+                        className={`transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                       />
@@ -178,7 +177,7 @@ export default function MobileMenuLinks({
                         width={24}
                         height={24}
                         style={{ width: "auto", height: "auto" }}
-                        className={`ml-4 transition-transform duration-300 ${
+                        className={`transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                       />
@@ -199,19 +198,19 @@ export default function MobileMenuLinks({
                         width={24}
                         height={24}
                         style={{ width: "auto", height: "auto" }}
-                        className={`ml-4 transition-transform duration-300 ${
+                        className={`transition-transform duration-300 ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                       />
                     )}
                   </button>
                   {isExpanded && (
-                    <div className="flex flex-col rounded-b-[4px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
+                    <div className="flex flex-col rounded-b-[4px] w-[92%] mx-[16px] border border-[#053749] border-t-0 ml-[16px] mr-[16px] border-t border-[#053749]">
                       {subMenuItems.map((subItem, subIndex) => (
                         <div
                           key={`submenu-item-${subIndex}`}
                           onClick={subItem.action}
-                          className={`flex items-center justify-between w-full px-2 py-3 hover:bg-capx-light-bg border-t border-[#053749] pt-2 cursor-pointer ${
+                          className={`flex items-center justify-between px-2 py-3 border-t border-[#053749] pt-2 cursor-pointer ${
                             darkMode
                               ? "text-capx-dark-text bg-capx-dark-bg"
                               : "text-capx-light-text bg-capx-light-bg"

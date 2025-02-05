@@ -46,7 +46,6 @@ export default function EditReportForm({
           Authorization: `Token ${session.sessionData.user.token}`,
         },
       });
-      console.log("Form submitted successfully:", response.data);
       router.push("/reports/" + reportData.id);
     } catch (error) {
       console.error("Error submitting form:", error);

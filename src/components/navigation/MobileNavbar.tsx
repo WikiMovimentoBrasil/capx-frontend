@@ -12,10 +12,11 @@ import BurgerMenuDarkMode from "@/public/static/images/burger_menu_light.svg";
 import { useApp } from "@/providers/AppProvider";
 import IconCloseMobileMenuLightMode from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import IconCloseMobileMenuDarkMode from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
-import { useTheme } from "@/providers/ThemeProvider";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Session } from "@/types/user";
 
 interface MobileNavbarProps {
-  session: any;
+  session: Session;
   pageContent: any;
   currentLanguage: string;
 }
