@@ -30,8 +30,8 @@ export default function AuthenticatedHomeWrapper({
           onClose={() => {}}
           image={FirstLoginImage}
           title={pageContent["complete-your-profile"]}
-          closeButtonLabel="Close tab"
-          continueButtonLabel="Continue"
+          closeButtonLabel={pageContent["auth-dialog-button-close"]}
+          continueButtonLabel={pageContent["auth-dialog-button-continue"]}
           customClass={`${
             darkMode ? "bg-[#005B3F] text-white" : "bg-white text-[#053749]"
           }`}

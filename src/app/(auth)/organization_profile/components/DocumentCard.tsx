@@ -3,6 +3,7 @@ import Image from "next/image";
 import BaseButton from "@/components/BaseButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import { WikimediaDocument } from "@/types/document";
+import { useApp } from "@/contexts/AppContext";
 
 interface DocumentCardProps {
   documentId: number;
@@ -12,6 +13,7 @@ interface DocumentCardProps {
 export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
   const { document, loading, error } = useDocument(token, documentId);
   const { darkMode } = useTheme();
+  const { pageContent } = useApp();
 
   if (loading) {
     return <div className="loading-skeleton">Loading...</div>;
@@ -42,7 +44,7 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
             </div>
           ) : (
             <div className="flex items-center justify-center w-full h-full text-gray-400">
-              No preview available
+              {pageContent["organization-profile-no-image-available"]}
             </div>
           )}
         </div>
@@ -57,7 +59,7 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
         </h3>
         <BaseButton
           customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
-          label="View document"
+          label={pageContent["organization-profile-view-document"]}
           onClick={() =>
             window.open(document.fullUrl || document.url, "_blank")
           }

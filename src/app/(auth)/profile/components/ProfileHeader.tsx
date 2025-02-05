@@ -25,7 +25,7 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const router = useRouter();
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const { getAvatarById } = useAvatars();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -59,7 +59,7 @@ export default function ProfileHeader({
           <Image
             priority
             src={avatarUrl}
-            alt="User profile"
+            alt={pageContent["navbar-user-profile"]}
             fill
             className="object-cover border rounded-[4px]"
             unoptimized
@@ -70,12 +70,12 @@ export default function ProfileHeader({
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
           }`}
         >
-          Welcome!
+          {pageContent["edit-profile-welcome"]}
         </h1>
         <div className="flex items-center gap-2">
           <Image
             src={darkMode ? UserCircleIconWhite : UserCircleIcon}
-            alt="User profile"
+            alt={pageContent["navbar-user-profile"]}
             width={20}
             height={20}
           />
@@ -89,7 +89,7 @@ export default function ProfileHeader({
         </div>
         <BaseButton
           onClick={() => router.push("/profile/edit")}
-          label="Edit user profile"
+          label={pageContent["body-profile-edit-user-button"]}
           customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
             darkMode
               ? "text-capx-light-bg border-capx-light-bg"
@@ -110,7 +110,7 @@ export default function ProfileHeader({
         <Image
           priority
           src={avatarUrl}
-          alt="User profile"
+          alt={pageContent["navbar-user-profile"]}
           fill
           className="object-cover border rounded-[8px]"
           unoptimized
@@ -122,12 +122,12 @@ export default function ProfileHeader({
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
           }`}
         >
-          Welcome!
+          {pageContent["edit-profile-welcome"]}
         </h1>
         <div className="flex items-center gap-2">
           <Image
             src={darkMode ? UserCircleIconWhite : UserCircleIcon}
-            alt="User profile"
+            alt={pageContent["navbar-user-profile"]}
             width={42}
             height={42}
           />
@@ -141,7 +141,7 @@ export default function ProfileHeader({
         </div>
         <BaseButton
           onClick={() => router.push("/profile/edit")}
-          label="Edit user profile"
+          label={pageContent["body-profile-edit-user-button"]}
           customClass={`w-full font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
             darkMode
               ? "text-capx-light-bg border-capx-light-bg"

@@ -115,7 +115,7 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const { avatars } = useAvatars();
   const username = session?.user?.name;
   const token = session?.user?.token;
@@ -510,7 +510,7 @@ export default function EditProfilePage() {
 
                 <BaseButton
                   onClick={() => setShowAvatarPopup(true)}
-                  label="Choose avatar"
+                  label= {pageContent["edit-profile-choose-avatar"]}
                   customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
                     darkMode
                       ? "bg-capx-light-bg text-[#053749]"
@@ -534,7 +534,7 @@ export default function EditProfilePage() {
                 <div className="flex flex-col items-center gap-0">
                   <BaseButton
                     onClick={handleWikidataClick}
-                    label="Use Wikidata item"
+                    label={pageContent["edit-profile-use-wikidata"]}
                     customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                       darkMode
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
@@ -569,7 +569,7 @@ export default function EditProfilePage() {
                   <div className="flex flex-col gap-[10px] mt-0">
                     <BaseButton
                       onClick={handleSubmit}
-                      label="Save profile"
+                      label={pageContent["edit-profile-save"]}
                       customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
                       imageUrl={UploadIcon}
                       imageAlt="Upload icon"
@@ -578,7 +578,7 @@ export default function EditProfilePage() {
                     />
                     <BaseButton
                       onClick={() => router.back()}
-                      label="Cancel edit"
+                      label={pageContent["edit-profile-cancel"]}
                       customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
                         darkMode
                           ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
@@ -677,7 +677,7 @@ export default function EditProfilePage() {
                   </div>
                   <BaseButton
                     onClick={() => handleAddCapacity("known")}
-                    label="Add capacities"
+                    label={pageContent["edit-profile-add-capacities"]}
                     customClass={`w-full flex ${
                       darkMode
                         ? "bg-capx-light-box-bg text-[#04222F]"
@@ -741,7 +741,7 @@ export default function EditProfilePage() {
                   </div>
                   <BaseButton
                     onClick={() => handleAddCapacity("available")}
-                    label="Add capacities"
+                    label={pageContent["edit-profile-add-capacities"]}
                     customClass={`w-full flex ${
                       darkMode
                         ? "bg-capx-light-box-bg text-[#04222F]"
@@ -803,7 +803,7 @@ export default function EditProfilePage() {
                   </div>
                   <BaseButton
                     onClick={() => handleAddCapacity("wanted")}
-                    label="Add capacities"
+                    label={pageContent["edit-profile-add-capacities"]}
                     customClass={`w-full flex ${
                       darkMode
                         ? "bg-capx-light-box-bg text-[#04222F]"
@@ -954,7 +954,7 @@ export default function EditProfilePage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Insert item"
+                    placeholder={pageContent["edit-profile-insert-item"]}
                     value={formData.wiki_alt}
                     onChange={(e) =>
                       setFormData({
@@ -1009,7 +1009,7 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
                     >
-                      <option value="">Insert item</option>
+                      <option value="">{pageContent["edit-profile-insert-item"]}</option>
                       {Object.entries(affiliations).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
@@ -1066,7 +1066,7 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
                     >
-                      <option value="">Insert item</option>
+                      <option value="">{pageContent["edit-profile-insert-item"]}</option>
                       {Object.entries(territories).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
@@ -1123,7 +1123,7 @@ export default function EditProfilePage() {
 
                     <BaseButton
                       onClick={handleWikidataClick}
-                      label="Use Wikidata item"
+                      label={pageContent["edit-profile-use-wikidata"]}
                       customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                         darkMode
                           ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
@@ -1190,7 +1190,7 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
                     >
-                      <option value="">Insert project</option>
+                      <option value="">{pageContent["edit-profile-insert-project"]}</option>
                       {Object.entries(wikimediaProjects).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
@@ -1229,7 +1229,7 @@ export default function EditProfilePage() {
                               : "border-[#053749] text-[#829BA4]"
                           } border`}
                         >
-                          <option value="">Insert project</option>
+                          <option value="">{pageContent["edit-profile-insert-project"]}</option>
                           {Object.entries(wikimediaProjects).map(
                             ([id, name]) => (
                               <option key={id} value={id}>
@@ -1251,7 +1251,7 @@ export default function EditProfilePage() {
 
                   <BaseButton
                     onClick={handleAddProject}
-                    label="Add more projects"
+                    label={pageContent["edit-profile-add-more-projects"]}
                     customClass={`w-full flex ${
                       darkMode
                         ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1276,7 +1276,7 @@ export default function EditProfilePage() {
               <div className="flex flex-col gap-[10px] mt-0">
                 <BaseButton
                   onClick={handleSubmit}
-                  label="Save profile"
+                  label={pageContent["edit-profile-save"]}
                   customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
                   imageUrl={UploadIcon}
                   imageAlt="Upload icon"
@@ -1285,7 +1285,7 @@ export default function EditProfilePage() {
                 />
                 <BaseButton
                   onClick={() => router.back()}
-                  label="Cancel edit"
+                  label={pageContent["edit-profile-cancel"]}
                   customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border ${
                     darkMode
                       ? "border-white text-white"
@@ -1392,7 +1392,7 @@ export default function EditProfilePage() {
               </div>
               <BaseButton
                 onClick={() => setShowAvatarPopup(true)}
-                label="Choose avatar"
+                label={pageContent["edit-profile-choose-avatar"]}
                 customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
                   darkMode
                     ? "bg-capx-light-bg text-[#053749]"
@@ -1414,7 +1414,7 @@ export default function EditProfilePage() {
               <div className="flex flex-col items-start gap-6">
                 <BaseButton
                   onClick={handleWikidataClick}
-                  label="Use Wikidata item"
+                  label={pageContent["edit-profile-use-wikidata"]}
                   customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
@@ -1444,7 +1444,7 @@ export default function EditProfilePage() {
                 <div className="flex flex-col gap-6 mt-0 w-full">
                   <BaseButton
                     onClick={handleSubmit}
-                    label="Save profile"
+                    label={pageContent["edit-profile-save"]}
                     customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
                     imageUrl={UploadIcon}
                     imageAlt="Upload icon"
@@ -1453,7 +1453,7 @@ export default function EditProfilePage() {
                   />
                   <BaseButton
                     onClick={() => router.back()}
-                    label="Cancel edit"
+                    label={pageContent["edit-profile-cancel"]}
                     customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
                       darkMode
                         ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
@@ -1557,7 +1557,7 @@ export default function EditProfilePage() {
               </div>
               <BaseButton
                 onClick={() => handleAddCapacity("known")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`w-full flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1619,7 +1619,7 @@ export default function EditProfilePage() {
               </div>
               <BaseButton
                 onClick={() => handleAddCapacity("available")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`w-full flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1681,7 +1681,7 @@ export default function EditProfilePage() {
               </div>
               <BaseButton
                 onClick={() => handleAddCapacity("wanted")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`w-full flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1832,7 +1832,7 @@ export default function EditProfilePage() {
               </div>
               <input
                 type="text"
-                placeholder="Insert item"
+                placeholder={pageContent["edit-profile-insert-item"]}
                 value={formData.wiki_alt}
                 onChange={(e) =>
                   setFormData({
@@ -1887,7 +1887,7 @@ export default function EditProfilePage() {
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
                 >
-                  <option value="">Insert item</option>
+                  <option value="">{pageContent["edit-profile-insert-item"]}</option>
                   {Object.entries(affiliations).map(([id, name]) => (
                     <option key={id} value={id}>
                       {name}
@@ -1944,7 +1944,7 @@ export default function EditProfilePage() {
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
                 >
-                  <option value="">Insert item</option>
+                  <option value="">{pageContent["edit-profile-insert-item"]}</option>
                   {Object.entries(territories).map(([id, name]) => (
                     <option key={id} value={id}>
                       {name}
@@ -2001,7 +2001,7 @@ export default function EditProfilePage() {
 
                 <BaseButton
                   onClick={handleWikidataClick}
-                  label="Use Wikidata item"
+                  label={pageContent["edit-profile-use-wikidata"]}
                   customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
@@ -2068,7 +2068,7 @@ export default function EditProfilePage() {
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
                 >
-                  <option value="">Insert project</option>
+                  <option value="">{pageContent["edit-profile-insert-project"]}</option>
                   {Object.entries(wikimediaProjects).map(([id, name]) => (
                     <option key={id} value={id}>
                       {name}
@@ -2106,7 +2106,7 @@ export default function EditProfilePage() {
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
                   >
-                    <option value="">Insert project</option>
+                    <option value="">{pageContent["edit-profile-insert-project"]}</option>
                     {Object.entries(wikimediaProjects).map(([id, name]) => (
                       <option key={id} value={id}>
                         {name}
@@ -2126,7 +2126,7 @@ export default function EditProfilePage() {
 
               <BaseButton
                 onClick={handleAddProject}
-                label="Add more projects"
+                label={pageContent["edit-profile-add-more-projects"]}
                 customClass={`w-full flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
@@ -2142,7 +2142,7 @@ export default function EditProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                Inform the Wikimedia Projects you have interest in.
+                {pageContent["edit-profile-wikimedia-projects"]}
               </span>
             </div>
           </div>
@@ -2151,7 +2151,7 @@ export default function EditProfilePage() {
           <div className="flex flex-row gap-[10px] mt-0">
             <BaseButton
               onClick={handleSubmit}
-              label="Save profile"
+              label={pageContent["edit-profile-save"]}
               customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
               imageUrl={UploadIcon}
               imageAlt="Upload icon"
@@ -2160,7 +2160,7 @@ export default function EditProfilePage() {
             />
             <BaseButton
               onClick={() => router.back()}
-              label="Cancel edit"
+              label={pageContent["edit-profile-cancel"]}
               customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border ${
                 darkMode
                   ? "border-white text-white"
