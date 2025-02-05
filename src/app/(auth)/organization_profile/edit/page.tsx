@@ -60,7 +60,7 @@ export default function EditOrganizationProfilePage() {
   const { data: session } = useSession();
   const token = session?.user?.token;
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Documents setters
@@ -71,7 +71,7 @@ export default function EditOrganizationProfilePage() {
     createDocument,
     deleteDocument,
   } = useDocument(token);
-
+  
   // Organization setters
   const {
     organization,
@@ -134,38 +134,38 @@ export default function EditOrganizationProfilePage() {
     error: eventsError,
   } = useEvents(organization?.events, token);
 
-  // State for events
-  const [eventsData, setEventsData] = useState<Event[]>([]);
-  const eventsLoaded = useRef(false);
-
-  // State for existing and new events
-  const [newEvents, setNewEvents] = useState<Event[]>([]);
-  const [eventId, setEventId] = useState<number>(0);
-  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
-
-  const [editedEvents, setEditedEvents] = useState<{
-    [key: number]: boolean;
-  }>({});
-
-  // Effect to load events
-  useEffect(() => {
-    if (!organization || !events) {
-      eventsLoaded.current = false;
-      return;
-    }
-
-    if (
-      !eventsLoaded.current &&
-      !isEventsLoading &&
-      organization?.events &&
-      organization?.events?.length > 0 &&
-      events &&
-      events.length > 0
-    ) {
-      setEventsData(events);
-      eventsLoaded.current = true;
-    }
-  }, [organization, events, isEventsLoading]);
+   // State for events
+   const [eventsData, setEventsData] = useState<Event[]>([]);
+   const eventsLoaded = useRef(false);
+ 
+   // State for existing and new events
+   const [newEvents, setNewEvents] = useState<Event[]>([]);
+   const [eventId, setEventId] = useState<number>(0);
+   const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+ 
+   const [editedEvents, setEditedEvents] = useState<{
+     [key: number]: boolean;
+   }>({});
+ 
+   // Effect to load events
+   useEffect(() => {
+     if (!organization || !events) {
+       eventsLoaded.current = false;
+       return;
+     }
+ 
+     if (
+       !eventsLoaded.current &&
+       !isEventsLoading &&
+       organization?.events &&
+       organization?.events?.length > 0 &&
+       events &&
+       events.length > 0
+     ) {
+       setEventsData(events);
+       eventsLoaded.current = true;
+     }
+   }, [organization, events, isEventsLoading]);
 
   // Tags setters
   const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
@@ -387,9 +387,9 @@ export default function EditOrganizationProfilePage() {
           try {
             await updateEvent(event.id, {
               name: event.name,
-              image_url: event.image_url,
+                image_url: event.image_url,
               url: event.url,
-              organizations: [Number(organizationId)],
+                organizations: [Number(organizationId)],
               time_begin: event.time_begin,
               time_end: event.time_end,
             });
@@ -405,12 +405,12 @@ export default function EditOrganizationProfilePage() {
         .map(async (event) => {
           try {
             const newEvent = await createEvent({
-              name: event.name,
-              image_url: event.image_url,
-              url: event.url,
-              organizations: [Number(organizationId)],
-              time_begin: event.time_begin,
-              time_end: event.time_end,
+                name: event.name,
+                image_url: event.image_url,
+                url: event.url,
+                organizations: [Number(organizationId)],
+                time_begin: event.time_begin,
+                time_end: event.time_end,
               creator: Number(session?.user?.id),
               team: [],
               related_skills: [],
@@ -663,14 +663,14 @@ export default function EditOrganizationProfilePage() {
   // Diff tags handlers
 
   const handleAddDiffTag = () => {
-    const newTag = {
+      const newTag = {
       id: Math.floor(Math.random() * -1000), // Temporary negative ID for new tags
       tag: "", // Empty string instead of default text
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      creator: Number(session?.user?.id),
-    };
-    setDiffTagsData((prev) => [...(prev || []), newTag]);
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        creator: Number(session?.user?.id),
+      };
+      setDiffTagsData((prev) => [...(prev || []), newTag]);
   };
 
   const handleDiffTagChange = (index: number, field: string, value: string) => {
@@ -697,6 +697,7 @@ export default function EditOrganizationProfilePage() {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // TODO translate
   const [currentCapacityType, setCurrentCapacityType] = useState<
     "known" | "available" | "wanted"
   >("known");
@@ -812,7 +813,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Welcome!
+                    {pageContent["edit-profile-welcome"]}
                   </h1>
                   <h2
                     className={`font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] ${
@@ -872,7 +873,7 @@ export default function EditOrganizationProfilePage() {
               <div className="flex flex-col gap-[10px] mt-0">
                 <BaseButton
                   onClick={handleSubmit}
-                  label="Save organization"
+                  label={pageContent["edit-profile-save-organization"]}
                   customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
                   imageUrl={SaveIcon}
                   imageAlt="Upload icon"
@@ -881,7 +882,7 @@ export default function EditOrganizationProfilePage() {
                 />
                 <BaseButton
                   onClick={() => router.back()}
-                  label="Cancel edit"
+                  label={pageContent["edit-profile-cancel"]}
                   customClass="flex border rounded-[4px] !mb-0 border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg px-4 py-2 rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
                   imageUrl={darkMode ? CancelIconWhite : CancelIcon}
                   imageAlt="Cancel icon"
@@ -901,12 +902,12 @@ export default function EditOrganizationProfilePage() {
                   />
                 </div>
                 <h2 className={`font-[Montserrat] text-[14px] font-bold`}>
-                  Report of activities
+                  {pageContent["organization-profile-report-activities-title"]}
                 </h2>
               </div>
               <input
                 type="text"
-                placeholder="Insert link"
+                placeholder={pageContent["edit-profile-insert-link"]}
                 className={`w-full p-2 text-[12px] border rounded-md ${
                   darkMode
                     ? "bg-transparent border-white text-white placeholder-gray-400"
@@ -925,7 +926,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Please provide a meta link to your report of activities.
+                {pageContent["organization-profile-provide-meta-link"]}
               </p>
             </div>
 
@@ -946,7 +947,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Known capacities
+                    {pageContent["body-profile-known-capacities-title"]}
                   </h2>
                 </div>
                 <div
@@ -974,7 +975,7 @@ export default function EditOrganizationProfilePage() {
 
                 <BaseButton
                   onClick={() => handleAddCapacity("known")}
-                  label="Add capacities"
+                  label={pageContent["edit-profile-add-capacities"]}
                   customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                     darkMode
                       ? "text-[#053749] bg-[#EFEFEF]"
@@ -990,8 +991,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   } mt-1`}
                 >
-                  Select skills you already have from the Capacity Directory.
-                  Try to choose the most specific ones
+                  {pageContent["edit-profile-select-skills"]}
                 </p>
               </div>
 
@@ -1010,7 +1010,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Available capacities
+                    {pageContent["body-profile-available-capacities-title"]}
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -1042,7 +1042,7 @@ export default function EditOrganizationProfilePage() {
                   </div>
                   <BaseButton
                     onClick={() => handleAddCapacity("available")}
-                    label="Add capacities"
+                    label={pageContent["edit-profile-add-capacities"]}
                     customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                       darkMode
                         ? "text-[#053749] bg-[#EFEFEF]"
@@ -1058,8 +1058,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     } mt-1`}
                   >
-                    Choose the skills you are available to share from your known
-                    capacities
+                    {pageContent["body-profile-choose-skills"]}
                   </p>
                 </div>
               </div>
@@ -1079,7 +1078,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    Wanted capacities
+                    {pageContent["body-profile-wanted-capacities-title"]}
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -1109,7 +1108,7 @@ export default function EditOrganizationProfilePage() {
                   </div>
                   <BaseButton
                     onClick={() => handleAddCapacity("wanted")}
-                    label="Add capacities"
+                    label={pageContent["edit-profile-add-capacities"]}
                     customClass={`rounded-[4px] mt-2 flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                       darkMode
                         ? "text-[#053749] bg-[#EFEFEF]"
@@ -1125,8 +1124,7 @@ export default function EditOrganizationProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     } `}
                   >
-                    Select skills you are willing to learn from the Capacity
-                    Directory. Try to choose the most specific ones
+                    {pageContent["edit-profile-wanted-capacities"]}
                   </p>
                 </div>
               </div>
@@ -1149,7 +1147,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Main Projects
+                  {pageContent["edit-profile-main-projects"]}
                 </h2>
               </div>
 
@@ -1167,7 +1165,7 @@ export default function EditOrganizationProfilePage() {
                   onClick={() => {
                     handleAddProject();
                   }}
-                  label="Add more projects"
+                  label={pageContent["edit-profile-add-more-projects"]}
                   customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
                     darkMode
                       ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1184,9 +1182,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Show the community what your organization is working on. Share
-                up to four wikimedia links and their illustrative images&apos;
-                links on commons.
+                {pageContent["edit-profile-display-links"]}
               </p>
             </div>
 
@@ -1205,7 +1201,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Events
+                  {pageContent["body-profile-section-title-events"]}
                 </h2>
               </div>
               <div className="flex flex-col w-full gap-2 mb-2">
@@ -1220,7 +1216,7 @@ export default function EditOrganizationProfilePage() {
                 ))}
                 <BaseButton
                   onClick={handleAddEvent}
-                  label="Add more events"
+                  label={pageContent["edit-profile-add-more-events"]}
                   customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] md:text-[16px] not-italic font-extrabold leading-[normal] ${
                     darkMode
                       ? "text-capx-dark-box-bg bg-white"
@@ -1238,9 +1234,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Display your organization main events. Share up to four
-                wikimedia links and their illustrative images&apos; links on
-                commons.
+                {pageContent["body-profile-section-title-events"]}
               </p>
             </div>
 
@@ -1259,23 +1253,23 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  News
+                  {pageContent["edit-profile-news"]}
                 </h2>
               </div>
               <div className="flex flex-col w-full gap-2 mb-2">
                 {diffTagsData?.map((tag, index) => (
                   <NewsFormItem
-                    key={index}
+                        key={index}
                     news={tag}
                     index={index}
                     onDelete={handleDeleteDiffTag}
                     onChange={handleDiffTagChange}
                   />
-                ))}
+                  ))}
               </div>
               <BaseButton
                 onClick={handleAddDiffTag}
-                label="Add more Diff tags"
+                label={pageContent["edit-profile-add-more-diff-tags"]}
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-capx-dark-box-bg bg-white"
@@ -1291,7 +1285,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Enter Diff tags related to your organization.
+                {pageContent["edit-profile-enter-diff-tags"]}
               </p>
             </div>
 
@@ -1310,7 +1304,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Documents
+                  {pageContent["body-profile-section-title-documents"]}
                 </h2>
               </div>
               <div className="flex flex-col w-full gap-2 mb-2">
@@ -1319,7 +1313,7 @@ export default function EditOrganizationProfilePage() {
                     <div key={index} className="flex items-center gap-2">
                       <input
                         type="text"
-                        placeholder="Insert link"
+                        placeholder={pageContent["edit-profile-insert-link"]}
                         className="w-full p-2 text-[12px] text-[#829BA4] border border-white bg-transparent rounded-md mb-2"
                         value={document.url || ""}
                         onChange={(e) => {
@@ -1348,7 +1342,7 @@ export default function EditOrganizationProfilePage() {
 
               <BaseButton
                 onClick={handleAddDocument}
-                label="Add more links"
+                label={pageContent["edit-profile-add-more-links"]}
                 customClass={`rounded-[4px] bg-capx-dark-box-bg flex w-full px-[13px] py-[6px] pb-[6px] items-center gap-[116px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-capx-dark-box-bg bg-white"
@@ -1424,7 +1418,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Welcome!
+                  {pageContent["edit-profile-welcome"]}
                 </h1>
                 <h2
                   className={`font-[Montserrat] not-italic font-extrabold leading-[normal] ${
@@ -1465,7 +1459,7 @@ export default function EditOrganizationProfilePage() {
               <div className="flex flex-col gap-4">
                 <BaseButton
                   onClick={handleSubmit}
-                  label="Save profile"
+                  label={pageContent["edit-profile-save"]}
                   customClass="flex bg-[#851970] items-center justify-between text-white px-4 py-2 rounded-[8px] font-[Montserrat] text-[24px] font-bold !px-[32px] !py-[16px] !w-3/4 h-auto !mb-0"
                   imageUrl={SaveIcon}
                   imageAlt="Save icon"
@@ -1474,7 +1468,7 @@ export default function EditOrganizationProfilePage() {
                 />
                 <BaseButton
                   onClick={() => router.back()}
-                  label="Cancel edit"
+                  label={pageContent["edit-profile-cancel"]}
                   customClass="flex border rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg !px-[32px] !py-[16px] rounded-[8px] font-[Montserrat] text-[24px] w-3/4 font-bold pb-[6px]"
                   imageUrl={CancelIcon}
                   imageAlt="Cancel icon"
@@ -1498,12 +1492,12 @@ export default function EditOrganizationProfilePage() {
               <h2
                 className={`font-[Montserrat] text-[14px] md:text-[24px] font-bold`}
               >
-                Report of activities
+                {pageContent["organization-profile-report-activities-title"]}
               </h2>
             </div>
             <input
               type="text"
-              placeholder="Insert link"
+              placeholder={pageContent["edit-profile-insert-link"]}
               className={`w-full p-2 md:p-3 text-[24px] border rounded-md ${
                 darkMode
                   ? "bg-transparent border-white text-white placeholder-gray-400"
@@ -1519,7 +1513,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              Please provide a meta link to your report of activities.
+              {pageContent["organization-profile-provide-meta-link"]}
             </p>
           </div>
 
@@ -1540,7 +1534,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Known capacities
+                  {pageContent["body-profile-known-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1572,7 +1566,7 @@ export default function EditOrganizationProfilePage() {
 
               <BaseButton
                 onClick={() => handleAddCapacity("known")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`rounded-[8px] !w-fit mt-2 flex !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-[#053749] bg-[#EFEFEF]"
@@ -1588,8 +1582,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Select skills you already have from the Capacity Directory. Try
-                to choose the most specific ones
+                {pageContent["edit-profile-select-skills"]}
               </p>
             </div>
 
@@ -1608,7 +1601,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Available capacities
+                  {pageContent["body-profile-available-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1640,7 +1633,7 @@ export default function EditOrganizationProfilePage() {
 
               <BaseButton
                 onClick={() => handleAddCapacity("available")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`rounded-[8px] w-fit mt-2 flex !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-[#053749] bg-[#EFEFEF]"
@@ -1656,8 +1649,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Choose the skills you are available to share from your known
-                capacities
+                {pageContent["body-profile-choose-skills"]}
               </p>
             </div>
 
@@ -1676,7 +1668,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  Wanted capacities
+                  {pageContent["body-profile-wanted-capacities-title"]}
                 </h2>
               </div>
               <div
@@ -1708,7 +1700,7 @@ export default function EditOrganizationProfilePage() {
 
               <BaseButton
                 onClick={() => handleAddCapacity("wanted")}
-                label="Add capacities"
+                label={pageContent["edit-profile-add-capacities"]}
                 customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-[#053749] bg-[#EFEFEF]"
@@ -1724,8 +1716,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                Select skills you are willing to learn from the Capacity
-                Directory. Try to choose the most specific ones
+                {pageContent["edit-profile-wanted-capacities"]}
               </p>
             </div>
           </div>
@@ -1746,7 +1737,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                Main Projects
+                {pageContent["edit-profile-main-projects"]}
               </h2>
             </div>
 
@@ -1764,7 +1755,7 @@ export default function EditOrganizationProfilePage() {
                 onClick={() => {
                   handleAddProject();
                 }}
-                label="Add projects"
+                label={pageContent["edit-profile-add-projects"]}
                 customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                   darkMode
                     ? "text-[#053749] bg-[#EFEFEF]"
@@ -1781,9 +1772,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              Show the community what your organization is working on. Share up
-              to four wikimedia links and their illustrative images&apos; links
-              on commons.
+              {pageContent["edit-profile-display-links"]}
             </p>
           </div>
 
@@ -1803,7 +1792,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                Events
+                {pageContent["body-profile-section-title-events"]}
               </h2>
             </div>
 
@@ -1815,21 +1804,21 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteEvent}
                   onChange={handleEventChange}
-                />
-              ))}
-              <BaseButton
-                onClick={handleAddEvent}
-                label="Add events"
-                customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                  darkMode
-                    ? "text-[#053749] bg-[#EFEFEF]"
-                    : "text-white bg-capx-dark-box-bg"
-                }`}
-                imageUrl={darkMode ? AddIcon : AddIconWhite}
-                imageAlt="Add icon"
-                imageWidth={32}
-                imageHeight={32}
-              />
+                      />
+                ))}
+            <BaseButton
+              onClick={handleAddEvent}
+              label={pageContent["edit-profile-add-events"]}
+              customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                darkMode
+                  ? "text-[#053749] bg-[#EFEFEF]"
+                  : "text-white bg-capx-dark-box-bg"
+              }`}
+              imageUrl={darkMode ? AddIcon : AddIconWhite}
+              imageAlt="Add icon"
+              imageWidth={32}
+              imageHeight={32}
+            />
             </div>
             <p
               className={`text-[20px] ${
@@ -1837,7 +1826,7 @@ export default function EditOrganizationProfilePage() {
               } mt-1`}
             >
               Display your organization main events. Share up to four wikimedia
-              links and their illustrative images&apos; links on commons.
+              links and their illustrative images&apos; links on commons. TODO ARRUMAR AQUI
             </p>
           </div>
 
@@ -1857,7 +1846,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                News
+                {pageContent["edit-profile-news"]}
               </h2>
             </div>
 
@@ -1869,13 +1858,13 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDiffTag}
                   onChange={handleDiffTagChange}
-                />
-              ))}
+                    />
+                ))}
             </div>
 
             <BaseButton
               onClick={handleAddDiffTag}
-              label="Add Diff tags"
+              label={pageContent["edit-profile-add-diff-tags"]}
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
                   ? "text-[#053749] bg-[#EFEFEF]"
@@ -1891,7 +1880,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              Enter Diff tags related to your organization.
+              {pageContent["edit-profile-enter-diff-tags"]}
             </p>
           </div>
 
@@ -1911,7 +1900,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                Documents
+                {pageContent["body-profile-section-title-documents"]}
               </h2>
             </div>
 
@@ -1923,13 +1912,13 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDocument}
                   onChange={handleDocumentChange}
-                />
-              ))}
+                    />
+                ))}
             </div>
 
             <BaseButton
               onClick={handleAddDocument}
-              label="Add link"
+              label= {pageContent["edit-profile-add-link"]}
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
                   ? "text-[#053749] bg-[#EFEFEF]"
@@ -1945,8 +1934,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              You can share up to four links of your organization&apos;s
-              documents from Wikimedia Commons.
+              {pageContent["edit-profile-enter-links"]}
             </p>
           </div>
 
@@ -2073,7 +2061,7 @@ export default function EditOrganizationProfilePage() {
           <div className="flex flex-row gap-2 mt-6 w-[50%] md:w-[75%] lg:w-[50%]">
             <BaseButton
               onClick={handleSubmit}
-              label="Save profile"
+              label={pageContent["edit-profile-save"]}
               customClass="flex border w-1/2 rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#851970]  items-center justify-between text-white !px-[32px] !py-[16px] rounded-md font-[Montserrat] text-[24px] font-bold pb-[6px]"
               imageUrl={SaveIcon}
               imageAlt="Save icon"
@@ -2082,7 +2070,7 @@ export default function EditOrganizationProfilePage() {
             />
             <BaseButton
               onClick={() => router.back()}
-              label="Cancel edit"
+              label={pageContent["edit-profile-cancel"]}
               customClass="flex border w-1/2 rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg !px-[32px] !py-[16px] rounded-md font-[Montserrat] text-[24px] font-bold pb-[6px]"
               imageUrl={CancelIcon}
               imageAlt="Cancel icon"
@@ -2096,7 +2084,7 @@ export default function EditOrganizationProfilePage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleCapacitySelect}
-        title={`Select ${currentCapacityType} capacities`}
+        title={`Select ${currentCapacityType} capacities`} // TODO Translate
       />
     </div>
   );

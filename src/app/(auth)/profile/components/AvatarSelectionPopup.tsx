@@ -4,6 +4,7 @@ import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.
 import { useState } from "react";
 import { useAvatars } from "@/hooks/useAvatars";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 interface AvatarSelectionPopupProps {
   onClose: () => void;
@@ -19,6 +20,7 @@ export default function AvatarSelectionPopup({
   onUpdate,
 }: AvatarSelectionPopupProps) {
   const { avatars, isLoading } = useAvatars();
+  const { pageContent } = useApp();
   const [tempSelectedId, setTempSelectedId] = useState(selectedAvatarId);
   const { darkMode } = useTheme();
 
@@ -50,7 +52,7 @@ export default function AvatarSelectionPopup({
       >
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className={`font-[Montserrat] text-[16px] font-bold`}>
-            Choose an option
+            {pageContent["edit-profile-choose-an-option"]}
           </h2>
           <button
             onClick={onClose}
@@ -93,7 +95,7 @@ export default function AvatarSelectionPopup({
           <div className="flex gap-4">
             <BaseButton
               onClick={onClose}
-              label="Close tab"
+              label={pageContent["auth-dialog-button-close"]}
               customClass={`flex-1 border ${
                 darkMode
                   ? "border-white text-white"
@@ -102,7 +104,7 @@ export default function AvatarSelectionPopup({
             />
             <BaseButton
               onClick={handleUpdate}
-              label="Update"
+              label={pageContent["edit-profile-update"]}
               customClass="flex-1 bg-[#851970] text-white rounded-md py-2 font-[Montserrat] text-[14px] font-bold"
             />
           </div>
