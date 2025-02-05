@@ -23,7 +23,7 @@ export default function ProfileSelect() {
   const router = useRouter();
   const [selectedProfile, setSelectedProfile] = useState<string>("user");
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const handleProfileChange = (selectedOption: {
     value: string;
     label: string;
@@ -40,12 +40,12 @@ export default function ProfileSelect() {
   return (
     <BaseSelect
       defaultValue={{
-        value: "My Profile",
-        label: "My Profile",
+        value: pageContent["body-loggedin-home-main-section-button02"],
+        label: pageContent["body-loggedin-home-main-section-button02"],
       }}
       onChange={handleProfileChange}
       options={profileOptions}
-      name="My profiles"
+      name={pageContent["navbar-link-profiles"]}
       className="w-[200px] text-[20px] w-max"
       darkMode={darkMode}
       isMobile={isMobile}
