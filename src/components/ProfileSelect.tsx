@@ -10,20 +10,22 @@ interface ProfileOption {
   path: string;
 }
 
-const profileOptions: ProfileOption[] = [
-  { value: "user", label: "User Profile", path: "/profile" },
-  {
-    value: "organization",
-    label: "Org. Profile",
-    path: "/organization_profile",
-  },
-];
 
 export default function ProfileSelect() {
   const router = useRouter();
   const [selectedProfile, setSelectedProfile] = useState<string>("user");
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
+
+  const profileOptions: ProfileOption[] = [
+    { value: "user", label: pageContent["navbar-user-profile"], path: "/profile" },
+    {
+      value: "organization",
+      label: pageContent["navbar-org-profile"],
+      path: "/organization_profile",
+    },
+  ];
+
   const handleProfileChange = (selectedOption: {
     value: string;
     label: string;
