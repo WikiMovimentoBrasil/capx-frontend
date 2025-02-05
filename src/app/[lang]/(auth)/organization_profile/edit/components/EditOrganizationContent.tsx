@@ -55,11 +55,6 @@ import EventsFormItem from "../components/EventsFormItem";
 import NewsFormItem from "../components/NewsFormItem";
 import DocumentFormItem from "../components/DocumentFormItem";
 
-interface EditOrganizationContentProps {
-  pageContent: any;
-  initialSession: any;
-}
-
 export default function EditOrganizationContent({
   pageContent,
   initialSession,
