@@ -19,7 +19,7 @@ export function CapacitiesList({
 }: CapacitiesListProps) {
   const { getCapacityName, capacityNames } = useCapacityDetails(items);
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   if (isMobile) {
     return (
@@ -45,11 +45,11 @@ export function CapacitiesList({
               <div
                 key={index}
                 className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] ${
-                  title === "Known capacities"
+                  title === pageContent["body-profile-known-capacities-title"]
                     ? "bg-[#0070B9] text-white"
-                    : title === "Available capacities"
+                    : title === pageContent["body-profile-available-capacities-title"]
                     ? "bg-[#05A300] text-white"
-                    : title === "Wanted capacities"
+                    : title === pageContent["body-profile-wanted-capacities-title"]
                     ? "bg-[#D43831] text-white"
                     : "bg-[#EFEFEF]"
                 }`}
@@ -92,11 +92,11 @@ export function CapacitiesList({
             <div
               key={index}
               className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px]  ${
-                title === "Known capacities"
+                title === pageContent["body-profile-known-capacities-title"]
                   ? "bg-[#0070B9] text-[24px] text-white"
-                  : title === "Available capacities"
+                  : title === pageContent["body-profile-available-capacities-title"]
                   ? "bg-[#05A300] text-[24px] text-white"
-                  : title === "Wanted capacities"
+                  : title === pageContent["body-profile-wanted-capacities-title"]
                   ? "bg-[#D43831] text-[24px] text-white"
                   : "bg-[#EFEFEF]"
               }`}
