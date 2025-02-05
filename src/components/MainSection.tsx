@@ -45,7 +45,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
             >
               {pageContent["body-home-section01-title-text"] + " "}
               <Typewriter
-                words={pageContent["body-home-section01-title-carousel"].split(
+                words={pageContent["body-home-section01-title-carousel"]?.split(
                   ","
                 )}
                 loop={0}
@@ -110,7 +110,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
                 <Typewriter
                   words={pageContent[
                     "body-home-section01-title-carousel"
-                  ].split(",")}
+                  ]?.split(",")}
                   loop={0}
                   cursor
                   cursorStyle="_"
