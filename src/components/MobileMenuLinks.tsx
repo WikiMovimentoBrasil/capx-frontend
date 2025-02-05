@@ -58,7 +58,7 @@ export default function MobileMenuLinks({
 
   const subMenuItems: SubMenuItem[] = [
     {
-      title: "Organization Profile",
+      title: pageContent["navbar-organization-profile"],
       to: "/organization_profile",
       image: darkMode
         ? selectedProfile === "organization"
@@ -71,7 +71,7 @@ export default function MobileMenuLinks({
         handleProfileChange("organization", "/organization_profile"),
     },
     {
-      title: "User Profile",
+      title: pageContent["navbar-user-profile"],
       to: "/profile",
       image: darkMode
         ? selectedProfile === "user"

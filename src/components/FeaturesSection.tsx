@@ -48,11 +48,16 @@ const Row = (
   );
 };
 
-export default function FeaturesSection() {
+
+interface FeaturesSectionnProps {
+  pageContent: any;
+}
+
+export default function FeaturesSection({ pageContent }: FeaturesSectionnProps) {
   const features = [
-    { illustration: illustration01, description: "learn new capacities" },
-    { illustration: illustration02, description: "connect with wikimedians" },
-    { illustration: illustration03, description: "exchange knowledge" },
+    { illustration: illustration01, description: pageContent["body-home-feature-section-capacity"] },
+    { illustration: illustration02, description: pageContent["body-home-feature-section-connect"] },
+    { illustration: illustration03, description: pageContent["body-home-feature-section-knowledge"] },
   ];
   const { darkMode } = useTheme();
 

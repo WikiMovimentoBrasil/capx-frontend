@@ -18,7 +18,7 @@ export default function ApplicationWrapper({
   return (
     <BaseWrapper>
       <MainSection pageContent={pageContent} />
-      <FeaturesSection />
+      <FeaturesSection pageContent={pageContent} />
       <VideoSection pageContent={pageContent} />
       <CallToActionSection pageContent={pageContent} />
     </BaseWrapper>

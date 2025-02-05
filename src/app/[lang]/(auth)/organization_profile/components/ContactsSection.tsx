@@ -21,7 +21,7 @@ export const ContactsSection = ({
   meta_page,
   website,
 }: ContactsSectionProps) => {
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const { darkMode } = useTheme();
 
   const contacts = [
@@ -70,7 +70,7 @@ export const ContactsSection = ({
               darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
             }`}
           >
-            Contacts
+            {pageContent["body-profile-section-title-contacts"]}
           </h2>
         </div>
         <div className="flex flex-col gap-4">
@@ -121,7 +121,7 @@ export const ContactsSection = ({
             darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
           }`}
         >
-          Contacts
+          {pageContent["body-profile-section-title-contacts"]}
         </h2>
       </div>
       <div className="flex flex-col gap-4">
