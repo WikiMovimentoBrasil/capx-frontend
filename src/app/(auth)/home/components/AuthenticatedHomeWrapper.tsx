@@ -29,7 +29,7 @@ export default function AuthenticatedHomeWrapper({
           onContinue={handleContinue}
           onClose={() => {}}
           image={FirstLoginImage}
-          title="Complete your profile for a better experience"
+          title={pageContent["complete-your-profile"]}
           closeButtonLabel="Close tab"
           continueButtonLabel="Continue"
           customClass={`${
