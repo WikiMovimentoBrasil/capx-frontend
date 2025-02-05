@@ -1,4 +1,7 @@
 {
+  "auth-dialog-content": "You are being redirected to the unified login on Meta-Wiki",
+  "auth-dialog-button-continue": "Continue",
+  "auth-dialog-button-close": "Close Tab",
   "navbar-link-about": "About",
   "navbar-link-profiles": "My profiles",
   "navbar-link-capacities": "Directory",
