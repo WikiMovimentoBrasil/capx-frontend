@@ -1,5 +1,8 @@
 {
   "loading": "Loading...",
+  "known": "known",
+  "available": "available",
+  "wanted": "wanted",
   "complete-your-profile": "Complete your profile for a better experience",
   "auth-dialog-content": "You are being redirected to the unified login on Meta-Wiki",
   "auth-dialog-button-continue": "Continue",
@@ -176,6 +179,7 @@
   "edit-profile-add-more-links": "Add more links",
   "edit-profile-add-diff-tags": "Add diff tags",
   "edit-profile-add-more-diff-tags": "Add more diff tags",
+  "edit-profile-select": "Select",
   "edit-profile-news": "News",
   "edit-profile-enter-diff-tags": "Enter Diff tags related to your organization.",
   "edit-profile-display-events": "Display your organization main events. Share up to four wikimedia links and their illustrative images links on commons.",

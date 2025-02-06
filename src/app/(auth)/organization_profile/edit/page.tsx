@@ -717,7 +717,6 @@ export default function EditOrganizationProfilePage() {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // TODO translate
   const [currentCapacityType, setCurrentCapacityType] = useState<
     "known" | "available" | "wanted"
   >("known");
@@ -1862,8 +1861,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              Display your organization main events. Share up to four wikimedia
-              links and their illustrative images&apos; links on commons. TODO ARRUMAR AQUI
+             {pageContent["edit-profile-display-events"]}
             </p>
           </div>
 
@@ -2121,7 +2119,7 @@ export default function EditOrganizationProfilePage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleCapacitySelect}
-        title={`Select ${currentCapacityType} capacities`} // TODO Translate
+        title={`${pageContent["edit-profile-select"]} ${pageContent[currentCapacityType]} ${pageContent["edit-profile-capacities"]}`}
       />
     </div>
   );
