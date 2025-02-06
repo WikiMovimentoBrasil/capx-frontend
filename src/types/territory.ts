@@ -1,3 +1,3 @@
-export interface Territories {
+export interface Territory {
   [key: string]: string;
 }

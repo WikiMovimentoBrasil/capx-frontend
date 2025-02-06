@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Territories } from "@/types/territory";
+import { Territory } from "@/types/territory";
 import { fetchTerritories } from "@/services/territoryService";
 
 export const useTerritories = (token: string | undefined) => {
-  const [territories, setTerritories] = useState<Territories>({});
+  const [territories, setTerritories] = useState<Territory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
