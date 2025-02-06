@@ -8,7 +8,9 @@
 	"navbar-link-capacities": "ڈائریکٹری",
 	"navbar-link-home": "گھر",
 	"navbar-link-reports": "رپورٹاں",
+	"body-home-main-section-carrousel-description-more-projects": "...",
 	"body-home-section01-call-to-action-button02": "کھاتہ کھولو",
+	"body-loggedin-home-main-section-button01": "پھلورو",
 	"body-loggedin-home-main-section-button02": "میݙی پروفائل",
 	"body-profile-gender-other": "ٻیا",
 	"body-profile-edit-button": "پروفائل وچ تبدیلی کرو",
@@ -52,5 +54,6 @@
 	"body-profile-wanted-capacities-title": "مطلوبہ صلاحیتاں",
 	"body-profile-wikimedia-projects-title": "وکیمیڈیا منصوبے",
 	"body-profile-contact-title": "رابطہ",
-	"edit-profile-save": "فائل بچاؤ"
+	"edit-profile-save": "فائل بچاؤ",
+	"edit-profile-wikidata-item": "وکی ڈیٹا آئٹم"
 }

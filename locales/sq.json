@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"INNERLMNT",
 			"Ritamaliqi",
 			"Vyolla"
 		]
@@ -24,6 +25,8 @@
 	"body-home-section01-call-to-action-button02": "Krijo llogari",
 	"body-home-video-section-title": "Si u krijua CapX?",
 	"body-loggedin-home-main-section-title": "Mirë se vini në CapX!",
+	"body-loggedin-home-main-section-description": "Është mirë që ju kemi këtu",
+	"body-loggedin-home-main-section-button01": "Eksploro",
 	"body-loggedin-home-main-section-button02": "Profili im",
 	"body-profile-gender-hehim": "Ai/Atij",
 	"body-profile-gender-sheher": "Ajo/Asaj",
