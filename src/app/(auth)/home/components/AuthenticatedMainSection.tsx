@@ -207,7 +207,7 @@ export default function AuthenticatedMainSection({
               ></AuthButton>
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
-                onClick={() => router.push("/auth/profile")}
+                onClick={() => router.push("/profile")}
                 customClass="w-fit sm:w-fit rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] inline-flex px-[16px] py-[8px] justify-center items-center gap-[8px] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
               ></BaseButton>
             </div>
@@ -256,7 +256,7 @@ export default function AuthenticatedMainSection({
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
                 customClass="rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] inline-flex px-[32px] py-[16px] h-[64px] justify-center items-center gap-[8px] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
-                onClick={() => router.push("/auth/profile")}
+                onClick={() => router.push("/profile")}
               ></BaseButton>
             </div>
           </div>
