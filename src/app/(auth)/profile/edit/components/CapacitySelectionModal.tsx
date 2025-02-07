@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCapacityList } from "@/hooks/useCapacityList";
@@ -21,7 +21,7 @@ export default function CapacitySelectionModal({
   title,
 }: CapacitySelectionModalProps) {
   const { darkMode } = useTheme();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { pageContent } = useApp();
   const [selectedPath, setSelectedPath] = useState<number[]>([]);
   const [selectedCapacity, setSelectedCapacity] = useState<Capacity | null>(
@@ -37,48 +37,53 @@ export default function CapacitySelectionModal({
     fetchCapacitiesByParent,
   } = useCapacityList(session?.user?.token);
 
+  // Fetch root capacities only when modal opens and we have a token
   useEffect(() => {
-    if (isOpen && session?.user?.token) {
-      fetchRootCapacities();
+    if (!isOpen || !session?.user?.token) return;
+
+    const fetchData = async () => {
+      if (rootCapacities.length === 0) {
+        await fetchRootCapacities();
+      }
+    };
+
+    fetchData();
+  }, [isOpen, session?.user?.token]);
+
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
       setSelectedPath([]);
       setSelectedCapacity(null);
     }
-  }, [isOpen, session?.user?.token, fetchRootCapacities]);
+  }, [isOpen]);
 
   const handleCategorySelect = async (category: Capacity) => {
     try {
       const categoryId = category.id || Number(category.code);
-      const currentPathIndex = selectedPath.indexOf(categoryId);
 
-      if (currentPathIndex !== -1) {
-        setSelectedPath((prev) => prev.slice(0, currentPathIndex + 1));
+      // Se já tem filhos no hierarchy, apenas navega
+      if (capacityHierarchy[categoryId]?.length > 0) {
+        setSelectedPath((prev) => [...prev, categoryId]);
         setSelectedCapacity(null);
         return;
       }
 
-      if (!capacityHierarchy[categoryId]) {
-        const children = await fetchCapacitiesByParent(categoryId);
+      // Tenta buscar filhos
+      const children = await fetchCapacitiesByParent(categoryId);
 
-        if (children && children.length > 0) {
-          setSelectedPath((prev) => [...prev, categoryId]);
-          setSelectedCapacity(null);
-          return;
-        }
-      }
-
-      if (capacityHierarchy[categoryId]?.length > 0) {
+      // Se encontrou filhos, navega para eles
+      if (children && children.length > 0) {
         setSelectedPath((prev) => [...prev, categoryId]);
         setSelectedCapacity(null);
-      } else {
-        setSelectedCapacity(category);
+        return;
       }
+
+      // Se não tem filhos, seleciona como capacidade final
+      setSelectedCapacity(category);
     } catch (err) {
       console.error("Erro ao selecionar categoria:", err);
     }
-  };
-
-  const handleCapacitySelect = (capacity: Capacity) => {
-    setSelectedCapacity(capacity);
   };
 
   const handleConfirm = () => {
@@ -109,6 +114,18 @@ export default function CapacitySelectionModal({
 
     return currentCapacities;
   }, [selectedPath, capacityHierarchy, rootCapacities]);
+
+  // Renderizar loading enquanto a sessão carrega
+  if (status === "loading" || !session) {
+    return (
+      <div className={`fixed inset-0 z-50 ${isOpen ? "block" : "hidden"}`}>
+        <div className="fixed inset-0 bg-black bg-opacity-50" />
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? "block" : "hidden"}`}>

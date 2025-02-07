@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface BaseButtonProps {
   label: string | React.ReactNode;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void | Promise<void>;
   disabled?: boolean;
   customClass?: string;
   imageUrl?: string;
@@ -32,7 +32,7 @@ export default function BaseButton({
 
   return (
     <button
-      onClick={onClick}
+      onClick={(e) => onClick(e)}
       disabled={disabled}
       className={`${buttonClass} ${justifyClass}`}
     >

@@ -6,6 +6,19 @@ import { Territory } from "@/types/territory";
 import { Language } from "@/types/language";
 import { Affiliation } from "@/types/affiliation";
 import { WikimediaProject } from "@/types/wikimediaProject";
+import LanguageList from "./LanguageList";
+import Image from "next/image";
+import WikiIcon from "@/public/static/images/wikimedia_logo_black.svg";
+import WikiIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
+import AffiliationIcon from "@/public/static/images/affiliation.svg";
+import AffiliationIconWhite from "@/public/static/images/affiliation_white.svg";
+import ArrowDownIcon from "@/public/static/images/arrow_drop_down_circle.svg";
+import ArrowDownIconWhite from "@/public/static/images/arrow_drop_down_circle_white.svg";
+import TerritoryIcon from "@/public/static/images/territory.svg";
+import TerritoryIconWhite from "@/public/static/images/territory_white.svg";
+import AddIcon from "@/public/static/images/add.svg";
+import AddIconDark from "@/public/static/images/add_dark.svg";
+import BaseButton from "@/components/BaseButton";
 
 interface LanguageProficiency {
   id: number;
@@ -73,212 +86,285 @@ export default function ProfileFields({
     }),
   };
 
+  const handleRemoveLanguage = (index: number) => {
+    const newLanguages = [...(formData.language || [])];
+    newLanguages.splice(index, 1);
+    onFieldChange("language", newLanguages);
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <label
-          htmlFor="display_name"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Nome de exibição
-        </label>
-        <input
-          type="text"
-          id="display_name"
-          value={formData.display_name || ""}
-          onChange={(e) => onFieldChange("display_name", e.target.value)}
-          className={`w-full rounded-md ${
-            darkMode
-              ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300 text-[#053749]"
-          } focus:ring-[#053749] focus:border-[#053749]`}
+        <LanguageList
+          formData={formData}
+          languages={languages}
+          darkMode={darkMode}
+          onUpdateFormData={onFieldChange}
+          onRemoveLanguage={handleRemoveLanguage}
         />
       </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="about"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Sobre
-        </label>
-        <textarea
-          id="about"
-          value={formData.about || ""}
-          onChange={(e) => onFieldChange("about", e.target.value)}
-          rows={4}
-          className={`w-full rounded-md ${
-            darkMode
-              ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300 text-[#053749]"
-          } focus:ring-[#053749] focus:border-[#053749]`}
-          placeholder="Escreva uma breve descrição sobre você."
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="territory"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Território
-        </label>
-        <Select
-          id="territory"
-          options={territories.map((territory) => ({
-            value: territory.id,
-            label: territory.name,
-          }))}
-          value={
-            territories
-              .filter(
-                (territory) => territory.id === String(formData.territory)
-              )
-              .map((territory) => ({
-                value: territory.id,
-                label: territory.name,
-              }))[0]
-          }
-          onChange={(selected) =>
-            onFieldChange("territory", selected ? selected.value : null)
-          }
-          styles={selectStyles}
-          isClearable
-          placeholder="Selecione seu território"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="languages"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Idiomas
-        </label>
-        <Select
-          isMulti
-          id="languages"
-          options={languages.map((language) => ({
-            value: language.id,
-            label: language.language_name,
-          }))}
-          value={languages
-            .filter((language) =>
-              formData.language?.some(
-                (lang) => (lang as LanguageProficiency).id === language.id
-              )
-            )
-            .map((language) => ({
-              value: language.id,
-              label: language.language_name,
-            }))}
-          onChange={(selected) =>
-            onFieldChange(
-              "language",
-              selected ? selected.map((option) => option.value) : []
-            )
-          }
-          styles={selectStyles}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="affiliations"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Afiliações
-        </label>
-        <Select
-          isMulti
-          id="affiliations"
-          options={affiliations.map((affiliation) => ({
-            value: affiliation.id,
-            label: affiliation.name,
-          }))}
-          value={affiliations
-            .filter((affiliation) =>
-              formData.affiliation?.includes(affiliation.id.toString())
-            )
-            .map((affiliation) => ({
-              value: affiliation.id,
-              label: affiliation.name,
-            }))}
-          onChange={(selected) =>
-            onFieldChange(
-              "affiliation",
-              selected ? selected.map((option) => option.value) : []
-            )
-          }
-          styles={selectStyles}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="wikimedia_projects"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Projetos Wikimedia
-        </label>
-        <Select
-          isMulti
-          id="wikimedia_projects"
-          options={wikimediaProjects.map((project) => ({
-            value: project.id,
-            label: project.name,
-          }))}
-          value={wikimediaProjects
-            .filter((project) =>
-              formData.wikimedia_project?.includes(project.id.toString())
-            )
-            .map((project) => ({
-              value: project.id,
-              label: project.name,
-            }))}
-          onChange={(selected) =>
-            onFieldChange(
-              "wikimedia_project",
-              selected ? selected.map((option) => option.value) : []
-            )
-          }
-          styles={selectStyles}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label
-          htmlFor="wiki_alt"
-          className={`block text-sm font-medium ${
-            darkMode ? "text-white" : "text-[#053749]"
-          }`}
-        >
-          Nome de usuário alternativo
-        </label>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Image
+            src={darkMode ? WikiIconWhite : WikiIcon}
+            alt="Alternative account icon"
+            width={20}
+            height={20}
+          />
+          <h2
+            className={`font-[Montserrat] text-[14px] font-bold ${
+              darkMode ? "text-white" : "text-[#053749]"
+            }`}
+          >
+            Alternative Wikimedia Account
+          </h2>
+        </div>
         <input
           type="text"
           id="wiki_alt"
+          placeholder="Insert item"
           value={formData.wiki_alt || ""}
           onChange={(e) => onFieldChange("wiki_alt", e.target.value)}
-          className={`w-full rounded-md ${
+          className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] ${
             darkMode
-              ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300 text-[#053749]"
-          } focus:ring-[#053749] focus:border-[#053749]`}
-          placeholder="Outro nome de usuário Wikimedia"
+              ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+              : "border-[#053749] text-[#829BA4]"
+          } border`}
         />
+        <span
+          className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+            darkMode ? "text-white" : "text-[#053749]"
+          }`}
+        >
+          Share another Wikimedia username if you have one.
+        </span>
+      </div>
+      {/* Affiliation */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Image
+            src={darkMode ? AffiliationIconWhite : AffiliationIcon}
+            alt="Affiliation icon"
+            width={20}
+            height={20}
+          />
+          <h2
+            className={`font-[Montserrat] text-[14px] font-bold ${
+              darkMode ? "text-white" : "text-[#053749]"
+            }`}
+          >
+            Affiliation
+          </h2>
+        </div>
+        <div className="relative">
+          <select
+            value={formData.affiliation?.[0] || ""}
+            onChange={(e) =>
+              onFieldChange(
+                "affiliation",
+                e.target.value ? [e.target.value] : []
+              )
+            }
+            className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+              darkMode
+                ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                : "border-[#053749] text-[#829BA4]"
+            } border`}
+          >
+            <option value="">Insert item</option>
+            {affiliations.map((affiliation) => (
+              <option key={affiliation.id} value={affiliation.id}>
+                {affiliation.name}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+            <Image
+              src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+              alt="Select"
+              width={20}
+              height={20}
+            />
+          </div>
+        </div>
+        <span
+          className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+            darkMode ? "text-white" : "text-[#053749]"
+          }`}
+        >
+          Select your organization from the dropdown menu.
+        </span>
+      </div>
+      <div className="space-y-2">
+        {/* Territory */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <Image
+              src={darkMode ? TerritoryIconWhite : TerritoryIcon}
+              alt="Territory icon"
+              width={20}
+              height={20}
+            />
+            <h2
+              className={`font-[Montserrat] text-[14px] font-bold ${
+                darkMode ? "text-white" : "text-[#053749]"
+              }`}
+            >
+              Territory
+            </h2>
+          </div>
+          <div className="relative">
+            <select
+              value={formData.territory?.[0] || ""}
+              onChange={(e) =>
+                onFieldChange(
+                  "territory",
+                  e.target.value ? [e.target.value] : []
+                )
+              }
+              className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                darkMode
+                  ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                  : "border-[#053749] text-[#829BA4]"
+              } border`}
+            >
+              <option value="">Insert item</option>
+              {territories.map((territory) => (
+                <option key={territory.id} value={territory.id}>
+                  {territory.name}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <Image
+                src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                alt="Select"
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
+          <span
+            className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+              darkMode ? "text-white" : "text-[#053749]"
+            }`}
+          >
+            Inform your geographic location by region or country.
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {/* Wikimedia Projects */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <Image
+              src={darkMode ? WikiIconWhite : WikiIcon}
+              alt="Wikimedia projects icon"
+              width={20}
+              height={20}
+            />
+            <h2
+              className={`font-[Montserrat] text-[14px] font-bold ${
+                darkMode ? "text-white" : "text-[#053749]"
+              }`}
+            >
+              Wikimedia Projects
+            </h2>
+          </div>
+          <div className="relative">
+            <select
+              value={formData.wikimedia_project?.[0] || ""}
+              onChange={(e) => {
+                if (e.target.value) {
+                  onFieldChange("wikimedia_project", [
+                    ...(formData.wikimedia_project || []),
+                    e.target.value,
+                  ]);
+                }
+              }}
+              className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                darkMode
+                  ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                  : "border-[#053749] text-[#829BA4]"
+              } border`}
+            >
+              <option value="">Insert project</option>
+              {wikimediaProjects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <Image
+                src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                alt="Select"
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
+
+          {formData.wikimedia_project?.slice(1).map((project, index) => (
+            <div key={index} className="relative">
+              <select
+                value={project || ""}
+                onChange={(e) => {
+                  const newProjects = [...(formData.wikimedia_project || [])];
+                  newProjects[index + 1] = e.target.value;
+                  onFieldChange("wikimedia_project", newProjects);
+                }}
+                className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
+                  darkMode
+                    ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
+                    : "border-[#053749] text-[#829BA4]"
+                } border`}
+              >
+                <option value="">Insert project</option>
+                {wikimediaProjects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                <Image
+                  src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
+                  alt="Select"
+                  width={20}
+                  height={20}
+                />
+              </div>
+            </div>
+          ))}
+
+          <BaseButton
+            onClick={() => {
+              onFieldChange("wikimedia_project", [
+                ...(formData.wikimedia_project || []),
+                "",
+              ]);
+            }}
+            label="Add more projects"
+            customClass={`w-full flex ${
+              darkMode
+                ? "bg-capx-light-box-bg text-[#04222F]"
+                : "bg-[#053749] text-white"
+            } rounded-md py-2 font-[Montserrat] text-[12px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+            imageUrl={darkMode ? AddIconDark : AddIcon}
+            imageAlt="Add project"
+            imageWidth={20}
+            imageHeight={20}
+          />
+          <span
+            className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+              darkMode ? "text-white" : "text-[#053749]"
+            }`}
+          >
+            Inform the Wikimedia Projects you have interest in.
+          </span>
+        </div>
       </div>
     </div>
   );

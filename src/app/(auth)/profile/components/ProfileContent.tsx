@@ -160,7 +160,7 @@ export default function ProfilePage({ session }: { session: Session }) {
               title={pageContent["body-profile-section-title-territory"]}
               value={
                 profile?.territory
-                  ? territories[profile.territory[0]] || ""
+                  ? String(territories[profile.territory[0]]) || ""
                   : ""
               }
             />
@@ -355,7 +355,7 @@ export default function ProfilePage({ session }: { session: Session }) {
               title={pageContent["body-profile-section-title-territory"]}
               value={
                 profile?.territory
-                  ? territories[profile.territory[0]] || ""
+                  ? String(territories[profile.territory[0]]) || ""
                   : ""
               }
             />

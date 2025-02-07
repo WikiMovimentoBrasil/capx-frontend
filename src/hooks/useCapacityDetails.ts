@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { capacityService } from "@/services/capacityService";
 import { useSession } from "next-auth/react";
 import { Capacity } from "@/types/capacity";
@@ -10,6 +10,8 @@ export function useCapacityDetails(
     {}
   );
   const { data: session } = useSession();
+  const isFetchingRef = useRef(false);
+  const previousIdsRef = useRef<string>("");
 
   useEffect(() => {
     if (!session?.user?.token || !capacityIds?.length) return;
@@ -18,8 +20,15 @@ export function useCapacityDetails(
       new Set(capacityIds.map((id) => (typeof id === "object" ? id.code : id)))
     ).filter((id): id is number => typeof id === "number");
 
+    // Evita refetch se os IDs não mudaram
+    const currentIdsString = JSON.stringify(uniqueIds.sort());
+    if (currentIdsString === previousIdsRef.current || isFetchingRef.current) {
+      return;
+    }
+
     const fetchCapacities = async () => {
       try {
+        isFetchingRef.current = true;
         const queryData = {
           headers: { Authorization: `Token ${session.user.token}` },
         };
@@ -37,9 +46,12 @@ export function useCapacityDetails(
           return acc;
         }, {} as { [key: string]: string });
 
+        previousIdsRef.current = currentIdsString;
         setCapacityNames(newNames);
       } catch (error) {
         console.error("Error fetching capacities:", error);
+      } finally {
+        isFetchingRef.current = false;
       }
     };
 

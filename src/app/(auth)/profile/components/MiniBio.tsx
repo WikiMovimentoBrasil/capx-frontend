@@ -6,9 +6,10 @@ import { useApp } from "@/contexts/AppContext";
 
 interface MiniBioProps {
   about: string;
+  onFieldChange: (field: string, value: string) => void;
 }
 
-export default function MiniBio({ about }: MiniBioProps) {
+export default function MiniBio({ about, onFieldChange }: MiniBioProps) {
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
 

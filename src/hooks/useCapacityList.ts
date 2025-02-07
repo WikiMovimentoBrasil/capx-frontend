@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { capacityService } from "@/services/capacityService";
 import { Capacity } from "@/types/capacity";
 
@@ -9,30 +9,69 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
   >({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
-  const formatCapacityResponse = (
-    response: any,
-    parentId?: string
-  ): Capacity[] => {
-    return (response || []).map((cap: any) => ({
-      id: Number(cap?.code),
-      code: Number(cap?.code),
-      name: String(cap?.name || ""),
-      skill_type: parentId
-        ? [String(parentId)]
-        : Array.isArray(cap?.skill_type)
-        ? cap.skill_type
-        : [],
-      skill_wikidata_item: String(cap?.skill_wikidata_item || ""),
-    }));
-  };
+  const formatCapacityResponse = useCallback(
+    (response: any, parentId?: string): Capacity[] => {
+      return (response || []).map((cap: any) => ({
+        id: Number(cap?.code),
+        code: Number(cap?.code),
+        name: String(cap?.name || ""),
+        skill_type: parentId
+          ? [String(parentId)]
+          : Array.isArray(cap?.skill_type)
+          ? cap.skill_type
+          : [],
+        skill_wikidata_item: String(cap?.skill_wikidata_item || ""),
+        children: [],
+      }));
+    },
+    []
+  );
+
+  const fetchRootCapacities = useCallback(async () => {
+    if (!token || isFetchingRef.current) return;
+
+    try {
+      isFetchingRef.current = true;
+      setIsLoading(true);
+
+      const response = await capacityService.fetchCapacities({
+        params: { language },
+        headers: { Authorization: `Token ${token}` },
+      });
+
+      const formattedResponse = formatCapacityResponse(response);
+      setRootCapacities((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(formattedResponse)) {
+          return prev;
+        }
+        return formattedResponse;
+      });
+    } catch (err) {
+      console.error("Error in fetchRootCapacities:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch root capacities"
+      );
+    } finally {
+      setIsLoading(false);
+      isFetchingRef.current = false;
+    }
+  }, [token, language, formatCapacityResponse]);
 
   const fetchCapacitiesByParent = useCallback(
     async (parentId: number | string) => {
-      if (!token) return;
+      if (
+        !token ||
+        isFetchingRef.current ||
+        capacityHierarchy[parentId]?.length > 0
+      )
+        return;
 
       try {
+        isFetchingRef.current = true;
         setIsLoading(true);
+
         const response = await capacityService.fetchCapacityByType(
           String(parentId),
           {
@@ -41,32 +80,23 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           }
         );
 
-        if (!response || typeof response !== "object") {
-          return [];
-        }
+        if (!response || typeof response !== "object") return [];
 
-        // Transformar o objeto em array de capacidades
         const formattedChildren = Object.entries(response).map(
-          ([code, name]) => {
-            return {
-              id: Number(code),
-              code: Number(code),
-              name: String(name),
-              skill_type: [String(parentId)],
-              skill_wikidata_item: "",
-              children: [], // Adicionado para manter consistência com a interface Capacity
-            };
-          }
+          ([code, name]) => ({
+            id: Number(code),
+            code: Number(code),
+            name: String(name),
+            skill_type: [String(parentId)],
+            skill_wikidata_item: "",
+            children: [],
+          })
         );
 
-        // Atualizar o estado de forma síncrona para garantir que os dados estejam disponíveis
-        setCapacityHierarchy((prev) => {
-          const newHierarchy = {
-            ...prev,
-            [parentId]: formattedChildren,
-          };
-          return newHierarchy;
-        });
+        setCapacityHierarchy((prev) => ({
+          ...prev,
+          [parentId]: formattedChildren,
+        }));
 
         return formattedChildren;
       } catch (err) {
@@ -77,6 +107,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
         return [];
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     },
     [token, language]
@@ -98,27 +129,6 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     },
     [fetchCapacitiesByParent]
   );
-
-  const fetchRootCapacities = useCallback(async () => {
-    if (!token) return;
-    setIsLoading(true);
-    try {
-      const response = await capacityService.fetchCapacities({
-        params: { language },
-        headers: { Authorization: `Token ${token}` },
-      });
-
-      const formattedResponse = formatCapacityResponse(response);
-      setRootCapacities(formattedResponse);
-    } catch (err) {
-      console.error("Error in fetchRootCapacities:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch root capacities"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, language]);
 
   return {
     rootCapacities,

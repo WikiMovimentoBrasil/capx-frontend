@@ -10,11 +10,11 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
 import { useAvatars } from "@/hooks/useAvatars";
-import EditProfileHeader from "./EditProfileHeader";
 import EditProfileForm from "./EditProfileForm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Language } from "@/types/language";
+import { Territory } from "@/types/territory";
 
 interface EditProfileContentProps {
   session: Session;
@@ -40,6 +40,34 @@ export default function EditProfileContent({
   const { wikimediaProjects } = useWikimediaProject(token);
   const { avatars } = useAvatars();
 
+  // Converter objetos em arrays
+  const territoriesArray = Object.entries(territories || {}).map(
+    ([id, territory]) => ({
+      id: id,
+      name: (territory as Territory).name,
+    })
+  );
+
+  const languagesArray = Object.entries(languages || {}).map(([id, name]) => ({
+    id: Number(id),
+    language_name: name as string,
+    language_code: id,
+  }));
+
+  const affiliationsArray = Object.entries(affiliations || {}).map(
+    ([id, name]) => ({
+      id: id,
+      name: name as string,
+    })
+  );
+
+  const wikimediaProjectsArray = Object.entries(wikimediaProjects || {}).map(
+    ([id, name]) => ({
+      id: id,
+      name: name as string,
+    })
+  );
+
   useEffect(() => {
     if (!token || !userId) {
       router.push("/");
@@ -51,18 +79,17 @@ export default function EditProfileContent({
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <EditProfileHeader darkMode={darkMode} isMobile={isMobile} />
       <EditProfileForm
         profile={profile}
         updateProfile={updateProfile}
         refetch={async () => {
           await refetch();
         }}
-        skills={skills}
-        territories={territories}
-        languages={(languages?.data || []) as Language[]}
-        affiliations={affiliations}
-        wikimediaProjects={wikimediaProjects}
+        skills={skills?.data || []}
+        territories={territoriesArray}
+        languages={languagesArray}
+        affiliations={affiliationsArray}
+        wikimediaProjects={wikimediaProjectsArray}
         avatars={avatars || []}
         darkMode={darkMode}
         isMobile={isMobile}

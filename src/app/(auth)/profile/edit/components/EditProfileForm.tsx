@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Profile } from "@/types/profile";
 import { fetchWikidataQid, fetchWikidataImage } from "@/lib/utils/wikidata";
 import { useAvatars } from "@/hooks/useAvatars";
-import AvatarSelector from "./AvatarSelector";
-import WikidataSection from "./WikidataSection";
+import ImageProfileSection from "./ImageProfileSection";
 import CapacitySection from "./CapacitySection";
 import ProfileFields from "./ProfileFields";
 import { Avatar } from "@/types/avatar";
@@ -14,6 +13,8 @@ import { Language } from "@/types/language";
 import { Affiliation } from "@/types/affiliation";
 import { WikimediaProject } from "@/types/wikimediaProject";
 import { Capacity } from "@/types/capacity";
+import CapacitySelectionModal from "./CapacitySelectionModal";
+import MiniBio from "../../components/MiniBio";
 
 interface EditProfileFormProps {
   profile: Profile;
@@ -42,7 +43,7 @@ export default function EditProfileForm({
   darkMode,
   isMobile,
 }: EditProfileFormProps) {
-  const [formData, setFormData] = useState<Partial<Profile>>({
+  const [formData, setFormData] = useState<Partial<Profile>>(() => ({
     about: "",
     affiliation: [],
     contact: "",
@@ -60,7 +61,7 @@ export default function EditProfileForm({
     wikidata_qid: "",
     wikimedia_project: [],
     avatar: null,
-  });
+  }));
 
   const [selectedAvatar, setSelectedAvatar] = useState({
     id: 0,
@@ -68,6 +69,11 @@ export default function EditProfileForm({
   });
   const [isWikidataSelected, setIsWikidataSelected] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCapacityType, setSelectedCapacityType] = useState<
+    "known" | "available" | "wanted"
+  >("known");
+  const [showCapacityModal, setShowCapacityModal] = useState(false);
+
   const { getAvatarById } = useAvatars();
 
   useEffect(() => {
@@ -171,24 +177,82 @@ export default function EditProfileForm({
     }));
   };
 
+  const handleCapacitySelect = useCallback(
+    (capacity: Capacity) => {
+      setFormData((prev) => {
+        const newFormData = { ...prev };
+        const capacityId = Number(capacity.code);
+        const key = `skills_${selectedCapacityType}` as
+          | "skills_known"
+          | "skills_available"
+          | "skills_wanted";
+        newFormData[key] = [...((prev[key] as number[]) || []), capacityId];
+        return newFormData;
+      });
+      setShowCapacityModal(false);
+    },
+    [selectedCapacityType]
+  );
+
+  const handleAddCapacity = useCallback(
+    (type: "known" | "available" | "wanted") => {
+      setSelectedCapacityType(type);
+      setShowCapacityModal(true);
+    },
+    []
+  );
+
+  const handleRemoveCapacity = (
+    type: "known" | "available" | "wanted",
+    index: number
+  ) => {
+    setFormData((prev) => {
+      const newFormData = { ...prev };
+      const key = `skills_${type}` as
+        | "skills_known"
+        | "skills_available"
+        | "skills_wanted";
+
+      if (Array.isArray(newFormData[key])) {
+        newFormData[key] = (newFormData[key] as number[]).filter(
+          (_, i) => i !== index
+        );
+      }
+      return newFormData;
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <AvatarSelector
+      <ImageProfileSection
         selectedAvatar={selectedAvatar}
         setSelectedAvatar={setSelectedAvatar}
         avatars={avatars}
         darkMode={darkMode}
-        onAvatarSelect={(avatar) => {
-          handleFieldChange("avatar", avatar);
-          handleFieldChange("profile_image", "");
-          handleFieldChange("wikidata_qid", "");
-        }}
-      />
-
-      <WikidataSection
+        isMobile={isMobile}
+        username={profile?.user.username || ""}
+        onSave={handleSubmit}
+        onCancel={() => {}}
+        refetch={refetch}
         isWikidataSelected={isWikidataSelected}
         onWikidataClick={handleWikidataClick}
+        isSubmitting={isSubmitting}
+        handleFieldChange={handleFieldChange}
+      />
+      <MiniBio about={formData.about || ""} onFieldChange={handleFieldChange} />
+      <CapacitySection
+        formData={formData}
+        onFieldChange={handleFieldChange}
+        skills={skills}
         darkMode={darkMode}
+        handleAddCapacity={handleAddCapacity}
+        handleRemoveCapacity={handleRemoveCapacity}
+      />
+      <CapacitySelectionModal
+        isOpen={showCapacityModal}
+        onClose={() => setShowCapacityModal(false)}
+        onSelect={handleCapacitySelect}
+        title={`Choose ${selectedCapacityType} capacity`}
       />
 
       <ProfileFields
@@ -201,27 +265,6 @@ export default function EditProfileForm({
         darkMode={darkMode}
         isMobile={isMobile}
       />
-
-      <CapacitySection
-        formData={formData}
-        onFieldChange={handleFieldChange}
-        skills={skills}
-        darkMode={darkMode}
-      />
-
-      <div className="flex justify-end space-x-4 mt-8">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`px-6 py-2 rounded-md transition-colors ${
-            darkMode
-              ? "bg-white text-black hover:bg-gray-200 disabled:bg-gray-400"
-              : "bg-[#053749] text-white hover:bg-[#032836] disabled:bg-gray-400"
-          }`}
-        >
-          {isSubmitting ? "Salvando..." : "Salvar"}
-        </button>
-      </div>
     </form>
   );
 }

@@ -11,6 +11,7 @@ interface AvatarSelectionPopupProps {
   onSelect: (avatarId: number) => void;
   selectedAvatarId: number;
   onUpdate?: () => void;
+  avatars: Array<{ id: number; avatar_url: string }>;
 }
 
 export default function AvatarSelectionPopup({
