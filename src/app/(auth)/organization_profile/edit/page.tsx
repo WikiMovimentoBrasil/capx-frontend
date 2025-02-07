@@ -2119,7 +2119,7 @@ export default function EditOrganizationProfilePage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleCapacitySelect}
-        title={`${pageContent["edit-profile-select"]} ${pageContent[currentCapacityType]} ${pageContent["edit-profile-capacities"]}`}
+        title={pageContent["edit-profile-select-capacities"]?.replace("$1", pageContent[currentCapacityType])}
       />
     </div>
   );

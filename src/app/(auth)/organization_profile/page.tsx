@@ -262,7 +262,7 @@ export default function OrganizationProfilePage() {
                     />
                   ) : (
                     <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">{pageContent["logo-not-available"]}`</span>
+                      <span className="text-gray-400">{pageContent["logo-not-available"]}</span>
                     </div>
                   )}
                 </div>
