@@ -30,7 +30,7 @@ const DocumentFormItem = ({
         <input
           type="text"
           placeholder="Insert link"
-          className={`w-full p-2 text-[16px] border rounded-md bg-transparent ${
+          className={`w-full p-2 text-[16px] md:text-[24px] border rounded-md bg-transparent ${
             darkMode
               ? "text-white border-gray-600"
               : "text-[#829BA4] border-gray-300"
