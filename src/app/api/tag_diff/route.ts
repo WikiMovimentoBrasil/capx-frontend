@@ -33,6 +33,26 @@ export async function POST(request: Request) {
 
     const tagData = await request.json();
 
+    try {
+      const existingTagResponse = await axios.get(
+        `${process.env.BASE_URL}/tag_diff/`,
+        {
+          headers: {
+            Authorization: authHeader,
+          },
+          params: {
+            tag: tagData.tag,
+          },
+        }
+      );
+
+      if (existingTagResponse.data && existingTagResponse.data.length > 0) {
+        return NextResponse.json(existingTagResponse.data[0]);
+      }
+    } catch (error) {
+      console.log("Tag não encontrada, criando nova...");
+    }
+
     const response = await axios.post(
       `${process.env.BASE_URL}/tag_diff/`,
       tagData,
