@@ -25,7 +25,9 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { DocumentsList } from "./components/DocumentsList";
-
+import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
+import { useOrganizationType } from "@/hooks/useOrganizationType";
+import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
@@ -36,26 +38,18 @@ export default function OrganizationProfilePage() {
   const { organization, isLoading, error, isOrgManager, refetch } =
     useOrganization(token);
 
-  const formatWikiImageUrl = (url: string | undefined): string => {
-    if (!url) return "";
+  /*   const orgType = organization?.type || 0; //TODO: Make better assumption
 
-    if (url.includes("upload.wikimedia.org")) {
-      return url;
-    }
+  const {
+    organizationType,
+    fetchOrganizationType,
+    fetchOrganizationTypeById,
+    isLoading: isOrganizationTypeLoading,
+    error: isOrganizationTypeError,
+  } = useOrganizationType(token, orgType);
 
-    if (url.includes("commons.wikimedia.org")) {
-      return url.replace("/wiki/File:", "/wiki/Special:FilePath/");
-    }
+  console.log(organizationType); */
 
-    if (url.startsWith("File:")) {
-      return `https://commons.wikimedia.org/wiki/Special:FilePath/${url.replace(
-        "File:",
-        ""
-      )}`;
-    }
-
-    return url;
-  };
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
@@ -67,6 +61,7 @@ export default function OrganizationProfilePage() {
     if (error) {
       console.error("Error fetching organization:", error);
     }
+    console.log("organization", organization);
   }, [error, organization]);
 
   if (isMobile) {
@@ -117,7 +112,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    Grupo de usuários Wiki Movimento Brasil
+                    {} //TODO: Add organization type
                   </p>
 
                   {/* Logo */}
@@ -125,7 +120,7 @@ export default function OrganizationProfilePage() {
                     <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
                       <div className="relative h-[51px] w-[127px]">
                         <Image
-                          src={WMBLogo}
+                          src={organization?.profile_image || NoAvatarIcon}
                           alt="Organization logo"
                           fill
                           priority
@@ -284,7 +279,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    Wiki Movimento Brasil
+                    {organization?.display_name}
                   </span>
                 </div>
 

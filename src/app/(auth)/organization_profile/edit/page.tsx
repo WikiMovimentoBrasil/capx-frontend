@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -10,7 +10,6 @@ import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
 import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_white.svg";
-import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import SaveIcon from "@/public/static/images/save_as.svg";
 import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
@@ -50,10 +49,12 @@ import { tagDiff } from "@/types/tagDiff";
 import { OrganizationDocument } from "@/types/document";
 import { Contacts } from "@/types/contacts";
 import { useTagDiff } from "@/hooks/useTagDiff";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import ProjectsFormItem from "../components/ProjectsFormItem";
 import EventsFormItem from "../components/EventsFormItem";
 import NewsFormItem from "../components/NewsFormItem";
 import DocumentFormItem from "../components/DocumentFormItem";
+import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -70,20 +71,21 @@ export default function EditOrganizationProfilePage() {
     error: documentsError,
     createDocument,
     deleteDocument,
+    fetchSingleDocument,
   } = useDocument(token);
 
   // Organization setters
   const {
     organization,
-    isLoading,
-    error,
+    isLoading: isOrganizationLoading,
+    error: organizationError,
     updateOrganization,
+    fetchUserProfile,
     organizationId,
     isOrgManager,
   } = useOrganization(token);
 
   // Projects setters
-
   const {
     projects,
     isLoading: isProjectsLoading,
@@ -127,7 +129,6 @@ export default function EditOrganizationProfilePage() {
   }, [organization, projects, isProjectsLoading]);
 
   // Events setters
-
   const {
     events,
     isLoading: isEventsLoading,
@@ -179,6 +180,33 @@ export default function EditOrganizationProfilePage() {
     []
   );
 
+  // Effect to load documents
+  useEffect(() => {
+    const loadDocuments = async () => {
+      if (organization?.documents && Array.isArray(organization.documents)) {
+        const documentPromises = organization.documents.map(async (docId) => {
+          const doc = documents?.find((d) => d.id === docId);
+          if (doc) {
+            return {
+              id: doc.id,
+              url: doc.url || "",
+            };
+          }
+          return null;
+        });
+
+        const loadedDocs = (await Promise.all(documentPromises)).filter(
+          (doc): doc is { id: number; url: string } =>
+            doc !== null && typeof doc.url === "string"
+        );
+
+        setDocumentsData(loadedDocs);
+      }
+    };
+
+    loadDocuments();
+  }, [organization?.documents, documents]);
+
   // Contacts setters
   const [contactsData, setContactsData] = useState<Contacts>({
     id: "",
@@ -190,6 +218,7 @@ export default function EditOrganizationProfilePage() {
   // Form data
   const [formData, setFormData] = useState<Partial<Organization>>({
     display_name: organization?.display_name || "",
+    report_link: organization?.report_link || "",
     profile_image: organization?.profile_image || "",
     acronym: organization?.acronym || "",
     meta_page: organization?.meta_page || "",
@@ -307,6 +336,7 @@ export default function EditOrganizationProfilePage() {
       (id): id is number => id !== null && id !== undefined
     );
   };
+
   const validNewIds = (newIds: number[]) => {
     return newIds.filter((id): id is number => id !== null && id !== undefined);
   };
@@ -527,7 +557,6 @@ export default function EditOrganizationProfilePage() {
   // Handlers
 
   // Projects handlers
-
   const handleAddProject = () => {
     const newProject: Project = {
       id: 0,
@@ -583,7 +612,6 @@ export default function EditOrganizationProfilePage() {
   };
 
   // Events handlers
-
   const handleAddEvent = () => {
     const newEvent = {
       id: 0,
@@ -661,7 +689,6 @@ export default function EditOrganizationProfilePage() {
   };
 
   // Diff tags handlers
-
   const handleAddDiffTag = () => {
     const newTag = {
       id: Math.floor(Math.random() * -1000), // Temporary negative ID for new tags
@@ -689,18 +716,12 @@ export default function EditOrganizationProfilePage() {
     setDiffTagsData(newDiffTags);
   };
 
-  const [organizationData, setOrganizationData] = useState({
-    name: "Wiki Movimento Brasil",
-    description: "Grupo de usuários Wiki Movimento Brasil",
-    logo_url: "",
-    report_link: "",
-  });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCapacityType, setCurrentCapacityType] = useState<
     "known" | "available" | "wanted"
   >("known");
 
+  // Capacities handlers
   const handleAddCapacity = (type: "known" | "available" | "wanted") => {
     setCurrentCapacityType(type);
     setIsModalOpen(true);
@@ -750,10 +771,11 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
+  // Documents handlers
   const handleAddDocument = () => {
     const newDocument: OrganizationDocument = {
       id: 0,
-      url: "https://commons.wikimedia.org/wiki/File:example.svg",
+      url: "",
     };
     setDocumentsData((prev) => [...(prev || []), newDocument]);
   };
@@ -771,13 +793,26 @@ export default function EditOrganizationProfilePage() {
     field: string,
     value: string
   ) => {
-    const newDocuments = [...documentsData];
-    newDocuments[index] = {
-      ...newDocuments[index],
-      [field]: value,
-    };
-    setDocumentsData(newDocuments);
+    if (!Array.isArray(documentsData)) {
+      setDocumentsData([]);
+      return;
+    }
+
+    setDocumentsData((prev) => {
+      const newDocuments = [...prev];
+      newDocuments[index] = {
+        ...newDocuments[index],
+        [field]: value,
+      };
+      console.log("Updated documents:", newDocuments);
+      return newDocuments;
+    });
   };
+
+  // Load user profile data
+  const { userProfile } = useUserProfile();
+
+  const userImage = userProfile?.profile_image;
 
   if (!isOrgManager) {
     return (
@@ -842,7 +877,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  {organizationData?.name}
+                  {formData?.display_name}
                 </span>
               </div>
 
@@ -851,14 +886,14 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                {organizationData?.description}
+                {formData?.acronym}
               </p>
 
               {/* Logo Section */}
               <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
                 <div className="relative h-[51px] w-[127px]">
                   <Image
-                    src={WMBLogo}
+                    src={formData?.profile_image || ""}
                     alt="Organization logo"
                     width={127}
                     height={51}
@@ -912,10 +947,10 @@ export default function EditOrganizationProfilePage() {
                     ? "bg-transparent border-white text-white placeholder-gray-400"
                     : "border-gray-300 text-gray-700"
                 }`}
-                value={organizationData.report_link || ""}
+                value={formData?.report_link || ""}
                 onChange={(e) =>
-                  setOrganizationData({
-                    ...organizationData,
+                  setFormData({
+                    ...formData,
                     report_link: e.target.value,
                   })
                 }
@@ -1398,9 +1433,11 @@ export default function EditOrganizationProfilePage() {
               <div className="rounded-[16px] h-full items-center justify-center flex bg-[#EFEFEF]">
                 <div className="relative w-[300px] h-[165px]">
                   <Image
-                    src={WMBLogo}
+                    src={formatWikiImageUrl(formData?.profile_image || "")}
                     alt="Organization logo"
                     className="object-contain w-full rounded-lg"
+                    fill
+                    sizes="300px"
                     priority
                   />
                 </div>
@@ -1409,8 +1446,11 @@ export default function EditOrganizationProfilePage() {
             <div className="w-1/2">
               <div className="relative w-[114px] h-[114px] mb-[24px]">
                 <Image
-                  src={AvatarIcon}
-                  alt="Avatar"
+                  src={userImage || ""}
+                  alt="User Profile Image"
+                  fill
+                  sizes="114px"
+                  priority
                   className="object-contain w-full rounded-lg"
                 />
               </div>
@@ -1449,7 +1489,7 @@ export default function EditOrganizationProfilePage() {
                     darkMode ? "text-white" : "text-[#053749]"
                   }`}
                 >
-                  {organizationData?.name}
+                  {formData?.display_name}
                 </span>
               </div>
 
@@ -1458,7 +1498,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                {organizationData?.description}
+                {formData?.acronym}
               </p>
 
               {/* Save/Cancel Buttons */}
