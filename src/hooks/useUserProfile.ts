@@ -7,7 +7,7 @@ export function useUserProfile() {
   const { data: session } = useSession();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (session?.user?.id && session?.user?.token) {
@@ -19,6 +19,7 @@ export function useUserProfile() {
           setUserProfile(data);
         } catch (error) {
           console.error("Error fetching user profile:", error);
+          setError(error.message);
         } finally {
           setIsLoading(false);
         }
@@ -28,5 +29,5 @@ export function useUserProfile() {
     fetchUserProfile();
   }, [session]);
 
-  return { userProfile, isLoading };
+  return { userProfile, isLoading, error };
 }
