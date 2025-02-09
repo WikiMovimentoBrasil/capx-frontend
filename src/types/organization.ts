@@ -1,6 +1,7 @@
 import { OrganizationDocument } from "./document";
 export interface Organization {
   id: number;
+  report_link?: string;
   display_name: string;
   profile_image?: string;
   acronym?: string;
