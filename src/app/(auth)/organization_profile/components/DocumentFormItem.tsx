@@ -20,23 +20,22 @@ const DocumentFormItem = ({
   onChange,
 }: DocumentFormItemProps) => {
   const { darkMode } = useTheme();
-  const { data: session } = useSession();
-  const token = session?.user?.token;
-  const { document: documentData } = useDocument(token, document.id);
 
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col gap-2 w-full">
         <input
           type="text"
-          placeholder="Insert link"
+          placeholder="Insert document URL"
           className={`w-full p-2 text-[16px] md:text-[24px] border rounded-md bg-transparent ${
             darkMode
               ? "text-white border-gray-600"
               : "text-[#829BA4] border-gray-300"
           }`}
-          value={documentData?.url || ""}
-          onChange={(e) => onChange(index, "url", e.target.value)}
+          value={document.url || ""}
+          onChange={(e) => {
+            onChange(index, "url", e.target.value);
+          }}
         />
       </div>
       <button onClick={() => onDelete(index)}>

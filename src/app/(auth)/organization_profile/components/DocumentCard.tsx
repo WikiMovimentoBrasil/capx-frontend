@@ -28,15 +28,18 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
       }`}
     >
       <div className="p-6 flex items-center justify-center h-[250px]">
-        <div className="relative w-full h-[200px] flex items-center justify-center">
+        <div className="relative w-[200px] h-[200px] flex items-center justify-center">
           {document.thumburl ? (
-            <Image
-              src={document.thumburl}
-              alt={document.title || "Document preview"}
-              fill
-              style={{ objectFit: "contain" }}
-              className="p-4"
-            />
+            <div className="relative w-[200px] h-[200px]">
+              <Image
+                src={document.thumburl}
+                alt={document.title || "Document preview"}
+                style={{ objectFit: "contain" }}
+                className="p-4"
+                fill
+                sizes="200px"
+              />
+            </div>
           ) : (
             <div className="flex items-center justify-center w-full h-full text-gray-400">
               No preview available
