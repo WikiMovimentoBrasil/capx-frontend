@@ -2,11 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { documentService } from "@/services/documentService";
-import {
-  OrganizationDocument,
-  WikimediaDocumentResponse,
-  WikimediaDocument,
-} from "@/types/document";
+import { OrganizationDocument, WikimediaDocument } from "@/types/document";
+import { fetchWikimediaData } from "@/lib/utils/fetchWikimediaData";
 
 export const useDocument = (token?: string, id?: number) => {
   const [documents, setDocuments] = useState<WikimediaDocument[]>([]);
@@ -14,68 +11,35 @@ export const useDocument = (token?: string, id?: number) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchWikimediaData = async (document: OrganizationDocument) => {
-    try {
-      // Extrair o nome do arquivo da URL
-      let fileName = "";
-
-      if (document.url?.includes("commons.wikimedia.org/wiki/File:")) {
-        fileName = document.url?.split("File:")[1];
-      } else if (
-        document.url?.includes("upload.wikimedia.org/wikipedia/commons/")
-      ) {
-        const parts = document.url?.split("/");
-        fileName = parts[parts.length - 1];
-      } else {
-        fileName = document.url || "";
-      }
-
-      // Adicionar o formato=json e origin=* para CORS
-      const apiUrl = `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&formatversion=2&format=json&iiprop=url%7Cmetadata&iiurlheight=200&titles=File:${encodeURIComponent(
-        fileName
-      )}&origin=*`;
-
-      const response = await fetch(apiUrl);
-      const data: WikimediaDocumentResponse = await response.json();
-
-      if (data.query?.pages?.[0]) {
-        const page = data.query.pages[0];
-        const imageInfo = page.imageinfo?.[0];
-
-        return {
-          ...document,
-          title: page.title.replace("File:", ""),
-          imageUrl: imageInfo?.thumburl,
-          fullUrl: imageInfo?.url,
-          metadata: imageInfo?.metadata,
-          thumburl: imageInfo?.thumburl,
-        };
-      }
-      return document;
-    } catch (error) {
-      console.error("Error fetching Wikimedia data:", error);
-      return document;
-    }
-  };
-
-  const fetchAllDocuments = async () => {
-    if (!token) return;
+  const fetchAllDocuments = async (): Promise<WikimediaDocument[]> => {
+    if (!token) return [];
     setLoading(true);
     try {
       const basicDocuments = await documentService.fetchAllDocuments(token);
       const enrichedDocuments = await Promise.all(
-        basicDocuments.map((doc) => fetchWikimediaData(doc))
+        basicDocuments.map((doc) => fetchWikimediaData(doc.url || ""))
       );
-      setDocuments(enrichedDocuments);
-      return enrichedDocuments;
+
+      const typedDocuments = enrichedDocuments.map((doc) => ({
+        id: doc.id,
+        url: doc.url,
+        title: doc.title,
+        imageUrl: doc.imageUrl,
+        fullUrl: doc.fullUrl,
+        metadata: doc.metadata,
+        thumburl: doc.thumburl,
+      })) as WikimediaDocument[];
+
+      setDocuments(typedDocuments);
+      return typedDocuments;
     } catch (error) {
       console.error("Error fetching all documents:", error);
       setError("Failed to fetch documents");
+      return [];
     } finally {
       setLoading(false);
     }
   };
-
   const fetchSingleDocument = async () => {
     if (!token || !id) return;
 
@@ -86,7 +50,9 @@ export const useDocument = (token?: string, id?: number) => {
         id
       );
       if (basicDocument) {
-        const enrichedDocument = await fetchWikimediaData(basicDocument);
+        const enrichedDocument = await fetchWikimediaData(
+          basicDocument.url || ""
+        );
         setDocument(enrichedDocument);
         return enrichedDocument;
       }
@@ -114,7 +80,7 @@ export const useDocument = (token?: string, id?: number) => {
       );
 
       if (response && response.id) {
-        const enrichedDocument = await fetchWikimediaData(response);
+        const enrichedDocument = await fetchWikimediaData(response.url || "");
         setDocument(enrichedDocument);
       }
 
