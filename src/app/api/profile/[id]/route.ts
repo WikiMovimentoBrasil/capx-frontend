@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { handleApiError } from "@/lib/utils/handleApiError";
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -28,7 +28,14 @@ export async function PUT(
 
     return NextResponse.json(response.data);
   } catch (error: any) {
-    return handleApiError(error, "Profile update");
+    console.error("PUT request error:", error.response?.data || error.message);
+    return NextResponse.json(
+      {
+        error: "Failed to update user profile",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
+    );
   }
 }
 
@@ -50,6 +57,13 @@ export async function GET(
 
     return NextResponse.json(response.data);
   } catch (error: any) {
-    return handleApiError(error, "Profile fetch");
+    console.error("GET request error:", error.response?.data || error.message);
+    return NextResponse.json(
+      {
+        error: "Failed to get user profile",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
+    );
   }
 }

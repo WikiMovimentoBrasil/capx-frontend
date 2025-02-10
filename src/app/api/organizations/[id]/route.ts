@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
-import { handleApiError } from "@/lib/utils/handleApiError";
 
 export async function GET(
   request: Request,
@@ -22,7 +21,13 @@ export async function GET(
 
     return NextResponse.json(response.data);
   } catch (error: any) {
-    return handleApiError(error, "Organization fetch");
+    return NextResponse.json(
+      {
+        error: "Failed to fetch organization",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
+    );
   }
 }
 
@@ -48,6 +53,13 @@ export async function PUT(
 
     return NextResponse.json(updateResponse.data);
   } catch (error: any) {
-    return handleApiError(error, "Organization update");
+    console.error("Error details:", error.response?.data || error);
+    return NextResponse.json(
+      {
+        error: "Failed to update organization",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
+    );
   }
 }

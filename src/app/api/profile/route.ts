@@ -1,4 +1,3 @@
-import { handleApiError } from "@/lib/utils/handleApiError";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,12 +23,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
   } catch (error: any) {
-    if (
-      error.response?.status === 401 &&
-      error.response?.data?.detail === "Invalid token."
-    ) {
-      return handleApiError(error, "Profile fetch");
-    }
     console.error(
       "Error fetching user profile:",
       error.response?.data || error.message
@@ -78,7 +71,11 @@ export async function PUT(request: NextRequest) {
       );
     }
   } catch (error) {
-    return handleApiError(error, "Profile update");
+    console.error("PUT request error:", error);
+    return NextResponse.json(
+      { error: "Failed to update user profile." },
+      { status: 500 }
+    );
   }
 }
 
@@ -96,11 +93,15 @@ export async function OPTIONS(request: NextRequest) {
         },
       }
     );
+    // Removing "user" key/value
     const { user, ...formFields } = response.data.actions.PUT;
 
     return NextResponse.json(formFields);
   } catch (error) {
-    return handleApiError(error, "Profile options");
+    return NextResponse.json(
+      { error: "Failed to fetch options" },
+      { status: 500 }
+    );
   }
 }
 
@@ -128,6 +129,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
   } catch (error) {
-    return handleApiError(error, "Profile delete");
+    return NextResponse.json(
+      { error: "Failed to delete user profile" },
+      { status: 500 }
+    );
   }
 }
