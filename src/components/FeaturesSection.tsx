@@ -3,6 +3,7 @@ import illustration02 from "@/public/static/images/connect_wikimedians_illustrat
 import illustration03 from "@/public/static/images/exchange_knowledge_illustration.svg";
 import Image, { StaticImageData } from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 const Row = (
   illustration: StaticImageData,
@@ -49,11 +50,8 @@ const Row = (
 };
 
 
-interface FeaturesSectionnProps {
-  pageContent: any;
-}
-
-export default function FeaturesSection({ pageContent }: FeaturesSectionnProps) {
+export default function FeaturesSection() {
+  const { pageContent } = useApp();
   const features = [
     { illustration: illustration01, description: pageContent["body-home-feature-section-capacity"] },
     { illustration: illustration02, description: pageContent["body-home-feature-section-connect"] },

@@ -8,12 +8,8 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useState } from "react";
 import Popup from "./Popup";
 
-interface VideoSectionProps {
-  pageContent: any;
-}
-
-export default function VideoSection({ pageContent }: VideoSectionProps) {
-  const { isMobile } = useApp();
+export default function VideoSection() {
+  const { isMobile, pageContent } = useApp();
   const { darkMode } = useTheme();
   const videoUrl =
     "https://upload.wikimedia.org/wikipedia/commons/c/cd/Capacity_Exchange_-_Launch_Video.webm";

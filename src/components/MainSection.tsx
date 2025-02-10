@@ -13,12 +13,8 @@ import CommonsLogo from "@/public/static/images/commons_logo.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 
-interface MainSectionProps {
-  pageContent: any;
-}
-
-export default function MainSection({ pageContent }: MainSectionProps) {
-  const { isMobile } = useApp();
+export default function MainSection() {
+  const { isMobile, pageContent } = useApp();
   const { darkMode } = useTheme();
 
   const scrollToVideo = () => {

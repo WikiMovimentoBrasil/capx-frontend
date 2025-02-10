@@ -6,19 +6,13 @@ import FeaturesSection from "@/components/FeaturesSection";
 import CallToActionSection from "@/components/CallToActionSection";
 import VideoSection from "@/components/VideoSection";
 
-interface ApplicationWrapperProps {
-  pageContent: any;
-}
-
-export default function ApplicationWrapper({
-  pageContent,
-}: ApplicationWrapperProps) {
+export default function ApplicationWrapper() {
   return (
     <BaseWrapper>
-      <MainSection pageContent={pageContent} />
-      <FeaturesSection pageContent={pageContent} />
-      <VideoSection pageContent={pageContent} />
-      <CallToActionSection pageContent={pageContent} />
+      <MainSection/>
+      <FeaturesSection />
+      <VideoSection/>
+      <CallToActionSection />
     </BaseWrapper>
   );
 }
