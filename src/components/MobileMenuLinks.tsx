@@ -103,8 +103,8 @@ export default function MobileMenuLinks({
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
     {
       title: pageContent["navbar-link-capacities"],
-      to: "/capacities",
-      active: false,
+      to: "/capacity",
+      active: true,
     },
     {
       title: pageContent["navbar-link-reports"],
