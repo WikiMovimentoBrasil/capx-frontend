@@ -127,7 +127,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
               src={tabletIllusttration}
               alt="Tablet illustration"
               layout="fill"
-              objectFit="contain"
+              style={{ objectFit: "cover" }}
               className="absolute inset-0"
             />
 
