@@ -141,5 +141,6 @@ export function useOrganization(token?: string, forceManager = false) {
     organizationId,
     updateOrganization,
     fetchOrganizationById,
+    fetchUserProfile,
   };
 }
