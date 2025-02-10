@@ -2174,6 +2174,12 @@ export default function EditProfilePage() {
           </div>
         </div>
       </section>
+      <CapacitySelectionModal
+        isOpen={showCapacityModal}
+        onClose={() => setShowCapacityModal(false)}
+        onSelect={handleCapacitySelect}
+        title={`Choose ${selectedCapacityType} capacity`}
+      />
     </div>
   );
 }
