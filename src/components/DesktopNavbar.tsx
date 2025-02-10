@@ -25,9 +25,9 @@ export default function DesktopNavbar({
   session,
 }: DesktopNavbarProps) {
   const { darkMode } = useTheme();
-  const { organization } = useOrganization(session.user.token);
+  const { organization } = useOrganization(session?.user?.token);
   const isOrgManager = organization?.managers?.some(
-    (id) => id === session.user.id
+    (id) => id === session?.user?.id
   );
 
   const menuItems = [
