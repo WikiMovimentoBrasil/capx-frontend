@@ -57,11 +57,15 @@ export default function VideoSection() {
 
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-[84%] h-[100%]">
-                <Image
-                  src={VideoThumbnail}
-                  alt="Video thumbnail"
-                  className="object-contain w-full h-full"
-                />
+                {darkMode ? (
+                  <></>
+                ) : (
+                  <Image
+                    src={VideoThumbnail}
+                    alt="Video thumbnail"
+                    className="object-contain w-full h-full"
+                  />
+                )}
               </div>
             </div>
           </div>
