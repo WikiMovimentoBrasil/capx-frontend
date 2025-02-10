@@ -7,7 +7,7 @@ import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_white.svg";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
-import AvatarIcon from "@/public/static/images/avatar.svg";
+import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { Avatar } from "@/services/avatarService";
 import { useMemo, useState, useEffect } from "react";
 import { useAvatars } from "@/hooks/useAvatars";
@@ -28,7 +28,7 @@ export default function ProfileHeader({
   const { isMobile } = useApp();
   const { getAvatarById } = useAvatars();
   const [avatarUrl, setAvatarUrl] = useState<string>(
-    profileImage || AvatarIcon
+    profileImage || NoAvatarIcon
   );
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function ProfileHeader({
       <div className="flex flex-col gap-4">
         <div className="relative w-[100px] h-[100px]">
           <Image
-            src={avatarUrl || AvatarIcon}
+            src={avatarUrl || NoAvatarIcon}
             alt="User profile"
             fill
             className="object-cover border rounded-[4px]"
