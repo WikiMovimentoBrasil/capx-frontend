@@ -7,9 +7,9 @@ import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_white.svg";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
-import AvatarIcon from "@/public/static/images/avatar.svg";
+import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { Avatar } from "@/services/avatarService";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useLayoutEffect } from "react";
 import { useAvatars } from "@/hooks/useAvatars";
 
 interface ProfileHeaderProps {
@@ -27,37 +27,42 @@ export default function ProfileHeader({
   const { darkMode } = useTheme();
   const { isMobile } = useApp();
   const { getAvatarById } = useAvatars();
-  const [avatarUrl, setAvatarUrl] = useState<string>(
-    profileImage || AvatarIcon
-  );
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAvatar = async () => {
+    const loadAvatar = async () => {
       if (typeof avatar === "number" && avatar > 0) {
         try {
           const avatarData = await getAvatarById(avatar);
           if (avatarData?.avatar_url) {
             setAvatarUrl(avatarData.avatar_url);
+            return;
           }
         } catch (error) {
           console.error("Error fetching avatar:", error);
         }
       }
+      setAvatarUrl(profileImage || NoAvatarIcon);
     };
 
-    fetchAvatar();
-  }, [avatar, getAvatarById]);
+    loadAvatar();
+  }, [avatar, profileImage, getAvatarById]);
+
+  if (!avatarUrl) {
+    return null;
+  }
 
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4">
         <div className="relative w-[100px] h-[100px]">
           <Image
-            src={avatarUrl || AvatarIcon}
+            priority
+            src={avatarUrl}
             alt="User profile"
             fill
             className="object-cover border rounded-[4px]"
-            unoptimized={!!avatarUrl}
+            unoptimized
           />
         </div>
         <h1
@@ -103,11 +108,12 @@ export default function ProfileHeader({
     <div className="flex flex-row gap-[96px] mb-[96px]">
       <div className="relative w-[250px] h-[250px]">
         <Image
+          priority
           src={avatarUrl}
           alt="User profile"
           fill
           className="object-cover border rounded-[8px]"
-          unoptimized={true}
+          unoptimized
         />
       </div>
       <div className="flex flex-col gap-6">

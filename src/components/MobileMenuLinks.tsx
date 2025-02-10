@@ -13,6 +13,7 @@ import UserProfileIconWhite from "@/public/static/images/check_box_outline_blank
 import OrgProfileIcon from "@/public/static/images/check_box.svg";
 import OrgProfileIconWhite from "@/public/static/images/check_box_light.svg";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useOrganization } from "@/hooks/useOrganizationProfile";
 
 interface MenuItem {
   title: string;
@@ -49,27 +50,32 @@ export default function MobileMenuLinks({
     "user" | "organization"
   >(pathname === "/organization_profile" ? "organization" : "user");
   const { darkMode, setDarkMode } = useTheme();
+  const { isOrgManager } = useOrganization(session?.user?.token);
 
   const handleProfileChange = (type: "user" | "organization", path: string) => {
     setSelectedProfile(type);
     handleMenuStatus();
-    window.location.href = path; // Usando window.location como fallback
+    window.location.href = path;
   };
 
   const subMenuItems: SubMenuItem[] = [
-    {
-      title: "Organization Profile",
-      to: "/organization_profile",
-      image: darkMode
-        ? selectedProfile === "organization"
-          ? OrgProfileIconWhite
-          : UserProfileIconWhite
-        : selectedProfile === "organization"
-        ? OrgProfileIcon
-        : UserProfileIcon,
-      action: () =>
-        handleProfileChange("organization", "/organization_profile"),
-    },
+    ...(isOrgManager
+      ? [
+          {
+            title: "Organization Profile",
+            to: "/organization_profile",
+            image: darkMode
+              ? selectedProfile === "organization"
+                ? OrgProfileIconWhite
+                : UserProfileIconWhite
+              : selectedProfile === "organization"
+              ? OrgProfileIcon
+              : UserProfileIcon,
+            action: () =>
+              handleProfileChange("organization", "/organization_profile"),
+          },
+        ]
+      : []),
     {
       title: "User Profile",
       to: "/profile",

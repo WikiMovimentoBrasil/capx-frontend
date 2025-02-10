@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 
-export function useOrganization(token?: string, forceManager = true) {
+export function useOrganization(token?: string, forceManager = false) {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -52,7 +52,7 @@ const ProfileItemsComponent = ({
       <>
         <div className="flex flex-row gap-2 items-center">
           <div className="relative h-[20px] w-[20px]">
-            <Image src={icon} alt={title} fill objectFit="contain" />
+            <Image src={icon} alt={title} fill style={{ objectFit: "cover" }} />
           </div>
           <h2
             className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -250,7 +250,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -289,7 +289,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -308,7 +308,7 @@ export default function ProfilePage() {
                     src={ContactImage}
                     alt={"Contact Image"}
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <BaseButton
@@ -326,7 +326,7 @@ export default function ProfilePage() {
                     src={ContactImageDesktop}
                     alt={"Contact Image"}
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <BaseButton
@@ -349,7 +349,9 @@ export default function ProfilePage() {
           darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
         }`}
       >
-        <section className={`max-w-[1440px] mx-[24px] px-4 py-8 mt-[16px]`}>
+        <section
+          className={`flex w-full h-full justify-between pb-6 pt-10 px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto`}
+        >
           <div className={`flex flex-col mx-auto`}>
             <ProfileHeader
               username={profile?.user?.username || ""}
@@ -445,7 +447,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -484,7 +486,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -501,7 +503,7 @@ export default function ProfilePage() {
                   src={ContactImageDesktop}
                   alt={"Contact Image"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <BaseButton

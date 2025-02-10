@@ -31,8 +31,8 @@ export function CapacitiesList({
           <h2
             className={
               customClass +
-              " font-extrabold" +
-              (darkMode ? " text-capx-light-bg" : " text-capx-dark-box-bg")
+              " font-extrabold " +
+              (darkMode ? " text-capx-light-bg" : " text-capx-dark-box-bg ")
             }
           >
             {title}
@@ -72,7 +72,7 @@ export function CapacitiesList({
         <h2
           className={
             customClass +
-            "font-extrabold text-[24px]" +
+            " font-extrabold text-[24px] " +
             (darkMode ? " text-capx-light-bg" : " text-capx-dark-box-bg")
           }
         >
@@ -81,7 +81,9 @@ export function CapacitiesList({
       </div>
       <div
         className={`flex flex-wrap gap-2 ${
-          darkMode ? "bg-capx-dark-bg py-6 px-3 mb-[62px] rounded-[16px]" : ""
+          darkMode
+            ? "bg-capx-dark-bg py-6 px-3 mb-[62px] rounded-[16px]"
+            : "bg-[#EFEFEF] py-6 px-3 mb-[62px] rounded-[16px]"
         }`}
       >
         {items.map((item, index) => {
@@ -89,7 +91,7 @@ export function CapacitiesList({
           return (
             <div
               key={index}
-              className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] ${
+              className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px]  ${
                 title === "Known capacities"
                   ? "bg-[#0070B9] text-[24px] text-white"
                   : title === "Available capacities"

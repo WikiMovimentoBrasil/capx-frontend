@@ -100,6 +100,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
           ? "border-capx-light-bg bg-capx-dark-box-bg"
           : "border-capx-secondary-purple bg-capx-light-bg"
       }`}
+      id="video-section"
     >
       <div className="flex flex-col justify-center items-center sm:items-start sm:justify-start ml-0 sm:ml-20">
         <h1
@@ -126,7 +127,7 @@ export default function VideoSection({ pageContent }: VideoSectionProps) {
               src={tabletIllusttration}
               alt="Tablet illustration"
               layout="fill"
-              objectFit="contain"
+              style={{ objectFit: "cover" }}
               className="absolute inset-0"
             />
 

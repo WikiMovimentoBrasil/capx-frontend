@@ -53,7 +53,7 @@ const ProfileItemsComponent = ({
       <>
         <div className="flex flex-row gap-2">
           <div className="relative h-[20px] w-[20px]">
-            <Image src={icon} alt={title} fill objectFit="contain" />
+            <Image src={icon} alt={title} fill style={{ objectFit: "cover" }} />
           </div>
           <h2
             className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -83,7 +83,7 @@ const ProfileItemsComponent = ({
     <>
       <div className="flex flex-row gap-[80px] mt-[80px]">
         <div className="relative h-[48px] w-[48px]">
-          <Image src={icon} alt={title} fill objectFit="contain" />
+          <Image src={icon} alt={title} fill style={{ objectFit: "cover" }} />
         </div>
         <h2
           className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
@@ -116,6 +116,12 @@ export default function ProfileContent({ pageContent }) {
   const { isMobile } = useApp();
   const token = session?.user?.token;
   const userId = Number(session?.user?.id);
+  const [profileData, setProfileData] = useState<{
+    username: string;
+    profileImage: string;
+    avatar: number;
+  } | null>(null);
+  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
 
   const {
     profile,
@@ -125,36 +131,42 @@ export default function ProfileContent({ pageContent }) {
     updateProfile,
   } = useProfile(token, userId);
 
-  // Use useMemo para garantir que os dados do profile estejam prontos
-  const profileData = useMemo(() => {
-    if (!profile) return null;
+  const { avatars, isLoading: avatarsLoading } = useAvatars();
 
-    return {
+  // Usar useMemo para garantir que os dados só sejam passados quando estiverem prontos
+  useEffect(() => {
+    if (!profile || avatarsLoading) return;
+
+    const avatarId = Number(profile.avatar);
+    const avatarData =
+      avatarId > 0 ? avatars?.find((a) => a.id === avatarId) : null;
+
+    setProfileData({
       username: profile.user?.username,
       profileImage: profile.profile_image,
-      avatar: Number(profile.avatar),
-    };
-  }, [profile]);
+      avatar: avatarData ? avatarId : 0,
+    });
+  }, [profile, avatars, avatarsLoading]);
 
-  const { avatars, isLoading: avatarsLoading } = useAvatars();
-  const { languages } = useLanguage(token);
+  if (profileLoading || avatarsLoading || !profileData) {
+    return <div>Loading...</div>;
+  }
+
+  /*   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { territories } = useTerritories(token);
   const { wikimediaProjects, wikimediaProjectImages } = useWikimediaProject(
     token,
     profile?.wikimedia_project || []
-  );
-  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
+  ); */
 
-  if (profileLoading || avatarsLoading) return <div>Loading...</div>;
+  if (profileLoading || avatarsLoading || !profileData) {
+    return <div>Loading...</div>;
+  }
 
   if (profileError) {
     console.error("Profile error:", profileError);
     return <div>Error loading profile</div>;
-  }
-
-  if (!profileData) {
-    return <div>No profile data available</div>;
   }
 
   const getProficiencyLabel = (proficiency: string) => {
@@ -172,12 +184,21 @@ export default function ProfileContent({ pageContent }) {
 
   const handleAvatarSelect = async (avatarId: number) => {
     try {
+      // Atualiza no backend primeiro
       await updateProfile({
         avatar: avatarId,
         profile_image: "",
       });
 
-      await refetch();
+      // Só atualiza o estado local após sucesso no backend
+      const avatarData = avatars?.find((a) => a.id === avatarId);
+      const updatedProfileData = {
+        ...profileData,
+        avatar: avatarId,
+        profileImage: "",
+      };
+
+      setProfileData(updatedProfileData);
       setShowAvatarPopup(false);
     } catch (error) {
       console.error("Error updating avatar:", error);
@@ -186,7 +207,7 @@ export default function ProfileContent({ pageContent }) {
 
   return (
     <div>
-      <ProfileHeader {...profileData} />
+      {profileData && <ProfileHeader {...profileData} />}
       {showAvatarPopup && (
         <AvatarSelectionPopup
           onClose={() => setShowAvatarPopup(false)}

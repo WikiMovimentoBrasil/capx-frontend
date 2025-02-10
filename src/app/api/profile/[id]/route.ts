@@ -38,3 +38,32 @@ export async function PUT(
     );
   }
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const authHeader = request.headers.get("authorization");
+
+  try {
+    const response = await axios.get(
+      `${process.env.BASE_URL}/profile/${params.id}/`,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    console.error("GET request error:", error.response?.data || error.message);
+    return NextResponse.json(
+      {
+        error: "Failed to get user profile",
+        details: error.response?.data || error.message,
+      },
+      { status: error.response?.status || 500 }
+    );
+  }
+}

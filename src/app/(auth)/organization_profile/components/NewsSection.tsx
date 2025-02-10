@@ -76,7 +76,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
   return (
     <section className="w-full max-w-screen-xl py-8">
       <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
-        <div className="relative w-[48px] h-[48px]">
+        <div className="relative w-[20px] h-[20px] md:w-[48px] md:h-[48px]">
           <Image
             src={darkMode ? WikimediaIconWhite : WikimediaIcon}
             alt="Wikimedia"
@@ -85,7 +85,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
           />
         </div>
         <h2
-          className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+          className={`font-[Montserrat] text-[14px] md:text-[24px] not-italic font-extrabold leading-[normal] ${
             darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
           }`}
         >

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await axios.get(
-      `${process.env.BASE_URL}/users/${encodeURIComponent(userId || "")}`,
+      `${process.env.BASE_URL}/profile/${encodeURIComponent(userId || "")}`,
       {
         headers: {
           Authorization: authHeader,

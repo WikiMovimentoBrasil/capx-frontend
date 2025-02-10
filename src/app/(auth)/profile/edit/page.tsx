@@ -60,7 +60,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
 import { useAvatars } from "@/hooks/useAvatars";
-
+import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 const fetchWikidataQid = async (name: string) => {
   try {
     const wikidataQuery = `
@@ -181,15 +181,25 @@ export default function EditProfilePage() {
         skills_wanted: profile.skills_wanted || [],
       });
 
-      if (profile.profile_image) {
+      if (profile.avatar) {
+        const avatarData = avatars?.find(
+          (avatar) => avatar.id === profile.avatar
+        );
+        setSelectedAvatar({
+          id: profile.avatar,
+          src: avatarData?.avatar_url || NoAvatarIcon,
+        });
+        setIsWikidataSelected(false);
+      } else if (profile.profile_image) {
         setSelectedAvatar({
           id: -1,
           src: profile.profile_image,
         });
+        setIsWikidataSelected(true);
       } else {
         setSelectedAvatar({
           id: 0,
-          src: "",
+          src: NoAvatarIcon,
         });
       }
     }
@@ -213,7 +223,11 @@ export default function EditProfilePage() {
     setFormData((prev) => ({
       ...prev,
       avatar: avatarId,
+      profile_image: "",
+      wikidata_qid: "",
     }));
+
+    setIsWikidataSelected(false);
 
     const selectedAvatarUrl = avatars?.find(
       (avatar) => avatar.id === avatarId
@@ -237,26 +251,26 @@ export default function EditProfilePage() {
         const wikidataImage = await fetchWikidataImage(wikidataQid);
 
         if (wikidataImage) {
-          // Atualiza o estado local
+          // Update local state
           setSelectedAvatar({
             id: -1,
             src: wikidataImage,
           });
 
-          // Prepara os dados para atualização
+          // Prepare data for update
           const updatedData = {
             ...formData,
             profile_image: wikidataImage,
             wikidata_qid: wikidataQid,
-            avatar: null, // Remove o avatar quando usar imagem do Wikidata
+            avatar: null, // Remove the avatar when using Wikidata image
           };
 
           setFormData(updatedData);
 
-          // Atualiza imediatamente no backend
+          // Update immediately in the backend
           try {
             await updateProfile(updatedData);
-            await refetch(); // Recarrega os dados do perfil
+            await refetch(); // Reload the profile data
           } catch (error) {
             console.error("Error updating profile with Wikidata image:", error);
           }
@@ -277,7 +291,7 @@ export default function EditProfilePage() {
 
         setFormData(updatedData);
 
-        // Atualiza imediatamente no backend
+        // Update immediately in the backend
         try {
           await updateProfile(updatedData);
           await refetch();
@@ -392,6 +406,28 @@ export default function EditProfilePage() {
     }));
   };
 
+  const { getAvatarById } = useAvatars();
+  const [avatarUrl, setAvatarUrl] = useState<string>(
+    profile?.avatar || NoAvatarIcon
+  );
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (typeof profile?.avatar === "number" && profile?.avatar > 0) {
+        try {
+          const avatarData = await getAvatarById(profile?.avatar);
+          if (avatarData?.avatar_url) {
+            setAvatarUrl(avatarData.avatar_url);
+          }
+        } catch (error) {
+          console.error("Error fetching avatar:", error);
+        }
+      }
+    };
+
+    fetchAvatar();
+  }, [profile?.avatar, getAvatarById]);
+
   if (isMobile) {
     return (
       <>
@@ -427,7 +463,7 @@ export default function EditProfilePage() {
                       }
                       alt="User circle icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
 
@@ -449,7 +485,7 @@ export default function EditProfilePage() {
                       src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
                       alt="Account box icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
                   <h2
@@ -464,7 +500,7 @@ export default function EditProfilePage() {
                 <div className="bg-gray-100 p-4 rounded-lg">
                   <div className="w-32 h-32 mx-auto mb-4 relative">
                     <Image
-                      src={selectedAvatar.src}
+                      src={selectedAvatar.src || avatarUrl}
                       alt="Selected avatar"
                       fill
                       className="object-contain"
@@ -517,14 +553,16 @@ export default function EditProfilePage() {
                     imageWidth={20}
                     imageHeight={20}
                   />
-                  <span
-                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
-                  >
-                    I consent displaying my Wikidata item image on CapX profile
-                    (if existent).
-                  </span>
+                  <div className="flex w-full justify-start">
+                    <span
+                      className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      I consent displaying my Wikidata item image on CapX
+                      profile (if existent).
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-[10px] mt-2">
                   {/* Action Buttons */}
@@ -558,7 +596,7 @@ export default function EditProfilePage() {
                         src={darkMode ? PersonIconWhite : PersonIcon}
                         alt="Person icon"
                         fill
-                        objectFit="contain"
+                        style={{ objectFit: "cover" }}
                       />
                     </div>
                     <div className="flex flex-row gap-1 items-center">
@@ -1298,7 +1336,7 @@ export default function EditProfilePage() {
                     src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
                     alt="Account box icon"
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <h2
@@ -1339,7 +1377,7 @@ export default function EditProfilePage() {
                       }
                       alt="User circle icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
 
@@ -1439,7 +1477,7 @@ export default function EditProfilePage() {
                   src={darkMode ? PersonIconWhite : PersonIcon}
                   alt="Person icon"
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <div className="flex flex-row gap-1 items-center">
@@ -2136,6 +2174,12 @@ export default function EditProfilePage() {
           </div>
         </div>
       </section>
+      <CapacitySelectionModal
+        isOpen={showCapacityModal}
+        onClose={() => setShowCapacityModal(false)}
+        onSelect={handleCapacitySelect}
+        title={`Choose ${selectedCapacityType} capacity`}
+      />
     </div>
   );
 }
