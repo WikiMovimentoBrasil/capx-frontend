@@ -23,10 +23,10 @@ const Row = (
     <div
       className={`flex flex-row w-full border-solid ${getBorderClass()} ${
         darkMode ? "border-capx-light-bg" : "border-capx-secondary-purple"
-      } px-4 sm:px-4 lg:px-10`}
+      } `}
     >
-      <div className="flex flex-row items-center w-full">
-        <div className="shrink-0 w-[150px] md:w-[200px] h-[150px] md:h-[200px] lg:w-[300px] lg:h-[300px] flex items-center justify-center py-8 md:py-12">
+      <div className="flex flex-row items-center justify-between lg:justify-evenly  w-full mx-4 md:mx-8 lg:mx-16 xl:mx-32 2xl:mx-64 3xl:mx-96 4xl:mx-128 ">
+        <div className="max-w-screen-xl shrink-0 w-[150px] md:w-[200px] h-[150px] md:h-[200px] lg:w-[300px] lg:h-[300px] flex items-center justify-center py-8 md:py-12">
           <div className="relative w-full h-full">
             <Image
               src={illustration}
@@ -36,26 +36,35 @@ const Row = (
             />
           </div>
         </div>
-        <div className="shrink-0 sm:w-[20px] md:w-[100px]"></div>
-        <p
-          className={`font-[Montserrat] text-[20px] md:text-[36px] not-italic font-extrabold leading-[normal] ${
-            darkMode ? "text-capx-dark-text" : "text-capx-light-text"
-          }`}
-        >
-          {description}
-        </p>
+        <div className="flex flex-col items-center justify-start">
+          <p
+            className={`font-[Montserrat] text-[20px] md:text-[36px] not-italic font-extrabold leading-[normal] ${
+              darkMode ? "text-capx-dark-text" : "text-capx-light-text"
+            }`}
+          >
+            {description}
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
-
 export default function FeaturesSection() {
   const { pageContent } = useApp();
   const features = [
-    { illustration: illustration01, description: pageContent["body-home-feature-section-capacity"] },
-    { illustration: illustration02, description: pageContent["body-home-feature-section-connect"] },
-    { illustration: illustration03, description: pageContent["body-home-feature-section-knowledge"] },
+    {
+      illustration: illustration01,
+      description: pageContent["body-home-feature-section-capacity"],
+    },
+    {
+      illustration: illustration02,
+      description: pageContent["body-home-feature-section-connect"],
+    },
+    {
+      illustration: illustration03,
+      description: pageContent["body-home-feature-section-knowledge"],
+    },
   ];
   const { darkMode } = useTheme();
 
