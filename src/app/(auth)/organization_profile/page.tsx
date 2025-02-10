@@ -120,8 +120,9 @@ export default function OrganizationProfilePage() {
                       <div className="relative h-[51px] w-[127px]">
                         <Image
                           src={
-                            formatWikiImageUrl(organization?.profile_image) ||
-                            NoAvatarIcon
+                            formatWikiImageUrl(
+                              organization?.profile_image || ""
+                            ) || NoAvatarIcon
                           }
                           alt="Organization logo"
                           fill
@@ -134,7 +135,9 @@ export default function OrganizationProfilePage() {
                   {isOrgManager && (
                     <BaseButton
                       onClick={() => router.push("/organization_profile/edit")}
-                      label={pageContent["organization-profile-edit-org-profile"]}
+                      label={
+                        pageContent["organization-profile-edit-org-profile"]
+                      }
                       customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                         darkMode
                           ? "border-white text-white"
@@ -160,7 +163,11 @@ export default function OrganizationProfilePage() {
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
-                    {pageContent["organization-profile-report-activities-title"]}
+                    {
+                      pageContent[
+                        "organization-profile-report-activities-title"
+                      ]
+                    }
                   </h2>
                   <BaseButton
                     onClick={() => {}}
@@ -181,7 +188,9 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title={pageContent["body-profile-section-title-available-capacity"]}
+                  title={
+                    pageContent["body-profile-section-title-available-capacity"]
+                  }
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
@@ -262,7 +271,9 @@ export default function OrganizationProfilePage() {
                     />
                   ) : (
                     <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">{pageContent["logo-not-available"]}</span>
+                      <span className="text-gray-400">
+                        {pageContent["logo-not-available"]}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -358,7 +369,9 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title={pageContent["body-profile-section-title-available-capacity"]}
+                title={
+                  pageContent["body-profile-section-title-available-capacity"]
+                }
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}

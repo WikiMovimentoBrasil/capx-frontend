@@ -48,17 +48,21 @@ export const useTagDiff = (token?: string, id?: number) => {
 
   const createTag = async (data: Partial<tagDiff>) => {
     if (!token) {
-      console.error("createNews: No token provided");
-      return;
+      console.error("createTag: No token provided");
+      return null;
     }
     try {
       setLoading(true);
       const response = await tagDiffService.createTag(data, token);
+
+      if (!response || !response.id) {
+        throw new Error("Invalid response from tag creation");
+      }
       return response;
     } catch (error) {
       console.error("useTagDiff - Error:", error);
       setError(error instanceof Error ? error.message : "Failed to create tag");
-      throw error;
+      return null;
     } finally {
       setLoading(false);
     }
