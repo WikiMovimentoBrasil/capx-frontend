@@ -199,12 +199,12 @@ export default function AuthenticatedMainSection({
               />
             </div>
             <div className="flex flex-row gap-4 w-full justify-center items-center">
-              <AuthButton
+              {/* <AuthButton TODO
                 message={
                   pageContent["body-loggedin-home-main-section-button01"]
                 }
                 customClass="rounded-[6px] bg-[#851970] inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-              ></AuthButton>
+              ></AuthButton> */}
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
                 onClick={() => router.push("/profile")}
@@ -248,11 +248,11 @@ export default function AuthenticatedMainSection({
               {pageContent["body-home-section01-description"]}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full items-start mt-[24px]">
-              <AuthButton
+              {/* <AuthButton TODO
                 message={
                   pageContent["body-loggedin-home-main-section-button01"]
                 }
-              ></AuthButton>
+              ></AuthButton> */}
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
                 customClass="rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] inline-flex px-[32px] py-[16px] h-[64px] justify-center items-center gap-[8px] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
