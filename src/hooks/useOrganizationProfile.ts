@@ -3,6 +3,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
+import { fetchFromApi } from "@/lib/utils/apiClient";
+import { signOut } from "next-auth/react";
 
 export function useOrganization(token?: string, forceManager = false) {
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -11,21 +13,24 @@ export function useOrganization(token?: string, forceManager = false) {
   const [isOrgManager, setIsOrgManager] = useState(forceManager);
   const [organizationId, setOrganizationId] = useState<number | null>(null);
 
+  const handleInvalidToken = async () => {
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
+
   const fetchUserProfile = useCallback(async () => {
     if (!token) return;
 
     try {
       setIsLoading(true);
-      const userProfile = await organizationProfileService.getUserProfile(
-        token
-      );
+      const response = await organizationProfileService.getUserProfile(token);
+      const data = await fetchFromApi(response);
 
-      const isManager = userProfile.some(
+      const isManager = data.some(
         (profile) => profile.is_manager && profile.is_manager.length > 0
       );
 
       if (isManager) {
-        const managedOrgId = userProfile.find(
+        const managedOrgId = data.find(
           (profile) => profile.is_manager && profile.is_manager.length > 0
         )?.is_manager[0];
         setOrganizationId(managedOrgId);
@@ -34,11 +39,14 @@ export function useOrganization(token?: string, forceManager = false) {
         setIsOrgManager(false);
         setOrganizationId(null);
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.response?.status === 401) {
+        await handleInvalidToken();
+        return;
+      }
       setError(
         err instanceof Error ? err.message : "Failed to fetch user profile"
       );
-      setIsOrgManager(false);
       setOrganizationId(null);
     } finally {
       setIsLoading(false);
@@ -50,12 +58,17 @@ export function useOrganization(token?: string, forceManager = false) {
 
     try {
       setIsLoading(true);
-      const data = await organizationProfileService.getOrganizationById(
+      const response = await organizationProfileService.getOrganizationById(
         token,
         organizationId
       );
+      const data = await fetchFromApi(response);
       setOrganization(data);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.response?.status === 401) {
+        await handleInvalidToken();
+        return;
+      }
       setError(
         err instanceof Error ? err.message : "Failed to fetch organization"
       );
@@ -63,18 +76,6 @@ export function useOrganization(token?: string, forceManager = false) {
       setIsLoading(false);
     }
   }, [token, organizationId]);
-
-  useEffect(() => {
-    if (token) {
-      fetchUserProfile();
-    }
-  }, [token, fetchUserProfile]);
-
-  useEffect(() => {
-    if (token && organizationId) {
-      fetchOrganizationById();
-    }
-  }, [token, organizationId, fetchOrganizationById]);
 
   const updateOrganization = useCallback(
     async (data: Partial<Organization>) => {
@@ -84,23 +85,28 @@ export function useOrganization(token?: string, forceManager = false) {
 
       try {
         setIsLoading(true);
-        const updatedOrg =
+        const updateResponse =
           await organizationProfileService.updateOrganizationProfile(
             token,
             organizationId,
             data
           );
+        const updatedOrg = await fetchFromApi(updateResponse);
 
-        const refreshedOrg =
+        const refreshResponse =
           await organizationProfileService.getOrganizationById(
             token,
             organizationId
           );
+        const refreshedOrg = await fetchFromApi(refreshResponse);
 
         setOrganization(refreshedOrg);
         return refreshedOrg;
       } catch (err: any) {
-        console.error("Full error:", err);
+        if (err?.response?.status === 401) {
+          await handleInvalidToken();
+          return null;
+        }
         const errorMessage =
           err.response?.data?.detail ||
           err.message ||
@@ -114,6 +120,18 @@ export function useOrganization(token?: string, forceManager = false) {
     [token, organizationId]
   );
 
+  useEffect(() => {
+    if (token) {
+      fetchUserProfile();
+    }
+  }, [token, fetchUserProfile]);
+
+  useEffect(() => {
+    if (token && organizationId) {
+      fetchOrganizationById();
+    }
+  }, [token, organizationId, fetchOrganizationById]);
+
   return {
     organization,
     isLoading,
@@ -121,8 +139,7 @@ export function useOrganization(token?: string, forceManager = false) {
     refetch: fetchOrganizationById,
     isOrgManager,
     organizationId,
-    fetchUserProfile,
-    fetchOrganizationById,
     updateOrganization,
+    fetchOrganizationById,
   };
 }

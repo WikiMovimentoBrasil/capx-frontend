@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { handleApiError } from "@/lib/utils/handleApiError";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -12,14 +13,6 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error("Error details:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    });
-    return NextResponse.json(
-      { error: "Failed to fetch organizations" },
-      { status: error.response?.status || 500 }
-    );
+    return handleApiError(error, "Organizations fetch");
   }
 }
