@@ -149,7 +149,7 @@ export default function ProfileContent({ pageContent }) {
   }, [profile, avatars, avatarsLoading]);
 
   if (profileLoading || avatarsLoading || !profileData) {
-    return <div>Loading...</div>;
+    return <div>{pageContent["loading"]}</div>;
   }
 
   /*   const { languages } = useLanguage(token);
@@ -159,10 +159,6 @@ export default function ProfileContent({ pageContent }) {
     token,
     profile?.wikimedia_project || []
   ); */
-
-  if (profileLoading || avatarsLoading || !profileData) {
-    return <div>Loading...</div>;
-  }
 
   if (profileError) {
     console.error("Profile error:", profileError);

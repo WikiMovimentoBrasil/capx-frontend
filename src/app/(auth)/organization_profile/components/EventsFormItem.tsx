@@ -46,7 +46,7 @@ const EventFormItem = ({
   onChange,
 }: EventFormItemProps) => {
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   if (isMobile) {
     return (
@@ -55,7 +55,7 @@ const EventFormItem = ({
           <div className="flex flex-row gap-2 w-full items-center text-[12px] md:text-[24px] text-[16px] p-2 border rounded-md bg-transparent">
             <input
               type="text"
-              placeholder="Event Name"
+              placeholder={pageContent["organization-profile-event-name"]}
               value={eventData.name || ""}
               onChange={(e) => onChange(index, "name", e.target.value)}
               className={`w-full bg-transparent border-none outline-none text-[12px] md:text-[24px] ${
@@ -77,7 +77,7 @@ const EventFormItem = ({
               </div>
               <input
                 type="text"
-                placeholder="Project Image"
+                placeholder={pageContent["organization-profile-project-image"]}
                 className={`w-full bg-transparent border-none outline-none text-[12px] md:text-[24px] ${
                   darkMode
                     ? "text-white placeholder-gray-400"
@@ -102,7 +102,7 @@ const EventFormItem = ({
               </div>
               <input
                 type="text"
-                placeholder="Link of project"
+                placeholder={pageContent["organization-profile-project-link"]}
                 className={`w-full bg-transparent border-none outline-none text-[12px] md:text-[24px] ${
                   darkMode
                     ? "text-white placeholder-gray-400"
@@ -135,7 +135,7 @@ const EventFormItem = ({
         <div className="flex flex-row gap-2 w-full items-center text-[24px] p-2 border rounded-md bg-transparent">
           <input
             type="text"
-            placeholder="Event Name"
+            placeholder={pageContent["organization-profile-event-name"]}
             value={eventData.name || ""}
             onChange={(e) => onChange(index, "name", e.target.value)}
             className={`w-full bg-transparent border-none outline-none ${
@@ -156,7 +156,7 @@ const EventFormItem = ({
             />
             <input
               type="text"
-              placeholder="Project Image"
+              placeholder={pageContent["organization-profile-project-image"]}
               className={`w-full text-[24px] bg-transparent border-none outline-none ${
                 darkMode
                   ? "text-white placeholder-gray-400"
@@ -181,7 +181,7 @@ const EventFormItem = ({
             </div>
             <input
               type="text"
-              placeholder="Link of project"
+              placeholder={pageContent["organization-profile-project-link"]}
               className={`w-full bg-transparent border-none items-center text-[24px] outline-none ${
                 darkMode
                   ? "text-white placeholder-gray-400"

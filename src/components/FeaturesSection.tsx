@@ -3,6 +3,7 @@ import illustration02 from "@/public/static/images/connect_wikimedians_illustrat
 import illustration03 from "@/public/static/images/exchange_knowledge_illustration.svg";
 import Image, { StaticImageData } from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 const Row = (
   illustration: StaticImageData,
@@ -48,11 +49,13 @@ const Row = (
   );
 };
 
+
 export default function FeaturesSection() {
+  const { pageContent } = useApp();
   const features = [
-    { illustration: illustration01, description: "learn new capacities" },
-    { illustration: illustration02, description: "connect with wikimedians" },
-    { illustration: illustration03, description: "exchange knowledge" },
+    { illustration: illustration01, description: pageContent["body-home-feature-section-capacity"] },
+    { illustration: illustration02, description: pageContent["body-home-feature-section-connect"] },
+    { illustration: illustration03, description: pageContent["body-home-feature-section-knowledge"] },
   ];
   const { darkMode } = useTheme();
 

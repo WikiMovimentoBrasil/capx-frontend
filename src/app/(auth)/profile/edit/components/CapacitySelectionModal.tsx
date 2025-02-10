@@ -5,6 +5,7 @@ import { useCapacityList } from "@/hooks/useCapacityList";
 import { Capacity } from "@/types/capacity";
 import React from "react";
 import BaseButton from "@/components/BaseButton";
+import { useApp } from "@/contexts/AppContext";
 
 interface CapacitySelectionModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export default function CapacitySelectionModal({
 }: CapacitySelectionModalProps) {
   const { darkMode } = useTheme();
   const { data: session } = useSession();
+  const { pageContent } = useApp();
   const [selectedPath, setSelectedPath] = useState<number[]>([]);
   const [selectedCapacity, setSelectedCapacity] = useState<Capacity | null>(
     null
@@ -185,7 +187,7 @@ export default function CapacitySelectionModal({
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                Loading...
+                {pageContent["loading"]}
               </div>
             ) : getCurrentCapacities().length > 0 ? (
               getCurrentCapacities().map((capacity) => (
@@ -238,12 +240,12 @@ export default function CapacitySelectionModal({
           {/* Action buttons */}
           <div className="flex w-full justify-center gap-2 mt-4">
             <BaseButton
-              label="Cancel"
+              label={pageContent["form-profile-cancel"]}
               customClass="bg-[#F6F6F6] w-1/2 rounded-[6px] !py-2 !px-4 font-extrabold text-[14px] text-capx-dark-bg border border-capx-dark-bg hover:bg-gray-600"
               onClick={onClose}
             />
             <BaseButton
-              label="Confirm"
+              label={pageContent["edit-profile-confirm"]}
               customClass={`bg-capx-secondary-purple rounded-[6px] !py-2 !px-4 font-extrabold text-[14px] text-white hover:bg-capx-primary-green w-1/2 ${
                 !selectedCapacity ? "opacity-50 cursor-not-allowed" : ""
               }`}

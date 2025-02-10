@@ -6,6 +6,7 @@ import BaseButton from "./BaseButton";
 import Popup from "./Popup";
 import capxPersonIcon from "../../public/static/images/capx_person_icon.svg";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 interface AuthButtonProps {
   message: string;
@@ -29,6 +30,7 @@ export default function AuthButton({
   const [isLoading, setIsLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const { darkMode } = useTheme();
+  const { pageContent } = useApp();
   const handleAuth = async () => {
     setIsLoading(true);
 
@@ -97,9 +99,9 @@ export default function AuthButton({
           onContinue={handleAuth}
           onClose={() => setShowPopup(false)}
           image={capxPersonIcon}
-          title="You are being redirected to the unified login on Meta-Wiki"
-          closeButtonLabel="Close Tab"
-          continueButtonLabel="Continue"
+          title={pageContent["auth-dialog-content"]}
+          closeButtonLabel={pageContent["auth-dialog-button-close"]}
+          continueButtonLabel={pageContent["auth-dialog-button-continue"]}
           customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
         />
       )}

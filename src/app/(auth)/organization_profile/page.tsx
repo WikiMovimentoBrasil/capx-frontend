@@ -30,7 +30,7 @@ import { useOrganizationType } from "@/hooks/useOrganizationType";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
@@ -84,7 +84,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-capx-dark-text" : "text-capx-light-text"
                     }`}
                   >
-                    Welcome!
+                    {pageContent["edit-profile-welcome"]}
                   </h1>
 
                   <div className="flex items-center gap-2 mb-2">
@@ -102,7 +102,7 @@ export default function OrganizationProfilePage() {
                           : "text-capx-light-text"
                       }`}
                     >
-                      {organization?.display_name || "Loading..."}
+                      {organization?.display_name || pageContent["loading"]}
                     </span>
                   </div>
 
@@ -111,7 +111,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    {/* TODO: Add organization type */}
+                    {/* TODO {pageContent["organization-profile-wiki-subtitle"]}` */}
                   </p>
 
                   {/* Logo */}
@@ -134,7 +134,7 @@ export default function OrganizationProfilePage() {
                   {isOrgManager && (
                     <BaseButton
                       onClick={() => router.push("/organization_profile/edit")}
-                      label="Edit org. profile"
+                      label={pageContent["organization-profile-edit-org-profile"]}
                       customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                         darkMode
                           ? "border-white text-white"
@@ -160,11 +160,11 @@ export default function OrganizationProfilePage() {
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
-                    Report of activities
+                    {pageContent["organization-profile-report-activities-title"]}
                   </h2>
                   <BaseButton
                     onClick={() => {}}
-                    label="Click here"
+                    label={pageContent["organization-profile-click-here"]}
                     customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                   />
                 </div>
@@ -175,20 +175,20 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                  title="Known capacities"
+                  title={pageContent["body-profile-known-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]`}
                 />
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title="Available capacities"
+                  title={pageContent["body-profile-section-title-available-capacity"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
                 <CapacitiesList
                   items={organization?.wanted_capacities || []}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
-                  title="Wanted capacities"
+                  title={pageContent["body-profile-wanted-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
@@ -197,13 +197,13 @@ export default function OrganizationProfilePage() {
               {/* Projects and Events */}
               <div className="space-y-6 mt-4">
                 <ProjectsEventsList
-                  title="Main projects"
+                  title={pageContent["body-profile-section-main-projects"]}
                   type="projects"
                   itemIds={organization?.projects || []}
                   token={token}
                 />
                 <ProjectsEventsList
-                  title="Events"
+                  title={pageContent["body-profile-section-title-events"]}
                   type="events"
                   itemIds={organization?.events || []}
                   token={token}
@@ -262,7 +262,7 @@ export default function OrganizationProfilePage() {
                     />
                   ) : (
                     <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">Logo não disponível</span>
+                      <span className="text-gray-400">{pageContent["logo-not-available"]}</span>
                     </div>
                   )}
                 </div>
@@ -275,7 +275,7 @@ export default function OrganizationProfilePage() {
                     darkMode ? "text-capx-dark-text" : "text-capx-light-text"
                   }`}
                 >
-                  Welcome!
+                  {pageContent["edit-profile-welcome"]}
                 </h1>
 
                 <div className="flex items-center gap-2 mb-2">
@@ -295,18 +295,18 @@ export default function OrganizationProfilePage() {
                   </span>
                 </div>
 
-                <p
+                {/* <p
                   className={`font-[Montserrat] text-[16px] md:text-[20px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4 ${
                     darkMode ? "text-white" : "text-capx-dark-box-bg"
                   }`}
                 >
-                  Grupo de usuários Wiki Movimento Brasil
-                </p>
+                  TODO
+                </p> */}
 
                 {isOrgManager && (
                   <BaseButton
                     onClick={() => router.push("/organization_profile/edit")}
-                    label="Edit organization profile"
+                    label={pageContent["body-profile-edit-organization-button"]}
                     customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
                         ? "border-white text-white"
@@ -335,11 +335,11 @@ export default function OrganizationProfilePage() {
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2 className="text-[#FFF] text-[30px] not-italic font-extrabold leading-[37px] mb-6">
-                  Report of activities
+                  {pageContent["organization-profile-report-activities-title"]}
                 </h2>
                 <BaseButton
                   onClick={() => {}}
-                  label="Click here"
+                  label={pageContent["organization-profile-click-here"]}
                   customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
                 />
               </div>
@@ -350,7 +350,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.known_capacities || []}
                 icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                title="Known capacities"
+                title={pageContent["body-profile-known-capacities-title"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -358,7 +358,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title="Available capacities"
+                title={pageContent["body-profile-section-title-available-capacity"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -366,7 +366,7 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.wanted_capacities || []}
                 icon={darkMode ? TargetIconWhite : TargetIcon}
-                title="Wanted capacities"
+                title={pageContent["body-profile-wanted-capacities-title"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -376,13 +376,13 @@ export default function OrganizationProfilePage() {
             {/* Projects and Events */}
             <div className="space-y-6 mt-4">
               <ProjectsEventsList
-                title="Main projects"
+                title={pageContent["body-profile-section-title-main-projects"]}
                 type="projects"
                 itemIds={organization?.projects || []}
                 token={token}
               />
               <ProjectsEventsList
-                title="Events"
+                title={pageContent["body-profile-section-title-events"]}
                 type="events"
                 itemIds={organization?.events || []}
                 token={token}
@@ -394,7 +394,7 @@ export default function OrganizationProfilePage() {
 
             {/* Documents Section */}
             <DocumentsList
-              title="Documents"
+              title={pageContent["body-profile-section-title-documents"]}
               type="documents"
               items={organization?.documents || []}
               token={token}

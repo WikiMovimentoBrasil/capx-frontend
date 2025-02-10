@@ -2,6 +2,7 @@ import { useEvent } from "@/hooks/useEvents";
 import Image from "next/image";
 import BaseButton from "@/components/BaseButton";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 interface EventCardProps {
   eventId: number;
@@ -11,9 +12,10 @@ interface EventCardProps {
 export const EventCard = ({ eventId, token }: EventCardProps) => {
   const { event, isLoading, error } = useEvent(eventId, token);
   const { darkMode } = useTheme();
+  const { pageContent } = useApp();
 
   if (isLoading) {
-    return <div className="loading-skeleton">Loading...</div>;
+    return <div className="loading-skeleton">{pageContent["loading"]}</div>;
   }
 
   if (error || !event) {
@@ -62,7 +64,7 @@ export const EventCard = ({ eventId, token }: EventCardProps) => {
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full text-gray-400">
-              No image available
+              {pageContent["organization-profile-no-image-available"]}
             </div>
           )}
         </div>
@@ -70,7 +72,7 @@ export const EventCard = ({ eventId, token }: EventCardProps) => {
       <div className="p-6">
         <BaseButton
           customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
-          label="View event"
+          label={pageContent["organization-profile-view-event"]}
           onClick={() => window.open(event.url, "_blank")}
         />
       </div>

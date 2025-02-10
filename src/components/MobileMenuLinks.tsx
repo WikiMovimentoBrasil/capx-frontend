@@ -77,7 +77,7 @@ export default function MobileMenuLinks({
         ]
       : []),
     {
-      title: "User Profile",
+      title: pageContent["navbar-user-profile"],
       to: "/profile",
       image: darkMode
         ? selectedProfile === "user"

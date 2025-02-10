@@ -13,12 +13,8 @@ import CommonsLogo from "@/public/static/images/commons_logo.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 
-interface MainSectionProps {
-  pageContent: any;
-}
-
-export default function MainSection({ pageContent }: MainSectionProps) {
-  const { isMobile } = useApp();
+export default function MainSection() {
+  const { isMobile, pageContent } = useApp();
   const { darkMode } = useTheme();
 
   const scrollToVideo = () => {
@@ -45,7 +41,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
             >
               {pageContent["body-home-section01-title-text"] + " "}
               <Typewriter
-                words={pageContent["body-home-section01-title-carousel"].split(
+                words={pageContent["body-home-section01-title-carousel"]?.split(
                   ","
                 )}
                 loop={0}
@@ -110,7 +106,7 @@ export default function MainSection({ pageContent }: MainSectionProps) {
                 <Typewriter
                   words={pageContent[
                     "body-home-section01-title-carousel"
-                  ].split(",")}
+                  ]?.split(",")}
                   loop={0}
                   cursor
                   cursorStyle="_"

@@ -4,20 +4,19 @@ import AuthenticatedMainSection from "./AuthenticatedMainSection";
 import Popup from "@/components/Popup";
 import FirstLoginImage from "@/public/static/images/capx_complete_profile.svg";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 
 interface AuthenticatedHomeWrapperProps {
-  pageContent: any;
   isFirstLogin: boolean;
 }
 
-export default function AuthenticatedHomeWrapper({
-  pageContent,
-}: AuthenticatedHomeWrapperProps) {
+export default function AuthenticatedHomeWrapper({}: AuthenticatedHomeWrapperProps) {
   const router = useRouter();
   const { darkMode } = useTheme();
   const handleContinue = () => {
     router.push("/profile/edit");
   };
+  const {pageContent} = useApp();
 
   const isFirstLogin = true; // TODO: remove this
 
@@ -29,9 +28,9 @@ export default function AuthenticatedHomeWrapper({
           onContinue={handleContinue}
           onClose={() => {}}
           image={FirstLoginImage}
-          title="Complete your profile for a better experience"
-          closeButtonLabel="Close tab"
-          continueButtonLabel="Continue"
+          title={pageContent["complete-your-profile"]}
+          closeButtonLabel={pageContent["auth-dialog-button-close"]}
+          continueButtonLabel={pageContent["auth-dialog-button-continue"]}
           customClass={`${
             darkMode ? "bg-[#005B3F] text-white" : "bg-white text-[#053749]"
           }`}

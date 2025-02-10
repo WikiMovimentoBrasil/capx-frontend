@@ -21,13 +21,6 @@ jest.mock("next/navigation", () => ({
   },
 }));
 
-const mockPageContent = {
-  "body-home-section01-call-to-action-title": "Título de teste",
-  "body-home-section01-call-to-action-description": "Descrição de teste",
-  "body-home-section01-call-to-action-button01": "Botão 1",
-  "body-home-section01-call-to-action-button02": "Botão 2",
-};
-
 // Mock do matchMedia
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -73,7 +66,7 @@ describe("CallToActionSection", () => {
     global.innerWidth = 1200;
     global.dispatchEvent(new Event("resize"));
 
-    renderWithProviders(<CallToActionSection pageContent={mockPageContent} />);
+    renderWithProviders(<CallToActionSection />);
 
     expect(screen.getByText("Título de teste")).toBeInTheDocument();
     expect(screen.getByText("Descrição de teste")).toBeInTheDocument();
@@ -86,7 +79,7 @@ describe("CallToActionSection", () => {
     global.innerWidth = 375;
     global.dispatchEvent(new Event("resize"));
 
-    renderWithProviders(<CallToActionSection pageContent={mockPageContent} />);
+    renderWithProviders(<CallToActionSection />);
 
     expect(screen.getByText("Título de teste")).toBeInTheDocument();
     expect(screen.getByText("Descrição de teste")).toBeInTheDocument();
@@ -99,7 +92,7 @@ describe("CallToActionSection", () => {
     localStorageMock.getItem.mockReturnValue("dark");
 
     const { container } = renderWithProviders(
-      <CallToActionSection pageContent={mockPageContent} />
+      <CallToActionSection/>
     );
 
     const section = container.querySelector("section");
@@ -111,7 +104,7 @@ describe("CallToActionSection", () => {
     localStorageMock.getItem.mockReturnValue("light");
 
     const { container } = renderWithProviders(
-      <CallToActionSection pageContent={mockPageContent} />
+      <CallToActionSection/>
     );
 
     const section = container.querySelector("section");

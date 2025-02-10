@@ -3,8 +3,7 @@ import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
 import Image from "next/image";
 import { OrganizationDocument } from "@/types/document";
-import { useDocument } from "@/hooks/useDocument";
-import { useSession } from "next-auth/react";
+import { useApp } from "@/contexts/AppContext";
 
 interface DocumentFormItemProps {
   document: OrganizationDocument;
@@ -20,14 +19,15 @@ const DocumentFormItem = ({
   onChange,
 }: DocumentFormItemProps) => {
   const { darkMode } = useTheme();
+  const { pageContent } = useApp();
 
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col gap-2 w-full">
         <input
           type="text"
-          placeholder="Insert document URL"
-          className={`w-full p-2 text-[16px] md:text-[24px] border rounded-md bg-transparent ${
+          placeholder={pageContent["edit-profile-insert-link"]}
+          className={`w-full p-2 text-[16px] border rounded-md bg-transparent ${
             darkMode
               ? "text-white border-gray-600"
               : "text-[#829BA4] border-gray-300"
