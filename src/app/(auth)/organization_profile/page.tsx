@@ -112,7 +112,7 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    {} //TODO: Add organization type
+                    {/* TODO: Add organization type */}
                   </p>
 
                   {/* Logo */}
@@ -120,7 +120,10 @@ export default function OrganizationProfilePage() {
                     <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
                       <div className="relative h-[51px] w-[127px]">
                         <Image
-                          src={organization?.profile_image || NoAvatarIcon}
+                          src={
+                            formatWikiImageUrl(organization?.profile_image) ||
+                            NoAvatarIcon
+                          }
                           alt="Organization logo"
                           fill
                           priority
@@ -211,6 +214,13 @@ export default function OrganizationProfilePage() {
               {/* News Section */}
               <NewsSection ids={organization?.tag_diff || []} />
 
+              {/* Documents Section */}
+              <DocumentsList
+                title="Documents"
+                type="documents"
+                items={organization?.documents || []}
+                token={token}
+              />
               {/* Contacts Section */}
               <ContactsSection
                 email={organization?.email || ""}
@@ -242,7 +252,10 @@ export default function OrganizationProfilePage() {
                 <div className="relative h-[326px] w-[595px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center">
                   {organization?.profile_image ? (
                     <Image
-                      src={formatWikiImageUrl(organization.profile_image)}
+                      src={
+                        formatWikiImageUrl(organization.profile_image) ||
+                        NoAvatarIcon
+                      }
                       alt="Organization logo"
                       className="object-contain p-24"
                       fill

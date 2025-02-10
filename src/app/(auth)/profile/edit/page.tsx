@@ -517,14 +517,16 @@ export default function EditProfilePage() {
                     imageWidth={20}
                     imageHeight={20}
                   />
-                  <span
-                    className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
-                      darkMode ? "text-white" : "text-[#053749]"
-                    }`}
-                  >
-                    I consent displaying my Wikidata item image on CapX profile
-                    (if existent).
-                  </span>
+                  <div className="flex w-full justify-start">
+                    <span
+                      className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                        darkMode ? "text-white" : "text-[#053749]"
+                      }`}
+                    >
+                      I consent displaying my Wikidata item image on CapX
+                      profile (if existent).
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-[10px] mt-2">
                   {/* Action Buttons */}
