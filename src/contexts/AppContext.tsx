@@ -22,12 +22,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuStatus, setMobileMenuStatus] = useState(false);
-  const [language, setLanguage] = useState("en");
+  
+  // Check language on localStorage. If not found, use "en" as default
+  const initialLanguage = typeof window !== "undefined" ? localStorage.getItem("language") : "en";
+  const [language, setLanguage] = useState(initialLanguage || "en");
+
   const [pageContent, setPageContent] = useState({});
   const [session, setSession] = useState(null);
 
-  // Handle initial mobile detection and window resize
+  // Check and load language from localStorage on mount,
+  // handle initial mobile detection and window resize
   useEffect(() => {
+    const savedLanguage = localStorage.getItem("language");
+
+    if (savedLanguage && savedLanguage !== language) {
+      setLanguage(savedLanguage); // Update state if language is different
+    }
+
     const checkIsMobile = () => {
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
@@ -48,7 +59,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Don't render anything until after mount to avoid hydration mismatch
+  // Save language to localStorage when it changes
+  useEffect(() => {
+    if (language) {
+      localStorage.setItem("language", language);
+    }
+  }, [language]);
+
+  // Don't render anything before mount to avoid hydration mismatch
   if (!mounted) {
     return null;
   }

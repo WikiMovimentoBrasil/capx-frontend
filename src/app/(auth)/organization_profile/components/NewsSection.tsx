@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTagDiff } from "@/hooks/useTagDiff";
 import { useSession } from "next-auth/react";
 import { tagDiff } from "@/types/tagDiff";
+import { useApp } from "@/contexts/AppContext";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -18,6 +19,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { darkMode } = useTheme();
+  const { pageContent } = useApp();
   const { data: session } = useSession();
   const { fetchSingleTag } = useTagDiff(session?.user?.token);
 
@@ -70,7 +72,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
   }, [ids, session?.user?.token]);
 
   if (isLoading) {
-    return <div>Carregando notícias...</div>;
+    return <div>{pageContent["edit-profile-loading-news"]}</div>;
   }
 
   return (
@@ -89,7 +91,7 @@ export const NewsSection = ({ ids }: NewsProps) => {
             darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
           }`}
         >
-          News
+          {pageContent["edit-profile-news"]}
         </h2>
       </div>
       <div className="flex flex-row gap-4 overflow-x-auto scrollbar-hide">
