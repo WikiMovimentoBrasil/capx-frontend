@@ -1,33 +1,45 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { Profile } from "@/types/profile";
 import { profileService } from "@/services/profileService";
-import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
+import { fetchFromApi } from "@/lib/utils/apiClient";
+import { signOut } from "next-auth/react";
 
 export function useProfile(token: string | undefined, userId: number) {
+  const handleInvalidToken = async () => {
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
+
   const { data, isLoading, error, refetch, ...rest } = useQuery({
     queryKey: ["profile", token, userId],
     queryFn: async () => {
-      const response = await profileService.fetchUserProfile({
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      try {
+        const response = await profileService.fetchUserProfile({
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
 
-      if (Array.isArray(response)) {
-        let profile = response.find(
-          (p) => p.user.id === userId && p.avatar !== null
-        );
+        if (Array.isArray(response)) {
+          let profile = response.find(
+            (p) => p.user.id === userId && p.avatar !== null
+          );
 
-        if (!profile) {
-          profile = response.find((p) => p.user.id === userId);
+          if (!profile) {
+            profile = response.find((p) => p.user.id === userId);
+          }
+
+          return profile;
         }
 
-        return profile;
+        const data = await fetchFromApi(response);
+        return data;
+      } catch (error) {
+        if (error?.response?.status === 401) {
+          await handleInvalidToken();
+          return null;
+        }
+        throw error;
       }
-
-      return response;
     },
     enabled: !!token && !!userId,
   });
@@ -46,9 +58,13 @@ export function useProfile(token: string | undefined, userId: number) {
       const updatedProfile = Array.isArray(response)
         ? response[response.length - 1]
         : response;
-      return updatedProfile;
-    } catch (err) {
-      throw err;
+      return fetchFromApi(updatedProfile);
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        await handleInvalidToken();
+        return null;
+      }
+      throw error;
     }
   };
 
