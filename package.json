@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@next/codemod": "^15.1.6",
     "@primer/react": "^36.25.0",
     "@tanstack/react-query": "^5.60.6",
     "@tanstack/react-query-devtools": "^5.60.6",
