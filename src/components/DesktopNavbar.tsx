@@ -7,6 +7,7 @@ import DarkModeButton from "./DarkModeButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import ProfileSelect from "./ProfileSelect";
 import { Session } from "@/types/user";
+import { useOrganization } from "@/hooks/useOrganizationProfile";
 
 export interface DesktopNavbarProps {
   pageContent: any;
@@ -23,15 +24,23 @@ export default function DesktopNavbar({
   setPageContent,
   session,
 }: DesktopNavbarProps) {
-  const { darkMode, setDarkMode } = useTheme();
+  const { darkMode } = useTheme();
+  const { organization } = useOrganization(session.user.token);
+  const isOrgManager = organization?.managers?.some(
+    (id) => id === session.user.id
+  );
+
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
-
-    {
-      title: pageContent["navbar-link-organization"],
-      to: "/organization_profile",
-      active: true,
-    },
+    ...(isOrgManager
+      ? [
+          {
+            title: pageContent["navbar-link-organization"],
+            to: "/organization_profile",
+            active: true,
+          },
+        ]
+      : []),
   ];
 
   return (
