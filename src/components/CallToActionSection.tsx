@@ -38,7 +38,9 @@ export default function CallToActionSection() {
             customClass="inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] bg-capx-secondary-purple text-[#F6F6F6]  text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] rounded-md"
           />
           <BaseButton
-            onClick={() => {}}
+            onClick={() => {
+              window.location.href = 'https://meta.wikimedia.org/w/index.php?title=Special:CreateAccount&returnto=Main+Page';
+            }}
             label={pageContent["body-home-section01-call-to-action-button02"]}
             customClass="inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] text-center font-[Montserrat] text-[14px] text-capx-dark-box-bg not-italic font-extrabold leading-[normal]"
           />
@@ -82,7 +84,9 @@ export default function CallToActionSection() {
               customClass="inline-flex justify-center items-center gap-[10px] bg-capx-secondary-purple text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] rounded-md py-4 px-8"
             />
             <BaseButton
-              onClick={() => {}}
+              onClick={() => {
+                window.location.href = 'https://meta.wikimedia.org/w/index.php?title=Special:CreateAccount&returnto=Main+Page';
+              }}
               label={pageContent["body-home-section01-call-to-action-button02"]}
               customClass="inline-flex justify-center items-center gap-[10px] rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] text-center font-[Montserrat] text-[24px] text-capx-dark-box-bg not-italic font-extrabold leading-[normal] py-4 px-8"
             />

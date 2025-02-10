@@ -7,6 +7,7 @@
   "auth-dialog-content": "You are being redirected to the unified login on Meta-Wiki",
   "auth-dialog-button-continue": "Continue",
   "auth-dialog-button-close": "Close Tab",
+  "component-under-development-dialog": "Oops! This component is currently under construction.",
   "navbar-link-about": "About",
   "navbar-link-profiles": "My profiles",
   "navbar-link-capacities": "Directory",
@@ -54,7 +55,6 @@
   "body-profile-section-title-events": "Events",
   "body-profile-section-title-documents": "Documents",
   "body-profile-section-title-main-projects": "Main projects",
-  "body-profile-section-lets-talk": "Let's talk",
 
   "profiency-level-not-proficient": "Not proficient",
   "profiency-level-basic": "Basic",
