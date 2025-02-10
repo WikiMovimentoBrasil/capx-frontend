@@ -349,7 +349,9 @@ export default function ProfilePage() {
           darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
         }`}
       >
-        <section className={`max-w-[1440px] mx-[24px] px-4 py-8 mt-[16px]`}>
+        <section
+          className={`flex w-full h-full justify-between pb-6 pt-10 px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto`}
+        >
           <div className={`flex flex-col mx-auto`}>
             <ProfileHeader
               username={profile?.user?.username || ""}

@@ -1421,9 +1421,7 @@ export default function EditOrganizationProfilePage() {
       }`}
     >
       <section
-        className={`w-full mx-auto px-8 py-8 ${
-          isMobile ? "mt-[80px]" : "mt-[64px]"
-        }`}
+        className={`flex w-full h-full justify-between pb-6 pt-10 px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto`}
       >
         <div className="flex flex-col gap-6 mx-auto">
           {/* Header */}
