@@ -121,6 +121,7 @@ export default function ProfileContent({ pageContent }) {
     profileImage: string;
     avatar: number;
   } | null>(null);
+  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
 
   const {
     profile,
@@ -151,14 +152,13 @@ export default function ProfileContent({ pageContent }) {
     return <div>Loading...</div>;
   }
 
-  const { languages } = useLanguage(token);
+  /*   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { territories } = useTerritories(token);
   const { wikimediaProjects, wikimediaProjectImages } = useWikimediaProject(
     token,
     profile?.wikimedia_project || []
-  );
-  const [showAvatarPopup, setShowAvatarPopup] = useState(false);
+  ); */
 
   if (profileLoading || avatarsLoading || !profileData) {
     return <div>Loading...</div>;
