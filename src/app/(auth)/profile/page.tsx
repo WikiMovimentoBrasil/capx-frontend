@@ -28,12 +28,15 @@ import WikiIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import WikiIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 import ContactImage from "@/public/static/images/capx_contact_person.svg";
 import ContactImageDesktop from "@/public/static/images/capx_contact_person_desktop.svg";
+import capxPersonIcon from "@/public/static/images/capx_person_18.svg";
 
 import { useProfile } from "@/hooks/useProfile";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
+import { useState } from "react";
+import Popup from "@/components/Popup";
 
 const ProfileItemsComponent = ({
   icon,
@@ -118,6 +121,7 @@ export default function ProfilePage() {
     token,
     Number(session?.user?.id)
   );
+  const [showPopup, setShowPopup] = useState(false);
   const { languages } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
   const { territories } = useTerritories(token);
@@ -312,9 +316,9 @@ export default function ProfilePage() {
                   />
                 </div>
                 <BaseButton
-                  label={pageContent["body-profile-section-lets-talk"]}
+                  label={pageContent["body-profile-contact-button"]}
                   customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-                  onClick={() => {}}
+                  onClick={() => setShowPopup(true)}
                 />
               </div>
             )}
@@ -330,14 +334,25 @@ export default function ProfilePage() {
                   />
                 </div>
                 <BaseButton
-                  label={pageContent["body-profile-section-lets-talk"]}
+                  label={pageContent["body-profile-contact-button"]}
                   customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-                  onClick={() => {}}
+                  onClick={() => setShowPopup(true)}
                 />
               </div>
             )}
           </div>
         </section>
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            continueButtonLabel={pageContent["body-loggedin-home-main-section-button02"]}
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </div>
     );
   }
@@ -507,14 +522,25 @@ export default function ProfilePage() {
                 />
               </div>
               <BaseButton
-                label={pageContent["body-profile-section-lets-talk"]}
+                label={pageContent["body-profile-contact-button"]}
                 customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-                onClick={() => {}}
+                onClick={() => setShowPopup(true)}
               />
             </div>
           </div>
         </section>
       </div>
+      {showPopup && (
+        <Popup
+          onContinue={() => setShowPopup(false)}
+          onClose={() => setShowPopup(false)}
+          image={capxPersonIcon}
+          title={pageContent["component-under-development-dialog"]}
+          closeButtonLabel={pageContent["auth-dialog-button-close"]}
+          continueButtonLabel={pageContent["body-loggedin-home-main-section-button02"]}
+          customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+        />
+      )}
     </main>
   );
 }
