@@ -42,15 +42,20 @@ export async function POST(request: Request) {
           },
           params: {
             tag: tagData.tag,
+            exact_match: true,
           },
         }
       );
 
-      if (existingTagResponse.data && existingTagResponse.data.length > 0) {
+      if (
+        existingTagResponse.data &&
+        existingTagResponse.data.length > 0 &&
+        existingTagResponse.data[0].tag === tagData.tag
+      ) {
         return NextResponse.json(existingTagResponse.data[0]);
       }
     } catch (error) {
-      console.log("Tag não encontrada, criando nova...");
+      console.log("Tag not found, creating new...");
     }
 
     const response = await axios.post(

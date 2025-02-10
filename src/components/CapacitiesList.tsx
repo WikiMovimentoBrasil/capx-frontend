@@ -47,9 +47,11 @@ export function CapacitiesList({
                 className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px] ${
                   title === pageContent["body-profile-known-capacities-title"]
                     ? "bg-[#0070B9] text-white"
-                    : title === pageContent["body-profile-available-capacities-title"]
+                    : title ===
+                      pageContent["body-profile-available-capacities-title"]
                     ? "bg-[#05A300] text-white"
-                    : title === pageContent["body-profile-wanted-capacities-title"]
+                    : title ===
+                      pageContent["body-profile-wanted-capacities-title"]
                     ? "bg-[#D43831] text-white"
                     : "bg-[#EFEFEF]"
                 }`}
@@ -67,7 +69,12 @@ export function CapacitiesList({
     <div className="flex flex-col gap-[62px] mb-4">
       <div className="flex flex-row gap-2 items-center">
         <div className="relative h-[42px] w-[42px] items-center">
-          <Image src={icon} alt={title} className="object-contain" fill />
+          <Image
+            src={icon}
+            alt={`${title} icon`}
+            className="object-contain"
+            fill
+          />
         </div>
         <h2
           className={
@@ -94,9 +101,11 @@ export function CapacitiesList({
               className={`rounded-[4px] inline-flex px-[4px] py-[6px] items-center gap-[8px]  ${
                 title === pageContent["body-profile-known-capacities-title"]
                   ? "bg-[#0070B9] text-[24px] text-white"
-                  : title === pageContent["body-profile-available-capacities-title"]
+                  : title ===
+                    pageContent["body-profile-available-capacities-title"]
                   ? "bg-[#05A300] text-[24px] text-white"
-                  : title === pageContent["body-profile-wanted-capacities-title"]
+                  : title ===
+                    pageContent["body-profile-wanted-capacities-title"]
                   ? "bg-[#D43831] text-[24px] text-white"
                   : "bg-[#EFEFEF]"
               }`}

@@ -73,7 +73,7 @@ export default function EditOrganizationProfilePage() {
     deleteDocument,
     fetchSingleDocument,
   } = useDocument(token);
-  
+
   // Organization setters
   const {
     organization,
@@ -135,38 +135,38 @@ export default function EditOrganizationProfilePage() {
     error: eventsError,
   } = useEvents(organization?.events, token);
 
-   // State for events
-   const [eventsData, setEventsData] = useState<Event[]>([]);
-   const eventsLoaded = useRef(false);
- 
-   // State for existing and new events
-   const [newEvents, setNewEvents] = useState<Event[]>([]);
-   const [eventId, setEventId] = useState<number>(0);
-   const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
- 
-   const [editedEvents, setEditedEvents] = useState<{
-     [key: number]: boolean;
-   }>({});
- 
-   // Effect to load events
-   useEffect(() => {
-     if (!organization || !events) {
-       eventsLoaded.current = false;
-       return;
-     }
- 
-     if (
-       !eventsLoaded.current &&
-       !isEventsLoading &&
-       organization?.events &&
-       organization?.events?.length > 0 &&
-       events &&
-       events.length > 0
-     ) {
-       setEventsData(events);
-       eventsLoaded.current = true;
-     }
-   }, [organization, events, isEventsLoading]);
+  // State for events
+  const [eventsData, setEventsData] = useState<Event[]>([]);
+  const eventsLoaded = useRef(false);
+
+  // State for existing and new events
+  const [newEvents, setNewEvents] = useState<Event[]>([]);
+  const [eventId, setEventId] = useState<number>(0);
+  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+
+  const [editedEvents, setEditedEvents] = useState<{
+    [key: number]: boolean;
+  }>({});
+
+  // Effect to load events
+  useEffect(() => {
+    if (!organization || !events) {
+      eventsLoaded.current = false;
+      return;
+    }
+
+    if (
+      !eventsLoaded.current &&
+      !isEventsLoading &&
+      organization?.events &&
+      organization?.events?.length > 0 &&
+      events &&
+      events.length > 0
+    ) {
+      setEventsData(events);
+      eventsLoaded.current = true;
+    }
+  }, [organization, events, isEventsLoading]);
 
   // Tags setters
   const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
@@ -417,9 +417,9 @@ export default function EditOrganizationProfilePage() {
           try {
             await updateEvent(event.id, {
               name: event.name,
-                image_url: event.image_url,
+              image_url: event.image_url,
               url: event.url,
-                organizations: [Number(organizationId)],
+              organizations: [Number(organizationId)],
               time_begin: event.time_begin,
               time_end: event.time_end,
             });
@@ -435,12 +435,12 @@ export default function EditOrganizationProfilePage() {
         .map(async (event) => {
           try {
             const newEvent = await createEvent({
-                name: event.name,
-                image_url: event.image_url,
-                url: event.url,
-                organizations: [Number(organizationId)],
-                time_begin: event.time_begin,
-                time_end: event.time_end,
+              name: event.name,
+              image_url: event.image_url,
+              url: event.url,
+              organizations: [Number(organizationId)],
+              time_begin: event.time_begin,
+              time_end: event.time_end,
               creator: Number(session?.user?.id),
               team: [],
               related_skills: [],
@@ -690,17 +690,21 @@ export default function EditOrganizationProfilePage() {
 
   // Diff tags handlers
   const handleAddDiffTag = () => {
-      const newTag = {
+    const newTag = {
       id: Math.floor(Math.random() * -1000), // Temporary negative ID for new tags
       tag: "", // Empty string instead of default text
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        creator: Number(session?.user?.id),
-      };
-      setDiffTagsData((prev) => [...(prev || []), newTag]);
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+    };
+    setDiffTagsData((prev) => [...(prev || []), newTag]);
   };
 
-  const handleDiffTagChange = (index: number, field: string, value: string) => {
+  const handleDiffTagChange = async (
+    index: number,
+    field: string,
+    value: string
+  ) => {
     const newDiffTags = [...diffTagsData];
     newDiffTags[index] = {
       ...newDiffTags[index],
@@ -1292,13 +1296,13 @@ export default function EditOrganizationProfilePage() {
               <div className="flex flex-col w-full gap-2 mb-2">
                 {diffTagsData?.map((tag, index) => (
                   <NewsFormItem
-                        key={index}
+                    key={index}
                     news={tag}
                     index={index}
                     onDelete={handleDeleteDiffTag}
                     onChange={handleDiffTagChange}
                   />
-                  ))}
+                ))}
               </div>
               <BaseButton
                 onClick={handleAddDiffTag}
@@ -1840,28 +1844,28 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteEvent}
                   onChange={handleEventChange}
-                      />
-                ))}
-            <BaseButton
-              onClick={handleAddEvent}
-              label={pageContent["edit-profile-add-events"]}
-              customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                darkMode
-                  ? "text-[#053749] bg-[#EFEFEF]"
-                  : "text-white bg-capx-dark-box-bg"
-              }`}
-              imageUrl={darkMode ? AddIcon : AddIconWhite}
-              imageAlt="Add icon"
-              imageWidth={32}
-              imageHeight={32}
-            />
+                />
+              ))}
+              <BaseButton
+                onClick={handleAddEvent}
+                label={pageContent["edit-profile-add-events"]}
+                customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode
+                    ? "text-[#053749] bg-[#EFEFEF]"
+                    : "text-white bg-capx-dark-box-bg"
+                }`}
+                imageUrl={darkMode ? AddIcon : AddIconWhite}
+                imageAlt="Add icon"
+                imageWidth={32}
+                imageHeight={32}
+              />
             </div>
             <p
               className={`text-[20px] ${
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-             {pageContent["edit-profile-display-events"]}
+              {pageContent["edit-profile-display-events"]}
             </p>
           </div>
 
@@ -1893,8 +1897,8 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDiffTag}
                   onChange={handleDiffTagChange}
-                    />
-                ))}
+                />
+              ))}
             </div>
 
             <BaseButton
@@ -1947,13 +1951,13 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDocument}
                   onChange={handleDocumentChange}
-                    />
-                ))}
+                />
+              ))}
             </div>
 
             <BaseButton
               onClick={handleAddDocument}
-              label= {pageContent["edit-profile-add-link"]}
+              label={pageContent["edit-profile-add-link"]}
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
                   ? "text-[#053749] bg-[#EFEFEF]"
@@ -2017,7 +2021,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.meta_page}
+                  value={contactsData.meta_page || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2048,7 +2052,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.email}
+                  value={contactsData.email || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2079,7 +2083,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.website}
+                  value={contactsData.website || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2119,7 +2123,10 @@ export default function EditOrganizationProfilePage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleCapacitySelect}
-        title={pageContent["edit-profile-select-capacities"]?.replace("$1", pageContent[currentCapacityType])}
+        title={pageContent["edit-profile-select-capacities"]?.replace(
+          "$1",
+          pageContent[currentCapacityType]
+        )}
       />
     </div>
   );
