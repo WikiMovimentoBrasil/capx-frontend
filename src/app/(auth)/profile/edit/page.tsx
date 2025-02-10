@@ -463,7 +463,7 @@ export default function EditProfilePage() {
                       }
                       alt="User circle icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
 
@@ -485,7 +485,7 @@ export default function EditProfilePage() {
                       src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
                       alt="Account box icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
                   <h2
@@ -596,7 +596,7 @@ export default function EditProfilePage() {
                         src={darkMode ? PersonIconWhite : PersonIcon}
                         alt="Person icon"
                         fill
-                        objectFit="contain"
+                        style={{ objectFit: "cover" }}
                       />
                     </div>
                     <div className="flex flex-row gap-1 items-center">
@@ -1336,7 +1336,7 @@ export default function EditProfilePage() {
                     src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
                     alt="Account box icon"
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <h2
@@ -1377,7 +1377,7 @@ export default function EditProfilePage() {
                       }
                       alt="User circle icon"
                       fill
-                      objectFit="contain"
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
 
@@ -1477,7 +1477,7 @@ export default function EditProfilePage() {
                   src={darkMode ? PersonIconWhite : PersonIcon}
                   alt="Person icon"
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <div className="flex flex-row gap-1 items-center">

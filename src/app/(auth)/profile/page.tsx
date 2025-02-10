@@ -52,7 +52,7 @@ const ProfileItemsComponent = ({
       <>
         <div className="flex flex-row gap-2 items-center">
           <div className="relative h-[20px] w-[20px]">
-            <Image src={icon} alt={title} fill objectFit="contain" />
+            <Image src={icon} alt={title} fill style={{ objectFit: "cover" }} />
           </div>
           <h2
             className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
@@ -250,7 +250,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -289,7 +289,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -308,7 +308,7 @@ export default function ProfilePage() {
                     src={ContactImage}
                     alt={"Contact Image"}
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <BaseButton
@@ -326,7 +326,7 @@ export default function ProfilePage() {
                     src={ContactImageDesktop}
                     alt={"Contact Image"}
                     fill
-                    objectFit="contain"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <BaseButton
@@ -447,7 +447,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -486,7 +486,7 @@ export default function ProfilePage() {
                   src={darkMode ? WikiIconWhite : WikiIcon}
                   alt={"Wikidata Logo"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <p
@@ -503,7 +503,7 @@ export default function ProfilePage() {
                   src={ContactImageDesktop}
                   alt={"Contact Image"}
                   fill
-                  objectFit="contain"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <BaseButton

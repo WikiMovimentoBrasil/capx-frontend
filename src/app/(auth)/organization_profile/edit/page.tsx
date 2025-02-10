@@ -2054,7 +2054,7 @@ export default function EditOrganizationProfilePage() {
                     src={darkMode ? ContactEmailIconWhite : ContactEmailIcon}
                     alt="Contact Email"
                     fill
-                    className="objectFit"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <input
@@ -2085,7 +2085,7 @@ export default function EditOrganizationProfilePage() {
                     src={darkMode ? ContactPortalIconWhite : ContactPortalIcon}
                     alt="Contact Website"
                     fill
-                    className="objectFit"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
                 <input
