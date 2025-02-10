@@ -291,17 +291,17 @@ export default function OrganizationProfilePage() {
                       darkMode ? "text-white" : "text-capx-dark-box-bg"
                     }`}
                   >
-                    {organization?.display_name} ?? 
+                    {organization?.display_name}
                   </span>
                 </div>
 
-                <p
+                {/* <p
                   className={`font-[Montserrat] text-[16px] md:text-[20px] not-italic font-normal leading-[normal] md:leading-[29px] mb-4 ${
                     darkMode ? "text-white" : "text-capx-dark-box-bg"
                   }`}
                 >
-                  {pageContent["organization-profile-wiki-subtitle"]}
-                </p>
+                  TODO
+                </p> */}
 
                 {isOrgManager && (
                   <BaseButton
