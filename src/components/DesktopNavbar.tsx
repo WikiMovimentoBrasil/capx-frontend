@@ -25,22 +25,9 @@ export default function DesktopNavbar({
   session,
 }: DesktopNavbarProps) {
   const { darkMode } = useTheme();
-  const { organization } = useOrganization(session?.user?.token);
-  const isOrgManager = organization?.managers?.some(
-    (id) => id === session?.user?.id
-  );
 
   const menuItems = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
-    ...(isOrgManager
-      ? [
-          {
-            title: pageContent["navbar-link-organization"],
-            to: "/organization_profile",
-            active: true,
-          },
-        ]
-      : []),
   ];
 
   return (

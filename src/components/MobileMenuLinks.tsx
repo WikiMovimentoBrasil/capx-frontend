@@ -50,7 +50,7 @@ export default function MobileMenuLinks({
     "user" | "organization"
   >(pathname === "/organization_profile" ? "organization" : "user");
   const { darkMode, setDarkMode } = useTheme();
-  const { isOrgManager } = useOrganization(session?.token);
+  const { isOrgManager } = useOrganization(session?.user?.token);
 
   const handleProfileChange = (type: "user" | "organization", path: string) => {
     setSelectedProfile(type);
