@@ -804,7 +804,6 @@ export default function EditOrganizationProfilePage() {
         ...newDocuments[index],
         [field]: value,
       };
-      console.log("Updated documents:", newDocuments);
       return newDocuments;
     });
   };

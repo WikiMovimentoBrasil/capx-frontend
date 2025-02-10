@@ -61,7 +61,6 @@ export default function OrganizationProfilePage() {
     if (error) {
       console.error("Error fetching organization:", error);
     }
-    console.log("organization", organization);
   }, [error, organization]);
 
   if (isMobile) {

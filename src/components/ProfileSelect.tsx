@@ -20,12 +20,7 @@ export default function ProfileSelect() {
   const { isMobile } = useApp();
   const { data: session } = useSession();
 
-  const { organization, isOrgManager } = useOrganization(session?.user?.token);
-
-  console.log("isOrgManager", isOrgManager);
-  console.log(" session?.user?.id", session?.user?.id);
-  console.log(" organization?.managers", organization?.managers);
-  console.log("organization", organization);
+  const { isOrgManager } = useOrganization(session?.user?.token);
 
   const profileOptions: ProfileOption[] = [
     { value: "user", label: "User Profile", path: "/profile" },
