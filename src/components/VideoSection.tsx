@@ -47,7 +47,7 @@ export default function VideoSection() {
           className="flex justify-center items-center mx-4 relative"
           onClick={handleOpenPopup}
         >
-          <div className="relative w-full max-w-[600px]  mb-8">
+          <div className="relative w-full max-w-[600px] mb-8 ">
             <Image
               src={tabletIllusttration}
               alt="Tablet illustration"
@@ -91,14 +91,14 @@ export default function VideoSection() {
 
   return (
     <section
-      className={`w-full pt-12 border-b ${
+      className={`w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 ${
         darkMode
           ? "border-capx-light-bg bg-capx-dark-box-bg"
           : "border-capx-secondary-purple bg-capx-light-bg"
       }`}
       id="video-section"
     >
-      <div className="flex flex-col justify-center items-center sm:items-start sm:justify-start ml-0 sm:ml-20">
+      <div className="flex flex-col justify-center items-center sm:items-start !ml-0 sm:ml-20 h-[230px]">
         <h1
           className={`font-[Montserrat] text-[36px] not-italic font-extrabold leading-[normal] ${
             darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
@@ -109,7 +109,7 @@ export default function VideoSection() {
       </div>
 
       <div className="w-full mb-8 flex justify-center items-center mt-6">
-        <div className="w-[35%] flex justify-center items-center mr-6 ml-6">
+        <div className="w-[35%] flex justify-around items-center mr-6">
           <div className="relative w-[335px] h-[450px] sm:w-w-[251px] sm:h-[338px]">
             <Image
               src={CapxPencilIllustration}
@@ -123,7 +123,7 @@ export default function VideoSection() {
               src={tabletIllusttration}
               alt="Tablet illustration"
               layout="fill"
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "contain" }}
               className="absolute inset-0"
             />
 
