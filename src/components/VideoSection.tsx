@@ -91,7 +91,7 @@ export default function VideoSection() {
 
   return (
     <section
-      className={`w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 ${
+      className={`w-full max-w-screen-xl mx-auto px-4 md:px-8 lg:px-16 ${
         darkMode
           ? "border-capx-light-bg bg-capx-dark-box-bg"
           : "border-capx-secondary-purple bg-capx-light-bg"
