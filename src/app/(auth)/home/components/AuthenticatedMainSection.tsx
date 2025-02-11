@@ -5,11 +5,12 @@ import MainSectionIllustrationDark from "@/public/static/images/capx_loggedin_ho
 import SecondarySectionIllustration01 from "@/public/static/images/capx_loggedin_home_illustration02.svg";
 import SecondarySectionIllustration02 from "@/public/static/images/capx_loggedin_home_illustration03.svg";
 import SecondarySectionIllustration03 from "@/public/static/images/capx_loggedin_home_illustration04.svg";
-import AuthButton from "@/components/AuthButton";
 import BaseButton from "@/components/BaseButton";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
-
+import { useState } from "react";
+import Popup from "@/components/Popup";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
 interface AuthenticatedMainSectionProps {
   pageContent: any;
 }
@@ -20,6 +21,7 @@ export default function AuthenticatedMainSection({
   const { isMobile } = useApp();
   const { darkMode } = useTheme();
   const router = useRouter();
+  const [showPopup, setShowPopup] = useState(false);
 
   const secondarySection = isMobile ? (
     <section
@@ -199,12 +201,15 @@ export default function AuthenticatedMainSection({
               />
             </div>
             <div className="flex flex-row gap-4 w-full justify-center items-center">
-              {/* <AuthButton TODO
-                message={
-                  pageContent["body-loggedin-home-main-section-button01"]
-                }
-                customClass="rounded-[6px] bg-[#851970] inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
-              ></AuthButton> */}
+              <div className="flex items-center h-full">
+                <BaseButton
+                  onClick={() => setShowPopup(true)}
+                  label={
+                    pageContent["body-loggedin-home-main-section-button01"]
+                  }
+                  customClass="rounded-[6px] bg-[#851970] inline-flex px-[19px] py-[8px] justify-center items-center gap-[10px] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
+                ></BaseButton>
+              </div>
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
                 onClick={() => router.push("/profile")}
@@ -214,6 +219,19 @@ export default function AuthenticatedMainSection({
           </div>
         </section>
         {secondarySection}
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            continueButtonLabel={
+              pageContent["body-loggedin-home-main-section-button02"]
+            }
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </>
     );
   }
@@ -248,11 +266,14 @@ export default function AuthenticatedMainSection({
               {pageContent["body-home-section01-description"]}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full items-start mt-[24px]">
-              {/* <AuthButton TODO
-                message={
-                  pageContent["body-loggedin-home-main-section-button01"]
-                }
-              ></AuthButton> */}
+              <div className="flex items-center h-full">
+                <BaseButton
+                  onClick={() => setShowPopup(true)}
+                  label={
+                    pageContent["body-loggedin-home-main-section-button01"]
+                  }
+                ></BaseButton>
+              </div>
               <BaseButton
                 label={pageContent["body-loggedin-home-main-section-button02"]}
                 customClass="rounded-[6px] border-[1px] border-[solid] border-[var(--Backgrounds-dark-box-bg,#053749)] bg-[#FFF] inline-flex px-[32px] py-[16px] h-[64px] justify-center items-center gap-[8px] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
@@ -274,6 +295,19 @@ export default function AuthenticatedMainSection({
           </div>
         </div>
         {secondarySection}
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            continueButtonLabel={
+              pageContent["body-loggedin-home-main-section-button02"]
+            }
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </section>
     </>
   );
