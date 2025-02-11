@@ -80,7 +80,7 @@ export default function AuthenticatedMainSection({
     <section
       className={
         (darkMode ? "bg-capx-dark-bg" : "bg-capx-dark-box-bg") +
-        "flex flex-col items-center justify-start w-full mx-auto px-4 px-[132px]"
+        "flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-8"
       }
     >
       <div className="flex flex-col items-center justify-between w-full py-16 md:py-32 gap-16">
@@ -96,64 +96,79 @@ export default function AuthenticatedMainSection({
         </div>
         <div className="flex items-center w-full gap-[86px]">
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration01}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image01-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration01}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image01-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration02}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image02-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration02}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image02-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration03}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image03-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration03}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image03-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
         </div>
       </div>
@@ -239,7 +254,7 @@ export default function AuthenticatedMainSection({
   return (
     <>
       <section className="flex flex-col items-center justify-start w-full mx-auto ">
-        <div className="flex flex-row items-center justify-between w-full py-[128px] gap-8 px-[132px]">
+        <div className="flex flex-row items-center justify-between w-full py-[128px] gap-8 max-w-screen-xl mx-auto px-8">
           <div className="flex flex-col items-center md:items-start w-full md:w-1/2 lg:w-2/3">
             <h1
               className={

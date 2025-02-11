@@ -1,9 +1,5 @@
 import axios from "axios";
-
-export interface Avatar {
-  id: number;
-  avatar_url: string;
-}
+import { Avatar } from "@/types/avatar";
 
 export const avatarService = {
   fetchAvatars: async (config?: any): Promise<Avatar[]> => {

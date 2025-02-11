@@ -107,7 +107,7 @@ export const ContactsSection = ({
 
   return (
     <section className="w-full max-w-screen-xl py-8">
-      <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
+      <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-4 rounded-[8px] mb-6">
         <div className="relative w-[48px] h-[48px]">
           <Image
             src={darkMode ? WikimediaIconWhite : WikimediaIcon}

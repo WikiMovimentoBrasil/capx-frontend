@@ -55,7 +55,7 @@
   "body-profile-section-title-events": "Events",
   "body-profile-section-title-documents": "Documents",
   "body-profile-section-title-main-projects": "Main projects",
-
+  "body-profile-section-affiliation-dropdown-menu": "Select your organization from the dropdown menu.",
   "profiency-level-not-proficient": "Not proficient",
   "profiency-level-basic": "Basic",
   "profiency-level-intermediate": "Intermediate",
@@ -168,6 +168,7 @@
   "edit-profile-wanted-capacities": "Select skills you are willing to learn from the Capacity Directory. Try to choose the most specific ones.",
   "edit-profile-choose-an-option": "Choose an option",
   "edit-profile-add-link": "Add link",
+  "edit-profile-add-language": "Add language",
   "edit-profile-save-organization": "Save organization",
   "edit-profile-main-projects": "Main Projects",
   "edit-profile-add-projects": "Add projects",

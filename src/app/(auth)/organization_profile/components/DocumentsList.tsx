@@ -29,7 +29,11 @@ export const DocumentsList = ({
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 items-center">
-        <div className="relative w-[20px] h-[20px]">
+        <div
+          className={`relative ${
+            isMobile ? "w-[20px] h-[20px]" : "w-[42px] h-[42px]"
+          }`}
+        >
           <Image
             src={darkMode ? WikimediaIconWhite : WikimediaIcon}
             alt="Wikimedia icon"

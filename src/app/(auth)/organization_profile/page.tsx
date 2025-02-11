@@ -27,6 +27,8 @@ import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { DocumentsList } from "./components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+import LoadingState from "@/components/LoadingState";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
 import Popup from "@/components/Popup";
 
@@ -38,25 +40,25 @@ export default function OrganizationProfilePage() {
   const token = session?.user?.token;
   const [showPopup, setShowPopup] = useState(false);
 
-  const { organization, isLoading, error, isOrgManager, refetch } =
-    useOrganization(token);
-
-  /*   const orgType = organization?.type || 0; //TODO: Make better assumption
+  const {
+    organization,
+    isLoading: isOrganizationLoading,
+    error,
+    isOrgManager,
+    refetch,
+  } = useOrganization(token);
 
   const {
-    organizationType,
-    fetchOrganizationType,
-    fetchOrganizationTypeById,
-    isLoading: isOrganizationTypeLoading,
-    error: isOrganizationTypeError,
-  } = useOrganizationType(token, orgType);
-
-  console.log(organizationType); */
+    userProfile,
+    isLoading: isUserLoading,
+    error: isUserError,
+  } = useUserProfile();
 
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
     };
+
     refreshData();
   }, []);
 
@@ -65,6 +67,10 @@ export default function OrganizationProfilePage() {
       console.error("Error fetching organization:", error);
     }
   }, [error, organization]);
+
+  if (isOrganizationLoading || isUserLoading) {
+    return <LoadingState />;
+  }
 
   if (isMobile) {
     return (
@@ -191,9 +197,7 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title={
-                    pageContent["body-profile-section-title-available-capacity"]
-                  }
+                  title={pageContent["body-profile-available-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
@@ -241,7 +245,7 @@ export default function OrganizationProfilePage() {
             </div>
           </section>
           {showPopup && (
-          <Popup
+            <Popup
               onContinue={() => setShowPopup(false)}
               onClose={() => setShowPopup(false)}
               image={capxPersonIcon}
@@ -436,14 +440,14 @@ export default function OrganizationProfilePage() {
         </section>
         {showPopup && (
           <Popup
-              onContinue={() => setShowPopup(false)}
-              onClose={() => setShowPopup(false)}
-              image={capxPersonIcon}
-              title={pageContent["component-under-development-dialog"]}
-              closeButtonLabel={pageContent["auth-dialog-button-close"]}
-              customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
-            />
-          )}
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </div>
     </>
   );

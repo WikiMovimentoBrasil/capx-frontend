@@ -1,7 +1,7 @@
 // Interface básica para o documento da organização
 export interface OrganizationDocument {
-  id: number;
-  url?: string;
+  id: number | null;
+  url?: string | null;
 }
 
 // Interface para o documento enriquecido com dados da Wikimedia

@@ -23,6 +23,12 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
     return null;
   }
 
+  if (!document || (!document.imageUrl && !document.url)) {
+    return null;
+  }
+
+  const imageUrl = document.imageUrl || document.url || "";
+
   return (
     <div
       className={`rounded-[16px] w-[350px] flex-shrink-0 flex flex-col h-fit ${
@@ -31,22 +37,17 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
     >
       <div className="p-6 flex items-center justify-center h-[250px]">
         <div className="relative w-[200px] h-[200px] flex items-center justify-center">
-          {document.thumburl ? (
-            <div className="relative w-[200px] h-[200px]">
-              <Image
-                src={document.thumburl}
-                alt={document.title || "Document preview"}
-                style={{ objectFit: "contain" }}
-                className="p-4"
-                fill
-                sizes="200px"
-              />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center w-full h-full text-gray-400">
-              {pageContent["organization-profile-no-image-available"]}
-            </div>
-          )}
+          <Image
+            src={imageUrl}
+            alt={document.title || "Document preview"}
+            style={{ objectFit: "contain" }}
+            className="p-4"
+            fill
+            sizes="200px"
+            onError={(e) => {
+              e.currentTarget.src = "/static/images/document_placeholder.png";
+            }}
+          />
         </div>
       </div>
       <div className="p-6">
@@ -60,9 +61,7 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
         <BaseButton
           customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
           label={pageContent["organization-profile-view-document"]}
-          onClick={() =>
-            window.open(document.fullUrl || document.url, "_blank")
-          }
+          onClick={() => window.open(document.url || "", "_blank")}
         />
       </div>
     </div>
