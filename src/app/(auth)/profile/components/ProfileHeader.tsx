@@ -112,7 +112,7 @@ export default function ProfileHeader({
           src={avatarUrl}
           alt={pageContent["navbar-user-profile"]}
           fill
-          className="object-cover border rounded-[8px]"
+          className="object-cover"
           unoptimized
         />
       </div>
