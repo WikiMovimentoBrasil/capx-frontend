@@ -78,7 +78,7 @@ export default function AuthenticatedMainSection({
     <section
       className={
         (darkMode ? "bg-capx-dark-bg" : "bg-capx-dark-box-bg") +
-        "flex flex-col items-center justify-start w-full mx-auto px-4 px-[132px]"
+        "flex flex-col items-center justify-start w-full max-w-screen-xl mx-auto px-8"
       }
     >
       <div className="flex flex-col items-center justify-between w-full py-16 md:py-32 gap-16">
@@ -221,7 +221,7 @@ export default function AuthenticatedMainSection({
   return (
     <>
       <section className="flex flex-col items-center justify-start w-full mx-auto ">
-        <div className="flex flex-row items-center justify-between w-full py-[128px] gap-8 px-[132px]">
+        <div className="flex flex-row items-center justify-between w-full py-[128px] gap-8 max-w-screen-xl mx-auto px-8">
           <div className="flex flex-col items-center md:items-start w-full md:w-1/2 lg:w-2/3">
             <h1
               className={
