@@ -1,4 +1,3 @@
-import { OrganizationDocument } from "./document";
 export interface Organization {
   id: number;
   report_link?: string | null;
