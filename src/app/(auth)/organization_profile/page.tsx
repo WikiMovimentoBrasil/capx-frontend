@@ -26,8 +26,10 @@ import { useEffect } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { DocumentsList } from "./components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
-import { useOrganizationType } from "@/hooks/useOrganizationType";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+import LoadingState from "@/components/LoadingState";
+import { useUserProfile } from "@/hooks/useUserProfile";
+
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
@@ -35,25 +37,25 @@ export default function OrganizationProfilePage() {
   const { data: session } = useSession();
   const token = session?.user?.token;
 
-  const { organization, isLoading, error, isOrgManager, refetch } =
-    useOrganization(token);
-
-  /*   const orgType = organization?.type || 0; //TODO: Make better assumption
+  const {
+    organization,
+    isLoading: isOrganizationLoading,
+    error,
+    isOrgManager,
+    refetch,
+  } = useOrganization(token);
 
   const {
-    organizationType,
-    fetchOrganizationType,
-    fetchOrganizationTypeById,
-    isLoading: isOrganizationTypeLoading,
-    error: isOrganizationTypeError,
-  } = useOrganizationType(token, orgType);
-
-  console.log(organizationType); */
+    userProfile,
+    isLoading: isUserLoading,
+    error: isUserError,
+  } = useUserProfile();
 
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
     };
+
     refreshData();
   }, []);
 
@@ -62,6 +64,10 @@ export default function OrganizationProfilePage() {
       console.error("Error fetching organization:", error);
     }
   }, [error, organization]);
+
+  if (isOrganizationLoading || isUserLoading) {
+    return <LoadingState />;
+  }
 
   if (isMobile) {
     return (
@@ -188,9 +194,7 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title={
-                    pageContent["body-profile-section-title-available-capacity"]
-                  }
+                  title={pageContent["body-profile-available-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />

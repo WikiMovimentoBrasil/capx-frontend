@@ -55,6 +55,7 @@ import EventsFormItem from "../components/EventsFormItem";
 import NewsFormItem from "../components/NewsFormItem";
 import DocumentFormItem from "../components/DocumentFormItem";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+import LoadingState from "@/components/LoadingState";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -63,6 +64,7 @@ export default function EditOrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Documents setters
   const {
@@ -548,7 +550,7 @@ export default function EditOrganizationProfilePage() {
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      router.push(`/organization_profile?t=${Date.now()}`);
+      router.push(`/organization_profile`);
     } catch (error) {
       console.error("Error processing form:", error);
     }
@@ -813,19 +815,17 @@ export default function EditOrganizationProfilePage() {
   };
 
   // Load user profile data
-  const { userProfile } = useUserProfile();
+  const { userProfile, isLoading: isUserLoading } = useUserProfile();
 
   const userImage = userProfile?.profile_image;
 
-  if (!isOrgManager) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-center">
-          You are not a manager of any organization. Please contact an
-          administrator.
-        </p>
-      </div>
-    );
+  if (isUserLoading || isOrganizationLoading) {
+    return <LoadingState />;
+  }
+
+  if (!token || !isOrgManager) {
+    router.replace("/organization_profile");
+    return <LoadingState />;
   }
 
   if (isMobile) {
