@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import LogoMobile from "@/public/static/images/capx_detailed_logo.svg";
+import LogoMobileWhite from "@/public/static/images/capx_detailed_logo_white.svg";
 import LogoDesktop from "@/public/static/images/capx_minimalistic_logo.svg";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -64,7 +65,7 @@ export default function Footer({ pageContent }: FooterProps) {
         <div className="flex flex-col items-center justify-center max-w-screen-xl mx-auto mt-10">
           <div className="flex flex-row items-center justify-center">
             <Image
-              src={LogoMobile}
+              src={darkMode ? LogoMobileWhite : LogoMobile}
               alt="Capx Logo"
               width={64}
               height={64}
@@ -74,7 +75,7 @@ export default function Footer({ pageContent }: FooterProps) {
           <div className="flex flex-col items-center justify-center">
             {linksComponent}
           </div>
-          <div className="flex w-[320px] justify-center items-center gap-[24px]">
+          <div className="flex w-[320px] justify-center items-center gap-[24px] mb-16">
             <p
               className={`text-center font-[Montserrat] text-[16px] not-italic font-bold leading-[normal] flex px-[12px] py-[24px] items-start ${
                 darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
