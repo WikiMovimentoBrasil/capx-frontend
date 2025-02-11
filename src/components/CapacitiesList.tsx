@@ -107,7 +107,7 @@ export function CapacitiesList({
                   : title ===
                     pageContent["body-profile-wanted-capacities-title"]
                   ? "bg-[#D43831] text-[24px] text-white"
-                  : "bg-[#EFEFEF]"
+                  : "bg-[#05A300]" //TODO: Verify why available capacities are not green and return this fallback color to #EFEFEF
               }`}
             >
               <p className={customClass + " !text-[24px] font-normal"}>
