@@ -28,8 +28,6 @@ import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
 import TargetIconWhite from "@/public/static/images/target_white.svg";
 import WikimediaIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
-import AddLinkIcon from "@/public/static/images/add_link.svg";
-import ImagesModeIcon from "@/public/static/images/images_mode.svg";
 import ContactMetaIcon from "@/public/static/images/contact_meta.svg";
 import ContactMetaIconWhite from "@/public/static/images/contact_meta_white.svg";
 import ContactEmailIcon from "@/public/static/images/contact_alternate_email.svg";
@@ -56,6 +54,9 @@ import NewsFormItem from "../components/NewsFormItem";
 import DocumentFormItem from "../components/DocumentFormItem";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 import LoadingState from "@/components/LoadingState";
+import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
+import { getProfileImage } from "@/lib/utils/getProfileImage";
+import { useAvatars } from "@/hooks/useAvatars";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -185,25 +186,21 @@ export default function EditOrganizationProfilePage() {
   // Effect to load documents
   useEffect(() => {
     const loadDocuments = async () => {
-      if (organization?.documents && Array.isArray(organization.documents)) {
-        const documentPromises = organization.documents.map(async (docId) => {
-          const doc = documents?.find((d) => d.id === docId);
-          if (doc) {
-            return {
-              id: doc.id,
-              url: doc.url || "",
-            };
-          }
-          return null;
-        });
+      if (!organization?.documents || !documents) return;
 
-        const loadedDocs = (await Promise.all(documentPromises)).filter(
-          (doc): doc is { id: number; url: string } =>
-            doc !== null && typeof doc.url === "string"
-        );
+      const loadedDocs = organization.documents
+        .map((docId) => {
+          const doc = documents.find((d) => d.id === docId);
+          return doc
+            ? {
+                id: doc.id,
+                url: doc.url || "",
+              }
+            : null;
+        })
+        .filter((doc): doc is { id: number; url: string } => doc !== null);
 
-        setDocumentsData(loadedDocs);
-      }
+      setDocumentsData(loadedDocs);
     };
 
     loadDocuments();
@@ -332,6 +329,8 @@ export default function EditOrganizationProfilePage() {
     documents,
     tagDiff,
   ]);
+
+  console.log(documentsData);
 
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
@@ -814,10 +813,21 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
+  useEffect(() => {
+    console.log("Organization documents:", organization?.documents);
+    console.log("Documents data:", documentsData);
+    console.log("Documents from hook:", documents);
+  }, [organization?.documents, documentsData, documents]);
+
   // Load user profile data
   const { userProfile, isLoading: isUserLoading } = useUserProfile();
 
-  const userImage = userProfile?.profile_image;
+  console.log("User profile:", userProfile);
+  const userImage = userProfile?.profile_image
+    ? formatWikiImageUrl(userProfile?.profile_image)
+    : NoAvatarIcon;
+
+  const { avatars } = useAvatars();
 
   if (isUserLoading || isOrganizationLoading) {
     return <LoadingState />;
@@ -862,9 +872,19 @@ export default function EditOrganizationProfilePage() {
                 </div>
                 <div className="relative w-[75px] h-[75px]">
                   <Image
-                    src={AvatarIcon}
+                    src={getProfileImage(
+                      userProfile?.profile_image,
+                      userProfile?.avatar,
+                      avatars
+                    )}
                     alt="Avatar"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full"
+                    width={75}
+                    height={75}
+                    priority
+                    style={{
+                      objectFit: "cover",
+                    }}
                   />
                 </div>
               </div>
@@ -884,19 +904,23 @@ export default function EditOrganizationProfilePage() {
                 </span>
               </div>
 
-              <p
+              {/* <p
                 className={`font-[Montserrat] text-[12px] text-gray-600 ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
                 {formData?.acronym}
-              </p>
+              </p> */}
 
               {/* Logo Section */}
               <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
                 <div className="relative h-[51px] w-[127px]">
                   <Image
-                    src={formData?.profile_image || ""}
+                    src={
+                      formData?.profile_image
+                        ? formatWikiImageUrl(formData?.profile_image)
+                        : NoAvatarIcon
+                    }
                     alt="Organization logo"
                     width={127}
                     height={51}
@@ -907,7 +931,7 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               {/* Save/Cancel Buttons */}
-              <div className="flex flex-col gap-[10px] mt-0">
+              <div className="flex flex-col gap-[10px] mt-4">
                 <BaseButton
                   onClick={handleSubmit}
                   label={pageContent["edit-profile-save-organization"]}
@@ -1440,7 +1464,11 @@ export default function EditOrganizationProfilePage() {
             <div className="w-1/2">
               <div className="relative w-[114px] h-[114px] mb-[24px]">
                 <Image
-                  src={userImage || ""}
+                  src={getProfileImage(
+                    userProfile?.profile_image,
+                    userProfile?.avatar,
+                    avatars
+                  )}
                   alt="User Profile Image"
                   fill
                   sizes="114px"
@@ -1487,16 +1515,16 @@ export default function EditOrganizationProfilePage() {
                 </span>
               </div>
 
-              <p
+              {/* <p
                 className={`font-[Montserrat] text-[20px] mt-3 mb-6 ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
                 {formData?.acronym}
-              </p>
+              </p> */}
 
               {/* Save/Cancel Buttons */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 mt-4">
                 <BaseButton
                   onClick={handleSubmit}
                   label={pageContent["edit-profile-save"]}
