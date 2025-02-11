@@ -60,7 +60,7 @@ export default function CallToActionSection() {
         darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
       }`}
     >
-      <div className="flex flex-row items-center justify-around max-w-screen-xl mx-auto px-32">
+      <div className="flex flex-row items-center justify-around max-w-screen-xl mx-auto px-4 lg:px-32">
         <div className="flex flex-col items-start justify-start mt-12">
           <h1
             className={`text-left font-[Montserrat] text-[48px] not-italic font-extrabold leading-[normal] ${
