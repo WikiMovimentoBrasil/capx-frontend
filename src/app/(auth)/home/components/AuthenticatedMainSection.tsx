@@ -10,7 +10,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useState } from "react";
 import Popup from "@/components/Popup";
-import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import capxUnderConstructionIcon from "@/public/static/images/capx_under_construction.svg";
 interface AuthenticatedMainSectionProps {
   pageContent: any;
 }
@@ -253,7 +253,7 @@ export default function AuthenticatedMainSection({
           <Popup
             onContinue={() => setShowPopup(false)}
             onClose={() => setShowPopup(false)}
-            image={capxPersonIcon}
+            image={capxUnderConstructionIcon}
             title={pageContent["component-under-development-dialog"]}
             closeButtonLabel={pageContent["auth-dialog-button-close"]}
             continueButtonLabel={
@@ -329,7 +329,7 @@ export default function AuthenticatedMainSection({
           <Popup
             onContinue={() => setShowPopup(false)}
             onClose={() => setShowPopup(false)}
-            image={capxPersonIcon}
+            image={capxUnderConstructionIcon}
             title={pageContent["component-under-development-dialog"]}
             closeButtonLabel={pageContent["auth-dialog-button-close"]}
             continueButtonLabel={
