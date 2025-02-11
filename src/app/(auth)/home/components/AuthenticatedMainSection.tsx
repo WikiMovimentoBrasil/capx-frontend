@@ -9,7 +9,9 @@ import AuthButton from "@/components/AuthButton";
 import BaseButton from "@/components/BaseButton";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
-
+import { useState } from "react";
+import Popup from "@/components/Popup";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
 interface AuthenticatedMainSectionProps {
   pageContent: any;
 }
@@ -20,6 +22,7 @@ export default function AuthenticatedMainSection({
   const { isMobile } = useApp();
   const { darkMode } = useTheme();
   const router = useRouter();
+  const [showPopup, setShowPopup] = useState(false);
 
   const secondarySection = isMobile ? (
     <section
@@ -94,64 +97,79 @@ export default function AuthenticatedMainSection({
         </div>
         <div className="flex items-center w-full gap-[86px]">
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration01}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image01-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration01}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image01-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration02}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image02-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration02}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image02-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
           <div className="flex items-center flex-col gap-[24px]">
-            <Image
-              src={SecondarySectionIllustration03}
-              alt="Secondary section illustration"
-              width={520}
-              height={520}
-            />
-            <p
-              className={
-                (darkMode ? "text-[#FFF]" : "text-[#053749]") +
-                " text-center text-[48px] not-italic font-normal leading-[59px]"
-              }
+            <button
+              className="w-full h-full"
+              onClick={() => setShowPopup(true)}
             >
-              {
-                pageContent[
-                  "body-loggedin-home-secondary-section-image03-description"
-                ]
-              }
-            </p>
+              <Image
+                src={SecondarySectionIllustration03}
+                alt="Secondary section illustration"
+                width={520}
+                height={520}
+              />
+              <p
+                className={
+                  (darkMode ? "text-[#FFF]" : "text-[#053749]") +
+                  " text-center text-[48px] not-italic font-normal leading-[59px]"
+                }
+              >
+                {
+                  pageContent[
+                    "body-loggedin-home-secondary-section-image03-description"
+                  ]
+                }
+              </p>
+            </button>
           </div>
         </div>
       </div>
@@ -214,6 +232,19 @@ export default function AuthenticatedMainSection({
           </div>
         </section>
         {secondarySection}
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            continueButtonLabel={
+              pageContent["body-loggedin-home-main-section-button02"]
+            }
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </>
     );
   }
@@ -274,6 +305,19 @@ export default function AuthenticatedMainSection({
           </div>
         </div>
         {secondarySection}
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            continueButtonLabel={
+              pageContent["body-loggedin-home-main-section-button02"]
+            }
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </section>
     </>
   );
