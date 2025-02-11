@@ -35,45 +35,60 @@ export default function AuthenticatedMainSection({
             {pageContent["body-loggedin-home-secondary-section-title"]}
           </h1>
         </div>
-        <Image
-          src={SecondarySectionIllustration01}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image01-description"
-            ]
-          }
-        </p>
-        <Image
-          src={SecondarySectionIllustration02}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image02-description"
-            ]
-          }
-        </p>
-        <Image
-          src={SecondarySectionIllustration03}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image03-description"
-            ]
-          }
-        </p>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration01}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image01-description"
+              ]
+            }
+          </p>
+        </button>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration02}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image02-description"
+              ]
+            }
+          </p>
+        </button>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration03}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image03-description"
+              ]
+            }
+          </p>
+        </button>
       </div>
     </section>
   ) : (
