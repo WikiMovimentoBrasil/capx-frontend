@@ -10,7 +10,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useState } from "react";
 import Popup from "@/components/Popup";
-import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import capxUnderConstructionIcon from "@/public/static/images/capx_under_construction.svg";
 interface AuthenticatedMainSectionProps {
   pageContent: any;
 }
@@ -35,45 +35,60 @@ export default function AuthenticatedMainSection({
             {pageContent["body-loggedin-home-secondary-section-title"]}
           </h1>
         </div>
-        <Image
-          src={SecondarySectionIllustration01}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image01-description"
-            ]
-          }
-        </p>
-        <Image
-          src={SecondarySectionIllustration02}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image02-description"
-            ]
-          }
-        </p>
-        <Image
-          src={SecondarySectionIllustration03}
-          alt="Secondary section illustration"
-          width={200}
-          height={200}
-        />
-        <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
-          {
-            pageContent[
-              "body-loggedin-home-secondary-section-image03-description"
-            ]
-          }
-        </p>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration01}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image01-description"
+              ]
+            }
+          </p>
+        </button>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration02}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image02-description"
+              ]
+            }
+          </p>
+        </button>
+        <button
+          className="flex flex-col w-full h-full justify-center items-center"
+          onClick={() => setShowPopup(true)}
+        >
+          <Image
+            src={SecondarySectionIllustration03}
+            alt="Secondary section illustration"
+            width={200}
+            height={200}
+          />
+          <p className="text-capx-light-bg text-center text-[24px] not-italic font-normal leading-[29px]">
+            {
+              pageContent[
+                "body-loggedin-home-secondary-section-image03-description"
+              ]
+            }
+          </p>
+        </button>
       </div>
     </section>
   ) : (
@@ -238,7 +253,7 @@ export default function AuthenticatedMainSection({
           <Popup
             onContinue={() => setShowPopup(false)}
             onClose={() => setShowPopup(false)}
-            image={capxPersonIcon}
+            image={capxUnderConstructionIcon}
             title={pageContent["component-under-development-dialog"]}
             closeButtonLabel={pageContent["auth-dialog-button-close"]}
             continueButtonLabel={
@@ -314,7 +329,7 @@ export default function AuthenticatedMainSection({
           <Popup
             onContinue={() => setShowPopup(false)}
             onClose={() => setShowPopup(false)}
-            image={capxPersonIcon}
+            image={capxUnderConstructionIcon}
             title={pageContent["component-under-development-dialog"]}
             closeButtonLabel={pageContent["auth-dialog-button-close"]}
             continueButtonLabel={
