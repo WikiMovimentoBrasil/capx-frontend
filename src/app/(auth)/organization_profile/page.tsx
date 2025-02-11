@@ -22,13 +22,15 @@ import { NewsSection } from "./components/NewsSection";
 import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { DocumentsList } from "./components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 import LoadingState from "@/components/LoadingState";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import Popup from "@/components/Popup";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
@@ -36,6 +38,7 @@ export default function OrganizationProfilePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
+  const [showPopup, setShowPopup] = useState(false);
 
   const {
     organization,
@@ -176,7 +179,7 @@ export default function OrganizationProfilePage() {
                     }
                   </h2>
                   <BaseButton
-                    onClick={() => {}}
+                    onClick={() => setShowPopup(true)}
                     label={pageContent["organization-profile-click-here"]}
                     customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                   />
@@ -241,6 +244,16 @@ export default function OrganizationProfilePage() {
               />
             </div>
           </section>
+          {showPopup && (
+            <Popup
+              onContinue={() => setShowPopup(false)}
+              onClose={() => setShowPopup(false)}
+              image={capxPersonIcon}
+              title={pageContent["component-under-development-dialog"]}
+              closeButtonLabel={pageContent["auth-dialog-button-close"]}
+              customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+            />
+          )}
         </div>
       </>
     );
@@ -353,7 +366,7 @@ export default function OrganizationProfilePage() {
                   {pageContent["organization-profile-report-activities-title"]}
                 </h2>
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={() => setShowPopup(true)}
                   label={pageContent["organization-profile-click-here"]}
                   customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
                 />
@@ -425,6 +438,16 @@ export default function OrganizationProfilePage() {
             />
           </div>
         </section>
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </div>
     </>
   );
