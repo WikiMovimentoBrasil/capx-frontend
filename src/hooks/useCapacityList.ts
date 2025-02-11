@@ -1,101 +1,132 @@
 import { useState, useCallback } from "react";
 import { capacityService } from "@/services/capacityService";
+import { Capacity } from "@/types/capacity";
 
-interface LoadingStates {
-  [key: string]: boolean;
-}
-interface AsyncItems {
-  [key: string]: Record<string, string>;
-}
-interface ExpandedItems {
-  [key: string]: boolean;
-}
+export function useCapacityList(token?: string, language: string = "pt-br") {
+  const [rootCapacities, setRootCapacities] = useState<Capacity[]>([]);
+  const [capacityHierarchy, setCapacityHierarchy] = useState<
+    Record<number, Capacity[]>
+  >({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export interface CapacityListHook {
-  token: string | undefined;
-  language: string;
-  initialExpanded?: string;
-}
+  const formatCapacityResponse = (
+    response: any,
+    parentId?: string
+  ): Capacity[] => {
+    return (response || []).map((cap: any) => ({
+      id: Number(cap?.code),
+      code: Number(cap?.code),
+      name: String(cap?.name || ""),
+      skill_type: parentId
+        ? [String(parentId)]
+        : Array.isArray(cap?.skill_type)
+        ? cap.skill_type
+        : [],
+      skill_wikidata_item: String(cap?.skill_wikidata_item || ""),
+    }));
+  };
 
-export const useCapacityList = ({
-  token,
-  language,
-  initialExpanded,
-}: CapacityListHook) => {
-  const [capacityList, setCapacityList] = useState<Record<string, string>>();
-  const [asyncItems, setAsyncItems] = useState<AsyncItems>({});
-  const [expandedItems, setExpandedItems] = useState<ExpandedItems>(
-    initialExpanded ? { [initialExpanded]: true } : {}
-  );
-  const [loadingStates, setLoadingStates] = useState<LoadingStates>(
-    initialExpanded ? { [initialExpanded]: true } : {}
-  );
-
-  const handleExpandedChange = useCallback(
-    async (itemId: string, isExpanded: boolean) => {
-      if (asyncItems[itemId] || !isExpanded) {
-        setExpandedItems((prev) => ({ ...prev, [itemId]: isExpanded }));
-        return;
-      }
+  const fetchCapacitiesByParent = useCallback(
+    async (parentId: number | string) => {
+      if (!token) return;
 
       try {
-        setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
-        const response = await capacityService.fetchCapacityByType(itemId, {
-          params: { language },
-          headers: { Authorization: `Token ${token}` },
+        setIsLoading(true);
+        const response = await capacityService.fetchCapacityByType(
+          String(parentId),
+          {
+            params: { language },
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
+
+        if (!response || typeof response !== "object") {
+          return [];
+        }
+
+        // Transformar o objeto em array de capacidades
+        const formattedChildren = Object.entries(response).map(
+          ([code, name]) => {
+            return {
+              id: Number(code),
+              code: Number(code),
+              name: String(name),
+              skill_type: [String(parentId)],
+              skill_wikidata_item: "",
+              children: [], // Adicionado para manter consistência com a interface Capacity
+            };
+          }
+        );
+
+        // Atualizar o estado de forma síncrona para garantir que os dados estejam disponíveis
+        setCapacityHierarchy((prev) => {
+          const newHierarchy = {
+            ...prev,
+            [parentId]: formattedChildren,
+          };
+          return newHierarchy;
         });
 
-        if (response && typeof response === "object") {
-          setAsyncItems((prev) => ({
-            ...prev,
-            [itemId]: response,
-          }));
-          setExpandedItems((prev) => ({ ...prev, [itemId]: isExpanded }));
-        }
-      } catch (error) {
-        console.error("Failed to load capacity items:", error);
-        setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
-        setAsyncItems((prev) => ({
-          ...prev,
-          [itemId]: {}, // Empty object for failed requests
-        }));
+        return formattedChildren;
+      } catch (err) {
+        console.error("Error fetching capacities:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch capacities"
+        );
+        return [];
       } finally {
-        setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
+        setIsLoading(false);
       }
     },
-    [asyncItems, language, token]
+    [token, language]
   );
 
-  const fetchCapacityList = useCallback(async () => {
+  const fetchCapacityTree = useCallback(
+    async (
+      parentId: number | string,
+      depth: number = 0,
+      maxDepth: number = 3
+    ) => {
+      if (depth >= maxDepth) return;
+
+      const children = await fetchCapacitiesByParent(parentId);
+
+      for (const child of children || []) {
+        await fetchCapacityTree(child.id, depth + 1, maxDepth);
+      }
+    },
+    [fetchCapacitiesByParent]
+  );
+
+  const fetchRootCapacities = useCallback(async () => {
     if (!token) return;
+    setIsLoading(true);
     try {
       const response = await capacityService.fetchCapacities({
         params: { language },
         headers: { Authorization: `Token ${token}` },
       });
 
-      const rootItems = response.reduce(
-        (acc, item) => {
-          acc[item.code] = item.name;
-          return acc;
-        },
-        {} as Record<string, string>
+      const formattedResponse = formatCapacityResponse(response);
+      setRootCapacities(formattedResponse);
+    } catch (err) {
+      console.error("Error in fetchRootCapacities:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch root capacities"
       );
-
-      setCapacityList(rootItems);
-      setAsyncItems((prev) => ({ ...prev, "0": rootItems }));
-      setLoadingStates((prev) => ({ ...prev, "0": false }));
-    } catch (error) {
-      console.error("Failed to load capacity list:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [token, language]);
 
   return {
-    capacityList,
-    asyncItems,
-    expandedItems,
-    loadingStates,
-    fetchCapacityList,
-    handleExpandedChange,
+    rootCapacities,
+    capacityHierarchy,
+    isLoading,
+    error,
+    fetchRootCapacities,
+    fetchCapacitiesByParent,
+    fetchCapacityTree,
   };
-};
+}

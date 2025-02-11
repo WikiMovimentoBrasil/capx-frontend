@@ -1,72 +1,123 @@
 "use client";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import CapXLogo from "../../../public/static/images/capx_logo.svg";
+import {
+  signIn,
+  useSession,
+  SessionProvider,
+  getSession,
+} from "next-auth/react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import CapXLogo from "@/public/static/images/capx_minimalistic_logo.svg";
 
-interface OAuthProps {
-  searchParams: {
-    oauth_verifier: string;
-  };
-}
-
-export default function OAuth({ searchParams }: OAuthProps) {
+function OAuthContent() {
   const router = useRouter();
-  const [loginStatus, setLoginStatus] = useState<string | null>(null);
-  const oauth_verifier = searchParams.oauth_verifier;
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+  const [loginStatus, setLoginStatus] = useState<string | null>("Iniciando...");
+  const isCheckingTokenRef = useRef(false); // Ref para controlar a execução do checkToken
+
+  const oauth_verifier = searchParams.get("oauth_verifier");
+  const oauth_token_request = searchParams.get("oauth_token");
 
   useEffect(() => {
-    let mounted = true;
+    if (status === "authenticated" && session) {
+      localStorage.removeItem("oauth_token");
+      localStorage.removeItem("oauth_token_secret");
+    }
+  }, [status, session]);
 
-    async function handleLogin() {
-      if (!oauth_verifier || !mounted) return;
+  useEffect(() => {
+    if (!oauth_token_request || !oauth_verifier || isCheckingTokenRef.current) {
+      return;
+    }
 
+    isCheckingTokenRef.current = true;
+
+    async function checkToken() {
       try {
-        const oauth_token = localStorage.getItem("oauth_token");
-        const oauth_token_secret = localStorage.getItem("oauth_token_secret");
-
-        if (!oauth_token || !oauth_token_secret) {
-          throw new Error("Missing OAuth tokens");
+        if (!oauth_token_request || !oauth_verifier) {
+          return;
         }
 
-        setLoginStatus("FINISHING LOGIN");
-
-        const result = await signIn("credentials", {
-          oauth_token,
-          oauth_token_secret,
-          oauth_verifier,
-          redirect: false,
+        const response = await fetch("/api/check/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: oauth_token_request }),
         });
 
-        if (mounted) {
-          if (result?.ok) {
-            localStorage.removeItem("oauth_token");
-            localStorage.removeItem("oauth_token_secret");
-            router.replace("/");
+        if (response.ok) {
+          const result = await response.json();
+          let hostname = `${document.location.hostname}`;
+          if (document.location.port) {
+            hostname += `:${document.location.port}`;
+          }
+
+          if (localStorage.getItem("oauth_token") !== oauth_token_request) {
+            localStorage.setItem("oauth_token", oauth_token_request);
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+
+          const stored_secret = localStorage.getItem("oauth_token_secret");
+          // Verifica o hostname e os tokens antes de prosseguir
+
+          if (result.extra === hostname) {
+            if (!stored_secret) {
+              router.push("/");
+              return;
+            }
+
+            await handleLogin();
           } else {
-            throw new Error(result?.error || "Authentication failed");
+            let protocol =
+              result.extra === "capx-test.toolforge.org" ? "https" : "http";
+            router.push(
+              `${protocol}://${result.extra}/oauth?oauth_token=${oauth_token_request}&oauth_verifier=${oauth_verifier}`
+            );
           }
         }
       } catch (error) {
-        if (mounted) {
-          console.error("Login error:", error);
-          setLoginStatus("LOGIN FAILED");
-          setTimeout(() => {
-            router.replace("/");
-          }, 2000);
-        }
+        console.error("Token check error:", error);
+        router.push("/");
+      } finally {
+        // Fim do processo de verificação
+        isCheckingTokenRef.current = false;
       }
     }
 
-    handleLogin();
-    return () => {
-      mounted = false;
-    };
-  }, [oauth_verifier, router]);
+    checkToken();
+  }, [oauth_token_request, oauth_verifier, router]);
 
-  if (!loginStatus) {
-    return null;
+  async function handleLogin() {
+    try {
+      const oauth_token = localStorage.getItem("oauth_token");
+      const oauth_token_secret = localStorage.getItem("oauth_token_secret");
+
+      if (!oauth_token || !oauth_token_secret) {
+        throw new Error("Missing OAuth tokens");
+      }
+
+      setLoginStatus("Finalizando Login...");
+      const result = await signIn("credentials", {
+        oauth_token,
+        oauth_token_secret,
+        oauth_verifier,
+        stored_token: oauth_token,
+        stored_token_secret: oauth_token_secret,
+        redirect: true,
+        callbackUrl: "/home",
+      });
+      if (result?.error) {
+        console.error("Login error:", result.error);
+        setLoginStatus("Erro: " + result.error);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return { error: error.message };
+    }
   }
 
   return (
@@ -88,5 +139,13 @@ export default function OAuth({ searchParams }: OAuthProps) {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function OAuth() {
+  return (
+    <SessionProvider>
+      <OAuthContent />
+    </SessionProvider>
   );
 }

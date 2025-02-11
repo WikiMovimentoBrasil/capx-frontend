@@ -1,16 +1,24 @@
 {
 	"@metadata": {
 		"authors": [
+			"Suleiman the Magnificent Television",
 			"YeBoy371",
 			"Ykhwong"
 		]
 	},
 	"navbar-link-about": "소개",
-	"navbar-link-profile": "내 프로필",
+	"navbar-link-capacities": "디렉터리",
 	"navbar-link-events": "행사",
-	"navbar-link-homepage": "홈페이지",
+	"navbar-link-home": "홈",
 	"navbar-link-reports": "보고서",
+	"navbar-link-dark-mode": "다크/라이트 모드",
 	"body-home-section01-title-carousel": "능력, 지식, 기술, 서비스",
+	"body-home-section01-about-button": "CapX 정보",
+	"body-home-main-section-carrousel-description-more-projects": "...",
+	"body-home-section01-call-to-action-button02": "계정 만들기",
+	"body-home-video-section-title": "CapX는 어떻게 만들어졌나요?",
+	"body-loggedin-home-main-section-title": "CapX에 오신 것을 환영합니다!",
+	"body-loggedin-home-main-section-button02": "내 프로필",
 	"body-profile-gender-hehim": "그",
 	"body-profile-gender-sheher": "그녀",
 	"body-profile-gender-theythem": "그들",
@@ -23,6 +31,8 @@
 	"body-profile-section-title-language": "언어",
 	"body-profile-section-title-team": "팀",
 	"body-profile-section-title-wikimedia-project": "위키미디어 프로젝트",
+	"body-profile-box-title-alternative-wiki-account": "대체 위키미디어 계정",
+	"body-profile-section-title-contact": "연락하기",
 	"body-profile-delete-confirmation": "CapX 프로필을 영구적으로 삭제하시겠습니까?",
 	"body-capacity-available-user-list-title": "서비스 제공자:",
 	"body-capacity-user-list-fallback-message": "이 분류에 표시할 사용자가 없습니다.",
@@ -53,5 +63,14 @@
 	"form-report-edit-button": "보고서 편집",
 	"form-report-update-button": "보고서 수정",
 	"oh-no-message": "안 돼!",
-	"no-report-rights": "이 보고서를 업데이트할 권한이 없거나 이 보고서가 없습니다!"
+	"no-report-rights": "이 보고서를 업데이트할 권한이 없거나 이 보고서가 없습니다!",
+	"body-profile-languages-title": "언어",
+	"body-profile-wikimedia-projects-title": "위키미디어 프로젝트",
+	"body-profile-contact-title": "연락하기",
+	"edit-profile-welcome": "환영합니다!",
+	"edit-profile-choose-avatar": "아바타 선택",
+	"edit-profile-use-wikidata": "위키데이터 항목 사용",
+	"edit-profile-cancel": "편집 취소",
+	"edit-profile-insert-item": "항목 넣기",
+	"edit-profile-wikidata-item": "위키데이터 항목"
 }
