@@ -1248,7 +1248,7 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             {/* Events Section */}
-            <div className="">
+            {/* <div className="">
               <div className="flex items-center gap-2 mb-4">
                 <div className="relative w-[20px] h-[20px]">
                   <Image
@@ -1297,7 +1297,7 @@ export default function EditOrganizationProfilePage() {
               >
                 {pageContent["body-profile-section-title-events"]}
               </p>
-            </div>
+            </div> */}
 
             {/* News Section */}
             <div className="">
@@ -1421,6 +1421,146 @@ export default function EditOrganizationProfilePage() {
               >
                 {pageContent["edit-profile-share-documents-tooltop"]}
               </p>
+            </div>
+            {/* Contacts Section */}
+
+            <section className="w-full max-w-screen-xl py-8">
+              <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
+                <div className="relative w-[20px] h-[20px]">
+                  <Image
+                    src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+                    alt="Wikimedia"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+                <h2
+                  className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                    darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                  }`}
+                >
+                  {pageContent["body-profile-section-title-contacts"]}
+                </h2>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px] ${
+                    darkMode ? "bg-capx-dark-box-bg" : "bg-[#FFF]"
+                  }`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={darkMode ? ContactMetaIconWhite : ContactMetaIcon}
+                      alt="Contact Meta"
+                      fill
+                      className={`object-contain ${
+                        darkMode ? "bg-capx-dark-box-bg" : "bg-white"
+                      }`}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Metawiki"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.meta_page || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        meta_page: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px]`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={darkMode ? ContactEmailIconWhite : ContactEmailIcon}
+                      alt="Contact Email"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.email || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        email: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px] ${
+                    darkMode ? "bg-capx-dark-box-bg" : "bg-[#FFF]"
+                  }`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={
+                        darkMode ? ContactPortalIconWhite : ContactPortalIcon
+                      }
+                      alt="Contact Website"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Website"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.website || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        website: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
+
+              <p
+                className={`text-[20px] ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                } mt-1`}
+              ></p>
+            </section>
+
+            {/* Save/Cancel Buttons */}
+            <div className="flex flex-row gap-2">
+              <BaseButton
+                onClick={handleSubmit}
+                label={pageContent["edit-profile-save"]}
+                customClass="flex border w-full rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#851970]  items-center justify-between text-white !px-[13px] !py-[6px] rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+                imageUrl={SaveIcon}
+                imageAlt="Save icon"
+                imageWidth={20}
+                imageHeight={20}
+              />
+              <BaseButton
+                onClick={() => router.back()}
+                label={pageContent["edit-profile-cancel"]}
+                customClass="flex border w-full rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg !px-[13px] !py-[6px] rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+                imageUrl={CancelIcon}
+                imageAlt="Cancel icon"
+                imageWidth={20}
+                imageHeight={20}
+              />
             </div>
           </div>
         </section>
@@ -1844,7 +1984,7 @@ export default function EditOrganizationProfilePage() {
           </div>
 
           {/* Events Section */}
-          <div className="mt-6">
+          {/*           <div className="mt-6">
             <div className="flex items-center gap-2 mb-4">
               <div className="relative w-[48px] h-[48px]">
                 <Image
@@ -1894,7 +2034,7 @@ export default function EditOrganizationProfilePage() {
             >
               {pageContent["edit-profile-display-events"]}
             </p>
-          </div>
+          </div> */}
 
           {/* News Section */}
           <div className="mt-6">
@@ -2126,9 +2266,7 @@ export default function EditOrganizationProfilePage() {
               className={`text-[20px] ${
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
-            >
-              FEATURE UNDER CONSTRUCTION.
-            </p>
+            ></p>
           </section>
 
           {/* Save/Cancel Buttons */}
