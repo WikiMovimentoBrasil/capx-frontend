@@ -1419,8 +1419,7 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                You can share up to four links of your organization&apos;s
-                documents from Wikimedia Commons.
+                {pageContent["edit-profile-share-documents-tooltop"]}
               </p>
             </div>
           </div>
@@ -1985,7 +1984,7 @@ export default function EditOrganizationProfilePage() {
 
             <BaseButton
               onClick={handleAddDocument}
-              label={pageContent["edit-profile-add-link"]}
+              label={pageContent["edit-profile-add-more-links"]}
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
                   ? "text-[#053749] bg-[#EFEFEF]"
@@ -2001,7 +2000,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              {pageContent["edit-profile-enter-links"]}
+              {pageContent["edit-profile-share-documents-tooltop"]}
             </p>
           </div>
 
@@ -2122,6 +2121,14 @@ export default function EditOrganizationProfilePage() {
                 />
               </div>
             </div>
+
+            <p
+              className={`text-[20px] ${
+                darkMode ? "text-white" : "text-[#053749]"
+              } mt-1`}
+            >
+              FEATURE UNDER CONSTRUCTION.
+            </p>
           </section>
 
           {/* Save/Cancel Buttons */}
