@@ -629,7 +629,7 @@ export default function EditProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    {pageContent["edit-profile-select-skills"]}
+                    {pageContent["edit-profile-mini-bio-tooltip"]}
                   </span>
                 </div>
               </div>
@@ -693,7 +693,7 @@ export default function EditProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    {pageContent["edit-profile-known-capacities-description"]}
+                    {pageContent["edit-profile-select-skills"]}
                   </span>
                 </div>
 
@@ -826,7 +826,7 @@ export default function EditProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    {pageContent["edit-profile-wanted-capacities-description"]}
+                    {pageContent["edit-profile-wanted-capacities"]}
                   </span>
                 </div>
 
@@ -937,7 +937,7 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
                     >
-                      <option value="">Add language...</option>
+                      <option value="">{pageContent["edit-profile-add-language"]}</option>
                       {Object.entries(languages).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
@@ -953,7 +953,16 @@ export default function EditProfilePage() {
                       />
                     </div>
                   </div>
+                  
                 </div>
+
+                <span
+                  className={`text-[12px] font-[Montserrat] not-italic font-normal leading-[15px] ${
+                    darkMode ? "text-white" : "text-[#053749]"
+                  }`}
+                >
+                  {pageContent["edit-profile-language-tooltip"]}
+                </span>
 
                 {/* Alternative Wikimedia Account */}
                 <div className="flex flex-col gap-4">
@@ -1298,7 +1307,7 @@ export default function EditProfilePage() {
                       darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    {pageContent["edit-profile-add-more-projects-description"]}
+                    {pageContent["edit-profile-wikimedia-projects"]}
                   </span>
                 </div>
               </div>
@@ -1522,7 +1531,7 @@ export default function EditProfilePage() {
                 onChange={(e) =>
                   setFormData({ ...formData, about: e.target.value })
                 }
-                placeholder="Write a short description about yourself."
+                placeholder={pageContent["edit-profile-mini-bio-placeholder"]}
                 className={`w-full font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] p-2 bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] px-[4px] ${
                   darkMode
                     ? "text-white placeholder-gray-400"
@@ -1535,7 +1544,7 @@ export default function EditProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               }`}
             >
-              {pageContent["edit-profile-select-skills"]}
+              {pageContent["edit-profile-mini-bio-tooltip"]}
             </span>
           </div>
 
@@ -1598,7 +1607,7 @@ export default function EditProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
-                {pageContent["body-profile-section-title-known-capacity"]}
+                {pageContent["edit-profile-select-skills"]}
               </span>
             </div>
 
@@ -1850,6 +1859,14 @@ export default function EditProfilePage() {
                 </div>
               </div>
             </div>
+
+            <span
+                className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                }`}
+              >
+              {pageContent["edit-profile-language-tooltip"]}
+            </span>
 
             {/* Alternative Wikimedia Account */}
             <div className="flex flex-col gap-4">
