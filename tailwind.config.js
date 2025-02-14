@@ -38,6 +38,13 @@ module.exports = {
         "capx-secondary-green": "#05a300",
         "capx-secondary-grey": "#717171",
         "capx-secondary-dark-grey": "#4c4c4c",
+        organizational: "#0078D4",
+        communication: "#BE0078",
+        learning: "#00965A",
+        community: "#8E44AD",
+        social: "#D35400",
+        strategic: "#3498DB",
+        technology: "#27AE60",
       },
 
       screens: {
@@ -52,4 +59,13 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: [
+    "bg-organizational",
+    "bg-communication",
+    "bg-learning",
+    "bg-community",
+    "bg-social",
+    "bg-strategic",
+    "bg-technology",
+  ],
 };
