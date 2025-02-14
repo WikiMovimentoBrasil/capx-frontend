@@ -1,15 +1,21 @@
-export const getCapacityColor = (code: string | number): string => {
-  console.log("getCapacityColor input:", code, typeof code);
+import OrganizationalIcon from "@/public/static/images/corporate_fare.svg";
+import CommunicationIcon from "@/public/static/images/communication.svg";
+import LearningIcon from "@/public/static/images/local_library.svg";
+import CommunityIcon from "@/public/static/images/communities.svg";
+import SocialIcon from "@/public/static/images/cheer.svg";
+import StrategicIcon from "@/public/static/images/chess_pawn.svg";
+import TechnologyIcon from "@/public/static/images/wifi_tethering.svg";
 
+export const getCapacityColor = (code: string | number): string => {
   // Map capacity codes to their respective colors
   const colorMap: Record<string, string> = {
-    "1": "#0078D4", // organizational
-    "2": "#BE0078", // communication
-    "3": "#00965A", // learning
-    "4": "#8E44AD", // community
-    "5": "#D35400", // social
-    "6": "#3498DB", // strategic
-    "7": "#27AE60", // technology
+    "10": "capx-directory-blue", // organizational
+    "36": "capx-directory-pink", // communication
+    "50": "capx-directory-green", // learning
+    "56": "capx-directory-purple", // community
+    "65": "capx-directory-orange", // social
+    "74": "capx-directory-light-blue", // strategic
+    "106": "capx-directory-light-green", // technology
   };
 
   // Return default color if no mapping exists
@@ -17,17 +23,15 @@ export const getCapacityColor = (code: string | number): string => {
 };
 
 export const getCapacityIcon = (code: string | number): string => {
-  console.log("getCapacityIcon input:", code, typeof code);
-
   // Map capacity codes to their respective icon paths
   const iconMap: Record<string, string> = {
-    "1": "/icons/organizational.svg",
-    "2": "/icons/communication.svg",
-    "3": "/icons/learning.svg",
-    "4": "/icons/community.svg",
-    "5": "/icons/social.svg",
-    "6": "/icons/strategic.svg",
-    "7": "/icons/technology.svg",
+    "10": OrganizationalIcon,
+    "36": CommunicationIcon,
+    "50": LearningIcon,
+    "56": CommunityIcon,
+    "65": SocialIcon,
+    "74": StrategicIcon,
+    "106": TechnologyIcon,
   };
 
   return iconMap[String(code)] || "";

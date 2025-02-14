@@ -28,22 +28,58 @@ export default function CapacityListMainWrapper() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
     {}
   );
+  const [cachedCapacities, setCachedCapacities] = useState<
+    Record<string, CapacityItem[]>
+  >({});
 
   const getCapacityList = async (queryData) => {
     const queryResponse = await axios.get("/api/capacity", queryData);
     const formattedCapacities = queryResponse.data.map((item) => ({
       code: item.code,
       name: item.name,
-      color: getCapacityColor(item.code), // You'll need to implement this helper
-      icon: getCapacityIcon(item.code), // You'll need to implement this helper
+      color: item.code.toString().startsWith("10")
+        ? "organizational"
+        : item.code.toString().startsWith("36")
+        ? "communication"
+        : item.code.toString().startsWith("50")
+        ? "learning"
+        : item.code.toString().startsWith("56")
+        ? "community"
+        : item.code.toString().startsWith("65")
+        ? "social"
+        : item.code.toString().startsWith("74")
+        ? "strategic"
+        : item.code.toString().startsWith("106")
+        ? "technology"
+        : "gray-200",
+      icon: getCapacityIcon(item.code),
     }));
     setRootCapacities(formattedCapacities);
   };
 
-  const loadChildCapacities = useCallback(
+  const toggleChildCapacities = useCallback(
     async (parentCode: string) => {
-      setLoadingStates((prev) => ({ ...prev, [parentCode]: true }));
+      // Se já está expandido, apenas recolhe
+      if (expandedCapacities[parentCode]) {
+        setExpandedCapacities((prev) => {
+          const newState = { ...prev };
+          delete newState[parentCode];
+          return newState;
+        });
+        return;
+      }
 
+      // Se já tem em cache, usa os dados do cache sem fazer nova requisição
+      if (cachedCapacities[parentCode]) {
+        setExpandedCapacities((prev) => ({
+          ...prev,
+          [parentCode]: cachedCapacities[parentCode],
+        }));
+        return;
+      }
+
+      // Se não tem em cache, carrega os dados
+      setLoadingStates((prev) => ({ ...prev, [parentCode]: true }));
       try {
         const queryData = {
           headers: {
@@ -64,6 +100,13 @@ export default function CapacityListMainWrapper() {
           })
         );
 
+        // Armazena no cache
+        setCachedCapacities((prev) => ({
+          ...prev,
+          [parentCode]: formattedChildren,
+        }));
+
+        // Expande com os dados novos
         setExpandedCapacities((prev) => ({
           ...prev,
           [parentCode]: formattedChildren,
@@ -74,7 +117,7 @@ export default function CapacityListMainWrapper() {
         setLoadingStates((prev) => ({ ...prev, [parentCode]: false }));
       }
     },
-    [session?.user?.token]
+    [session?.user?.token, cachedCapacities, expandedCapacities]
   );
 
   useEffect(() => {
@@ -95,30 +138,29 @@ export default function CapacityListMainWrapper() {
 
   return (
     <section className="max-w-[1024px] mx-auto py-8 px-4">
-      <h1
-        className={`text-2xl font-bold mb-8 ${
-          darkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
-        {pageContent["navbar-link-capacities"]}
-      </h1>
-
-      <div className="grid gap-4 max-w-full">
+      <div className="grid gap-4 max-w-[1024px]">
         {rootCapacities.map((capacity) => (
-          <div key={capacity.code} className="space-y-4">
-            <CapacityCard
-              {...capacity}
-              onExpand={() => loadChildCapacities(capacity.code)}
-            />
+          <div key={capacity.code} className="max-w-[1024px]">
+            <div className="max-w-[1024px]">
+              <CapacityCard
+                {...capacity}
+                isExpanded={!!expandedCapacities[capacity.code]}
+                onExpand={() => toggleChildCapacities(capacity.code)}
+              />
+            </div>
 
             {expandedCapacities[capacity.code] && (
-              <div className="pl-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-                <div className="flex gap-4 pb-4 min-w-min">
+              <div
+                className="max-w-[1024px] mt-4 overflow-x-auto scrollbar-hide
+              "
+              >
+                <div className="flex gap-4 pb-4">
                   {expandedCapacities[capacity.code].map((child) => (
                     <div key={child.code} className="w-[280px] flex-shrink-0">
                       <CapacityCard
                         {...child}
-                        onExpand={() => loadChildCapacities(child.code)}
+                        isExpanded={!!expandedCapacities[child.code]}
+                        onExpand={() => toggleChildCapacities(child.code)}
                       />
                     </div>
                   ))}
