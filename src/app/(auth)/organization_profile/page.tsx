@@ -22,38 +22,43 @@ import { NewsSection } from "./components/NewsSection";
 import { useApp } from "@/contexts/AppContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 import { DocumentsList } from "./components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
-import { useOrganizationType } from "@/hooks/useOrganizationType";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+import LoadingState from "@/components/LoadingState";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import Popup from "@/components/Popup";
+
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user?.token;
-
-  const { organization, isLoading, error, isOrgManager, refetch } =
-    useOrganization(token);
-
-  /*   const orgType = organization?.type || 0; //TODO: Make better assumption
+  const [showPopup, setShowPopup] = useState(false);
 
   const {
-    organizationType,
-    fetchOrganizationType,
-    fetchOrganizationTypeById,
-    isLoading: isOrganizationTypeLoading,
-    error: isOrganizationTypeError,
-  } = useOrganizationType(token, orgType);
+    organization,
+    isLoading: isOrganizationLoading,
+    error,
+    isOrgManager,
+    refetch,
+  } = useOrganization(token);
 
-  console.log(organizationType); */
+  const {
+    userProfile,
+    isLoading: isUserLoading,
+    error: isUserError,
+  } = useUserProfile();
 
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
     };
+
     refreshData();
   }, []);
 
@@ -62,6 +67,10 @@ export default function OrganizationProfilePage() {
       console.error("Error fetching organization:", error);
     }
   }, [error, organization]);
+
+  if (isOrganizationLoading || isUserLoading) {
+    return <LoadingState />;
+  }
 
   if (isMobile) {
     return (
@@ -120,8 +129,9 @@ export default function OrganizationProfilePage() {
                       <div className="relative h-[51px] w-[127px]">
                         <Image
                           src={
-                            formatWikiImageUrl(organization?.profile_image) ||
-                            NoAvatarIcon
+                            formatWikiImageUrl(
+                              organization?.profile_image || ""
+                            ) || NoAvatarIcon
                           }
                           alt="Organization logo"
                           fill
@@ -134,7 +144,9 @@ export default function OrganizationProfilePage() {
                   {isOrgManager && (
                     <BaseButton
                       onClick={() => router.push("/organization_profile/edit")}
-                      label={pageContent["organization-profile-edit-org-profile"]}
+                      label={
+                        pageContent["organization-profile-edit-org-profile"]
+                      }
                       customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                         darkMode
                           ? "border-white text-white"
@@ -160,10 +172,14 @@ export default function OrganizationProfilePage() {
                 </div>
                 <div className="flex flex-col justify-center items-center gap-2">
                   <h2 className="text-[#FFF] font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] text-center">
-                    {pageContent["organization-profile-report-activities-title"]}
+                    {
+                      pageContent[
+                        "organization-profile-report-activities-title"
+                      ]
+                    }
                   </h2>
                   <BaseButton
-                    onClick={() => {}}
+                    onClick={() => setShowPopup(true)}
                     label={pageContent["organization-profile-click-here"]}
                     customClass="inline-flex h-[32px] px-[19px] py-[8px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[4px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]"
                   />
@@ -181,7 +197,7 @@ export default function OrganizationProfilePage() {
                 <CapacitiesList
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                  title={pageContent["body-profile-section-title-available-capacity"]}
+                  title={pageContent["body-profile-available-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
@@ -228,6 +244,16 @@ export default function OrganizationProfilePage() {
               />
             </div>
           </section>
+          {showPopup && (
+            <Popup
+              onContinue={() => setShowPopup(false)}
+              onClose={() => setShowPopup(false)}
+              image={capxPersonIcon}
+              title={pageContent["component-under-development-dialog"]}
+              closeButtonLabel={pageContent["auth-dialog-button-close"]}
+              customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+            />
+          )}
         </div>
       </>
     );
@@ -262,7 +288,9 @@ export default function OrganizationProfilePage() {
                     />
                   ) : (
                     <div className="w-[595px] h-[326px] bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">{pageContent["logo-not-available"]}</span>
+                      <span className="text-gray-400">
+                        {pageContent["logo-not-available"]}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -338,7 +366,7 @@ export default function OrganizationProfilePage() {
                   {pageContent["organization-profile-report-activities-title"]}
                 </h2>
                 <BaseButton
-                  onClick={() => {}}
+                  onClick={() => setShowPopup(true)}
                   label={pageContent["organization-profile-click-here"]}
                   customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
                 />
@@ -358,7 +386,9 @@ export default function OrganizationProfilePage() {
               <CapacitiesList
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title={pageContent["body-profile-section-title-available-capacity"]}
+                title={
+                  pageContent["body-profile-section-title-available-capacity"]
+                }
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -408,6 +438,16 @@ export default function OrganizationProfilePage() {
             />
           </div>
         </section>
+        {showPopup && (
+          <Popup
+            onContinue={() => setShowPopup(false)}
+            onClose={() => setShowPopup(false)}
+            image={capxPersonIcon}
+            title={pageContent["component-under-development-dialog"]}
+            closeButtonLabel={pageContent["auth-dialog-button-close"]}
+            customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
+          />
+        )}
       </div>
     </>
   );

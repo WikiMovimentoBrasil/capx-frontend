@@ -77,8 +77,8 @@ export const NewsSection = ({ ids }: NewsProps) => {
 
   return (
     <section className="w-full max-w-screen-xl py-8">
-      <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
-        <div className="relative w-[20px] h-[20px] md:w-[48px] md:h-[48px]">
+      <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-4 rounded-[8px] mb-6">
+        <div className="relative w-[20px] h-[20px] md:w-[42px] md:h-[48px]">
           <Image
             src={darkMode ? WikimediaIconWhite : WikimediaIcon}
             alt="Wikimedia"
@@ -103,13 +103,20 @@ export const NewsSection = ({ ids }: NewsProps) => {
             }`}
           >
             <div className="relative w-[300px] h-[200px] rounded-[16px] overflow-hidden">
-              <Image
-                src={post.featured_image}
-                alt={post.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover w-full h-full"
-              />
+              {post.featured_image ? (
+                <Image
+                  src={post.featured_image}
+                  alt={post.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover w-full h-full"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full text-gray-400">
+                  {pageContent["organization-profile-no-image-available"]}
+                </div>
+              )}
             </div>
             <h1
               className={`text-center font-[Montserrat] text-[20px] font-bold not-italic leading-[normal] text-start ${

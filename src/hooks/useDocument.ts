@@ -11,35 +11,30 @@ export const useDocument = (token?: string, id?: number) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAllDocuments = async (): Promise<WikimediaDocument[]> => {
-    if (!token) return [];
-    setLoading(true);
+  const fetchAllDocuments = async () => {
+    if (!token) return;
+
     try {
-      const basicDocuments = await documentService.fetchAllDocuments(token);
-      const enrichedDocuments = await Promise.all(
-        basicDocuments.map((doc) => fetchWikimediaData(doc.url || ""))
-      );
+      setLoading(true);
+      const response = await documentService.fetchAllDocuments(token);
 
-      const typedDocuments = enrichedDocuments.map((doc) => ({
-        id: doc.id,
-        url: doc.url,
-        title: doc.title,
-        imageUrl: doc.imageUrl,
-        fullUrl: doc.fullUrl,
-        metadata: doc.metadata,
-        thumburl: doc.thumburl,
-      })) as WikimediaDocument[];
+      // Map para garantir que os IDs e URLs estejam corretos
+      const formattedDocs = response.map((doc) => ({
+        ...doc,
+        id: doc.id || 0,
+        url: doc.url || "",
+      }));
 
-      setDocuments(typedDocuments);
-      return typedDocuments;
+      setDocuments(formattedDocs);
+      console.log("Fetched documents:", formattedDocs); // Debug log
     } catch (error) {
-      console.error("Error fetching all documents:", error);
-      setError("Failed to fetch documents");
-      return [];
+      console.error("Error fetching documents:", error);
+      setError(error as string);
     } finally {
       setLoading(false);
     }
   };
+
   const fetchSingleDocument = async () => {
     if (!token || !id) return;
 
@@ -106,6 +101,7 @@ export const useDocument = (token?: string, id?: number) => {
   // Carregar todos os documentos ao inicializar
   useEffect(() => {
     if (token && !id) {
+      console.log("Fetching documents with token:", token);
       fetchAllDocuments();
     }
   }, [token]);

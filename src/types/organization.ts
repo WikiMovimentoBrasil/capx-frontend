@@ -1,13 +1,12 @@
-import { OrganizationDocument } from "./document";
 export interface Organization {
   id: number;
-  report_link?: string;
+  report_link?: string | null;
   display_name: string;
-  profile_image?: string;
+  profile_image?: string | null;
   acronym?: string;
   tag_diff?: any[];
   projects?: number[];
-  home_project?: string;
+  home_project?: string | null;
   update_date?: string;
   type?: number;
   territory?: number[];
@@ -17,10 +16,10 @@ export interface Organization {
   wanted_capacities?: number[];
   events?: number[];
   documents?: number[];
-  email?: string;
-  website?: string;
-  mastodon?: string;
-  meta_page?: string;
+  email?: string | null;
+  website?: string | null;
+  mastodon?: string | null;
+  meta_page?: string | null;
 }
 
 export interface OrganizationType {

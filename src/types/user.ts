@@ -36,6 +36,7 @@ export interface UserProfile {
   display_name: string;
   pronoun: string;
   about: string;
+  avatar: number;
   wikidata_qid: string;
   wiki_alt: string;
   territory: number[];

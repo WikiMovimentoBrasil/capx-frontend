@@ -28,8 +28,6 @@ import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
 import TargetIconWhite from "@/public/static/images/target_white.svg";
 import WikimediaIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
-import AddLinkIcon from "@/public/static/images/add_link.svg";
-import ImagesModeIcon from "@/public/static/images/images_mode.svg";
 import ContactMetaIcon from "@/public/static/images/contact_meta.svg";
 import ContactMetaIconWhite from "@/public/static/images/contact_meta_white.svg";
 import ContactEmailIcon from "@/public/static/images/contact_alternate_email.svg";
@@ -55,6 +53,10 @@ import EventsFormItem from "../components/EventsFormItem";
 import NewsFormItem from "../components/NewsFormItem";
 import DocumentFormItem from "../components/DocumentFormItem";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+import LoadingState from "@/components/LoadingState";
+import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
+import { getProfileImage } from "@/lib/utils/getProfileImage";
+import { useAvatars } from "@/hooks/useAvatars";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
@@ -63,6 +65,7 @@ export default function EditOrganizationProfilePage() {
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Documents setters
   const {
@@ -73,7 +76,7 @@ export default function EditOrganizationProfilePage() {
     deleteDocument,
     fetchSingleDocument,
   } = useDocument(token);
-  
+
   // Organization setters
   const {
     organization,
@@ -135,38 +138,38 @@ export default function EditOrganizationProfilePage() {
     error: eventsError,
   } = useEvents(organization?.events, token);
 
-   // State for events
-   const [eventsData, setEventsData] = useState<Event[]>([]);
-   const eventsLoaded = useRef(false);
- 
-   // State for existing and new events
-   const [newEvents, setNewEvents] = useState<Event[]>([]);
-   const [eventId, setEventId] = useState<number>(0);
-   const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
- 
-   const [editedEvents, setEditedEvents] = useState<{
-     [key: number]: boolean;
-   }>({});
- 
-   // Effect to load events
-   useEffect(() => {
-     if (!organization || !events) {
-       eventsLoaded.current = false;
-       return;
-     }
- 
-     if (
-       !eventsLoaded.current &&
-       !isEventsLoading &&
-       organization?.events &&
-       organization?.events?.length > 0 &&
-       events &&
-       events.length > 0
-     ) {
-       setEventsData(events);
-       eventsLoaded.current = true;
-     }
-   }, [organization, events, isEventsLoading]);
+  // State for events
+  const [eventsData, setEventsData] = useState<Event[]>([]);
+  const eventsLoaded = useRef(false);
+
+  // State for existing and new events
+  const [newEvents, setNewEvents] = useState<Event[]>([]);
+  const [eventId, setEventId] = useState<number>(0);
+  const { createEvent, updateEvent, deleteEvent } = useEvent(eventId, token);
+
+  const [editedEvents, setEditedEvents] = useState<{
+    [key: number]: boolean;
+  }>({});
+
+  // Effect to load events
+  useEffect(() => {
+    if (!organization || !events) {
+      eventsLoaded.current = false;
+      return;
+    }
+
+    if (
+      !eventsLoaded.current &&
+      !isEventsLoading &&
+      organization?.events &&
+      organization?.events?.length > 0 &&
+      events &&
+      events.length > 0
+    ) {
+      setEventsData(events);
+      eventsLoaded.current = true;
+    }
+  }, [organization, events, isEventsLoading]);
 
   // Tags setters
   const { tagDiff, loading, fetchTags, fetchSingleTag, createTag, deleteTag } =
@@ -183,25 +186,21 @@ export default function EditOrganizationProfilePage() {
   // Effect to load documents
   useEffect(() => {
     const loadDocuments = async () => {
-      if (organization?.documents && Array.isArray(organization.documents)) {
-        const documentPromises = organization.documents.map(async (docId) => {
-          const doc = documents?.find((d) => d.id === docId);
-          if (doc) {
-            return {
-              id: doc.id,
-              url: doc.url || "",
-            };
-          }
-          return null;
-        });
+      if (!organization?.documents || !documents) return;
 
-        const loadedDocs = (await Promise.all(documentPromises)).filter(
-          (doc): doc is { id: number; url: string } =>
-            doc !== null && typeof doc.url === "string"
-        );
+      const loadedDocs = organization.documents
+        .map((docId) => {
+          const doc = documents.find((d) => d.id === docId);
+          return doc
+            ? {
+                id: doc.id,
+                url: doc.url || "",
+              }
+            : null;
+        })
+        .filter((doc): doc is { id: number; url: string } => doc !== null);
 
-        setDocumentsData(loadedDocs);
-      }
+      setDocumentsData(loadedDocs);
     };
 
     loadDocuments();
@@ -331,6 +330,8 @@ export default function EditOrganizationProfilePage() {
     tagDiff,
   ]);
 
+  console.log(documentsData);
+
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
       (id): id is number => id !== null && id !== undefined
@@ -417,9 +418,9 @@ export default function EditOrganizationProfilePage() {
           try {
             await updateEvent(event.id, {
               name: event.name,
-                image_url: event.image_url,
+              image_url: event.image_url,
               url: event.url,
-                organizations: [Number(organizationId)],
+              organizations: [Number(organizationId)],
               time_begin: event.time_begin,
               time_end: event.time_end,
             });
@@ -435,12 +436,12 @@ export default function EditOrganizationProfilePage() {
         .map(async (event) => {
           try {
             const newEvent = await createEvent({
-                name: event.name,
-                image_url: event.image_url,
-                url: event.url,
-                organizations: [Number(organizationId)],
-                time_begin: event.time_begin,
-                time_end: event.time_end,
+              name: event.name,
+              image_url: event.image_url,
+              url: event.url,
+              organizations: [Number(organizationId)],
+              time_begin: event.time_begin,
+              time_end: event.time_end,
               creator: Number(session?.user?.id),
               team: [],
               related_skills: [],
@@ -548,7 +549,7 @@ export default function EditOrganizationProfilePage() {
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      router.push(`/organization_profile?t=${Date.now()}`);
+      router.push(`/organization_profile`);
     } catch (error) {
       console.error("Error processing form:", error);
     }
@@ -690,17 +691,21 @@ export default function EditOrganizationProfilePage() {
 
   // Diff tags handlers
   const handleAddDiffTag = () => {
-      const newTag = {
+    const newTag = {
       id: Math.floor(Math.random() * -1000), // Temporary negative ID for new tags
       tag: "", // Empty string instead of default text
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        creator: Number(session?.user?.id),
-      };
-      setDiffTagsData((prev) => [...(prev || []), newTag]);
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      creator: Number(session?.user?.id),
+    };
+    setDiffTagsData((prev) => [...(prev || []), newTag]);
   };
 
-  const handleDiffTagChange = (index: number, field: string, value: string) => {
+  const handleDiffTagChange = async (
+    index: number,
+    field: string,
+    value: string
+  ) => {
     const newDiffTags = [...diffTagsData];
     newDiffTags[index] = {
       ...newDiffTags[index],
@@ -808,20 +813,29 @@ export default function EditOrganizationProfilePage() {
     });
   };
 
+  useEffect(() => {
+    console.log("Organization documents:", organization?.documents);
+    console.log("Documents data:", documentsData);
+    console.log("Documents from hook:", documents);
+  }, [organization?.documents, documentsData, documents]);
+
   // Load user profile data
-  const { userProfile } = useUserProfile();
+  const { userProfile, isLoading: isUserLoading } = useUserProfile();
 
-  const userImage = userProfile?.profile_image;
+  console.log("User profile:", userProfile);
+  const userImage = userProfile?.profile_image
+    ? formatWikiImageUrl(userProfile?.profile_image)
+    : NoAvatarIcon;
 
-  if (!isOrgManager) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-center">
-          You are not a manager of any organization. Please contact an
-          administrator.
-        </p>
-      </div>
-    );
+  const { avatars } = useAvatars();
+
+  if (isUserLoading || isOrganizationLoading) {
+    return <LoadingState />;
+  }
+
+  if (!token || !isOrgManager) {
+    router.replace("/organization_profile");
+    return <LoadingState />;
   }
 
   if (isMobile) {
@@ -858,9 +872,19 @@ export default function EditOrganizationProfilePage() {
                 </div>
                 <div className="relative w-[75px] h-[75px]">
                   <Image
-                    src={AvatarIcon}
+                    src={getProfileImage(
+                      userProfile?.profile_image,
+                      userProfile?.avatar,
+                      avatars
+                    )}
                     alt="Avatar"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full"
+                    width={75}
+                    height={75}
+                    priority
+                    style={{
+                      objectFit: "cover",
+                    }}
                   />
                 </div>
               </div>
@@ -880,19 +904,23 @@ export default function EditOrganizationProfilePage() {
                 </span>
               </div>
 
-              <p
+              {/* <p
                 className={`font-[Montserrat] text-[12px] text-gray-600 ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
                 {formData?.acronym}
-              </p>
+              </p> */}
 
               {/* Logo Section */}
               <div className="w-full h-[78px] bg-[#EFEFEF] flex items-center justify-center">
                 <div className="relative h-[51px] w-[127px]">
                   <Image
-                    src={formData?.profile_image || ""}
+                    src={
+                      formData?.profile_image
+                        ? formatWikiImageUrl(formData?.profile_image)
+                        : NoAvatarIcon
+                    }
                     alt="Organization logo"
                     width={127}
                     height={51}
@@ -903,7 +931,7 @@ export default function EditOrganizationProfilePage() {
               </div>
 
               {/* Save/Cancel Buttons */}
-              <div className="flex flex-col gap-[10px] mt-0">
+              <div className="flex flex-col gap-[10px] mt-4">
                 <BaseButton
                   onClick={handleSubmit}
                   label={pageContent["edit-profile-save-organization"]}
@@ -1220,7 +1248,7 @@ export default function EditOrganizationProfilePage() {
             </div>
 
             {/* Events Section */}
-            <div className="">
+            {/* <div className="">
               <div className="flex items-center gap-2 mb-4">
                 <div className="relative w-[20px] h-[20px]">
                   <Image
@@ -1269,7 +1297,7 @@ export default function EditOrganizationProfilePage() {
               >
                 {pageContent["body-profile-section-title-events"]}
               </p>
-            </div>
+            </div> */}
 
             {/* News Section */}
             <div className="">
@@ -1292,13 +1320,13 @@ export default function EditOrganizationProfilePage() {
               <div className="flex flex-col w-full gap-2 mb-2">
                 {diffTagsData?.map((tag, index) => (
                   <NewsFormItem
-                        key={index}
+                    key={index}
                     news={tag}
                     index={index}
                     onDelete={handleDeleteDiffTag}
                     onChange={handleDiffTagChange}
                   />
-                  ))}
+                ))}
               </div>
               <BaseButton
                 onClick={handleAddDiffTag}
@@ -1391,9 +1419,148 @@ export default function EditOrganizationProfilePage() {
                   darkMode ? "text-white" : "text-[#053749]"
                 } mt-1`}
               >
-                You can share up to four links of your organization&apos;s
-                documents from Wikimedia Commons.
+                {pageContent["edit-profile-share-documents-tooltop"]}
               </p>
+            </div>
+            {/* Contacts Section */}
+
+            <section className="w-full max-w-screen-xl py-8">
+              <div className="flex flex-row flex pl-0 pr-[13px] py-[6px] items-center gap-[4px] rounded-[8px] mb-6">
+                <div className="relative w-[20px] h-[20px]">
+                  <Image
+                    src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+                    alt="Wikimedia"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+                <h2
+                  className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                    darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                  }`}
+                >
+                  {pageContent["body-profile-section-title-contacts"]}
+                </h2>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px] ${
+                    darkMode ? "bg-capx-dark-box-bg" : "bg-[#FFF]"
+                  }`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={darkMode ? ContactMetaIconWhite : ContactMetaIcon}
+                      alt="Contact Meta"
+                      fill
+                      className={`object-contain ${
+                        darkMode ? "bg-capx-dark-box-bg" : "bg-white"
+                      }`}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Metawiki"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.meta_page || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        meta_page: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px]`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={darkMode ? ContactEmailIconWhite : ContactEmailIcon}
+                      alt="Contact Email"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.email || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        email: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+                <div
+                  className={`flex flex-row border-[1px] border-[solid] w-full p-2 items-center gap-[12px] rounded-[4px] ${
+                    darkMode ? "bg-capx-dark-box-bg" : "bg-[#FFF]"
+                  }`}
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={
+                        darkMode ? ContactPortalIconWhite : ContactPortalIcon
+                      }
+                      alt="Contact Website"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Website"
+                    className={`text-start font-[Montserrat] text-[12px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
+                      darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
+                    }`}
+                    value={contactsData.website || ""}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setContactsData((prev) => ({
+                        ...prev,
+                        website: newValue,
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
+
+              <p
+                className={`text-[20px] ${
+                  darkMode ? "text-white" : "text-[#053749]"
+                } mt-1`}
+              ></p>
+            </section>
+
+            {/* Save/Cancel Buttons */}
+            <div className="flex flex-row gap-2">
+              <BaseButton
+                onClick={handleSubmit}
+                label={pageContent["edit-profile-save"]}
+                customClass="flex border w-full rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#851970]  items-center justify-between text-white !px-[13px] !py-[6px] rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+                imageUrl={SaveIcon}
+                imageAlt="Save icon"
+                imageWidth={20}
+                imageHeight={20}
+              />
+              <BaseButton
+                onClick={() => router.back()}
+                label={pageContent["edit-profile-cancel"]}
+                customClass="flex border w-full rounded-[4px] border-[1.5px] border-[solid] border-capx-dark-box-bg bg-[#FFF] items-center justify-between text-capx-dark-box-bg !px-[13px] !py-[6px] rounded-md font-[Montserrat] text-[14px] font-bold pb-[6px]"
+                imageUrl={CancelIcon}
+                imageAlt="Cancel icon"
+                imageWidth={20}
+                imageHeight={20}
+              />
             </div>
           </div>
         </section>
@@ -1436,7 +1603,11 @@ export default function EditOrganizationProfilePage() {
             <div className="w-1/2">
               <div className="relative w-[114px] h-[114px] mb-[24px]">
                 <Image
-                  src={userImage || ""}
+                  src={getProfileImage(
+                    userProfile?.profile_image,
+                    userProfile?.avatar,
+                    avatars
+                  )}
                   alt="User Profile Image"
                   fill
                   sizes="114px"
@@ -1483,16 +1654,16 @@ export default function EditOrganizationProfilePage() {
                 </span>
               </div>
 
-              <p
+              {/* <p
                 className={`font-[Montserrat] text-[20px] mt-3 mb-6 ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
                 {formData?.acronym}
-              </p>
+              </p> */}
 
               {/* Save/Cancel Buttons */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 mt-4">
                 <BaseButton
                   onClick={handleSubmit}
                   label={pageContent["edit-profile-save"]}
@@ -1813,7 +1984,7 @@ export default function EditOrganizationProfilePage() {
           </div>
 
           {/* Events Section */}
-          <div className="mt-6">
+          {/*           <div className="mt-6">
             <div className="flex items-center gap-2 mb-4">
               <div className="relative w-[48px] h-[48px]">
                 <Image
@@ -1840,30 +2011,30 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteEvent}
                   onChange={handleEventChange}
-                      />
-                ))}
-            <BaseButton
-              onClick={handleAddEvent}
-              label={pageContent["edit-profile-add-events"]}
-              customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                darkMode
-                  ? "text-[#053749] bg-[#EFEFEF]"
-                  : "text-white bg-capx-dark-box-bg"
-              }`}
-              imageUrl={darkMode ? AddIcon : AddIconWhite}
-              imageAlt="Add icon"
-              imageWidth={32}
-              imageHeight={32}
-            />
+                />
+              ))}
+              <BaseButton
+                onClick={handleAddEvent}
+                label={pageContent["edit-profile-add-events"]}
+                customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                  darkMode
+                    ? "text-[#053749] bg-[#EFEFEF]"
+                    : "text-white bg-capx-dark-box-bg"
+                }`}
+                imageUrl={darkMode ? AddIcon : AddIconWhite}
+                imageAlt="Add icon"
+                imageWidth={32}
+                imageHeight={32}
+              />
             </div>
             <p
               className={`text-[20px] ${
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-             {pageContent["edit-profile-display-events"]}
+              {pageContent["edit-profile-display-events"]}
             </p>
-          </div>
+          </div> */}
 
           {/* News Section */}
           <div className="mt-6">
@@ -1893,8 +2064,8 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDiffTag}
                   onChange={handleDiffTagChange}
-                    />
-                ))}
+                />
+              ))}
             </div>
 
             <BaseButton
@@ -1947,13 +2118,13 @@ export default function EditOrganizationProfilePage() {
                   index={index}
                   onDelete={handleDeleteDocument}
                   onChange={handleDocumentChange}
-                    />
-                ))}
+                />
+              ))}
             </div>
 
             <BaseButton
               onClick={handleAddDocument}
-              label= {pageContent["edit-profile-add-link"]}
+              label={pageContent["edit-profile-add-more-links"]}
               customClass={`rounded-[8px] mt-2 flex w-fit !px-[32px] !py-[16px] !pb-[16px] items-center gap-3 text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
                 darkMode
                   ? "text-[#053749] bg-[#EFEFEF]"
@@ -1969,7 +2140,7 @@ export default function EditOrganizationProfilePage() {
                 darkMode ? "text-white" : "text-[#053749]"
               } mt-1`}
             >
-              {pageContent["edit-profile-enter-links"]}
+              {pageContent["edit-profile-share-documents-tooltop"]}
             </p>
           </div>
 
@@ -2017,7 +2188,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.meta_page}
+                  value={contactsData.meta_page || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2048,7 +2219,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.email}
+                  value={contactsData.email || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2079,7 +2250,7 @@ export default function EditOrganizationProfilePage() {
                   className={`text-start font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] bg-transparent border-none outline-none w-full ${
                     darkMode ? "text-[#F6F6F6]" : "text-[#003649]"
                   }`}
-                  value={contactsData.website}
+                  value={contactsData.website || ""}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     setContactsData((prev) => ({
@@ -2090,6 +2261,12 @@ export default function EditOrganizationProfilePage() {
                 />
               </div>
             </div>
+
+            <p
+              className={`text-[20px] ${
+                darkMode ? "text-white" : "text-[#053749]"
+              } mt-1`}
+            ></p>
           </section>
 
           {/* Save/Cancel Buttons */}
@@ -2119,7 +2296,10 @@ export default function EditOrganizationProfilePage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleCapacitySelect}
-        title={pageContent["edit-profile-select-capacities"]?.replace("$1", pageContent[currentCapacityType])}
+        title={pageContent["edit-profile-select-capacities"]?.replace(
+          "$1",
+          pageContent[currentCapacityType]
+        )}
       />
     </div>
   );

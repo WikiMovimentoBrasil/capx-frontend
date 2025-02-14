@@ -23,21 +23,28 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
   }
 
   // Convert Commons file page URL to direct image URL if needed
-  const getImageUrl = (url: string) => {
-    if (url.includes("commons.wikimedia.org/wiki/File:")) {
-      const fileName = url.split("File:").pop();
-      if (fileName) {
-        return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
-          fileName
-        )}`;
-      }
+  const getImageUrl = (url: string | null | undefined) => {
+    if (!url) {
+      return null;
     }
-    return url;
+
+    try {
+      if (url.includes("commons.wikimedia.org/wiki/File:")) {
+        const fileName = url.split("File:").pop();
+        if (fileName) {
+          return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(
+            fileName
+          )}`;
+        }
+      }
+      return url;
+    } catch (error) {
+      console.error("Error processing image URL:", error);
+      return null;
+    }
   };
 
-  const imageUrl = project.profile_image
-    ? getImageUrl(project.profile_image)
-    : null;
+  const imageUrl = getImageUrl(project?.profile_image);
 
   return (
     <div
@@ -50,10 +57,11 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt={project.display_name}
+              alt={project.display_name || "Project Image"}
               fill
               style={{ objectFit: "contain" }}
               className="p-4"
+              unoptimized
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full text-gray-400">
@@ -66,7 +74,7 @@ export const ProjectCard = ({ projectId, token }: ProjectCardProps) => {
         <BaseButton
           customClass="inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal]"
           label={pageContent["organization-profile-open-project"]}
-          onClick={() => window.open(project.url, "_blank")}
+          onClick={() => project.url && window.open(project.url, "_blank")}
         />
       </div>
     </div>

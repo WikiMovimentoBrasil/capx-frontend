@@ -141,11 +141,11 @@ export default function MobileMenuLinks({
               return (
                 <div
                   key={`mobile-menu-container-${index}`}
-                  className="w-[100%] mx-[8px]"
+                  className="w-full mx-1"
                 >
                   <button
                     onClick={handleProfileClick}
-                    className={`flex items-center justify-between px-2 py-1 rounded-[4px] border transition-all duration-300 w-[92%] ml-[16px] mr-[16px] ${
+                    className={`flex items-center justify-between  rounded-[4px] border transition-all duration-300 px-2 py-1 pr-2 md:pr-3 w-[92%] ml-4 md:w-[90%] md:ml-2 sm:ml-6 ${
                       darkMode
                         ? "bg-capx-dark-bg text-capx-light-text border-capx-light-text"
                         : "bg-capx-light-bg text-capx-dark-text border-capx-dark-bg"

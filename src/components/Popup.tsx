@@ -43,7 +43,10 @@ const Popup = ({
     <div className={customClass}>
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onOverlayClick} />
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={onOverlayClick}
+          />
           <div
             className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
             w-[90%] md:w-[880px] xl:w-[1024px]
@@ -75,12 +78,14 @@ const Popup = ({
                 darkMode ? "bg-[#005B3F]" : "bg-white"
               }`}
             >
-              {image && (<Image
-                src={image}
-                alt="Popup Illustration"
-                className="w-full max-w-[300px] h-auto mb-8"
-                priority
-              />)}
+              {image && (
+                <Image
+                  src={image}
+                  alt="Popup Illustration"
+                  className="w-full max-w-[300px] h-auto mb-8"
+                  priority
+                />
+              )}
 
               <h2
                 className={`text-xl text-center font-extrabold mb-8 font-[Montserrat] ${
@@ -90,7 +95,7 @@ const Popup = ({
                 {title}
               </h2>
 
-               {/* Show children components */}
+              {/* Show children components */}
               <div className="mb-8">{children}</div>
 
               <div className="flex flex-row gap-4 w-full">

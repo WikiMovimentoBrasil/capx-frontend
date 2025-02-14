@@ -8,7 +8,6 @@ import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_w
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
-import { Avatar } from "@/services/avatarService";
 import { useMemo, useState, useEffect, useLayoutEffect } from "react";
 import { useAvatars } from "@/hooks/useAvatars";
 
@@ -112,7 +111,7 @@ export default function ProfileHeader({
           src={avatarUrl}
           alt={pageContent["navbar-user-profile"]}
           fill
-          className="object-cover border rounded-[8px]"
+          className="object-cover"
           unoptimized
         />
       </div>
