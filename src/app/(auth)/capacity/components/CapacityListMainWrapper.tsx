@@ -94,7 +94,7 @@ export default function CapacityListMainWrapper() {
   }
 
   return (
-    <section className="w-10/12 sm:w-8/12 mx-auto py-32 space-y-8">
+    <section className="max-w-[1024px] mx-auto py-8 px-4">
       <h1
         className={`text-2xl font-bold mb-8 ${
           darkMode ? "text-white" : "text-gray-800"
@@ -103,7 +103,7 @@ export default function CapacityListMainWrapper() {
         {pageContent["navbar-link-capacities"]}
       </h1>
 
-      <div className="grid gap-4">
+      <div className="grid gap-4 max-w-full">
         {rootCapacities.map((capacity) => (
           <div key={capacity.code} className="space-y-4">
             <CapacityCard
@@ -112,15 +112,17 @@ export default function CapacityListMainWrapper() {
             />
 
             {expandedCapacities[capacity.code] && (
-              <div className="ml-8 flex gap-4 overflow-x-auto pb-4">
-                {expandedCapacities[capacity.code].map((child) => (
-                  <div key={child.code} className="min-w-[300px]">
-                    <CapacityCard
-                      {...child}
-                      onExpand={() => loadChildCapacities(child.code)}
-                    />
-                  </div>
-                ))}
+              <div className="pl-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                <div className="flex gap-4 pb-4 min-w-min">
+                  {expandedCapacities[capacity.code].map((child) => (
+                    <div key={child.code} className="w-[280px] flex-shrink-0">
+                      <CapacityCard
+                        {...child}
+                        onExpand={() => loadChildCapacities(child.code)}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

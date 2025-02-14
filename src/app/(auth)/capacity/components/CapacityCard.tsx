@@ -27,15 +27,15 @@ export function CapacityCard({
         shadow-sm hover:shadow-md transition-shadow`}
       style={{ borderLeft: `4px solid ${color}` }}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 min-w-0">
         {icon && (
-          <div className="w-8 h-8">
+          <div className="w-8 h-8 flex-shrink-0">
             <Image src={icon} alt={name} width={32} height={32} />
           </div>
         )}
-        <Link href={`/capacity/${code}`}>
+        <Link href={`/capacity/${code}`} className="min-w-0">
           <h3
-            className={`text-lg font-medium ${
+            className={`text-lg font-medium truncate ${
               darkMode ? "text-white" : "text-gray-800"
             }`}
           >
@@ -46,7 +46,7 @@ export function CapacityCard({
 
       <button
         onClick={onExpand}
-        className={`p-2 rounded-full hover:bg-gray-100 
+        className={`p-2 rounded-full hover:bg-gray-100 flex-shrink-0
           ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
       >
         <ChevronRightIcon size={24} />
