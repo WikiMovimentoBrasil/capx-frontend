@@ -67,5 +67,12 @@ module.exports = {
     "bg-social",
     "bg-strategic",
     "bg-technology",
+    "text-organizational",
+    "text-communication",
+    "text-learning",
+    "text-community",
+    "text-social",
+    "text-strategic",
+    "text-technology",
   ],
 };
