@@ -35,8 +35,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Popup from "@/components/Popup";
+
+import { getWikiBirthday } from "@/lib/utils/fetchWikimediaData";
 
 const ProfileItemsComponent = ({
   icon,
@@ -129,9 +131,33 @@ export default function ProfilePage() {
     token,
     profile?.wikimedia_project || []
   );
+  const [wikiBirthday, setWikiBirthday] = useState<string | null>(null);
 
-  /*   if (isLoading) return <div>Loading...</div>;
-   */
+  useEffect(() => {
+    const fetchWikiBirthday = async () => {
+      if (profile?.user?.username) {
+        const registrationDate = await getWikiBirthday(profile.user.username);
+        if (registrationDate) {
+          const date = new Date(registrationDate);
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const year = date.getFullYear();
+          setWikiBirthday(`${day}/${month}/${year}`);
+        }
+      }
+    };
+
+    fetchWikiBirthday();
+  }, [profile?.user?.username]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const getProficiencyLabel = (proficiency: string) => {
     const labels = {
       "0": pageContent["profiency-level-not-proficient"],
@@ -143,14 +169,6 @@ export default function ProfilePage() {
       n: pageContent["profiency-level-native"],
     };
     return labels[proficiency as keyof typeof labels] || "Not specified";
-  };
-
-  const getWikiBirthday = (birthday: string) => {
-    const date = new Date(birthday);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   if (isMobile) {
@@ -174,19 +192,34 @@ export default function ProfilePage() {
               avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
-            <div className="flex flex-row gap-2">
-              <Image
-                src={darkMode ? CakeIconWhite : CakeIcon}
-                alt="Cake icon"
-                width={20}
-                height={20}
-              />
-              <h2 className="font-[Montserrat] text-[24px] font-bold">
-                {pageContent["body-profile-birthday-title"]}
-              </h2>
-              <div className="flex flex-col">
-                <p className="font-[Montserrat] text-[14px] not-italic font-normal leading-[normal]">
-                  {getWikiBirthday(profile?.user?.date_joined || "")}
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <div className="relative h-[16px] w-[16px]">
+                  <Image
+                    src={darkMode ? CakeIconWhite : CakeIcon}
+                    alt="Cake icon"
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <h2
+                  className={`font-[Montserrat] text-[14px] font-bold ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
+                >
+                  {pageContent["body-profile-birthday-title"]}
+                </h2>
+              </div>
+
+              <div className="w-full">
+                <p
+                  className={`font-[Montserrat] text-[14px] px-[10px] py-[6px] rounded-[4px] not-italic font-normal leading-[normal] ${
+                    darkMode
+                      ? "text-white bg-capx-dark-bg"
+                      : "text-capx-dark-box-bg bg-[#EFEFEF]"
+                  }`}
+                >
+                  {wikiBirthday || pageContent["loading"]}
                 </p>
               </div>
             </div>
@@ -400,7 +433,7 @@ export default function ProfilePage() {
               avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4 mb-6">
               <div className="flex flex-row gap-2 items-center">
                 <Image
                   src={darkMode ? CakeIconWhite : CakeIcon}
@@ -408,13 +441,27 @@ export default function ProfilePage() {
                   width={42}
                   height={42}
                 />
-                <h2 className="font-[Montserrat] text-[24px] font-bold text-capx-dark-box-bg">
+                <h2
+                  className={`font-[Montserrat] text-[24px] font-bold ${
+                    darkMode ? "text-white" : "text-capx-dark-box-bg"
+                  }`}
+                >
                   {pageContent["body-profile-birthday-title"]}
                 </h2>
               </div>
-              <div className="flex flex-col px-10 py-6 bg-capx-light-bg rounded-[4px]">
-                <p className="font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] text-capx-dark-box-bg">
-                  {getWikiBirthday(profile?.user?.date_joined || "")}
+              <div
+                className={`flex flex-col rounded-[4px] ${
+                  darkMode ? "bg-capx-dark-bg" : "bg-capx-light-bg"
+                }`}
+              >
+                <p
+                  className={`font-[Montserrat] text-[24px] px-3 py-6 rounded-[4px] not-italic font-normal leading-[normal] ${
+                    darkMode
+                      ? "text-white bg-capx-dark-bg"
+                      : "text-capx-dark-box-bg bg-[#EFEFEF]"
+                  }`}
+                >
+                  {wikiBirthday || pageContent["loading"]}
                 </p>
               </div>
             </div>
@@ -436,7 +483,7 @@ export default function ProfilePage() {
               items={profile?.skills_wanted || []}
               customClass={`font-[Montserrat] not-italic leading-[normal] `}
             />
-            <div className="flex flex-col gap-2 mt-[80px]">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 items-center">
                 <Image
                   src={darkMode ? LanguageIconWhite : LanguageIcon}

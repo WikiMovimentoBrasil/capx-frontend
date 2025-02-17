@@ -66,7 +66,7 @@ export function CapacitiesList({
   }
 
   return (
-    <div className="flex flex-col gap-[62px] mb-4">
+    <div className="flex flex-col gap-4 mb-4">
       <div className="flex flex-row gap-2 items-center">
         <div className="relative h-[42px] w-[42px] items-center">
           <Image
@@ -89,8 +89,8 @@ export function CapacitiesList({
       <div
         className={`flex flex-wrap gap-2 ${
           darkMode
-            ? "bg-capx-dark-bg py-6 px-3 mb-[62px] rounded-[16px]"
-            : "bg-[#EFEFEF] py-6 px-3 mb-[62px] rounded-[16px]"
+            ? "bg-capx-dark-bg py-6 px-3 mb-4 rounded-[16px]"
+            : "bg-[#EFEFEF] py-6 px-3 mb-4 rounded-[16px]"
         }`}
       >
         {items.map((item, index) => {
