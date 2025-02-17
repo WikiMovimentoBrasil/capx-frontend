@@ -8,8 +8,6 @@ import ProfileHeader from "./components/ProfileHeader";
 import MiniBio from "./components/MiniBio";
 import { CapacitiesList } from "@/components/CapacitiesList";
 import BaseButton from "@/components/BaseButton";
-// import { loadLocale } from "@/lib/utils/loadLocale";
-
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
@@ -28,6 +26,8 @@ import WikiIcon from "@/public/static/images/wikimedia_logo_black.svg";
 import WikiIconWhite from "@/public/static/images/wikimedia_logo_white.svg";
 import ContactImage from "@/public/static/images/capx_contact_person.svg";
 import ContactImageDesktop from "@/public/static/images/capx_contact_person_desktop.svg";
+import CakeIcon from "@/public/static/images/cake.svg";
+import CakeIconWhite from "@/public/static/images/cake_white.svg";
 import capxPersonIcon from "@/public/static/images/capx_person_18.svg";
 
 import { useProfile } from "@/hooks/useProfile";
@@ -145,6 +145,14 @@ export default function ProfilePage() {
     return labels[proficiency as keyof typeof labels] || "Not specified";
   };
 
+  const getWikiBirthday = (birthday: string) => {
+    const date = new Date(birthday);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   if (isMobile) {
     return (
       <div
@@ -166,6 +174,22 @@ export default function ProfilePage() {
               avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
+            <div className="flex flex-row gap-2">
+              <Image
+                src={darkMode ? CakeIconWhite : CakeIcon}
+                alt="Cake icon"
+                width={20}
+                height={20}
+              />
+              <h2 className="font-[Montserrat] text-[24px] font-bold">
+                {pageContent["body-profile-birthday-title"]}
+              </h2>
+              <div className="flex flex-col">
+                <p className="font-[Montserrat] text-[14px] not-italic font-normal leading-[normal]">
+                  {getWikiBirthday(profile?.user?.date_joined || "")}
+                </p>
+              </div>
+            </div>
             <CapacitiesList
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
               title={pageContent["body-profile-known-capacities-title"]}
@@ -349,7 +373,9 @@ export default function ProfilePage() {
             image={capxPersonIcon}
             title={pageContent["component-under-development-dialog"]}
             closeButtonLabel={pageContent["auth-dialog-button-close"]}
-            continueButtonLabel={pageContent["body-loggedin-home-main-section-button02"]}
+            continueButtonLabel={
+              pageContent["body-loggedin-home-main-section-button02"]
+            }
             customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
           />
         )}
@@ -374,23 +400,41 @@ export default function ProfilePage() {
               avatar={profile?.avatar}
             />
             <MiniBio about={profile?.about || ""} />
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <Image
+                  src={darkMode ? CakeIconWhite : CakeIcon}
+                  alt="Cake icon"
+                  width={42}
+                  height={42}
+                />
+                <h2 className="font-[Montserrat] text-[24px] font-bold text-capx-dark-box-bg">
+                  {pageContent["body-profile-birthday-title"]}
+                </h2>
+              </div>
+              <div className="flex flex-col px-10 py-6 bg-capx-light-bg rounded-[4px]">
+                <p className="font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] text-capx-dark-box-bg">
+                  {getWikiBirthday(profile?.user?.date_joined || "")}
+                </p>
+              </div>
+            </div>
             <CapacitiesList
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
               title={pageContent["body-profile-known-capacities-title"]}
               items={profile?.skills_known || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+              customClass={`font-[Montserrat] not-italic leading-[normal]`}
             />
             <CapacitiesList
               icon={darkMode ? EmojiIconWhite : EmojiIcon}
               title={pageContent["body-profile-available-capacities-title"]}
               items={profile?.skills_available || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+              customClass={`font-[Montserrat] not-italic leading-[normal] `}
             />
             <CapacitiesList
               icon={darkMode ? TargetIconWhite : TargetIcon}
               title={pageContent["body-profile-wanted-capacities-title"]}
               items={profile?.skills_wanted || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+              customClass={`font-[Montserrat] not-italic leading-[normal] `}
             />
             <div className="flex flex-col gap-2 mt-[80px]">
               <div className="flex items-center gap-2 items-center">
@@ -537,7 +581,9 @@ export default function ProfilePage() {
           image={capxPersonIcon}
           title={pageContent["component-under-development-dialog"]}
           closeButtonLabel={pageContent["auth-dialog-button-close"]}
-          continueButtonLabel={pageContent["body-loggedin-home-main-section-button02"]}
+          continueButtonLabel={
+            pageContent["body-loggedin-home-main-section-button02"]
+          }
           customClass={`${darkMode ? "bg-[#005B3F]" : "bg-white"}`}
         />
       )}
