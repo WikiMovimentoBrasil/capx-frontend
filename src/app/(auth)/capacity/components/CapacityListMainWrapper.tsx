@@ -7,13 +7,17 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { LoadingSection } from "./LoadingSection";
 import { CapacityCard } from "./CapacityCard";
 import axios from "axios";
-import { getCapacityColor, getCapacityIcon } from "@/lib/utils/capacityUtils";
+import { getCapacityColor, getCapacityIcon } from "@/lib/utils/colorUtils";
+import { CapacityBanner } from "./CapacityBanner";
 
 interface CapacityItem {
   code: string;
   name: string;
-  icon?: string;
+  icon: string;
   color: string;
+  parentCode?: string;
+  description?: string;
+  wdCode?: string;
 }
 
 export default function CapacityListMainWrapper() {
@@ -31,6 +35,46 @@ export default function CapacityListMainWrapper() {
   const [cachedCapacities, setCachedCapacities] = useState<
     Record<string, CapacityItem[]>
   >({});
+  const [descriptions, setDescriptions] = useState<Record<string, string>>({});
+  const [wdCode, setWdCode] = useState<Record<string, string>>({});
+
+  const fetchCapacityDescription = useCallback(
+    async (capacityCode: string) => {
+      if (!session?.user?.token) return;
+
+      try {
+        const response = await axios.get(`/api/capacity/${capacityCode}`, {
+          params: { language },
+          headers: {
+            Authorization: `Token ${session.user.token}`,
+          },
+        });
+
+        setDescriptions((prev) => ({
+          ...prev,
+          [capacityCode]: response.data.description || "",
+        }));
+
+        setWdCode((prev) => ({
+          ...prev,
+          [capacityCode]: response.data.wd_code || "",
+        }));
+      } catch (error) {
+        console.error("Failed to fetch capacity description:", error);
+      }
+    },
+    [session?.user?.token, language]
+  );
+
+  useEffect(() => {
+    if (expandedCapacities) {
+      Object.values(expandedCapacities)
+        .flat()
+        .forEach((capacity) => {
+          fetchCapacityDescription(capacity.code);
+        });
+    }
+  }, [expandedCapacities, fetchCapacityDescription]);
 
   const getCapacityList = async (queryData) => {
     const queryResponse = await axios.get("/api/capacity", queryData);
@@ -63,6 +107,7 @@ export default function CapacityListMainWrapper() {
       if (expandedCapacities[parentCode]) {
         setExpandedCapacities((prev) => {
           const newState = { ...prev };
+
           delete newState[parentCode];
           return newState;
         });
@@ -71,12 +116,23 @@ export default function CapacityListMainWrapper() {
 
       // Se já tem em cache, usa os dados do cache sem fazer nova requisição
       if (cachedCapacities[parentCode]) {
-        setExpandedCapacities((prev) => ({
-          ...prev,
-          [parentCode]: cachedCapacities[parentCode],
-        }));
+        setExpandedCapacities(
+          (
+            prev: Record<string, CapacityItem[]>
+          ): Record<string, CapacityItem[]> => ({
+            ...prev,
+            [parentCode]: cachedCapacities[parentCode],
+          })
+        );
         return;
       }
+
+      // Encontra a capacidade pai
+      const parentCapacity =
+        rootCapacities.find((capacity) => capacity.code === parentCode) ||
+        Object.values(expandedCapacities)
+          .flat()
+          .find((capacity) => capacity.code === parentCode);
 
       // Se não tem em cache, carrega os dados
       setLoadingStates((prev) => ({ ...prev, [parentCode]: true }));
@@ -92,13 +148,20 @@ export default function CapacityListMainWrapper() {
           queryData
         );
         const formattedChildren = Object.entries(response.data).map(
-          ([code, name]) => ({
+          ([code, name]): CapacityItem => ({
             code,
             name: String(name),
-            color: getCapacityColor(code),
-            icon: getCapacityIcon(code),
+            color: parentCapacity?.color || getCapacityColor(code),
+            icon: parentCapacity?.icon || getCapacityIcon(code),
+            parentCode,
+            description: descriptions[code] || "",
+            wdCode: wdCode[code] || "",
           })
         );
+
+        for (const child of formattedChildren) {
+          fetchCapacityDescription(child.code);
+        }
 
         // Armazena no cache
         setCachedCapacities((prev) => ({
@@ -117,7 +180,13 @@ export default function CapacityListMainWrapper() {
         setLoadingStates((prev) => ({ ...prev, [parentCode]: false }));
       }
     },
-    [session?.user?.token, cachedCapacities, expandedCapacities]
+    [
+      session?.user?.token,
+      cachedCapacities,
+      expandedCapacities,
+      descriptions,
+      fetchCapacityDescription,
+    ]
   );
 
   useEffect(() => {
@@ -133,34 +202,38 @@ export default function CapacityListMainWrapper() {
   }, [status, session?.user?.token, language]);
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="CAPACITIES" />;
+    return <LoadingSection darkMode={darkMode} message="Capacities" />;
   }
 
   return (
     <section className="max-w-[1024px] mx-auto py-8 px-4">
-      <div className="grid gap-4 max-w-[1024px]">
+      <CapacityBanner />
+      <div className="grid gap-4">
         {rootCapacities.map((capacity) => (
-          <div key={capacity.code} className="max-w-[1024px]">
-            <div className="max-w-[1024px]">
+          <div key={capacity.code}>
+            <div className="max-w-[992px]">
               <CapacityCard
                 {...capacity}
                 isExpanded={!!expandedCapacities[capacity.code]}
                 onExpand={() => toggleChildCapacities(capacity.code)}
+                hasChildren={true}
               />
             </div>
 
             {expandedCapacities[capacity.code] && (
-              <div
-                className="max-w-[1024px] mt-4 overflow-x-auto scrollbar-hide
-              "
-              >
+              <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
                 <div className="flex gap-4 pb-4">
                   {expandedCapacities[capacity.code].map((child) => (
-                    <div key={child.code} className="w-[280px] flex-shrink-0">
+                    <div key={child.code} className="flex-shrink-0">
                       <CapacityCard
                         {...child}
                         isExpanded={!!expandedCapacities[child.code]}
                         onExpand={() => toggleChildCapacities(child.code)}
+                        hasChildren={expandedCapacities[child.code]?.length > 0}
+                        parentCapacity={capacity}
+                        color={getCapacityColor(capacity.code)}
+                        description={descriptions[child.code] || ""}
+                        wdCode={wdCode[child.code] || ""}
                       />
                     </div>
                   ))}
