@@ -16,11 +16,13 @@ import TerritoryIcon from "@/public/static/images/territory.svg";
 import TerritoryIconWhite from "@/public/static/images/territory_white.svg";
 import AccountCircle from "@/public/static/images/account_circle.svg";
 import AccountCircleWhite from "@/public/static/images/account_circle_white.svg";
+import { CapacitiesList } from '@/components/CapacitiesList'; // TODO refactor as ProfileItemList
 
 interface ProfileCardProps {
   username: string;
   type: ProfileType;
-  capacities?: string[];
+  // capacities?: string[];
+  capacities: (number | string)[];
   languages?: string[];
   territory?: string;
   avatar?: string;
@@ -38,7 +40,6 @@ export const ProfileCard = ({
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
 
-  const noDataMessage = pageContent["no-data-available"];
   const capacitiesTitle = type === 'learner' ? pageContent["body-profile-wanted-capacities-title"] : pageContent["body-profile-available-capacities-title"];
   const wantedCapacitiesIcon = darkMode ? TargetIconWhite : TargetIcon;
   const availableCapacitiesIcon = darkMode ? EmojiIconWhite : EmojiIcon;
@@ -63,12 +64,12 @@ export const ProfileCard = ({
       }`}
     >
         <div className="p-5">
-            {/* Background */}
+            {/* Image and Type Badge with Background */}
             <div className={`rounded-lg p-4 ${darkMode ? 'bg-capx-dark-box-bg' : 'dark:bg-[#EFEFEF]'}`}>
 
                 {/* Type Badge */}
                 <div className="flex justify-start mb-4">
-                    <span className={`inline-flex px-2 py-1 text-xs font-normal rounded-full border ${
+                    <span className={`md:text-[18px] inline-flex px-2 py-1 text-xs font-normal rounded-full border ${
                         darkMode ? typeBadgeColorDarkMode : typeBadgeColorLightMode
                     }`}>
                         {type}
@@ -91,108 +92,35 @@ export const ProfileCard = ({
             </div>
 
         {/* Username */}
-        <h5 className={`text-xl font-bold font-[Montserrat] mt-4 mb-4 ${
+        <h5 className={`md:text-[32px] text-xl font-bold font-[Montserrat] mt-4 mb-6 ' ${
             darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
         }`}>
             {username}
         </h5>
-                
+
         {/* Available or Wanted Capacities */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="relative h-[20px] w-[20px]">
-              <Image src={capacitiesIcon} alt={capacitiesTitle} className="object-contain" />
-            </div>
-            <span className={`font-medium font-[Montserrat] ${
-              darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
-            }`}>
-              {capacitiesTitle}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {capacities.length > 0 ? (
-              capacities.map((capacity, index) => (
-                <span
-                  key={index}
-                  className={`px-2 py-1 text-sm rounded font-[Montserrat] ${
-                    darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
-                  }`}
-                >
-                  {capacity}
-                </span>
-              ))
-            ) : (
-              <span className={`px-2 py-1 text-sm rounded font-[Montserrat] ${
-                darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'
-              }`}>
-                {noDataMessage}
-              </span>
-            )}
-          </div>
-        </div>
+        <CapacitiesList
+          icon={capacitiesIcon}
+          title={capacitiesTitle}
+          items={capacities}
+          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+        />
 
         {/* Languages */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="relative h-[20px] w-[20px]">
-              <Image
-                  src={darkMode ? LanguageIconWhite : LanguageIcon}
-                  alt={pageContent['body-profile-languages-title']}
-                  width={20}
-                  height={20}
-                />
-            </div>
-            <span className={`font-medium font-[Montserrat] ${
-              darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
-            }`}>
-              {pageContent["body-profile-languages-title"]}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {languages.length > 0 ? (
-              languages.map((language, index) => (
-                <span
-                  key={index}
-                  className={`px-2 py-1 text-sm rounded font-[Montserrat] ${
-                    darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
-                  }`}
-                >
-                  {language}
-                </span>
-              ))
-            ) : (
-              <span className={`px-2 py-1 text-sm rounded font-[Montserrat] ${
-                darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'
-              }`}>
-                {noDataMessage}
-              </span>
-            )}
-          </div>
-        </div>
+        <CapacitiesList
+          icon={darkMode ? LanguageIconWhite : LanguageIcon}
+          title={pageContent["body-profile-languages-title"]}
+          items={languages}
+          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+        />
 
         {/* Territory */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="relative h-[20px] w-[20px]">
-              <Image
-                  src={darkMode ? TerritoryIconWhite : TerritoryIcon}
-                  alt={pageContent['body-profile-languages-title']}
-                  width={20}
-                  height={20}
-                />
-            </div>
-            <span className={`font-medium font-[Montserrat] ${
-              darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
-            }`}>
-              {pageContent["body-profile-section-title-territory"]}
-            </span>
-          </div>
-          <span className={`inline-block px-2 py-1 text-sm rounded font-[Montserrat] ${
-            darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-800'
-          }`}>
-            {territory || noDataMessage}
-          </span>
-        </div>
+        <CapacitiesList
+          icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
+          title={pageContent["body-profile-section-title-territory"]}
+          items={territory ? [territory] : []}
+          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+        />
 
         {/* TODO: Implement action */}
         {/* Action Buttons */}
@@ -205,6 +133,7 @@ export const ProfileCard = ({
             <Image
                 src={darkMode ? AccountCircleWhite : AccountCircle}
                 alt={pageContent['body-profile-languages-title']}
+                className='md:w-[52px] md:h-[52px]'
                 width={27}
                 height={27}
               />

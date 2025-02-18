@@ -10,10 +10,11 @@ export enum ProfileType {
 export default function FeedPage() {
   // TODO: Its a temp mock here. Get actual data from API
   const profiles = [
-    { username: "Learner 1", type: ProfileType.Learner, territory: "Brazil" },
-    { username: "Sharer 1", type: ProfileType.Sharer, capacities: ["datagraph"] },
-    { username: "Org Sharer 2", type: ProfileType.Sharer, languages: ["português"], avatar: "https://upload.wikimedia.org/wikipedia/commons/4/45/Wiki_Movimento_Brasil_logo.svg" },
-    { username: "Sharer 3", capacities: ["programming", "technology"], type: ProfileType.Sharer, territory: "Brazil", languages: ["português", "inglês", "espanhol", "japonês", "francês"], avatar: "https://commons.wikimedia.org/wiki/Special:Redirect/file/CapX_-_Avatar_-_3.svg" }
+    { username: "Learner 1", capacities: [], type: ProfileType.Learner, territory: "Brazil" },
+    { username: "Sharer 1", type: ProfileType.Sharer, capacities: [61] },
+    { username: "Org Sharer 2", capacities: [], type: ProfileType.Sharer, languages: ["português"], avatar: "https://upload.wikimedia.org/wikipedia/commons/4/45/Wiki_Movimento_Brasil_logo.svg" },
+    { username: "Sharer 3", capacities: [41, 43, 59, 61, 135], type: ProfileType.Sharer, territory: "Brazil", languages: ["português", "inglês", "espanhol", "japonês", "francês"], avatar: "https://commons.wikimedia.org/wiki/Special:Redirect/file/CapX_-_Avatar_-_3.svg" },
+    { username: "Sharer With A Huge Name To Test On Device 4", capacities: [41, 43, 59, 61, 135], type: ProfileType.Sharer, territory: "Brazil", languages: ["português", "inglês", "espanhol", "japonês", "francês"], avatar: "https://commons.wikimedia.org/wiki/Special:Redirect/file/CapX_-_Avatar_-_3.svg" }
   ];
 
   return (
