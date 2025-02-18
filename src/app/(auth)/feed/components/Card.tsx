@@ -16,12 +16,11 @@ import TerritoryIcon from "@/public/static/images/territory.svg";
 import TerritoryIconWhite from "@/public/static/images/territory_white.svg";
 import AccountCircle from "@/public/static/images/account_circle.svg";
 import AccountCircleWhite from "@/public/static/images/account_circle_white.svg";
-import { CapacitiesList } from '@/components/CapacitiesList'; // TODO refactor as ProfileItemList
+import { ProfileItem } from '@/components/ProfileItem';
 
 interface ProfileCardProps {
   username: string;
   type: ProfileType;
-  // capacities?: string[];
   capacities: (number | string)[];
   languages?: string[];
   territory?: string;
@@ -55,89 +54,94 @@ export const ProfileCard = ({
     : "text-[#05A300] border-[#05A300]";
 
   
-  // TODO: Implementar "...", limite de width para os itens, decidir qual o comportamento para abrir mais itens no click ou hover
-
+  
   return (
     <div 
-      className={`w-full max-w-sm rounded-lg border ${
+      className={`w-full rounded-lg border ${
         darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
       }`}
     >
-        <div className="p-5">
-            {/* Image and Type Badge with Background */}
-            <div className={`rounded-lg p-4 ${darkMode ? 'bg-capx-dark-box-bg' : 'dark:bg-[#EFEFEF]'}`}>
+      <div className="p-5">
+        {/* Desktop Grid  - 2 Columns*/}
+        <div role="article" className="md:grid md:grid-cols-[350px_1fr] md:gap-8">
+          {/*  Right Column - Profile Info */}
+          <div>
+            <div className={`rounded-lg p-4 ${darkMode ? 'bg-capx-dark-box-bg' : 'bg-[#EFEFEF]'}`}>
+              {/* Type Badge */}
+              <div className="flex justify-start mb-4">
+                <span className={`md:text-[18px] inline-flex px-2 py-1 text-xs font-normal rounded-full border ${
+                  darkMode ? typeBadgeColorDarkMode : typeBadgeColorLightMode
+                }`}>
+                  {type}
+                </span>
+              </div>
 
-                {/* Type Badge */}
-                <div className="flex justify-start mb-4">
-                    <span className={`md:text-[18px] inline-flex px-2 py-1 text-xs font-normal rounded-full border ${
-                        darkMode ? typeBadgeColorDarkMode : typeBadgeColorLightMode
-                    }`}>
-                        {type}
-                    </span>
-                </div>
 
-                {/* Profile Image */}
-                <div className="flex flex-col items-center mb-6">
-                   <div className="relative w-[100px] h-[100px]">
-                      <Image
-                        priority
-                        src={avatar || noAvatarIcon}
-                        alt={pageContent["navbar-user-profile"]}
-                        fill
-                        className="object-cover rounded-[4px]"
-                        unoptimized
-                        />
-                    </div>
+              {/* Profile Image */}
+              <div className="flex flex-col items-center mb-6">
+                <div className="relative w-[100px] h-[100px] md:w-[200px] md:h-[200px]">
+                  <Image
+                    priority
+                    src={avatar || noAvatarIcon}
+                    alt={pageContent["navbar-user-profile"]}
+                    fill
+                    className="object-cover rounded-[4px]"
+                    unoptimized
+                  />
                 </div>
+              </div>
             </div>
 
-        {/* Username */}
-        <h5 className={`md:text-[32px] text-xl font-bold font-[Montserrat] mt-4 mb-6 ' ${
-            darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
-        }`}>
-            {username}
-        </h5>
+             {/* Username */}
+             <div className="mt-4 mb-6 flex items-center justify-between">
+                <h5 className={`md:text-[32px] text-xl font-bold font-[Montserrat] ${
+                  darkMode ? 'text-capx-light-bg' : 'text-capx-dark-box-bg'
+                }`}>
+                  {username}
+                </h5>
+              </div>
+          </div>
 
-        {/* Available or Wanted Capacities */}
-        <CapacitiesList
-          icon={capacitiesIcon}
-          title={capacitiesTitle}
-          items={capacities}
-          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-        />
+          {/* Right Column - Info */}
+          <div className="mt-4 md:mt-0 flex flex-col gap-4">
+            {/* Available or Wanted Capacities */}
+            <ProfileItem
+              icon={capacitiesIcon}
+              title={capacitiesTitle}
+              items={capacities}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+            />
 
-        {/* Languages */}
-        <CapacitiesList
-          icon={darkMode ? LanguageIconWhite : LanguageIcon}
-          title={pageContent["body-profile-languages-title"]}
-          items={languages}
-          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-        />
+            {/* Languages */}
+            <ProfileItem
+              icon={darkMode ? LanguageIconWhite : LanguageIcon}
+              title={pageContent["body-profile-languages-title"]}
+              items={languages}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+            />
 
-        {/* Territory */}
-        <CapacitiesList
-          icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-          title={pageContent["body-profile-section-title-territory"]}
-          items={territory ? [territory] : []}
-          customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-        />
+            {/* Territory */}
+            <ProfileItem
+              icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
+              title={pageContent["body-profile-section-title-territory"]}
+              items={territory ? [territory] : []}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+            />
 
-        {/* TODO: Implement action */}
-        {/* Action Buttons */}
-        <div className="flex gap-2 mt-4">
-          <button
-            className={`p-2 rounded-full ${
-              darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-            }`}
-          >
-            <Image
+            <button
+              className={`inline-flex p-2 rounded-full mr-auto ${
+                darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+              }`}
+            >
+              <Image
                 src={darkMode ? AccountCircleWhite : AccountCircle}
                 alt={pageContent['body-profile-languages-title']}
-                className='md:w-[52px] md:h-[52px]'
+                className='md:w-[42px] md:h-[42px]'
                 width={27}
                 height={27}
               />
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </div>

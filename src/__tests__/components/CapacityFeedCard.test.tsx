@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-
 import { ProfileCard } from '@/app/(auth)/feed/components/Card';
 import { ProfileType } from '@/app/(auth)/feed/page';
 
@@ -7,6 +6,19 @@ import { ProfileType } from '@/app/(auth)/feed/page';
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => <img {...props} />
+}));
+
+// Mock next-auth
+jest.mock('next-auth/react', () => ({
+  useSession: () => ({
+    data: {
+      user: {
+        name: 'Test User',
+        email: 'test@example.com'
+      }
+    },
+    status: 'authenticated'
+  })
 }));
 
 // Mock the contexts
@@ -17,7 +29,12 @@ jest.mock('@/contexts/ThemeContext', () => ({
 
 const mockPageContent = {
   "no-data-available": "No data available",
-  "navbar-user-profile": "User Profile"
+  "navbar-user-profile": "User Profile",
+  "body-profile-known-capacities-title": "Known capacities",
+  "body-profile-available-capacities-title": "Available capacities",
+  "body-profile-wanted-capacities-title": "Wanted capacities",
+  "body-profile-languages-title": "Languages",
+  "body-profile-section-title-territory": "Territory"
 };
 
 jest.mock('@/contexts/AppContext', () => ({
@@ -28,7 +45,8 @@ jest.mock('@/contexts/AppContext', () => ({
 describe('ProfileCard', () => {
   const defaultProps = {
     username: 'Test User',
-    pageContent: mockPageContent
+    pageContent: mockPageContent,
+    capacities: []
   };
 
   describe('Learner Profile', () => {
@@ -39,6 +57,15 @@ describe('ProfileCard', () => {
       languages: ['English', 'Portuguese'],
       territory: 'Brazil'
     };
+
+    it('should display profile information in the left column', () => {
+      render(<ProfileCard {...learnerProps} />);
+      
+      // Check elements in the left column
+      expect(screen.getByText('Test User')).toBeInTheDocument();
+      expect(screen.getByText('learner')).toBeInTheDocument();
+      expect(screen.getByAltText('User Profile')).toBeInTheDocument();
+    });
 
     it('should display wanted capacities section for learner', () => {
       render(<ProfileCard {...learnerProps} />);
@@ -73,6 +100,14 @@ describe('ProfileCard', () => {
       territory: 'Argentina'
     };
 
+    it('should display profile information in the left column', () => {
+      render(<ProfileCard {...sharerProps} />);
+      
+      expect(screen.getByText('Test User')).toBeInTheDocument();
+      expect(screen.getByText('sharer')).toBeInTheDocument();
+      expect(screen.getByAltText('User Profile')).toBeInTheDocument();
+    });
+
     it('should display available capacities section for sharer', () => {
       render(<ProfileCard {...sharerProps} />);
       
@@ -103,6 +138,15 @@ describe('ProfileCard', () => {
       
       const noDataMessages = screen.getAllByText('No data available');
       expect(noDataMessages).toHaveLength(3); // One for each empty section
+    });
+  });
+
+  describe('Layout Structure', () => {
+    it('should have a two-column layout on desktop', () => {
+      render(<ProfileCard {...defaultProps} type={ProfileType.Learner} />);
+      
+      const container = screen.getByRole('article');
+      expect(container).toHaveClass('md:grid-cols-[350px_1fr]');
     });
   });
 });

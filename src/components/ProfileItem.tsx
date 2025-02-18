@@ -26,19 +26,19 @@ const CAPACITY_STYLES = {
   }
 } as const;
 
-interface CapacitiesListProps {
+interface ProfileItemProps {
   icon: string;
   title: string;
   items: (number | string)[];
   customClass?: string;
 }
 
-export function CapacitiesList({
+export function ProfileItem({
   icon,
   title,
   items,
   customClass = "",
-}: CapacitiesListProps) {
+}: ProfileItemProps) {
   const { getCapacityName } = useCapacityDetails(items);
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
@@ -47,45 +47,40 @@ export function CapacitiesList({
   const [needsToggle, setNeedsToggle] = useState(false);
   const noDataMessage = pageContent["no-data-available"];
 
-  console.log("items", items)
-
-  // Check items overflow to show or hide expand button
+  // Check items overflow to show or hide expand button. Not working 100% for some reason
   useEffect(() => {
     const checkOverflow = () => {
       const container = containerRef.current;
-      if (container && items.length > 0) {
-        // Temporariamente remove a restrição de altura para medir corretamente
-        container.style.height = 'auto';
-        container.style.overflow = 'visible';
-        
-        // Pega a altura natural do container com todos os itens
-        const naturalHeight = container.getBoundingClientRect().height;
-        
-        // Pega a altura de uma linha (usando o primeiro item como referência)
-        const firstItem = container.querySelector('.capacity-item');
-        const singleLineHeight = firstItem ? firstItem.getBoundingClientRect().height : 0;
-        
-        // Restaura as propriedades originais do container
-        container.style.removeProperty('height');
-        container.style.removeProperty('overflow');
+      if (!container || items.length === 0) return;
 
-        // Se a altura natural for maior que a altura de uma única linha (com uma pequena margem de tolerância),
-        // significa que os itens estão quebrando para múltiplas linhas
-        const tolerance = 5;
-        setNeedsToggle(naturalHeight > (singleLineHeight + tolerance));
-        
-        console.log('Natural height:', naturalHeight);
-        console.log('Single line height:', singleLineHeight);
-      }
+      // Temporarily removes the height restriction to measure correctly
+      container.style.height = 'auto';
+      container.style.overflow = 'visible';
+      
+      // Get the natural height of the container with all items
+      const naturalHeight = container.getBoundingClientRect().height;
+      
+      // Get the height of a line (using the first item as a reference)
+      const firstItem = container.querySelector('.capacity-item');
+      const singleLineHeight = firstItem ? firstItem.getBoundingClientRect().height : 0;
+      
+      // Restores the original container properties
+      container.style.removeProperty('height');
+      container.style.removeProperty('overflow');
+
+      // If the natural height is greater than the height of a single line (with a small margin of tolerance),
+      // means items are wrapping to multiple lines
+      const tolerance = 10;
+      setNeedsToggle(naturalHeight > (singleLineHeight + tolerance));
     };
 
-    // Executa a verificação após o layout estar completamente renderizado
+    // Run the check after the layout is completely rendered
     const timer = setTimeout(checkOverflow, 0);
     
-    // Adiciona verificação em caso de resize
+    // Add check in case of resize
     window.addEventListener('resize', checkOverflow);
     
-    // Executa novamente após um tempo maior para garantir que fontes e imagens foram carregadas
+    // Run again after a longer period of time to ensure fonts and images have been loaded
     const secondTimer = setTimeout(checkOverflow, 500);
     
     return () => {
@@ -137,7 +132,7 @@ export function CapacitiesList({
         </div>
       </div>
 
-      {/* Items Container */}
+      {/* Items */}
       <div
         className={`
           flex justify-between items-center
@@ -148,7 +143,7 @@ export function CapacitiesList({
           md:px-3
         `}
       >
-        {/* Container dos itens */}
+        {/* Items Container */}
         <div
           ref={containerRef}
           className={`
