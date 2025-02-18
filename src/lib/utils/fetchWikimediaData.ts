@@ -86,8 +86,13 @@ export const getWikiBirthday = async (username: string) => {
 
     const data = await response.json();
 
-    if (data.query?.globaluserinfo?.registration) {
-      return data.query.globaluserinfo.registration;
+    if (data.query?.globaluserinfo?.merged) {
+      const oldestRegistration = data.query.globaluserinfo.merged
+        .filter((instance: any) => instance.registration)
+        .map((instance: any) => instance.registration)
+        .sort()[0];
+
+      return oldestRegistration;
     }
 
     return null;
