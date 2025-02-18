@@ -75,3 +75,29 @@ export const formatWikiImageUrl = (url: string | undefined): string => {
 
   return url;
 };
+
+export const getWikiBirthday = async (username: string) => {
+  try {
+    const response = await fetch(
+      `https://meta.wikimedia.org/w/api.php?action=query&meta=globaluserinfo&formatversion=2&guiprop=merged&guiuser=${encodeURIComponent(
+        username
+      )}&origin=*&format=json`
+    );
+
+    const data = await response.json();
+
+    if (data.query?.globaluserinfo?.merged) {
+      const oldestRegistration = data.query.globaluserinfo.merged
+        .filter((instance: any) => instance.registration)
+        .map((instance: any) => instance.registration)
+        .sort()[0];
+
+      return oldestRegistration;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error fetching wiki user info:", error);
+    return null;
+  }
+};
