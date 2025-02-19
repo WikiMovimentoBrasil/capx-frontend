@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import ChevronRightIcon from "@/public/static/images/arrow_drop_down_circle_white.svg";
-import { getHueRotate } from "@/lib/utils/colorUtils";
+import { getHueRotate, getWhiteColorFilter } from "@/lib/utils/colorUtils";
 import BarCodeIcon from "@/public/static/images/barcode.svg";
 import BaseButton from "@/components/BaseButton";
 import { useRouter } from "next/navigation";
+import InfoIcon from "@/public/static/images/info.svg";
 
 interface CapacityItem {
   code: string;
@@ -25,6 +26,7 @@ interface CapacityCardProps {
   hasChildren: boolean;
   description?: string;
   wdCode?: string;
+  isRoot?: boolean;
 }
 
 export function CapacityCard({
@@ -38,6 +40,7 @@ export function CapacityCard({
   hasChildren,
   description,
   wdCode,
+  isRoot,
 }: CapacityCardProps) {
   const router = useRouter();
 
@@ -49,7 +52,7 @@ export function CapacityCard({
         {icon && (
           <div className="relative w-[135px] h-[135px]">
             <div className="relative w-[135px] h-[135px]">
-              <Image src={icon} alt={name} fill />
+              <Image src={icon} alt={name} fill priority />
             </div>
           </div>
         )}
@@ -60,13 +63,19 @@ export function CapacityCard({
         </div>
       </div>
 
-      <button onClick={onExpand} className="p-2 rounded-full flex-shrink-0">
+      <button onClick={onExpand} className="p-2 flex-shrink-0">
+        <div className="relative w-[68px] h-[68px]">
+          <Image src={InfoIcon} alt="Info" fill priority />
+        </div>
+      </button>
+
+      <button onClick={onExpand} className="p-2 flex-shrink-0">
         <div
           className={`relative w-[68px] h-[68px] mr-12 transition-transform duration-300 ${
             isExpanded ? "rotate-180" : ""
           }`}
         >
-          <Image src={ChevronRightIcon} alt="Expand" fill />
+          <Image src={ChevronRightIcon} alt="Expand" fill priority />
         </div>
       </button>
     </div>
@@ -87,7 +96,7 @@ export function CapacityCard({
               )})`,
             }}
           >
-            <Image src={icon} alt={name} fill />
+            <Image src={icon} alt={name} fill priority />
           </div>
         )}
       </div>
@@ -100,12 +109,25 @@ export function CapacityCard({
           </h3>
         </Link>
 
-        <button
+        <button onClick={onExpand} className="p-2 rounded-full flex-shrink-0">
+          <div
+            className="relative w-[32px] h-[32px]"
+            style={{
+              filter: `invert(1) sepia(1) saturate(10000%) hue-rotate(${getHueRotate(
+                parentCapacity?.color
+              )})`,
+            }}
+          >
+            <Image src={InfoIcon} alt="Info" fill priority />
+          </div>
+        </button>
+
+        {/* <button
           onClick={onExpand}
           className="p-2 focus:outline-none flex-shrink-0"
         >
           <div
-            className={`relative w-8 h-8 transition-transform duration-300 ${
+            className={`relative w-[32px] h-[32px] transition-transform duration-300 ${
               isExpanded ? "rotate-180" : ""
             }`}
             style={{
@@ -114,9 +136,9 @@ export function CapacityCard({
               )})`,
             }}
           >
-            <Image src={ChevronRightIcon} alt="Expand" fill />
+            <Image src={ChevronRightIcon} alt="Expand" fill priority />
           </div>
-        </button>
+        </button> */}
       </div>
       {/* Seção de descrição expandida */}
 
@@ -125,7 +147,7 @@ export function CapacityCard({
           <a href={`${wdCode}`}>
             <div className="flex flex-row items-center gap-2">
               <div className="relative w-[36px] h-[36px]">
-                <Image src={BarCodeIcon} alt="BarCode" fill />
+                <Image src={BarCodeIcon} alt="BarCode" fill priority />
               </div>
               <p className="text-[20px] text-capx-light-link">{wdCode}</p>
             </div>
