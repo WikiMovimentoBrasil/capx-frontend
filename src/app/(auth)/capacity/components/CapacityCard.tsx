@@ -42,7 +42,7 @@ export function CapacityCard({
     if (!isExpanded) return null;
 
     return (
-      <div className="flex flex-col ml-12 gap-6 mt-6 mb-16">
+      <div className="flex flex-col gap-6 mt-6 mb-16">
         {wd_code && (
           <a href={wd_code}>
             <div className="flex flex-row items-center gap-2">
@@ -66,8 +66,6 @@ export function CapacityCard({
   };
 
   const renderIcon = (size: number, icon: string) => {
-    console.log("Rendering icon with color:", parentCapacity?.color);
-
     return (
       <div className={`relative w-[${size}px] h-[${size}px]`}>
         <Image
@@ -85,12 +83,35 @@ export function CapacityCard({
     );
   };
 
-  const renderInfoButton = (size: number, customStyle?: string) => (
+  const renderInfoButton = (size: number, icon: string) => (
+    <button onClick={onExpand} className="p-1 flex-shrink-0">
+      <div
+        className="relative"
+        style={{ width: `${size}px`, height: `${size}px` }}
+      >
+        <Image
+          src={icon}
+          alt={name}
+          fill
+          priority
+          style={{
+            filter: isRoot
+              ? "brightness(0) invert(1)"
+              : getHueRotate(parentCapacity?.color),
+          }}
+        />
+      </div>
+    </button>
+  );
+
+  const renderArrowButton = (size: number, icon: string) => (
     <button onClick={onExpand} className="p-2 flex-shrink-0">
       <div
-        className={`relative w-[${size}px] h-[${size}px] ${customStyle || ""}`}
+        className={`relative w-[68px] h-[68px] mr-12 transition-transform duration-300 ${
+          isExpanded ? "rotate-180" : ""
+        }`}
       >
-        <Image src={InfoIcon} alt="Info" fill priority />
+        <Image src={ArrowDownIcon} alt="Expand" fill priority />
       </div>
     </button>
   );
@@ -109,44 +130,38 @@ export function CapacityCard({
           </div>
         </div>
 
-        {renderInfoButton(68)}
+        {renderInfoButton(68, InfoIcon)}
 
-        <button onClick={onExpand} className="p-2 flex-shrink-0">
-          <div
-            className={`relative w-[68px] h-[68px] mr-12 transition-transform duration-300 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-          >
-            <Image src={ArrowDownIcon} alt="Expand" fill priority />
-          </div>
-        </button>
+        {renderArrowButton(68, ArrowDownIcon)}
       </div>
     );
   }
 
   return (
     <div
-      className={`flex flex-col w-[450px] justify-evenly p-4 pb-6 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-capx-light-box-bg ${
-        isExpanded ? "h-auto" : "h-[326px]"
+      className={`flex flex-row w-full items-center justify-between px-16 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-capx-light-box-bg ${
+        isExpanded ? "h-auto flex-col" : "h-[144px]"
       }`}
     >
-      <div className="flex gap-8 ml-12 mt-6">
-        {icon && renderIcon(68, icon)}
-      </div>
-      <div className="flex flex-row items-center ml-12 mt-24 justify-between">
-        <Link href={`/capacity/${code}`} className="w-[224px]">
-          <h3
-            className="text-[36px] font-extrabold"
-            style={{
-              color: parentCapacity?.color
-                ? getCapacityColor(parentCapacity.color)
-                : "#000000",
-            }}
-          >
-            {name}
-          </h3>
-        </Link>
-        {renderInfoButton(32)}
+      <div className="flex flex-row items-center w-full h-[144px] justify-between">
+        <div className="flex items-center gap-3">
+          {icon && renderIcon(68, icon)}
+          <div className="flex flex-row items-center justify-between">
+            <Link href={`/capacity/${code}`} className="w-full">
+              <h3
+                className="text-[36px] font-extrabold"
+                style={{
+                  color: parentCapacity?.color
+                    ? getCapacityColor(parentCapacity.color)
+                    : "#000000",
+                }}
+              >
+                {name}
+              </h3>
+            </Link>
+          </div>
+        </div>
+        {renderInfoButton(40, InfoIcon)}
       </div>
       {renderExpandedContent()}
     </div>

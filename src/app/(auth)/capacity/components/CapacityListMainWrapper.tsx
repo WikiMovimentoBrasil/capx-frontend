@@ -83,7 +83,10 @@ export default function CapacityListMainWrapper() {
               <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
                 <div className="flex gap-4 pb-4">
                   {(childrenCapacities[capacity.code] || []).map((child) => (
-                    <div key={child.code} className="flex-shrink-0">
+                    <div
+                      key={child.code}
+                      className="flex-shrink-0 max-w-[992px] w-full"
+                    >
                       <CapacityCard
                         {...child}
                         isExpanded={!!expandedCapacities[child.code]}
