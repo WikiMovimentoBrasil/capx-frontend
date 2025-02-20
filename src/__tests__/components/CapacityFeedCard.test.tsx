@@ -28,7 +28,7 @@ jest.mock('@/contexts/ThemeContext', () => ({
 }));
 
 const mockPageContent = {
-  "no-data-available": "No data available",
+  "empty-field": "You haven't filled this field yet",
   "navbar-user-profile": "User Profile",
   "body-profile-known-capacities-title": "Known capacities",
   "body-profile-available-capacities-title": "Available capacities",
@@ -136,7 +136,7 @@ describe('ProfileCard', () => {
     it('should display no-data message when arrays are empty', () => {
       render(<ProfileCard {...defaultProps} type={ProfileType.Learner} />);
       
-      const noDataMessages = screen.getAllByText('No data available');
+      const noDataMessages = screen.getAllByText("You haven't filled this field yet");
       expect(noDataMessages).toHaveLength(3); // One for each empty section
     });
   });

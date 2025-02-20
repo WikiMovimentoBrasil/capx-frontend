@@ -136,9 +136,10 @@ export const ProfileCard = ({
               <Image
                 src={darkMode ? AccountCircleWhite : AccountCircle}
                 alt={pageContent['body-profile-languages-title']}
-                className='md:w-[42px] md:h-[42px]'
                 width={27}
                 height={27}
+                className="w-[27px] h-[27px] md:w-[42px] md:h-[42px]"
+                sizes="(min-width: 768px) 42px, 27px"
               />
             </button>
           </div>

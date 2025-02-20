@@ -45,7 +45,7 @@ export function ProfileItem({
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [needsToggle, setNeedsToggle] = useState(false);
-  const noDataMessage = pageContent["no-data-available"];
+  const noDataMessage = pageContent["empty-field"];
 
   // Check items overflow to show or hide expand button. Not working 100% for some reason
   useEffect(() => {

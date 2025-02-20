@@ -1,5 +1,5 @@
 {
-  "no-data-available": "No data available",
+  "empty-field": "You haven't filled this field yet",
   "loading": "Loading...",
   "known": "known",
   "available": "available",
