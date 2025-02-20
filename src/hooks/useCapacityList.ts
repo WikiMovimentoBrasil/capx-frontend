@@ -1,27 +1,18 @@
 import { useState, useCallback } from "react";
 import { capacityService } from "@/services/capacityService";
-import { getCapacityColor, getCapacityIcon } from "@/lib/utils/colorUtils";
+import { getCapacityColor, getCapacityIcon } from "@/lib/utils/capacitiesUtils";
 import { AxiosRequestConfig } from "axios";
-import { CapacityResponse } from "@/types/capacity";
-
-interface Capacity {
-  code: string;
-  name: string;
-  icon: string;
-  color: string;
-  parentCode?: string;
-  description?: string;
-  wdCode?: string;
-  parentCapacity?: Capacity;
-  hasChildren: boolean;
-}
+import { CapacityResponse, Capacity } from "@/types/capacity";
 
 export function useCapacityList(token?: string, language: string = "pt-br") {
   const [rootCapacities, setRootCapacities] = useState<Capacity[]>([]);
-  const [childrenCapacities, setChildrenCapacities] = useState<Capacity[]>([]);
+  const [childrenCapacities, setChildrenCapacities] = useState<
+    Record<string, Capacity[]>
+  >({});
   const [descriptions, setDescriptions] = useState<Record<string, string>>({});
   const [capacityById, setCapacityById] = useState<CapacityResponse>();
   const [wdCodes, setWdCodes] = useState<Record<string, string>>({});
+  const [searchResults, setSearchResults] = useState<Capacity[]>([]);
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +47,9 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
             ? "technology"
             : "gray-200",
           icon: getCapacityIcon(baseCode),
-          hasChildren: true, // Capacidades root sempre têm filhos
+          hasChildren: true,
+          skill_type: [],
+          skill_wikidata_item: "",
         };
       });
 
@@ -82,20 +75,27 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           }
         );
 
-        console.log(response);
+        const capacityData = Object.entries(response).map(([code, name]) => ({
+          code,
+          name,
+        }));
 
-        const formattedCapacities = Object.entries(response).map(
-          ([code, name]): Capacity => {
-            const baseCode = code.toString().split(".")[0];
-            return {
-              code,
-              name: String(name),
-              color: getCapacityColor(baseCode),
-              icon: getCapacityIcon(baseCode),
-              hasChildren: false, // Será atualizado depois se necessário
-            };
-          }
+        const parentCapacity = rootCapacities.find(
+          (cap) => cap.code.toString() === parentCode.toString()
         );
+
+        const formattedCapacities = capacityData.map((item: any): Capacity => {
+          const baseCode = item.code.toString();
+          return {
+            code: baseCode,
+            name: item.name,
+            color: getCapacityColor(parentCapacity?.color || "gray-200"),
+            icon: getCapacityIcon(Number(parentCode)),
+            hasChildren: false,
+            skill_type: [],
+            skill_wikidata_item: "",
+          };
+        });
 
         setChildrenCapacities((prev) => ({
           ...prev,
@@ -111,7 +111,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
   );
 
   const fetchCapacityDescription = useCallback(
-    async (code: string) => {
+    async (code: number) => {
       if (!token) return;
 
       try {
@@ -147,10 +147,44 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     [token, language]
   );
 
+  const fetchCapacitySearch = useCallback(
+    async (search: string) => {
+      if (!token) return;
+
+      try {
+        const response = await capacityService.searchCapacities(search, {
+          params: { language },
+          headers: { Authorization: `Token ${token}` },
+        });
+
+        const formattedResults = response.map((item: any): Capacity => {
+          const baseCode = item.code.toString().split(".")[0];
+          return {
+            code: item.code,
+            name: item.name,
+            color: getCapacityColor(baseCode),
+            icon: getCapacityIcon(baseCode),
+            hasChildren: false,
+            skill_type: [],
+            skill_wikidata_item: "",
+          };
+        });
+
+        setSearchResults(formattedResults);
+
+        console.log(formattedResults);
+      } catch (error) {
+        console.error("Failed to fetch capacity search:", error);
+      }
+    },
+    [token, language]
+  );
   return {
     rootCapacities,
     childrenCapacities,
     descriptions,
+    searchResults,
+    setSearchResults,
     capacityById,
     wdCodes,
     isLoading,
@@ -159,5 +193,6 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     fetchCapacitiesByParent,
     fetchCapacityDescription,
     fetchCapacityById,
+    fetchCapacitySearch,
   };
 }
