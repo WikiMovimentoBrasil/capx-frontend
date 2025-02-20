@@ -6,24 +6,10 @@ import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { LoadingSection } from "./LoadingSection";
 import { CapacityCard } from "./CapacityCard";
-import axios from "axios";
 import { getCapacityColor, getCapacityIcon } from "@/lib/utils/colorUtils";
 import { CapacityBanner } from "./CapacityBanner";
 import { CapacitySearch } from "./CapacitySearch";
-
 import { useCapacityList } from "@/hooks/useCapacityList";
-
-interface CapacityItem {
-  code: string;
-  name: string;
-  icon: string;
-  color: string;
-  parentCode?: string;
-  description?: string;
-  wdCode?: string;
-  parentCapacity?: CapacityItem;
-  hasChildren: boolean;
-}
 
 export default function CapacityListMainWrapper() {
   const { pageContent, language } = useApp();
@@ -61,7 +47,9 @@ export default function CapacityListMainWrapper() {
 
       const children = await fetchCapacitiesByParent(parentCode);
       for (const child of children) {
-        fetchCapacityDescription(child.code);
+        if (child.code) {
+          fetchCapacityDescription(child.code);
+        }
       }
 
       setExpandedCapacities((prev) => ({ ...prev, [parentCode]: true }));
@@ -74,36 +62,39 @@ export default function CapacityListMainWrapper() {
   }
 
   return (
-    <section className="max-w-[1024px] mx-auto py-8 px-4">
+    <section className="flex flex-col max-w-[1024px] mx-auto py-8 px-4 gap-[40px]">
       <CapacityBanner />
       <CapacitySearch />
-      <div className="grid gap-4">
+      <div className="grid gap-[40px]	">
         {rootCapacities.map((capacity) => (
           <div key={capacity.code}>
             <div className="max-w-[992px]">
               <CapacityCard
                 {...capacity}
                 isExpanded={!!expandedCapacities[capacity.code]}
-                onExpand={() => toggleChildCapacities(capacity.code)}
+                onExpand={() => toggleChildCapacities(capacity.code.toString())}
                 hasChildren={true}
                 isRoot={true}
+                color={capacity.color}
               />
             </div>
 
             {expandedCapacities[capacity.code] && (
               <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
                 <div className="flex gap-4 pb-4">
-                  {childrenCapacities[capacity.code].map((child) => (
+                  {(childrenCapacities[capacity.code] || []).map((child) => (
                     <div key={child.code} className="flex-shrink-0">
                       <CapacityCard
                         {...child}
                         isExpanded={!!expandedCapacities[child.code]}
-                        onExpand={() => toggleChildCapacities(child.code)}
+                        onExpand={() =>
+                          toggleChildCapacities(child.code.toString())
+                        }
                         hasChildren={child.hasChildren}
                         parentCapacity={capacity}
-                        color={getCapacityColor(capacity.code)}
+                        color={child.color}
                         description={descriptions[child.code] || ""}
-                        wdCode={wdCodes[child.code] || ""}
+                        wd_code={wdCodes[child.code] || ""}
                         isRoot={false}
                       />
                     </div>
