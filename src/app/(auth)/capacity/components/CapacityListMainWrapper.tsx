@@ -6,7 +6,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { LoadingSection } from "./LoadingSection";
 import { CapacityCard } from "./CapacityCard";
-import { getCapacityColor, getCapacityIcon } from "@/lib/utils/colorUtils";
+import { getCapacityColor, getCapacityIcon } from "@/lib/utils/capacitiesUtils";
 import { CapacityBanner } from "./CapacityBanner";
 import { CapacitySearch } from "./CapacitySearch";
 import { useCapacityList } from "@/hooks/useCapacityList";

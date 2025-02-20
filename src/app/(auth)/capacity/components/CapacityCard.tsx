@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArrowDownIcon from "@/public/static/images/keyboard_arrow_down.svg";
-import { getCapacityColor, getHueRotate } from "@/lib/utils/colorUtils";
+import { getCapacityColor, getHueRotate } from "@/lib/utils/capacitiesUtils";
 import BarCodeIcon from "@/public/static/images/barcode.svg";
 import BaseButton from "@/components/BaseButton";
 import { useRouter } from "next/navigation";
