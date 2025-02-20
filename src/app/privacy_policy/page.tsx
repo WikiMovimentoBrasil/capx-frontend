@@ -12,9 +12,9 @@ import { useApp } from "@/contexts/AppContext";
 export default function PrivacyPolicy(){
     const { darkMode } = useTheme();
     const { pageContent } = useApp();
-    const capacityExchangeText = pageContent["privacy-policy-capacity-exchange-text"]?.split("{link}");
-    const privateInformationTopic = pageContent["privacy-policy-private-information-topic02"]?.split("{link}");
-    const privateInformationText = pageContent["privacy-policy-private-information-text03"]?.split("{link}");
+    const capacityExchangeText = pageContent["privacy-policy-capacity-exchange-text"]?.split(/\$\d/);
+    const privateInformationTopic = pageContent["privacy-policy-private-information-topic02"]?.split(/\$\d/);
+    const privateInformationText = pageContent["privacy-policy-private-information-text03"]?.split(/\$\d/);
 
     return (
         <BaseWrapper>
