@@ -29,7 +29,7 @@ export const capacityService = {
   },
 
   async fetchCapacityDescription(
-    code: string,
+    code: number,
     config?: AxiosRequestConfig
   ): Promise<{ description: string; wdCode: string }> {
     try {
@@ -72,6 +72,22 @@ export const capacityService = {
       });
     } catch (error) {
       console.error("Failed to update capacities:", error);
+      throw error;
+    }
+  },
+
+  async searchCapacities(
+    search: string,
+    config?: AxiosRequestConfig
+  ): Promise<CapacityResponse[]> {
+    try {
+      const response = await axios.get(`/api/capacity/search`, {
+        params: { q: search },
+        headers: config?.headers,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to search capacities:", error);
       throw error;
     }
   },
