@@ -1,11 +1,11 @@
 export interface Capacity {
-  id: number;
-  code?: number;
+  id?: number;
+  code: number;
   skill_type: string[];
   skill_wikidata_item: string;
-  name?: string;
-  icon?: string;
-  color?: string;
+  name: string;
+  icon: string;
+  color: string;
   children?: Capacity[];
   parentCode?: string;
   description?: string;
