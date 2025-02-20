@@ -7,7 +7,7 @@ import EditIcon from "@/public/static/images/edit.svg";
 import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import ReportActivityIcon from "@/public/static/images/report_of_activities.svg";
-import { CapacitiesList } from "../../../components/CapacitiesList";
+import { ProfileItem } from "../../../components/ProfileItem";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import TargetIcon from "@/public/static/images/target.svg";
@@ -188,20 +188,20 @@ export default function OrganizationProfilePage() {
 
               {/* Capacities Lists */}
               <div className="space-y-6 mt-4">
-                <CapacitiesList
+                <ProfileItem
                   items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                   title={pageContent["body-profile-known-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]`}
                 />
-                <CapacitiesList
+                <ProfileItem
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
                   title={pageContent["body-profile-available-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
-                <CapacitiesList
+                <ProfileItem
                   items={organization?.wanted_capacities || []}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
                   title={pageContent["body-profile-wanted-capacities-title"]}
@@ -375,7 +375,7 @@ export default function OrganizationProfilePage() {
 
             {/* Capacities Lists */}
             <div className="space-y-6 mt-4">
-              <CapacitiesList
+              <ProfileItem
                 items={organization?.known_capacities || []}
                 icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                 title={pageContent["body-profile-known-capacities-title"]}
@@ -383,7 +383,7 @@ export default function OrganizationProfilePage() {
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
               />
-              <CapacitiesList
+              <ProfileItem
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
                 title={
@@ -393,7 +393,7 @@ export default function OrganizationProfilePage() {
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
               />
-              <CapacitiesList
+              <ProfileItem
                 items={organization?.wanted_capacities || []}
                 icon={darkMode ? TargetIconWhite : TargetIcon}
                 title={pageContent["body-profile-wanted-capacities-title"]}

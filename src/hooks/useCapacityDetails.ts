@@ -57,7 +57,7 @@ export function useCapacityDetails(
           typeof capacity === "object"
             ? Number(capacity.code)
             : Number(capacity);
-        return capacityNames[id.toString()] || `Loading capacity ${id}...`;
+        return capacityNames[id.toString()] || '';
       },
       [capacityNames]
     ),
