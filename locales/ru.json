@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Cabadeck",
 			"Kareyac",
 			"Okras"
 		]
@@ -43,6 +44,7 @@
 	"form-profile-cancel": "Отмена",
 	"form-report-author": "Автор",
 	"body-profile-languages-title": "Языки",
+	"body-profile-birthday-title": "День рождения Вики",
 	"edit-profile-confirm": "Подтвердить",
 	"edit-profile-update": "Обновить",
 	"edit-profile-add-link": "Добавить ссылку",
