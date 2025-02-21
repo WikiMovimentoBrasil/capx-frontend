@@ -157,28 +157,64 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           headers: { Authorization: `Token ${token}` },
         });
 
+        console.log("Root Capacities:", rootCapacities);
+
         const formattedResults = response.map((item: any): Capacity => {
           const baseCode = item.code.toString().split(".")[0];
+          const color = baseCode.startsWith("10")
+            ? "organizational"
+            : baseCode.startsWith("36")
+            ? "communication"
+            : baseCode.startsWith("50")
+            ? "learning"
+            : baseCode.startsWith("56")
+            ? "community"
+            : baseCode.startsWith("65")
+            ? "social"
+            : baseCode.startsWith("74")
+            ? "strategic"
+            : baseCode.startsWith("106")
+            ? "technology"
+            : "gray-200";
+
+          const isParentCapacity = rootCapacities.some(
+            (root) => root.code.toString() === item.code.toString()
+          );
+
+          const parentCapacity = !isParentCapacity
+            ? rootCapacities.find((cap) => cap.code.toString() === baseCode)
+            : undefined;
+
+          console.log("Processing item:", {
+            code: item.code,
+            baseCode,
+            isParentCapacity,
+            foundParent: parentCapacity?.code,
+          });
+
           return {
             code: item.code,
             name: item.name,
-            color: getCapacityColor(baseCode),
-            icon: getCapacityIcon(baseCode),
-            hasChildren: false,
-            skill_type: [],
-            skill_wikidata_item: "",
+            color: isParentCapacity ? color : parentCapacity?.color || color,
+            icon: isParentCapacity
+              ? getCapacityIcon(Number(baseCode))
+              : parentCapacity?.icon || "",
+            hasChildren: isParentCapacity,
+            parentCapacity: parentCapacity,
+            skill_type: item.skill_type || [],
+            skill_wikidata_item: item.skill_wikidata_item || "",
           };
         });
 
+        console.log("Formatted Results:", formattedResults);
         setSearchResults(formattedResults);
-
-        console.log(formattedResults);
       } catch (error) {
         console.error("Failed to fetch capacity search:", error);
       }
     },
-    [token, language]
+    [token, language, rootCapacities]
   );
+
   return {
     rootCapacities,
     childrenCapacities,
