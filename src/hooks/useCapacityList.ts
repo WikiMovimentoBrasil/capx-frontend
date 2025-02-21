@@ -122,6 +122,8 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
 
         setDescriptions((prev) => ({ ...prev, [code]: response.description }));
         setWdCodes((prev) => ({ ...prev, [code]: response.wdCode }));
+
+        return response.description;
       } catch (error) {
         console.error("Failed to fetch capacity description:", error);
       }
@@ -147,6 +149,20 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     [token, language]
   );
 
+  const findParentCapacity = useCallback(
+    (childCapacity: Capacity) => {
+      if (!childCapacity.skill_type || childCapacity.skill_type.length === 0) {
+        return undefined;
+      }
+
+      const parentId = childCapacity.skill_type[0];
+      return rootCapacities.find(
+        (root) => root.code.toString() === parentId.toString()
+      );
+    },
+    [rootCapacities]
+  );
+
   const fetchCapacitySearch = useCallback(
     async (search: string) => {
       if (!token) return;
@@ -157,62 +173,43 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           headers: { Authorization: `Token ${token}` },
         });
 
-        console.log("Root Capacities:", rootCapacities);
+        const validResults = response.filter((item: any) => item !== null);
 
-        const formattedResults = response.map((item: any): Capacity => {
-          const baseCode = item.code.toString().split(".")[0];
-          const color = baseCode.startsWith("10")
-            ? "organizational"
-            : baseCode.startsWith("36")
-            ? "communication"
-            : baseCode.startsWith("50")
-            ? "learning"
-            : baseCode.startsWith("56")
-            ? "community"
-            : baseCode.startsWith("65")
-            ? "social"
-            : baseCode.startsWith("74")
-            ? "strategic"
-            : baseCode.startsWith("106")
-            ? "technology"
-            : "gray-200";
-
-          const isParentCapacity = rootCapacities.some(
+        const formattedResults = validResults.map((item: any): Capacity => {
+          const isRootCapacity = rootCapacities.some(
             (root) => root.code.toString() === item.code.toString()
           );
 
-          const parentCapacity = !isParentCapacity
-            ? rootCapacities.find((cap) => cap.code.toString() === baseCode)
-            : undefined;
+          const effectiveSkillType = isRootCapacity
+            ? [item.code.toString()]
+            : item.skill_type || [];
 
-          console.log("Processing item:", {
+          const parentCapacity = findParentCapacity({
+            ...item,
             code: item.code,
-            baseCode,
-            isParentCapacity,
-            foundParent: parentCapacity?.code,
+            skill_type: effectiveSkillType,
           });
 
           return {
             code: item.code,
             name: item.name,
-            color: isParentCapacity ? color : parentCapacity?.color || color,
-            icon: isParentCapacity
-              ? getCapacityIcon(Number(baseCode))
-              : parentCapacity?.icon || "",
-            hasChildren: isParentCapacity,
-            parentCapacity: parentCapacity,
-            skill_type: item.skill_type || [],
+            color: isRootCapacity
+              ? item.color
+              : parentCapacity?.color || "gray-200",
+            icon: isRootCapacity ? item.icon : parentCapacity?.icon || "",
+            hasChildren: isRootCapacity,
+            parentCapacity: isRootCapacity ? undefined : parentCapacity,
+            skill_type: effectiveSkillType,
             skill_wikidata_item: item.skill_wikidata_item || "",
           };
         });
 
-        console.log("Formatted Results:", formattedResults);
         setSearchResults(formattedResults);
       } catch (error) {
         console.error("Failed to fetch capacity search:", error);
       }
     },
-    [token, language, rootCapacities]
+    [token, language, rootCapacities, findParentCapacity]
   );
 
   return {
@@ -225,6 +222,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
     wdCodes,
     isLoading,
     error,
+    findParentCapacity,
     fetchRootCapacities,
     fetchCapacitiesByParent,
     fetchCapacityDescription,

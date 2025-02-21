@@ -3,61 +3,87 @@
 import { useState, useCallback, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/contexts/AppContext";
-import axios from "axios";
 import BaseInput from "@/components/BaseInput";
 import { CapacityCard } from "./CapacityCard";
-import { getCapacityColor, getCapacityIcon } from "@/lib/utils/capacitiesUtils";
 import SearchIcon from "@/public/static/images/search.svg";
 import { useCapacityList } from "@/hooks/useCapacityList";
 import { debounce } from "lodash";
-import { Capacity } from "@/types/capacity";
+import LoadingState from "@/components/LoadingState";
 
-export function CapacitySearch() {
+interface CapacitySearchProps {
+  onSearchStart?: () => void;
+  onSearchEnd?: () => void;
+}
+
+export function CapacitySearch({
+  onSearchStart,
+  onSearchEnd,
+}: CapacitySearchProps) {
   const { data: session } = useSession();
   const { language } = useApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { searchResults, setSearchResults, fetchCapacitySearch } =
-    useCapacityList(session?.user?.token, language);
-  const debouncedSearch = useCallback(
-    debounce(async (term: string) => {
-      if (!term || term.length < 3) {
+  const [expandedCapacities, setExpandedCapacities] = useState<
+    Record<string, boolean>
+  >({});
+  const {
+    searchResults,
+    descriptions,
+    setSearchResults,
+    fetchRootCapacities,
+    fetchCapacitiesByParent,
+    fetchCapacitySearch,
+    findParentCapacity,
+    fetchCapacityDescription,
+    wdCodes,
+  } = useCapacityList(session?.user?.token, language);
+
+  useEffect(() => {
+    if (session?.user?.token) {
+      fetchRootCapacities();
+    }
+  }, [session?.user?.token, fetchRootCapacities]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchTerm) {
+        setIsLoading(true);
+        onSearchStart?.();
+        await fetchCapacitySearch(searchTerm);
+        setIsLoading(false);
+      } else {
         setSearchResults([]);
+        onSearchEnd?.();
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [
+    searchTerm,
+    fetchCapacitySearch,
+    onSearchStart,
+    onSearchEnd,
+    setSearchResults,
+  ]);
+
+  const toggleCapacity = useCallback(
+    async (parentCode: string) => {
+      if (expandedCapacities[parentCode]) {
+        setExpandedCapacities((prev) => ({ ...prev, [parentCode]: false }));
         return;
       }
 
-      setIsLoading(true);
-      try {
-        await fetchCapacitySearch(term);
-
-        const formattedResults = searchResults.map(
-          (item: any): Capacity => ({
-            code: item.code,
-            name: item.name,
-            color: getCapacityColor(Number(item.code)),
-            icon: getCapacityIcon(Number(item.code)),
-            description: item.description || "",
-            wd_code: item.wd_code || "",
-            hasChildren: false,
-            skill_type: [],
-            skill_wikidata_item: "",
-          })
-        );
-
-        setSearchResults(formattedResults);
-      } catch (error) {
-        console.error("Failed to search capacities:", error);
-      } finally {
-        setIsLoading(false);
+      const children = await fetchCapacitiesByParent(parentCode);
+      for (const child of children) {
+        if (child.code) {
+          fetchCapacityDescription(child.code);
+        }
       }
-    }, 300),
-    [session?.user?.token, language]
-  );
 
-  useEffect(() => {
-    debouncedSearch(searchTerm);
-    return () => debouncedSearch.cancel();
-  }, [searchTerm, debouncedSearch]);
+      setExpandedCapacities((prev) => ({ ...prev, [parentCode]: true }));
+    },
+    [expandedCapacities, fetchCapacitiesByParent, fetchCapacityDescription]
+  );
 
   return (
     <div className="w-full max-w-[992px] mx-auto">
@@ -73,25 +99,31 @@ export function CapacitySearch() {
 
       <div className="grid gap-4 mt-4">
         {isLoading ? (
-          <div className="text-center">Searching...</div>
+          <LoadingState />
         ) : (
-          searchResults.map((capacity) => (
-            <div key={capacity.code} className="max-w-[992px]">
-              <CapacityCard
-                {...capacity}
-                isExpanded={false}
-                onExpand={() => {}}
-                hasChildren={capacity.hasChildren}
-                isRoot={false}
-                code={capacity.code}
-                name={capacity.name || ""}
-                color={capacity.color || ""}
-                icon={capacity.icon || ""}
-                description={capacity.description || ""}
-                wd_code={capacity.wd_code || ""}
-              />
-            </div>
-          ))
+          searchResults.map((capacity) => {
+            const parentCode = capacity.parentCode;
+
+            const rootCapacity = findParentCapacity(capacity);
+
+            return (
+              <div key={capacity.code} className="max-w-[992px]">
+                <CapacityCard
+                  {...capacity}
+                  isExpanded={!!expandedCapacities[capacity.code]}
+                  onExpand={() => toggleCapacity(capacity.code.toString())}
+                  hasChildren={true}
+                  isRoot={!parentCode}
+                  color={rootCapacity?.color || capacity.color}
+                  icon={rootCapacity?.icon || capacity.icon}
+                  parentCapacity={rootCapacity}
+                  description={descriptions[capacity.code] || ""}
+                  wd_code={wdCodes[capacity.code] || ""}
+                  onInfoClick={fetchCapacityDescription}
+                />
+              </div>
+            );
+          })
         )}
       </div>
     </div>

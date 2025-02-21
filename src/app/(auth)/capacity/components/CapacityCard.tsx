@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import InfoIcon from "@/public/static/images/info.svg";
 import InfoFilledIcon from "@/public/static/images/info_filled.svg";
 import { Capacity } from "@/types/capacity";
+import { useState } from "react";
 
 interface CapacityCardProps {
   code: number;
@@ -21,6 +22,7 @@ interface CapacityCardProps {
   description?: string;
   wd_code?: string;
   isRoot?: boolean;
+  onInfoClick?: (code: number) => Promise<string | undefined>;
 }
 
 export function CapacityCard({
@@ -35,12 +37,22 @@ export function CapacityCard({
   description,
   wd_code,
   isRoot,
+  onInfoClick,
 }: CapacityCardProps) {
   const router = useRouter();
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleInfoClick = async () => {
+    if (!showInfo && onInfoClick) {
+      await onInfoClick(code);
+    }
+    setShowInfo(!showInfo);
+  };
 
   const renderExpandedContent = () => {
-    if (!isExpanded) return null;
+    if (!showInfo) return null;
 
+    console.log("description", description);
     return (
       <div className="flex flex-col gap-6 mt-6 mb-16">
         {wd_code && (
@@ -58,18 +70,21 @@ export function CapacityCard({
         )}
         <BaseButton
           label="Explore capacity"
-          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${parentCapacity?.color} hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
+          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${color} hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
           onClick={() => router.push(`/capacity/${code}`)}
         />
       </div>
     );
   };
 
-  const renderIcon = (size: number, icon: string) => {
+  const renderIcon = (size: number, iconSrc: any) => {
     return (
-      <div className={`relative w-[${size}px] h-[${size}px]`}>
+      <div
+        style={{ width: `${size}px`, height: `${size}px` }}
+        className="relative"
+      >
         <Image
-          src={icon}
+          src={typeof iconSrc === "string" ? iconSrc : iconSrc.src}
           alt={name}
           fill
           priority
@@ -84,13 +99,13 @@ export function CapacityCard({
   };
 
   const renderInfoButton = (size: number, icon: string) => (
-    <button onClick={onExpand} className="p-1 flex-shrink-0">
+    <button onClick={handleInfoClick} className="p-1 flex-shrink-0">
       <div
         className="relative"
         style={{ width: `${size}px`, height: `${size}px` }}
       >
         <Image
-          src={icon}
+          src={showInfo ? InfoFilledIcon : icon}
           alt={name}
           fill
           priority
@@ -119,31 +134,37 @@ export function CapacityCard({
   if (hasChildren) {
     return (
       <div
-        className={`flex h-[326px] justify-between items-center p-4 rounded-lg w-full bg-${color} shadow-sm hover:shadow-md transition-shadow`}
+        className={`flex flex-col rounded-lg w-full bg-${color} shadow-sm hover:shadow-md transition-shadow`}
       >
-        <div className="flex items-center gap-8 ml-12">
-          {icon && renderIcon(135, icon)}
-          <div className="flex items-center w-[378px] h-full">
-            <Link href={`/capacity/${code}`}>
-              <h3 className="text-[48px] font-extrabold text-white">{name}</h3>
-            </Link>
+        <div className="flex h-[326px] justify-between items-center p-4">
+          <div className="flex items-center gap-8 ml-12">
+            {icon && renderIcon(135, icon)}
+            <div className="flex items-center w-[378px] h-full">
+              <Link href={`/capacity/${code}`}>
+                <h3 className="text-[48px] font-extrabold text-white">
+                  {name}
+                </h3>
+              </Link>
+            </div>
           </div>
+
+          {renderInfoButton(68, InfoIcon)}
+          {renderArrowButton(68, ArrowDownIcon)}
         </div>
-
-        {renderInfoButton(68, InfoIcon)}
-
-        {renderArrowButton(68, ArrowDownIcon)}
+        {showInfo && (
+          <div className="bg-white rounded-b-lg p-8">
+            {renderExpandedContent()}
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div
-      className={`flex flex-row w-full items-center justify-between px-16 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-capx-light-box-bg ${
-        isExpanded ? "h-auto flex-col" : "h-[144px]"
-      }`}
+      className={`flex flex-col w-full rounded-lg shadow-sm hover:shadow-md transition-shadow bg-capx-light-box-bg`}
     >
-      <div className="flex flex-row items-center w-full h-[144px] justify-between">
+      <div className="flex flex-row items-center w-full h-[144px] justify-between px-16">
         <div className="flex items-center gap-3">
           {icon && renderIcon(68, icon)}
           <div className="flex flex-row items-center justify-between">
@@ -163,7 +184,7 @@ export function CapacityCard({
         </div>
         {renderInfoButton(40, InfoIcon)}
       </div>
-      {renderExpandedContent()}
+      {showInfo && renderExpandedContent()}
     </div>
   );
 }

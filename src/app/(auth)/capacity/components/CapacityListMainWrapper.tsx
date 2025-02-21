@@ -28,6 +28,8 @@ export default function CapacityListMainWrapper() {
     fetchCapacityDescription,
   } = useCapacityList(session?.user?.token, language);
 
+  console.log("descriptions", descriptions);
+
   const [expandedCapacities, setExpandedCapacities] = useState<
     Record<string, boolean>
   >({});
@@ -87,8 +89,9 @@ export default function CapacityListMainWrapper() {
                 name={capacity.name}
                 color={capacity.color}
                 icon={capacity.icon}
-                description={capacity.description || ""}
+                description={descriptions[capacity.code] || ""}
                 wd_code={capacity.wd_code || ""}
+                onInfoClick={fetchCapacityDescription}
               />
             </div>
           ))}
@@ -111,6 +114,10 @@ export default function CapacityListMainWrapper() {
                   hasChildren={true}
                   isRoot={true}
                   color={capacity.color}
+                  icon={capacity.icon}
+                  description={descriptions[capacity.code] || ""}
+                  wd_code={wdCodes[capacity.code] || ""}
+                  onInfoClick={fetchCapacityDescription}
                 />
               </div>
 
@@ -134,6 +141,7 @@ export default function CapacityListMainWrapper() {
                           description={descriptions[child.code] || ""}
                           wd_code={wdCodes[child.code] || ""}
                           isRoot={false}
+                          onInfoClick={fetchCapacityDescription}
                         />
                       </div>
                     ))}

@@ -5,6 +5,7 @@ import CommunityIcon from "@/public/static/images/communities.svg";
 import SocialIcon from "@/public/static/images/cheer.svg";
 import StrategicIcon from "@/public/static/images/chess_pawn.svg";
 import TechnologyIcon from "@/public/static/images/wifi_tethering.svg";
+import { Dispatch, SetStateAction } from "react";
 
 const colorMap: Record<string, string> = {
   organizational: "#0078D4",
@@ -47,12 +48,8 @@ export const getHueRotate = (color: string | undefined): string => {
 };
 
 export const getCapacityColor = (color: string): string => {
-  console.log("getCapacityColor input:", color);
-  console.log("colorMap value:", colorMap[color]);
-
   // Se a cor for uma categoria (ex: "communication"), pegue o hex do colorMap
   const hexColor = colorMap[color];
-  console.log("Final hex color:", hexColor);
 
   return hexColor || color || "#000000";
 };
@@ -72,4 +69,29 @@ export const getCapacityIcon = (code: number): string => {
   };
 
   return iconMap[baseCode] || "";
+};
+
+export const toggleChildCapacities = async (
+  parentCode: string,
+  expandedCapacities: Record<string, boolean>,
+  setExpandedCapacities: Dispatch<SetStateAction<Record<string, boolean>>>,
+  fetchCapacitiesByParent: (code: string) => Promise<any[]>,
+  fetchCapacityDescription?: (code: number) => Promise<void>
+) => {
+  if (expandedCapacities[parentCode]) {
+    setExpandedCapacities((prev) => ({ ...prev, [parentCode]: false }));
+    return;
+  }
+
+  const children = await fetchCapacitiesByParent(parentCode);
+
+  if (fetchCapacityDescription) {
+    for (const child of children) {
+      if (child.code) {
+        fetchCapacityDescription(Number(child.code));
+      }
+    }
+  }
+
+  setExpandedCapacities((prev) => ({ ...prev, [parentCode]: true }));
 };
