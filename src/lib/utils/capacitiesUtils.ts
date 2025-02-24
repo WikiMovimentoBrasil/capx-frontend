@@ -37,6 +37,9 @@ const filterMap: Record<string, string> = {
 export const getHueRotate = (color: string | undefined): string => {
   if (!color) return "";
 
+  if (color.startsWith("#")) {
+    return filterMap[color];
+  }
   // Pegar o filtro baseado no nome da categoria
   const filter = filterMap[colorMap[color]];
 

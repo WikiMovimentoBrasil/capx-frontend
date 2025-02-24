@@ -9,6 +9,7 @@ import InfoIcon from "@/public/static/images/info.svg";
 import InfoFilledIcon from "@/public/static/images/info_filled.svg";
 import { Capacity } from "@/types/capacity";
 import { useState } from "react";
+import { useApp } from "@/contexts/AppContext";
 
 interface CapacityCardProps {
   code: number;
@@ -43,6 +44,7 @@ export function CapacityCard({
 }: CapacityCardProps) {
   const router = useRouter();
   const [showInfo, setShowInfo] = useState(false);
+  const { isMobile } = useApp();
 
   const handleInfoClick = async () => {
     if (!showInfo && onInfoClick) {
@@ -120,7 +122,7 @@ export function CapacityCard({
           style={{
             filter: isRoot
               ? "brightness(0) invert(1)"
-              : getHueRotate(parentCapacity?.color),
+              : getHueRotate(parentCapacity?.color || color),
           }}
         />
       </div>
@@ -130,11 +132,22 @@ export function CapacityCard({
   const renderArrowButton = (size: number, icon: string) => (
     <button onClick={onExpand} className="p-2 flex-shrink-0">
       <div
-        className={`relative w-[68px] h-[68px] mr-12 transition-transform duration-300 ${
+        style={{ width: `${size}px`, height: `${size}px` }}
+        className={`relative mr-12 transition-transform duration-300 ${
           isExpanded ? "rotate-180" : ""
         }`}
       >
-        <Image src={ArrowDownIcon} alt="Expand" fill priority />
+        <Image
+          src={icon}
+          alt="Expand"
+          fill
+          priority
+          style={{
+            filter: isRoot
+              ? "brightness(0) invert(1)"
+              : getHueRotate(parentCapacity?.color),
+          }}
+        />
       </div>
     </button>
   );
@@ -143,25 +156,42 @@ export function CapacityCard({
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
-  if (hasChildren) {
+  if (isRoot && hasChildren) {
     return (
       <div
-        className={`flex flex-col rounded-lg w-full bg-${color} shadow-sm hover:shadow-md transition-shadow`}
+        className={`flex flex-col w-full bg-${color} shadow-sm hover:shadow-md transition-shadow
+          ${isMobile ? "rounded-[4px]" : "rounded-lg"}
+          `}
       >
-        <div className="flex h-[326px] justify-between items-center p-4">
-          <div className="flex items-center gap-8 ml-12">
-            {icon && renderIcon(85, icon)}
+        <div
+          className={`flex p-4 ${
+            isMobile
+              ? "h-[191px] flex-col mt-12 mx-6 gap-6"
+              : "flex-row justify-between h-[326px] items-center"
+          }`}
+        >
+          {icon && isMobile ? renderIcon(48, icon) : renderIcon(85, icon)}
+
+          <div className={`flex items-center gap-6 flex-row`}>
             <div className="flex items-center w-[378px] h-full">
               <Link href={`/capacity/${code}`}>
-                <h3 className="text-[48px] font-extrabold text-white">
+                <h3
+                  className={`font-extrabold text-white ${
+                    isMobile ? "text-[20px]" : "text-[48px]"
+                  }`}
+                >
                   {capitalizeFirstLetter(name)}
                 </h3>
               </Link>
             </div>
-          </div>
 
-          {renderInfoButton(68, InfoIcon)}
-          {!isSearch && renderArrowButton(68, ArrowDownIcon)}
+            {isMobile
+              ? renderInfoButton(24, InfoIcon)
+              : renderInfoButton(68, InfoIcon)}
+            {!isSearch && isMobile
+              ? renderArrowButton(24, ArrowDownIcon)
+              : renderArrowButton(68, ArrowDownIcon)}
+          </div>
         </div>
         {showInfo && (
           <div className="bg-white rounded-b-lg p-8">
@@ -174,13 +204,19 @@ export function CapacityCard({
 
   return (
     <div className={`flex flex-col w-full rounded-lg bg-capx-light-box-bg`}>
-      <div className="flex flex-row items-center w-full h-[144px] justify-between px-16">
+      <div
+        className={`flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 ${
+          isMobile ? "px-4 mx-6" : "px-16"
+        }`}
+      >
         <div className="flex items-center gap-4">
-          {icon && renderIcon(68, icon)}
+          {icon && isMobile ? renderIcon(48, icon) : renderIcon(68, icon)}
           <div className="flex flex-row items-center justify-between">
             <Link href={`/capacity/${code}`} className="w-full">
               <h3
-                className="text-[36px] font-extrabold"
+                className={`font-extrabold ${
+                  isMobile ? "text-[20px]" : "text-[36px]"
+                }`}
                 style={{
                   color: parentCapacity?.color
                     ? getCapacityColor(parentCapacity.color)
@@ -192,7 +228,14 @@ export function CapacityCard({
             </Link>
           </div>
         </div>
-        {renderInfoButton(40, InfoIcon)}
+        <div className="flex items-center gap-4">
+          {isMobile
+            ? renderInfoButton(24, InfoIcon)
+            : renderInfoButton(40, InfoIcon)}
+          {hasChildren && !isRoot && !isSearch && isMobile
+            ? renderArrowButton(24, ArrowDownIcon)
+            : renderArrowButton(40, ArrowDownIcon)}
+        </div>
       </div>
       {showInfo && renderExpandedContent()}
     </div>

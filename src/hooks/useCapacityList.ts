@@ -64,7 +64,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
   }, [token, language]);
 
   const fetchCapacitiesByParent = useCallback(
-    async (parentCode: string, config?: AxiosRequestConfig) => {
+    async (parentCode: string) => {
       if (!token) return [];
 
       try {
@@ -75,10 +75,20 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           }
         );
 
-        const capacityData = Object.entries(response).map(([code, name]) => ({
-          code,
-          name,
-        }));
+        const capacityData = await Promise.all(
+          Object.entries(response).map(async ([code, name]) => {
+            const childrenResponse =
+              await capacityService.fetchCapacitiesByType(code, {
+                headers: { Authorization: `Token ${token}` },
+              });
+
+            return {
+              code,
+              name,
+              hasChildren: Object.keys(childrenResponse).length > 0,
+            };
+          })
+        );
 
         const parentCapacity = rootCapacities.find(
           (cap) => cap.code.toString() === parentCode.toString()
@@ -91,7 +101,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
             name: item.name,
             color: getCapacityColor(parentCapacity?.color || "gray-200"),
             icon: getCapacityIcon(Number(parentCode)),
-            hasChildren: false,
+            hasChildren: item.hasChildren,
             skill_type: [],
             skill_wikidata_item: "",
           };

@@ -20,7 +20,7 @@ export function CapacitySearch({
   onSearchEnd,
 }: CapacitySearchProps) {
   const { data: session } = useSession();
-  const { language } = useApp();
+  const { language, isMobile } = useApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [expandedCapacities, setExpandedCapacities] = useState<
@@ -92,7 +92,9 @@ export function CapacitySearch({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search capacities"
-        className="w-full py-6 px-3 text-[24px] text-[#829BA4] rounded-[16px] border border-[2px] border-capx-dark-box-bg"
+        className={`w-full py-6 px-3 text-capx-dark-box-bg rounded-[16px] opacity-50 ${
+          isMobile ? "text-[12px]" : "text-[24px]"
+        }`}
         icon={SearchIcon}
         iconPosition="right"
       />

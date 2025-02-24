@@ -11,7 +11,7 @@ import { CapacitySearch } from "./CapacitySearch";
 import { useCapacityList } from "@/hooks/useCapacityList";
 
 export default function CapacityListMainWrapper() {
-  const { pageContent, language } = useApp();
+  const { pageContent, language, isMobile } = useApp();
   const { status, data: session } = useSession();
   const { darkMode } = useTheme();
 
@@ -96,34 +96,31 @@ export default function CapacityListMainWrapper() {
         </div>
       ) : (
         /* Mostra os cards originais quando não houver resultados de busca */
-        <div className="grid gap-[40px]">
+        <div className="grid gap-[40px] w-full max-w-[992px] mx-auto">
           {rootCapacities.map((capacity) => (
-            <div key={capacity.code}>
-              <div className="max-w-[992px]">
-                <CapacityCard
-                  {...capacity}
-                  isExpanded={!!expandedCapacities[capacity.code]}
-                  onExpand={() =>
-                    toggleChildCapacities(capacity.code.toString())
-                  }
-                  hasChildren={true}
-                  isRoot={true}
-                  color={capacity.color}
-                  icon={capacity.icon}
-                  description={descriptions[capacity.code] || ""}
-                  wd_code={wdCodes[capacity.code] || ""}
-                  onInfoClick={fetchCapacityDescription}
-                />
-              </div>
-
+            <div
+              key={capacity.code}
+              className={` ${
+                isMobile ? "w-screen w-fit w-max-w-[768px]" : "w-full"
+              }`}
+            >
+              <CapacityCard
+                {...capacity}
+                isExpanded={!!expandedCapacities[capacity.code]}
+                onExpand={() => toggleChildCapacities(capacity.code.toString())}
+                hasChildren={true}
+                isRoot={true}
+                color={capacity.color}
+                icon={capacity.icon}
+                description={descriptions[capacity.code] || ""}
+                wd_code={wdCodes[capacity.code] || ""}
+                onInfoClick={fetchCapacityDescription}
+              />
               {expandedCapacities[capacity.code] && (
                 <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
                   <div className="flex gap-4 pb-4 w-3/4">
                     {(childrenCapacities[capacity.code] || []).map((child) => (
-                      <div
-                        key={child.code}
-                        className="flex-shrink-0 max-w-[992px] w-full"
-                      >
+                      <div key={child.code} className="mt-4 max-w-[992px]">
                         <CapacityCard
                           {...child}
                           isExpanded={!!expandedCapacities[child.code]}
@@ -131,13 +128,47 @@ export default function CapacityListMainWrapper() {
                             toggleChildCapacities(child.code.toString())
                           }
                           hasChildren={child.hasChildren}
+                          isRoot={false}
                           parentCapacity={capacity}
-                          color={child.color}
                           description={descriptions[child.code] || ""}
                           wd_code={wdCodes[child.code] || ""}
-                          isRoot={false}
                           onInfoClick={fetchCapacityDescription}
                         />
+                        {expandedCapacities[child.code] && (
+                          <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
+                            <div className="flex gap-4 pb-4 w-3/4">
+                              {(childrenCapacities[child.code] || []).map(
+                                (grandChild) => (
+                                  <div
+                                    key={grandChild.code}
+                                    className="mt-4 max-w-[992px]"
+                                  >
+                                    <CapacityCard
+                                      {...grandChild}
+                                      isExpanded={
+                                        !!expandedCapacities[grandChild.code]
+                                      }
+                                      onExpand={() =>
+                                        toggleChildCapacities(
+                                          grandChild.code.toString()
+                                        )
+                                      }
+                                      hasChildren={grandChild.hasChildren}
+                                      isRoot={false}
+                                      parentCapacity={child}
+                                      description={
+                                        descriptions[grandChild.code] || ""
+                                      }
+                                      wd_code={wdCodes[grandChild.code] || ""}
+                                      onInfoClick={fetchCapacityDescription}
+                                      color={child.color}
+                                    />
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
