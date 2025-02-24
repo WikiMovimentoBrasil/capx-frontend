@@ -106,6 +106,7 @@
 	"footer-link-documentation": "Documentassion",
 	"footer-link-wikimedia": "Meta-Wikimedia",
 	"footer-message": "Da e për ël moviment Wikimedia",
+	"footer-privacy-policy": "Régole ëd confidensialità",
 	"aria-language-input": "Serne na lenga",
 	"sign-out-button": "Seurte dal sistema",
 	"sign-in-button": "Intré ant ël sistema",
@@ -200,5 +201,16 @@
 	"edit-profile-consent-wikidata-item": "I son d'acòrd a smon-e mè element Wikidata ansima al profil CapX (s'a esist).",
 	"edit-profile-wikimedia-projects": "Ch'a buta d'anformassion an sij proget ëd Wikimedia ch'a j'anteresso.",
 	"edit-profile-insert-project": "Anserì un proget",
-	"edit-profile-insert-link": "Anserì un document URL"
+	"edit-profile-insert-link": "Anserì un document URL",
+	"privacy-policy-icon": "Plancia dle régole ëd confidensialità",
+	"privacy-policy-title": "Régole ëd confidensialità ëd Barat ëd Capassità",
+	"privacy-policy-capacity-exchange-text": "Ës sit a l'é un proget antërnassional coordinà al moment da $1. A marcia an sij Servissi ëd Nìvola ëd Wikimedia, për la precision su $2, donca a lé soget al $3, e a deuvra ëd fasson limità dj'anformassion privà. Tut ël contnù a l'é sota CC-BY-SA. Le contribussion ëd còdes a son bin ëvnùe.",
+	"privacy-policy-link-wiki-moviment-brazil": "Wiki Movimento Brasil",
+	"privacy-policy-link-toolforge": "Fòrgia d'utiss",
+	"privacy-policy-link-cloud-service-terms-of-use": "Condission d'usagi dël servissi ëd nìvola",
+	"privacy-policy-private-information-title": "Anformassion privà",
+	"privacy-policy-private-information-intro-topics": "Ës sit a goerna coste anformassion privà:",
+	"privacy-policy-private-information-topic01": "Stranòm ëd Wikimedia;",
+	"privacy-policy-private-information-topic02": "Për utent rintrà ant ël sistema: $1 credensiaj ch'a përmëtto n'acess parsial a sò cont Wikimedia;",
+	"privacy-policy-private-information-topic02-link": "OAuth"
 }
