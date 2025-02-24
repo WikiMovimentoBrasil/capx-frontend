@@ -120,6 +120,7 @@ export function CapacitySearch({
                   description={descriptions[capacity.code] || ""}
                   wd_code={wdCodes[capacity.code] || ""}
                   onInfoClick={fetchCapacityDescription}
+                  isSearch={true}
                 />
               </div>
             );

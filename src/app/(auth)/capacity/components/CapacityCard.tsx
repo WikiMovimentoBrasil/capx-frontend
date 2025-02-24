@@ -22,6 +22,7 @@ interface CapacityCardProps {
   description?: string;
   wd_code?: string;
   isRoot?: boolean;
+  isSearch?: boolean;
   onInfoClick?: (code: number) => Promise<string | undefined>;
 }
 
@@ -37,6 +38,7 @@ export function CapacityCard({
   description,
   wd_code,
   isRoot,
+  isSearch,
   onInfoClick,
 }: CapacityCardProps) {
   const router = useRouter();
@@ -52,25 +54,28 @@ export function CapacityCard({
   const renderExpandedContent = () => {
     if (!showInfo) return null;
 
-    console.log("description", description);
     return (
-      <div className="flex flex-col gap-6 mt-6 mb-16">
+      <div className="flex flex-col gap-6 mt-6 mb-16 px-16">
         {wd_code && (
           <a href={wd_code}>
             <div className="flex flex-row items-center gap-2">
               <div className="relative w-[36px] h-[36px]">
                 <Image src={BarCodeIcon} alt="BarCode" fill priority />
               </div>
-              <p className="text-[20px] text-capx-light-link">{wd_code}</p>
+              <p className="text-[20px] text-capx-light-link underline">
+                {wd_code}
+              </p>
             </div>
           </a>
         )}
         {description && (
-          <p className="text-[20px] text-capx-dark-box-bg">{description}</p>
+          <p className="text-[20px] text-capx-dark-box-bg">
+            {capitalizeFirstLetter(description)}
+          </p>
         )}
         <BaseButton
           label="Explore capacity"
-          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${color} hover:bg-capx-primary-green text-[#F6F6F6] hover:text-capx-dark-bg font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
+          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${parentCapacity?.color} text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
           onClick={() => router.push(`/capacity/${code}`)}
         />
       </div>
@@ -99,7 +104,10 @@ export function CapacityCard({
   };
 
   const renderInfoButton = (size: number, icon: string) => (
-    <button onClick={handleInfoClick} className="p-1 flex-shrink-0">
+    <button
+      onClick={handleInfoClick}
+      className={`p-1 flex-shrink-0 ${isSearch ? "mr-12" : ""}`}
+    >
       <div
         className="relative"
         style={{ width: `${size}px`, height: `${size}px` }}
@@ -131,6 +139,10 @@ export function CapacityCard({
     </button>
   );
 
+  const capitalizeFirstLetter = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
   if (hasChildren) {
     return (
       <div
@@ -138,18 +150,18 @@ export function CapacityCard({
       >
         <div className="flex h-[326px] justify-between items-center p-4">
           <div className="flex items-center gap-8 ml-12">
-            {icon && renderIcon(135, icon)}
+            {icon && renderIcon(85, icon)}
             <div className="flex items-center w-[378px] h-full">
               <Link href={`/capacity/${code}`}>
                 <h3 className="text-[48px] font-extrabold text-white">
-                  {name}
+                  {capitalizeFirstLetter(name)}
                 </h3>
               </Link>
             </div>
           </div>
 
           {renderInfoButton(68, InfoIcon)}
-          {renderArrowButton(68, ArrowDownIcon)}
+          {!isSearch && renderArrowButton(68, ArrowDownIcon)}
         </div>
         {showInfo && (
           <div className="bg-white rounded-b-lg p-8">
@@ -161,11 +173,9 @@ export function CapacityCard({
   }
 
   return (
-    <div
-      className={`flex flex-col w-full rounded-lg shadow-sm hover:shadow-md transition-shadow bg-capx-light-box-bg`}
-    >
+    <div className={`flex flex-col w-full rounded-lg bg-capx-light-box-bg`}>
       <div className="flex flex-row items-center w-full h-[144px] justify-between px-16">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {icon && renderIcon(68, icon)}
           <div className="flex flex-row items-center justify-between">
             <Link href={`/capacity/${code}`} className="w-full">
@@ -177,7 +187,7 @@ export function CapacityCard({
                     : "#000000",
                 }}
               >
-                {name}
+                {capitalizeFirstLetter(name)}
               </h3>
             </Link>
           </div>

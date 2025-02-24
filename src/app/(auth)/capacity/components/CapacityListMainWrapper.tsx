@@ -28,8 +28,6 @@ export default function CapacityListMainWrapper() {
     fetchCapacityDescription,
   } = useCapacityList(session?.user?.token, language);
 
-  console.log("descriptions", descriptions);
-
   const [expandedCapacities, setExpandedCapacities] = useState<
     Record<string, boolean>
   >({});
@@ -95,9 +93,6 @@ export default function CapacityListMainWrapper() {
               />
             </div>
           ))}
-          {isSearching && searchResults.length === 0 && (
-            <div className="text-center text-gray-500">No data found</div>
-          )}
         </div>
       ) : (
         /* Mostra os cards originais quando não houver resultados de busca */
@@ -123,7 +118,7 @@ export default function CapacityListMainWrapper() {
 
               {expandedCapacities[capacity.code] && (
                 <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
-                  <div className="flex gap-4 pb-4">
+                  <div className="flex gap-4 pb-4 w-3/4">
                     {(childrenCapacities[capacity.code] || []).map((child) => (
                       <div
                         key={child.code}
