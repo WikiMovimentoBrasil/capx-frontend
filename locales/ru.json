@@ -3,11 +3,13 @@
 		"authors": [
 			"Cabadeck",
 			"Kareyac",
-			"Okras"
+			"Okras",
+			"Yurina Tatiana"
 		]
 	},
 	"loading": "Загружается…",
 	"auth-dialog-button-continue": "Продолжить",
+	"auth-dialog-button-close": "Закрыть вкладку",
 	"navbar-link-about": "О проекте",
 	"navbar-link-profiles": "Мои профили",
 	"navbar-link-events": "События",
@@ -33,6 +35,7 @@
 	"organization-profile-open-project": "Открытый проект",
 	"body-profile-section-title-team": "Команда",
 	"footer-link-documentation": "Документация",
+	"footer-privacy-policy": "Политика конфиденциальности",
 	"sign-out-button": "Выйти",
 	"sign-in-button": "Войти",
 	"form-talk-page": "Страница обсуждения",
@@ -55,5 +58,7 @@
 	"edit-profile-add-more-projects": "Добавить больше проектов",
 	"edit-profile-add-more-events": "Добавить больше событий",
 	"edit-profile-add-events": "Добавить события",
-	"edit-profile-news": "Новости"
+	"edit-profile-news": "Новости",
+	"edit-profile-insert-project": "Вставить проект",
+	"privacy-policy-link-toolforge": "Toolforge"
 }
