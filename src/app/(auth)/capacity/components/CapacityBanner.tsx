@@ -12,7 +12,7 @@ export function CapacityBanner() {
       }`}
     >
       <div
-        className={`flex flex-row bg-capx-dark-bg w-screen items-center ${
+        className={`flex flex-row bg-capx-dark-bg max-w-screen-xl mx-auto items-center ${
           isMobile
             ? "gap-3 flex-col"
             : "w-full h-full justify-between gap-[120px]"

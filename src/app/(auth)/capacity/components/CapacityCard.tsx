@@ -85,6 +85,8 @@ export function CapacityCard({
   };
 
   const renderIcon = (size: number, iconSrc: any) => {
+    if (!iconSrc) return null;
+
     return (
       <div
         style={{ width: `${size}px`, height: `${size}px` }}
@@ -172,7 +174,11 @@ export function CapacityCard({
         >
           {icon && isMobile ? renderIcon(48, icon) : renderIcon(85, icon)}
 
-          <div className={`flex items-center gap-16 flex-row`}>
+          <div
+            className={`flex items-center flex-row ${
+              isMobile ? "gap-4" : "gap-16"
+            }`}
+          >
             <div className="flex items-center w-[378px] h-full">
               <Link href={`/capacity/${code}`}>
                 <h3
@@ -234,13 +240,16 @@ export function CapacityCard({
             </Link>
           </div>
         </div>
-        <div className={`flex items-center gap-4`}>
+        <div className={`flex items-center gap-4 mr-4`}>
           {isMobile
             ? renderInfoButton(24, InfoIcon)
             : renderInfoButton(40, InfoIcon)}
-          {hasChildren && !isRoot && !isSearch
-            ? renderArrowButton(40, ArrowDownIcon)
-            : renderArrowButton(24, ArrowDownIcon)}
+          {hasChildren &&
+            !isRoot &&
+            !isSearch &&
+            (isMobile
+              ? renderArrowButton(24, ArrowDownIcon)
+              : renderArrowButton(40, ArrowDownIcon))}
         </div>
       </div>
       {showInfo && renderExpandedContent()}

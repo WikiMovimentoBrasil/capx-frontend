@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { capacityService } from "@/services/capacityService";
 import { getCapacityColor, getCapacityIcon } from "@/lib/utils/capacitiesUtils";
-import { AxiosRequestConfig } from "axios";
 import { CapacityResponse, Capacity } from "@/types/capacity";
 
 export function useCapacityList(token?: string, language: string = "pt-br") {
@@ -106,6 +105,8 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
             skill_wikidata_item: "",
           };
         });
+
+        console.log(formattedCapacities);
 
         setChildrenCapacities((prev) => ({
           ...prev,

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/contexts/AppContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import { LoadingSection } from "./LoadingSection";
+import LoadingState from "@/components/LoadingState";
 import { CapacityCard } from "./CapacityCard";
 import { CapacityBanner } from "./CapacityBanner";
 import { CapacitySearch } from "./CapacitySearch";
@@ -13,7 +13,6 @@ import { useCapacityList } from "@/hooks/useCapacityList";
 export default function CapacityListMainWrapper() {
   const { pageContent, language, isMobile } = useApp();
   const { status, data: session } = useSession();
-  const { darkMode } = useTheme();
 
   const {
     rootCapacities,
@@ -59,11 +58,11 @@ export default function CapacityListMainWrapper() {
   );
 
   if (status === "loading") {
-    return <LoadingSection darkMode={darkMode} message="Capacities" />;
+    return <LoadingState />;
   }
 
   return (
-    <section className="flex flex-col max-w-[1024px] mx-auto py-8 px-4 gap-[40px]">
+    <section className="flex flex-col max-w-screen-xl mx-auto py-8 px-4 md:px-8 lg:px-12 gap-[40px]">
       <CapacityBanner />
       <CapacitySearch
         onSearchStart={() => setIsSearching(true)}
@@ -75,7 +74,7 @@ export default function CapacityListMainWrapper() {
       {searchResults.length > 0 || isSearching ? (
         <div className="grid gap-4">
           {searchResults.map((capacity) => (
-            <div key={capacity.code} className="max-w-[992px]">
+            <div key={capacity.code} className="max-w-screen-xl mx-auto">
               <CapacityCard
                 {...capacity}
                 isExpanded={!!expandedCapacities[capacity.code]}
@@ -96,7 +95,7 @@ export default function CapacityListMainWrapper() {
         </div>
       ) : (
         /* Mostra os cards originais quando não houver resultados de busca */
-        <div className="grid gap-[40px] w-full max-w-[992px] mx-auto">
+        <div className="grid gap-[40px] w-full max-w-screen-xl mx-auto">
           {rootCapacities.map((capacity) => (
             <div
               key={capacity.code}

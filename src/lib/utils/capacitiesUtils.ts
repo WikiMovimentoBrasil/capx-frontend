@@ -58,9 +58,6 @@ export const getCapacityColor = (color: string): string => {
 };
 
 export const getCapacityIcon = (code: number): string => {
-  // Pega apenas o código base (antes do ponto, se houver)
-  const baseCode = String(code).split(".")[0];
-
   const iconMap: Record<string, string> = {
     "10": OrganizationalIcon,
     "36": CommunicationIcon,
@@ -71,7 +68,7 @@ export const getCapacityIcon = (code: number): string => {
     "106": TechnologyIcon,
   };
 
-  return iconMap[baseCode] || "";
+  return iconMap[code] || "";
 };
 
 export const toggleChildCapacities = async (

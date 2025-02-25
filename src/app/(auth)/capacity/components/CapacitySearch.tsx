@@ -86,7 +86,7 @@ export function CapacitySearch({
   );
 
   return (
-    <div className="w-full mx-auto w-screen">
+    <div className="w-full mx-auto max-w-screen-xl">
       <BaseInput
         type="text"
         value={searchTerm}
