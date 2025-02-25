@@ -159,7 +159,7 @@
   "edit-profile-image-title": "Image profile",
   "edit-profile-choose-avatar": "Choose avatar",
   "edit-profile-use-wikidata": "Use Wikidata item",
-  "edit-profile-consent-wikidata": "I consent displaying my Wikidata item image on CapX profile (if existent).",
+  "edit-profile-consent-wikidata": "By clicking here, I agree to have my Wikidata item image on CapX's profile. The tool will look in Wikidata for an image related to your username and will show it if found.",
   "edit-profile-save": "Save profile",
   "edit-profile-cancel": "Cancel edit",
   "edit-profile-mini-bio": "Mini bio",
@@ -194,7 +194,7 @@
   "edit-profile-territory": "Inform your geographic location by region or country.",
   "edit-profile-display-links": "Let the community know what your organization is working on. Share up to four Wikimedia links and related images on Commons.",
   "edit-profile-wikidata-item": "Wikidata Item",
-  "edit-profile-consent-wikidata-item": "I consent displaying my Wikidata item on CapX profile (if existent).",
+  "edit-profile-consent-wikidata-item": "By clicking here, I agree to have my Wikidata item displayed on CapX's profile. The tool will look in Wikidata for a QID related to your username and will show it if found.",
   "edit-profile-wikimedia-projects": "Inform the Wikimedia Projects you have interest in.",
   "edit-profile-insert-project": "Insert project",
   "edit-profile-insert-link": "Insert document URL"
