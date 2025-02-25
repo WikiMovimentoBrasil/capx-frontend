@@ -195,5 +195,12 @@
   "edit-profile-consent-wikidata-item": "I consent displaying my Wikidata item on CapX profile (if existent).",
   "edit-profile-wikimedia-projects": "Inform the Wikimedia Projects you have interest in.",
   "edit-profile-insert-project": "Insert project",
-  "edit-profile-insert-link": "Insert document URL"
+  "edit-profile-insert-link": "Insert document URL",
+  "capacity-card-explore-capacity": "Explore capacity",
+  "capacity-card-expand-capacity": "Expand",
+  "capacity-card-info": "Information",
+  "capacity-search-placeholder": "Search for a capacity",
+  "capacity-search-no-results": "No results found",
+  "capacity-search-error": "Error searching for capacities",
+  "capacity-banner-title": "Exchange Everything"
 }

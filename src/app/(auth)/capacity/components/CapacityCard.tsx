@@ -19,7 +19,7 @@ interface CapacityCardProps {
   parentCapacity?: Capacity;
   onExpand: () => void;
   isExpanded: boolean;
-  hasChildren: boolean;
+  hasChildren?: boolean;
   description?: string;
   wd_code?: string;
   isRoot?: boolean;
@@ -44,7 +44,7 @@ export function CapacityCard({
 }: CapacityCardProps) {
   const router = useRouter();
   const [showInfo, setShowInfo] = useState(false);
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   const handleInfoClick = async () => {
     if (!showInfo && onInfoClick) {
@@ -76,7 +76,7 @@ export function CapacityCard({
           </p>
         )}
         <BaseButton
-          label="Explore capacity"
+          label={pageContent["capacity-card-explore-capacity"]}
           customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${parentCapacity?.color} text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
           onClick={() => router.push(`/capacity/${code}`)}
         />
@@ -111,6 +111,7 @@ export function CapacityCard({
     <button
       onClick={handleInfoClick}
       className={`p-1 flex-shrink-0 ${isSearch ? "mr-12" : ""}`}
+      aria-label={pageContent["capacity-card-info"]}
     >
       <div
         className="relative"
@@ -141,7 +142,7 @@ export function CapacityCard({
       >
         <Image
           src={icon}
-          alt="Expand"
+          alt={pageContent["capacity-card-expand-capacity"]}
           fill
           priority
           style={{
@@ -158,50 +159,76 @@ export function CapacityCard({
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
-  if (isRoot && hasChildren) {
+  if ((isRoot && hasChildren) || isSearch) {
     return (
-      <div
-        className={`flex flex-col w-full bg-${color} shadow-sm hover:shadow-md transition-shadow
+      <div className="w-full">
+        <div
+          className={`flex flex-col w-full bg-${color} shadow-sm hover:shadow-md transition-shadow
           ${isMobile ? "rounded-[4px]" : "rounded-lg"}
           `}
-      >
-        <div
-          className={`flex p-4 ${
-            isMobile
-              ? "h-[191px] flex-col mt-12 mx-6 gap-6"
-              : "flex-row h-[326px] justify-around items-center"
-          }`}
         >
-          {icon && isMobile ? renderIcon(48, icon) : renderIcon(85, icon)}
-
           <div
-            className={`flex items-center flex-row ${
-              isMobile ? "gap-4" : "gap-16"
+            className={`flex p-4 ${
+              isMobile
+                ? "h-[191px] flex-col mt-12 mx-6 gap-6"
+                : "flex-row h-[326px] justify-around items-center"
             }`}
           >
-            <div className="flex items-center w-[378px] h-full">
-              <Link href={`/capacity/${code}`}>
-                <h3
-                  className={`font-extrabold text-white ${
-                    isMobile ? "text-[20px]" : "text-[48px]"
-                  }`}
-                >
-                  {capitalizeFirstLetter(name)}
-                </h3>
-              </Link>
-            </div>
+            {icon && isMobile ? renderIcon(48, icon) : renderIcon(85, icon)}
 
-            {isMobile
-              ? renderInfoButton(24, InfoIcon)
-              : renderInfoButton(68, InfoIcon)}
-            {!isSearch && isMobile
-              ? renderArrowButton(24, ArrowDownIcon)
-              : renderArrowButton(68, ArrowDownIcon)}
+            <div
+              className={`flex items-center flex-row ${
+                isMobile ? "gap-4" : "gap-16"
+              }`}
+            >
+              <div className="flex items-center w-[378px] h-full">
+                <Link href={`/capacity/${code}`}>
+                  <h3
+                    className={`font-extrabold text-white ${
+                      isMobile ? "text-[20px]" : "text-[48px]"
+                    }`}
+                  >
+                    {capitalizeFirstLetter(name)}
+                  </h3>
+                </Link>
+              </div>
+
+              {isSearch ? (
+                <>
+                  {isMobile ? (
+                    <>{renderInfoButton(24, InfoIcon)}</>
+                  ) : (
+                    <>{renderInfoButton(68, InfoIcon)}</>
+                  )}
+                </>
+              ) : (
+                <>
+                  {isMobile ? (
+                    <>
+                      {renderInfoButton(24, InfoIcon)}
+                      {renderArrowButton(24, ArrowDownIcon)}
+                    </>
+                  ) : (
+                    <>
+                      {renderInfoButton(68, InfoIcon)}
+                      {renderArrowButton(68, ArrowDownIcon)}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
+          {showInfo && (
+            <div className="bg-white rounded-b-lg p-8">
+              {renderExpandedContent()}
+            </div>
+          )}
         </div>
-        {showInfo && (
-          <div className="bg-white rounded-b-lg p-8">
-            {renderExpandedContent()}
+        {isExpanded && !isSearch && (
+          <div className="mt-4 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-4 pb-4">
+              {/* O conteúdo expandido será renderizado aqui pelo componente pai */}
+            </div>
           </div>
         )}
       </div>

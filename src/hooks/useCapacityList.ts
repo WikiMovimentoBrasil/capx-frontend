@@ -162,16 +162,86 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
 
   const findParentCapacity = useCallback(
     (childCapacity: Capacity) => {
+      console.log("Procurando parent para capacidade:", childCapacity);
+      console.log("skill_type:", childCapacity.skill_type);
+
       if (!childCapacity.skill_type || childCapacity.skill_type.length === 0) {
+        console.log("Sem skill_type definido");
         return undefined;
       }
 
       const parentId = childCapacity.skill_type[0];
-      return rootCapacities.find(
+      console.log("ParentId:", parentId);
+
+      // Primeiro procura nas root capacities
+      const rootParent = rootCapacities.find(
         (root) => root.code.toString() === parentId.toString()
       );
+      console.log("Root capacities:", rootCapacities);
+      console.log("Encontrou nas roots?", rootParent);
+
+      if (rootParent) {
+        return rootParent;
+      }
+
+      // Se não encontrou nas roots, procura em todos os filhos
+      console.log("Children capacities:", childrenCapacities);
+      for (const rootCode in childrenCapacities) {
+        console.log("Verificando filhos da root:", rootCode);
+        const children = childrenCapacities[rootCode];
+        const parent = children?.find(
+          (child) => child.code.toString() === parentId.toString()
+        );
+        console.log("Encontrou nos filhos?", parent);
+
+        if (parent) {
+          const grandparent = rootCapacities.find(
+            (root) => root.code.toString() === rootCode.toString()
+          );
+          console.log("Grandparent encontrado:", grandparent);
+
+          return {
+            ...parent,
+            parentCapacity: grandparent,
+            color: grandparent?.color || parent.color,
+            icon: getCapacityIcon(Number(rootCode)),
+          };
+        }
+      }
+
+      // Se ainda não encontrou, pode ser uma capacidade neta
+      console.log("Procurando entre os netos...");
+      for (const rootCode in childrenCapacities) {
+        const children = childrenCapacities[rootCode];
+        for (const child of children || []) {
+          console.log("Verificando filhos de:", child.code);
+          const grandChildren = childrenCapacities[child.code];
+          console.log("Netos encontrados:", grandChildren);
+          const grandChild = grandChildren?.find(
+            (gc) => gc.code.toString() === childCapacity.code.toString()
+          );
+          console.log("É este neto?", grandChild);
+
+          if (grandChild) {
+            const grandparent = rootCapacities.find(
+              (root) => root.code.toString() === rootCode.toString()
+            );
+            console.log("Encontrou avô:", grandparent);
+
+            return {
+              ...child,
+              parentCapacity: grandparent,
+              color: grandparent?.color || child.color,
+              icon: getCapacityIcon(Number(rootCode)),
+            };
+          }
+        }
+      }
+
+      console.log("Nenhum parent encontrado");
+      return undefined;
     },
-    [rootCapacities]
+    [rootCapacities, childrenCapacities]
   );
 
   const fetchCapacitySearch = useCallback(

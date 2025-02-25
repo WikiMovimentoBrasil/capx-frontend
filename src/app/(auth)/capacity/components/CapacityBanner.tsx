@@ -3,7 +3,7 @@ import CapxPeopleLogo from "@/public/static/images/capx_people_illustration.svg"
 import { useApp } from "@/contexts/AppContext";
 
 export function CapacityBanner() {
-  const { isMobile } = useApp();
+  const { isMobile, pageContent } = useApp();
 
   return (
     <section
@@ -42,7 +42,7 @@ export function CapacityBanner() {
                 : "text-start text-[48px]"
             }`}
           >
-            Exchange Everything
+            {pageContent["capacity-banner-title"]}
           </h1>
         </div>
       </div>

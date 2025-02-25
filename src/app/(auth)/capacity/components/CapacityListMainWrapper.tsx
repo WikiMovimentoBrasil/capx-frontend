@@ -3,15 +3,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/contexts/AppContext";
-import { useTheme } from "@/contexts/ThemeContext";
-import LoadingState from "@/components/LoadingState";
 import { CapacityCard } from "./CapacityCard";
 import { CapacityBanner } from "./CapacityBanner";
 import { CapacitySearch } from "./CapacitySearch";
 import { useCapacityList } from "@/hooks/useCapacityList";
+import LoadingState from "@/components/LoadingState";
 
 export default function CapacityListMainWrapper() {
-  const { pageContent, language, isMobile } = useApp();
+  const { language, isMobile } = useApp();
   const { status, data: session } = useSession();
 
   const {
@@ -21,7 +20,6 @@ export default function CapacityListMainWrapper() {
     wdCodes,
     searchResults,
     isLoading,
-    error,
     fetchRootCapacities,
     fetchCapacitiesByParent,
     fetchCapacityDescription,
@@ -57,10 +55,13 @@ export default function CapacityListMainWrapper() {
     [expandedCapacities, fetchCapacitiesByParent, fetchCapacityDescription]
   );
 
-  if (status === "loading") {
-    return <LoadingState />;
+  if (isLoading?.root) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <LoadingState />
+      </div>
+    );
   }
-
   return (
     <section className="flex flex-col max-w-screen-xl mx-auto py-8 px-4 md:px-8 lg:px-12 gap-[40px]">
       <CapacityBanner />
@@ -72,7 +73,7 @@ export default function CapacityListMainWrapper() {
       {/* Mostra os resultados da busca ou os cards originais */}
 
       {searchResults.length > 0 || isSearching ? (
-        <div className="grid gap-4">
+        <div className="grid gap-4 w-full">
           {searchResults.map((capacity) => (
             <div key={capacity.code} className="max-w-screen-xl mx-auto">
               <CapacityCard
@@ -95,7 +96,7 @@ export default function CapacityListMainWrapper() {
         </div>
       ) : (
         /* Mostra os cards originais quando não houver resultados de busca */
-        <div className="grid gap-[40px] w-full max-w-screen-xl mx-auto">
+        <div className="grid gap-[40px] w-full">
           {rootCapacities.map((capacity) => (
             <div
               key={capacity.code}
@@ -116,8 +117,8 @@ export default function CapacityListMainWrapper() {
                 onInfoClick={fetchCapacityDescription}
               />
               {expandedCapacities[capacity.code] && (
-                <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
-                  <div className="flex gap-4 pb-4 w-3/4">
+                <div className="mt-4 w-full overflow-x-auto scrollbar-hide">
+                  <div className="flex gap-4 pb-4 w-3/4 max-w-screen-xl">
                     {(childrenCapacities[capacity.code] || []).map((child) => (
                       <div key={child.code} className="mt-4 max-w-[992px]">
                         <CapacityCard
@@ -134,7 +135,7 @@ export default function CapacityListMainWrapper() {
                           onInfoClick={fetchCapacityDescription}
                         />
                         {expandedCapacities[child.code] && (
-                          <div className="mt-4 max-w-[992px] overflow-x-auto scrollbar-hide">
+                          <div className="mt-4 overflow-x-auto scrollbar-hide">
                             <div className="flex gap-4 pb-4 w-3/4">
                               {(childrenCapacities[child.code] || []).map(
                                 (grandChild) => (

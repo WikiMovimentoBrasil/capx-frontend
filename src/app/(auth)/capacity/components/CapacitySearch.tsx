@@ -20,7 +20,7 @@ export function CapacitySearch({
   onSearchEnd,
 }: CapacitySearchProps) {
   const { data: session } = useSession();
-  const { language, isMobile } = useApp();
+  const { language, isMobile, pageContent } = useApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [expandedCapacities, setExpandedCapacities] = useState<
@@ -86,12 +86,12 @@ export function CapacitySearch({
   );
 
   return (
-    <div className="w-full mx-auto max-w-screen-xl">
+    <div className="w-full">
       <BaseInput
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search for capacities"
+        placeholder={pageContent["capacity-search-placeholder"]}
         className={`w-full py-6 px-3 text-capx-dark-box-bg rounded-[16px] opacity-50 border border-capx-dark-box-bg ${
           isMobile ? "text-[12px]" : "text-[24px]"
         }`}
@@ -105,16 +105,16 @@ export function CapacitySearch({
         ) : (
           searchResults.map((capacity) => {
             const parentCode = capacity.parentCode;
-
             const rootCapacity = findParentCapacity(capacity);
+            /*             const parentCapacity = findParentCapacity(capacity);
+            const grandParentCapacity = findParentCapacity(parentCode); */
 
             return (
-              <div key={capacity.code} className="max-w-[992px]">
+              <div key={capacity.code} className="w-full">
                 <CapacityCard
                   {...capacity}
                   isExpanded={!!expandedCapacities[capacity.code]}
                   onExpand={() => toggleCapacity(capacity.code.toString())}
-                  hasChildren={true}
                   isRoot={!parentCode}
                   color={rootCapacity?.color || capacity.color}
                   icon={rootCapacity?.icon || capacity.icon}
