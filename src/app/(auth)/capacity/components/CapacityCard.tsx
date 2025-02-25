@@ -133,7 +133,7 @@ export function CapacityCard({
     <button onClick={onExpand} className="p-2 flex-shrink-0">
       <div
         style={{ width: `${size}px`, height: `${size}px` }}
-        className={`relative mr-12 transition-transform duration-300 ${
+        className={`relative transition-transform duration-300 ${
           isExpanded ? "rotate-180" : ""
         }`}
       >
@@ -167,12 +167,12 @@ export function CapacityCard({
           className={`flex p-4 ${
             isMobile
               ? "h-[191px] flex-col mt-12 mx-6 gap-6"
-              : "flex-row justify-between h-[326px] items-center"
+              : "flex-row h-[326px] justify-around items-center"
           }`}
         >
           {icon && isMobile ? renderIcon(48, icon) : renderIcon(85, icon)}
 
-          <div className={`flex items-center gap-6 flex-row`}>
+          <div className={`flex items-center gap-16 flex-row`}>
             <div className="flex items-center w-[378px] h-full">
               <Link href={`/capacity/${code}`}>
                 <h3
@@ -209,9 +209,15 @@ export function CapacityCard({
           isMobile ? "px-4 mx-6" : "px-16"
         }`}
       >
-        <div className="flex items-center gap-4">
+        <div
+          className={`flex items-center gap-4 ${isMobile ? "gap-12" : "gap-4"}`}
+        >
           {icon && isMobile ? renderIcon(48, icon) : renderIcon(68, icon)}
-          <div className="flex flex-row items-center justify-between">
+          <div
+            className={`flex flex-row items-center justify-between ${
+              isMobile ? "w-max" : ""
+            }`}
+          >
             <Link href={`/capacity/${code}`} className="w-full">
               <h3
                 className={`font-extrabold ${
@@ -228,13 +234,13 @@ export function CapacityCard({
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className={`flex items-center gap-4`}>
           {isMobile
             ? renderInfoButton(24, InfoIcon)
             : renderInfoButton(40, InfoIcon)}
-          {hasChildren && !isRoot && !isSearch && isMobile
-            ? renderArrowButton(24, ArrowDownIcon)
-            : renderArrowButton(40, ArrowDownIcon)}
+          {hasChildren && !isRoot && !isSearch
+            ? renderArrowButton(40, ArrowDownIcon)
+            : renderArrowButton(24, ArrowDownIcon)}
         </div>
       </div>
       {showInfo && renderExpandedContent()}

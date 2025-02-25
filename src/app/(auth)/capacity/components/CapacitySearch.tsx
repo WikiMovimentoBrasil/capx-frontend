@@ -86,13 +86,13 @@ export function CapacitySearch({
   );
 
   return (
-    <div className="w-full max-w-[992px] mx-auto">
+    <div className="w-full mx-auto w-screen">
       <BaseInput
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search capacities"
-        className={`w-full py-6 px-3 text-capx-dark-box-bg rounded-[16px] opacity-50 ${
+        placeholder="Search for capacities"
+        className={`w-full py-6 px-3 text-capx-dark-box-bg rounded-[16px] opacity-50 border border-capx-dark-box-bg ${
           isMobile ? "text-[12px]" : "text-[24px]"
         }`}
         icon={SearchIcon}
