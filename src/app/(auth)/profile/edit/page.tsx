@@ -61,6 +61,7 @@ import { useAffiliation } from "@/hooks/useAffiliation";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
 import { useAvatars } from "@/hooks/useAvatars";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
+
 const fetchWikidataQid = async (name: string) => {
   try {
     const wikidataQuery = `
@@ -140,6 +141,7 @@ export default function EditProfilePage() {
   const [selectedCapacityType, setSelectedCapacityType] = useState<
     "known" | "available" | "wanted"
   >("known");
+
   const [formData, setFormData] = useState<Partial<Profile>>({
     about: "",
     affiliation: [],
@@ -937,7 +939,9 @@ export default function EditProfilePage() {
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
                     >
-                      <option value="">{pageContent["edit-profile-add-language"]}</option>
+                      <option value="">
+                        {pageContent["edit-profile-add-language"]}
+                      </option>
                       {Object.entries(languages).map(([id, name]) => (
                         <option key={id} value={id}>
                           {name}
@@ -953,7 +957,6 @@ export default function EditProfilePage() {
                       />
                     </div>
                   </div>
-                  
                 </div>
 
                 <span
@@ -1861,10 +1864,10 @@ export default function EditProfilePage() {
             </div>
 
             <span
-                className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
-                  darkMode ? "text-white" : "text-[#053749]"
-                }`}
-              >
+              className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
+                darkMode ? "text-white" : "text-[#053749]"
+              }`}
+            >
               {pageContent["edit-profile-language-tooltip"]}
             </span>
 

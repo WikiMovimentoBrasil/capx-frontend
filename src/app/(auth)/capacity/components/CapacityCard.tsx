@@ -25,6 +25,9 @@ interface CapacityCardProps {
   isRoot?: boolean;
   isSearch?: boolean;
   onInfoClick?: (code: number) => Promise<string | undefined>;
+  isSelectable?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
 export function CapacityCard({
@@ -41,6 +44,9 @@ export function CapacityCard({
   isRoot,
   isSearch,
   onInfoClick,
+  isSelectable,
+  isSelected,
+  onSelect,
 }: CapacityCardProps) {
   const router = useRouter();
   const [showInfo, setShowInfo] = useState(false);
@@ -165,7 +171,10 @@ export function CapacityCard({
         <div
           className={`flex flex-col w-full bg-${color} shadow-sm hover:shadow-md transition-shadow
           ${isMobile ? "rounded-[4px]" : "rounded-lg"}
+          ${isSelectable ? "cursor-pointer" : ""}
+          ${isSelected ? "ring-2 ring-capx-primary-green" : ""}
           `}
+          onClick={isSelectable ? onSelect : undefined}
         >
           <div
             className={`flex p-4 ${
@@ -182,7 +191,7 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <Link href={`/capacity/${code}`}>
+                {isSelectable ? (
                   <h3
                     className={`font-extrabold text-white ${
                       isMobile ? "text-[20px]" : "text-[48px]"
@@ -190,31 +199,45 @@ export function CapacityCard({
                   >
                     {capitalizeFirstLetter(name)}
                   </h3>
-                </Link>
+                ) : (
+                  <Link href={`/capacity/${code}`}>
+                    <h3
+                      className={`font-extrabold text-white ${
+                        isMobile ? "text-[20px]" : "text-[48px]"
+                      }`}
+                    >
+                      {capitalizeFirstLetter(name)}
+                    </h3>
+                  </Link>
+                )}
               </div>
 
-              {isSearch ? (
-                <>
-                  {isMobile ? (
-                    <>{renderInfoButton(24, InfoIcon)}</>
-                  ) : (
-                    <>{renderInfoButton(68, InfoIcon)}</>
-                  )}
-                </>
-              ) : (
+              {!isSearch && (
                 <>
                   {isMobile ? (
                     <>
                       {renderInfoButton(24, InfoIcon)}
-                      {renderArrowButton(24, ArrowDownIcon)}
+                      {hasChildren && renderArrowButton(24, ArrowDownIcon)}
                     </>
                   ) : (
                     <>
                       {renderInfoButton(68, InfoIcon)}
-                      {renderArrowButton(68, ArrowDownIcon)}
+                      {hasChildren && renderArrowButton(68, ArrowDownIcon)}
                     </>
                   )}
                 </>
+              )}
+
+              {isSelectable && isSelected && (
+                <div className="flex items-center justify-center w-8 h-8">
+                  <div className="relative w-6 h-6">
+                    {/* <img
+                      alt="Selected"
+                      src="/icons/check_circle.svg"
+                      className="w-full h-full filter brightness-0 invert"
+                    /> */}
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -277,6 +300,14 @@ export function CapacityCard({
             (isMobile
               ? renderArrowButton(24, ArrowDownIcon)
               : renderArrowButton(40, ArrowDownIcon))}
+          {isSelectable && isSelected && (
+            <div className="flex items-center justify-center w-8 h-8">
+              <div className="relative w-6 h-6">
+                {renderInfoButton(24, InfoIcon)}
+                {renderArrowButton(24, ArrowDownIcon)}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {showInfo && renderExpandedContent()}
