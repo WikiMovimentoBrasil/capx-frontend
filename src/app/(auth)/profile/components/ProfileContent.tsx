@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import ProfileHeader from "./ProfileHeader";
 import MiniBio from "./MiniBio";
-import { CapacitiesList } from "@/components/CapacitiesList";
+import { ProfileItem } from "@/components/ProfileItem";
 import BaseButton from "@/components/BaseButton";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
