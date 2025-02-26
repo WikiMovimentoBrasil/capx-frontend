@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useApp } from '@/contexts/AppContext';
-import { ProfileType } from '../page';
+import { ProfileCapacityType } from '../page';
 
 import LanguageIcon from "@/public/static/images/language.svg";
 import LanguageIconWhite from "@/public/static/images/language_white.svg";
@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation';
 
 interface ProfileCardProps {
   username: string;
-  type: ProfileType;
+  type: ProfileCapacityType;
   capacities: (number | string)[];
   languages?: string[];
   territory?: string;
@@ -31,7 +31,7 @@ interface ProfileCardProps {
 
 export const ProfileCard = ({
   username,
-  type = ProfileType.Learner,
+  type = ProfileCapacityType.Learner,
   capacities = [],
   languages = [],
   territory = '',
@@ -140,7 +140,7 @@ export const ProfileCard = ({
             >
               <Image
                 src={darkMode ? AccountCircleWhite : AccountCircle}
-                alt={pageContent['body-profile-languages-title']}
+                alt={pageContent['body-profile-languages-alt-icon']}
                 width={27}
                 height={27}
                 className="w-[27px] h-[27px] md:w-[42px] md:h-[42px]"
