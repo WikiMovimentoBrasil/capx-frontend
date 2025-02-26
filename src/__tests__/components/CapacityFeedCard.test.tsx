@@ -1,6 +1,17 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ProfileCard } from '@/app/(auth)/feed/components/Card';
-import { ProfileType } from '@/app/(auth)/feed/page';
+import { ProfileCapacityType } from '@/app/(auth)/feed/page';
+
+// Mock the router
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn()
+  }),
+  usePathname: () => '/feed',
+  useSearchParams: () => new URLSearchParams()
+}));
 
 // Mock the next/image component
 jest.mock('next/image', () => ({
@@ -34,7 +45,9 @@ const mockPageContent = {
   "body-profile-available-capacities-title": "Available capacities",
   "body-profile-wanted-capacities-title": "Wanted capacities",
   "body-profile-languages-title": "Languages",
-  "body-profile-section-title-territory": "Territory"
+  "body-profile-section-title-territory": "Territory",
+  "body-profile-languages-alt-icon": "Languages icon",
+  "filters-search-by-capacities": "Search by capacities",
 };
 
 jest.mock('@/contexts/AppContext', () => ({
@@ -52,7 +65,7 @@ describe('ProfileCard', () => {
   describe('Learner Profile', () => {
     const learnerProps = {
       ...defaultProps,
-      type: ProfileType.Learner,
+      type: ProfileCapacityType.Learner,
       capacities: ['Coding', 'Design'],
       languages: ['English', 'Portuguese'],
       territory: 'Brazil'
@@ -94,7 +107,7 @@ describe('ProfileCard', () => {
   describe('Sharer Profile', () => {
     const sharerProps = {
       ...defaultProps,
-      type: ProfileType.Sharer,
+      type: ProfileCapacityType.Sharer,
       capacities: ['Teaching', 'Mentoring'],
       languages: ['Spanish', 'French'],
       territory: 'Argentina'
@@ -134,7 +147,7 @@ describe('ProfileCard', () => {
 
   describe('Empty States', () => {
     it('should display no-data message when arrays are empty', () => {
-      render(<ProfileCard {...defaultProps} type={ProfileType.Learner} />);
+      render(<ProfileCard {...defaultProps} type={ProfileCapacityType.Learner} />);
       
       const noDataMessages = screen.getAllByText("You haven't filled this field yet");
       expect(noDataMessages).toHaveLength(3); // One for each empty section
@@ -143,7 +156,7 @@ describe('ProfileCard', () => {
 
   describe('Layout Structure', () => {
     it('should have a two-column layout on desktop', () => {
-      render(<ProfileCard {...defaultProps} type={ProfileType.Learner} />);
+      render(<ProfileCard {...defaultProps} type={ProfileCapacityType.Learner} />);
       
       const container = screen.getByRole('article');
       expect(container).toHaveClass('md:grid-cols-[350px_1fr]');
