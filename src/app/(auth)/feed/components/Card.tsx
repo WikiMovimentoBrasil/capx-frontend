@@ -15,7 +15,8 @@ import TerritoryIcon from "@/public/static/images/territory.svg";
 import TerritoryIconWhite from "@/public/static/images/territory_white.svg";
 import AccountCircle from "@/public/static/images/account_circle.svg";
 import AccountCircleWhite from "@/public/static/images/account_circle_white.svg";
-import { ProfileItem } from "@/components/ProfileItem";
+import { ProfileItem } from '@/components/ProfileItem';
+import { useRouter } from "next/navigation";
 
 interface ProfileCardProps {
   username: string;
@@ -37,6 +38,7 @@ export const ProfileCard = ({
 }: ProfileCardProps) => {
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
+  const router = useRouter();
 
   const capacitiesTitle =
     type === "learner"
@@ -58,6 +60,8 @@ export const ProfileCard = ({
       ? "text-purple-200 border-purple-200"
       : "text-[#05A300] border-[#05A300]";
 
+  const formattedUsername = username.replace(' ', '_');
+  
   return (
     <div
       className={`w-full rounded-lg border ${
@@ -145,6 +149,9 @@ export const ProfileCard = ({
               className={`inline-flex p-2 rounded-full mr-auto ${
                 darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
               }`}
+              onClick={() => {
+                router.push(`/profile/${formattedUsername}`);
+              }}
             >
               <Image
                 src={darkMode ? AccountCircleWhite : AccountCircle}
