@@ -11,7 +11,8 @@ interface Option {
 interface BaseSelectProps {
   name: string;
   options: any[];
-  defaultValue: any;
+  defaultValue?: any;
+  value?: any;
   onChange: (value: any) => void;
   ariaLabel?: string;
   isMobile: boolean;
@@ -87,6 +88,7 @@ export default function BaseSelect({
   name,
   options,
   defaultValue,
+  value,
   onChange,
   ariaLabel,
   isMobile,
@@ -100,7 +102,7 @@ export default function BaseSelect({
       <Select
         name={name}
         options={options}
-        defaultValue={defaultValue}
+        value={value}
         onChange={onChange}
         aria-label={ariaLabel}
         className={`${className} ${isMobile ? "w-[73px] h-8" : "w-[100px]"} ${
@@ -134,8 +136,7 @@ export default function BaseSelect({
           dropdownIndicator: () =>
             `flex items-center ${
               isMobile ? "!w-[20px] !h-[20px]" : "!w-[40px] !h-[40px]"
-            }
-            `,
+            }`,
           option: ({ isSelected }) =>
             `${
               isSelected
