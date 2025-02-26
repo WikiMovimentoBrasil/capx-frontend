@@ -1,4 +1,5 @@
 {
+  "empty-field": "You haven't filled this field yet",
   "loading": "Loading...",
   "known": "known",
   "available": "available",

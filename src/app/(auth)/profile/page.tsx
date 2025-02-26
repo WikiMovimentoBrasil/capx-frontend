@@ -6,7 +6,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import ProfileHeader from "./components/ProfileHeader";
 import MiniBio from "./components/MiniBio";
-import { CapacitiesList } from "@/components/CapacitiesList";
+import { ProfileItem } from "@/components/ProfileItem";
 import BaseButton from "@/components/BaseButton";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
@@ -223,19 +223,19 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
               title={pageContent["body-profile-known-capacities-title"]}
               items={profile?.skills_known || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? EmojiIconWhite : EmojiIcon}
               title={pageContent["body-profile-available-capacities-title"]}
               items={profile?.skills_available || []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
             />
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? TargetIconWhite : TargetIcon}
               title={pageContent["body-profile-wanted-capacities-title"]}
               items={profile?.skills_wanted || []}
@@ -465,19 +465,19 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
               title={pageContent["body-profile-known-capacities-title"]}
               items={profile?.skills_known || []}
               customClass={`font-[Montserrat] not-italic leading-[normal]`}
             />
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? EmojiIconWhite : EmojiIcon}
               title={pageContent["body-profile-available-capacities-title"]}
               items={profile?.skills_available || []}
               customClass={`font-[Montserrat] not-italic leading-[normal] `}
             />
-            <CapacitiesList
+            <ProfileItem
               icon={darkMode ? TargetIconWhite : TargetIcon}
               title={pageContent["body-profile-wanted-capacities-title"]}
               items={profile?.skills_wanted || []}
