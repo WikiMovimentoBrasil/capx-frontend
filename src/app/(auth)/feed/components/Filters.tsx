@@ -139,7 +139,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
               />
             </button>
             <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-black'}`}>
-              Filters
+              {pageContent["filters-title"]}
             </h1>
           </div>
         </div>
@@ -228,7 +228,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
                 height={24}
               />
               <h2 className={`font-bold ${darkMode ? 'text-white' : 'text-black'}`}>
-                Exchange with
+                {pageContent["filters-exchange-with"]}
               </h2>
             </div>
             <div className="space-y-2">
@@ -264,7 +264,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
                     : [...prev.territories, territoryId]
                 }));
                 }}
-                placeholder={pageContent["edit-profile-add-language"]}
+                placeholder={pageContent["filters-add-territory"]}
             />
 
             {/* Divider */}

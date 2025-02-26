@@ -237,5 +237,9 @@
   "filters-profiles": "Profiles",
   "filters-remove-item-alt-icon": "Remove item icon",
   "filters-select-alt-icon": "Select icon",
-  "filters-territory-title": "Territories"
+  "filters-territory-title": "Territories",
+  "filters-add-territory": "Add territory",
+  "filters-exchange-with": "Exchange with",
+  "filters-title": "Filters",
+  "filters-icon": "Filters icon"
 }

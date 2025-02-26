@@ -156,7 +156,7 @@ export default function FeedPage() {
             >
               <Image
                 src={darkMode ? FilterIconWhite : FilterIcon}
-                alt="Filter"
+                alt={pageContent["filters-icon"]}
                 width={24}
                 height={24}
               />
