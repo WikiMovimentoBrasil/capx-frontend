@@ -7,7 +7,7 @@ import {
 
 export const useWikimediaProject = (
   token: string | undefined,
-  projectIds?: string[]
+  projectIds?: number[]
 ) => {
   const [wikimediaProjects, setWikimediaProjects] = useState<WikimediaProjects>(
     {}
