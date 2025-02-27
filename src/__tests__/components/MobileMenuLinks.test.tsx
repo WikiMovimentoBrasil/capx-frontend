@@ -3,6 +3,7 @@ import MobileMenuLinks from "../../components/MobileMenuLinks";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AppProvider } from "@/contexts/AppContext";
 import * as ThemeContext from "@/contexts/ThemeContext";
+import * as OrganizationContext from "@/contexts/OrganizationContext";
 
 // Mock do Next.js Router
 jest.mock("next/navigation", () => ({
@@ -28,6 +29,12 @@ jest.mock("@/contexts/ThemeContext", () => ({
   useTheme: jest.fn(),
 }));
 
+// Mock do useOrganization
+jest.mock("@/contexts/OrganizationContext", () => ({
+  ...jest.requireActual("@/contexts/OrganizationContext"),
+  useOrganization: jest.fn(),
+}));
+
 const mockPageContent = {
   "navbar-link-home": "Home",
   "navbar-link-capacities": "Capacities",
@@ -43,6 +50,13 @@ describe("MobileMenuLinks", () => {
     (ThemeContext.useTheme as jest.Mock).mockReturnValue({
       darkMode: false,
       setDarkMode: jest.fn(),
+    });
+    (OrganizationContext.useOrganization as jest.Mock).mockReturnValue({
+      organizations: [
+        { id: 1, display_name: "Org 1" },
+        { id: 2, display_name: "Org 2" }
+      ],
+      isOrgManager: true
     });
   });
 
@@ -110,6 +124,45 @@ describe("MobileMenuLinks", () => {
     links.forEach((link) => {
       expect(link).toHaveClass("text-capx-light-bg");
     });
+  });
+
+  it("renders organization profiles for org managers", async () => {
+    const mockSession = { user: { name: "Test User", token: "token" } };
+    
+    renderWithProviders(
+      <MobileMenuLinks
+        session={mockSession}
+        pageContent={mockPageContent}
+        handleMenuStatus={jest.fn()}
+      />
+    );
+
+    const profilesButton = screen.getByText(mockPageContent["navbar-link-profiles"]);
+    fireEvent.click(profilesButton);
+
+    expect(screen.getByText("Org 1")).toBeInTheDocument();
+    expect(screen.getByText("Org 2")).toBeInTheDocument();
+  });
+
+  it("navigates to correct organization profile", () => {
+    const mockSession = { user: { name: "Test User", token: "token" } };
+    const handleMenuStatus = jest.fn();
+    
+    renderWithProviders(
+      <MobileMenuLinks
+        session={mockSession}
+        pageContent={mockPageContent}
+        handleMenuStatus={handleMenuStatus}
+      />
+    );
+
+    const profilesButton = screen.getByText(mockPageContent["navbar-link-profiles"]);
+    fireEvent.click(profilesButton);
+    
+    const org1Button = screen.getByText("Org 1");
+    fireEvent.click(org1Button);
+
+    expect(handleMenuStatus).toHaveBeenCalled();
   });
 
   afterEach(() => {

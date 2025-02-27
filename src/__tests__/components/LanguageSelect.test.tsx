@@ -21,8 +21,12 @@ jest.mock("@/contexts/ThemeContext", () => ({
 
 describe("LanguageSelect", () => {
   beforeEach(() => {
-    (useLanguage as jest.Mock).mockReturnValue({
-      fetchLanguages: jest.fn().mockResolvedValue(["pt-BR", "en", "es"]),
+    (useLanguageSelection as jest.Mock).mockReturnValue({
+      fetchLanguages: jest.fn().mockResolvedValue([
+        { value: "pt-BR", label: "Português" },
+        { value: "en", label: "English" },
+        { value: "es", label: "Español" }
+      ]),
       fetchTranslations: jest.fn().mockResolvedValue({
         "language-select-pt": "Português",
         "language-select-en": "English",
@@ -111,6 +115,33 @@ describe("LanguageSelect", () => {
     );
 
     expect(container.firstChild).toHaveClass("mobile-language-select");
+  });
+
+  it("uses 'en' as fallback when no language is provided", () => {
+    renderWithProviders(
+      <LanguageSelect
+        language=""
+        setLanguage={mockSetLanguage}
+        setPageContent={mockSetPageContent}
+        isMobile={false}
+      />
+    );
+
+    const select = screen.getByRole("button");
+    expect(select).toHaveTextContent("en");
+  });
+
+  it("loads translations with 'en' as fallback", async () => {
+    renderWithProviders(
+      <LanguageSelect
+        language=""
+        setLanguage={mockSetLanguage}
+        setPageContent={mockSetPageContent}
+        isMobile={false}
+      />
+    );
+
+    expect(mockSetPageContent).toHaveBeenCalled();
   });
 
   afterEach(() => {
