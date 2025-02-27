@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import InfoIcon from "@/public/static/images/info.svg";
 import InfoFilledIcon from "@/public/static/images/info_filled.svg";
 import { Capacity } from "@/types/capacity";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useApp } from "@/contexts/AppContext";
 
 interface CapacityCardProps {
@@ -45,6 +45,15 @@ export function CapacityCard({
   const router = useRouter();
   const [showInfo, setShowInfo] = useState(false);
   const { isMobile, pageContent } = useApp();
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const childrenContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (childrenContainerRef.current) {
+      const hasHorizontalOverflow = childrenContainerRef.current.scrollWidth > childrenContainerRef.current.clientWidth;
+      setHasOverflow(hasHorizontalOverflow);
+    }
+  }, [isExpanded]);
 
   const handleInfoClick = async () => {
     if (!showInfo && onInfoClick) {
@@ -225,7 +234,10 @@ export function CapacityCard({
           )}
         </div>
         {isExpanded && !isSearch && (
-          <div className="mt-4 overflow-x-auto scrollbar-hide">
+          <div 
+            ref={childrenContainerRef}
+            className={`mt-4 overflow-x-auto scrollbar-hide ${hasOverflow ? 'w-screen' : 'w-fit'}`}
+          >
             <div className="flex gap-4 pb-4">
               {/* O conteúdo expandido será renderizado aqui pelo componente pai */}
             </div>
