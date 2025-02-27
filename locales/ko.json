@@ -6,6 +6,7 @@
 			"Ykhwong"
 		]
 	},
+	"empty-field": "아직 이 필드를 채우지 않았습니다",
 	"loading": "불러오는 중...",
 	"auth-dialog-button-continue": "계속",
 	"auth-dialog-button-close": "탭 닫기",
