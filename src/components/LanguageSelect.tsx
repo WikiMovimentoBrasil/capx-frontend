@@ -42,7 +42,7 @@ export default function LanguageSelect({
 
   useEffect(() => {
     async function loadTranslations() {
-      const translations = await fetchTranslations(language);
+      const translations = await fetchTranslations(language || 'en');
       setPageContent(translations);
     }
     loadTranslations();
@@ -63,7 +63,7 @@ export default function LanguageSelect({
     <BaseSelect
       name="language"
       options={options}
-      defaultValue={{ value: language, label: language }}
+      value={{ value: language || 'en', label: language || 'en' }}
       onChange={handleSelection}
       ariaLabel={setPageContent["aria-language-input"]}
       isMobile={isMobile}
