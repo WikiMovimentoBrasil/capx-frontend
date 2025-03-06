@@ -738,7 +738,7 @@ export default function EditOrganizationProfilePage() {
         `${currentCapacityType}_capacities` as keyof typeof prev;
       const currentCapacities = (prev[capacityField] as number[]) || [];
 
-      if (!currentCapacities.includes(capacity.id)) {
+      if (capacity.id && !currentCapacities.includes(capacity.id)) {
         return {
           ...prev,
           [capacityField]: [...currentCapacities, capacity.id],

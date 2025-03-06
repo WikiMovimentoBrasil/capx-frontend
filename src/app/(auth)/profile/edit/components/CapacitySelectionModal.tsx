@@ -6,6 +6,10 @@ import { Capacity } from "@/types/capacity";
 import React from "react";
 import BaseButton from "@/components/BaseButton";
 import { useApp } from "@/contexts/AppContext";
+import { CapacityCard } from "@/app/(auth)/capacity/components/CapacityCard";
+import Image from "next/image";
+import ArrowDownIcon from "@/public/static/images/keyboard_arrow_down.svg";
+import { getCapacityColor } from "@/lib/utils/capacitiesUtils";
 
 interface CapacitySelectionModalProps {
   isOpen: boolean;
@@ -30,11 +34,14 @@ export default function CapacitySelectionModal({
 
   const {
     rootCapacities,
-    capacityHierarchy,
+    childrenCapacities,
     isLoading,
     error,
     fetchRootCapacities,
     fetchCapacitiesByParent,
+    descriptions,
+    wdCodes,
+    fetchCapacityDescription,
   } = useCapacityList(session?.user?.token);
 
   useEffect(() => {
@@ -47,7 +54,7 @@ export default function CapacitySelectionModal({
 
   const handleCategorySelect = async (category: Capacity) => {
     try {
-      const categoryId = category.id || Number(category.code);
+      const categoryId = category.code;
       const currentPathIndex = selectedPath.indexOf(categoryId);
 
       if (currentPathIndex !== -1) {
@@ -56,8 +63,8 @@ export default function CapacitySelectionModal({
         return;
       }
 
-      if (!capacityHierarchy[categoryId]) {
-        const children = await fetchCapacitiesByParent(categoryId);
+      if (!childrenCapacities[categoryId.toString()]) {
+        const children = await fetchCapacitiesByParent(categoryId.toString());
 
         if (children && children.length > 0) {
           setSelectedPath((prev) => [...prev, categoryId]);
@@ -66,7 +73,7 @@ export default function CapacitySelectionModal({
         }
       }
 
-      if (capacityHierarchy[categoryId]?.length > 0) {
+      if (childrenCapacities[categoryId.toString()]?.length > 0) {
         setSelectedPath((prev) => [...prev, categoryId]);
         setSelectedCapacity(null);
       } else {
@@ -83,11 +90,9 @@ export default function CapacitySelectionModal({
 
   const handleConfirm = () => {
     if (selectedCapacity) {
-      const capacityToReturn = {
+      const capacityToReturn: Capacity = {
         ...selectedCapacity,
-        skill_type: [...selectedPath, selectedCapacity.id].map((id) =>
-          id.toString()
-        ),
+        skill_type: selectedPath.map((id) => id.toString()),
       };
       onSelect(capacityToReturn);
       onClose();
@@ -100,15 +105,125 @@ export default function CapacitySelectionModal({
     }
 
     const currentParentId = selectedPath[selectedPath.length - 1];
-
-    const currentCapacities = capacityHierarchy[currentParentId];
+    const currentCapacities = childrenCapacities[currentParentId.toString()];
 
     if (!currentCapacities) {
       return [];
     }
 
     return currentCapacities;
-  }, [selectedPath, capacityHierarchy, rootCapacities]);
+  }, [selectedPath, childrenCapacities, rootCapacities]);
+
+  // Função para encontrar a capacidade pelo código
+  const findCapacityByCode = useCallback(
+    (code: number): Capacity | undefined => {
+      // Procurar nas capacidades raiz
+      const rootCapacity = rootCapacities.find((cap) => cap.code === code);
+      if (rootCapacity) return rootCapacity;
+
+      // Procurar nas capacidades filhas
+      for (const parentCode in childrenCapacities) {
+        const children = childrenCapacities[parentCode];
+        const childCapacity = children?.find((cap) => cap.code === code);
+        if (childCapacity) return childCapacity;
+      }
+
+      return undefined;
+    },
+    [rootCapacities, childrenCapacities]
+  );
+
+  // Função para capitalizar a primeira letra de um texto
+  const capitalizeFirstLetter = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
+  // Função para renderizar um card de capacidade customizado para o modal
+  const renderCapacityCard = (capacity: Capacity, isRoot: boolean) => {
+    const isSelected = selectedCapacity?.code === capacity.code;
+
+    // Estilo para cards raiz (simplificado para o modal)
+    if (isRoot) {
+      return (
+        <div
+          className={`flex flex-col w-full bg-${
+            capacity.color
+          } rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden
+            ${isSelected ? "ring-2 ring-capx-primary-green" : ""}`}
+          onClick={() => handleCategorySelect(capacity)}
+        >
+          <div className="flex p-3 h-[80px] items-center justify-between">
+            {capacity.icon && (
+              <div className="relative w-[24px] h-[24px] flex-shrink-0 mr-2">
+                <Image
+                  src={capacity.icon}
+                  alt={capacity.name}
+                  width={24}
+                  height={24}
+                  style={{ filter: "brightness(0) invert(1)" }}
+                />
+              </div>
+            )}
+            <div className="flex-1 mx-2 overflow-hidden">
+              <h3 className="font-bold text-white text-base truncate">
+                {capitalizeFirstLetter(capacity.name)}
+              </h3>
+            </div>
+            {capacity.hasChildren && (
+              <div className="flex-shrink-0 w-[20px] h-[20px] ml-2">
+                <Image
+                  src={ArrowDownIcon}
+                  alt="Expand"
+                  width={20}
+                  height={20}
+                  style={{ filter: "brightness(0) invert(1)" }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Estilo para cards filhos
+    return (
+      <div
+        className={`flex flex-col w-full bg-capx-light-box-bg rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden
+          ${isSelected ? "ring-2 ring-capx-primary-green" : ""}`}
+        onClick={() => handleCategorySelect(capacity)}
+      >
+        <div className="flex p-3 h-[80px] items-center justify-between">
+          {capacity.icon && (
+            <div className="relative w-[24px] h-[24px] flex-shrink-0 mr-2">
+              <Image
+                src={capacity.icon}
+                alt={capacity.name}
+                width={24}
+                height={24}
+              />
+            </div>
+          )}
+          <div className="flex-1 mx-2 overflow-hidden">
+            <h3
+              className="font-bold text-base truncate"
+              style={{
+                color: capacity.color
+                  ? getCapacityColor(capacity.color)
+                  : "#000000",
+              }}
+            >
+              {capitalizeFirstLetter(capacity.name)}
+            </h3>
+          </div>
+          {capacity.hasChildren && (
+            <div className="flex-shrink-0 w-[20px] h-[20px] ml-2">
+              <Image src={ArrowDownIcon} alt="Expand" width={20} height={20} />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? "block" : "hidden"}`}>
@@ -152,10 +267,7 @@ export default function CapacitySelectionModal({
               Root
             </span>
             {selectedPath.map((pathId, index) => {
-              const capacity = [
-                ...rootCapacities,
-                ...Object.values(capacityHierarchy).flat(),
-              ].find((cap) => cap.id === pathId);
+              const capacity = findCapacityByCode(pathId);
 
               return (
                 <React.Fragment key={pathId}>
@@ -172,7 +284,7 @@ export default function CapacitySelectionModal({
                       setSelectedPath((prev) => prev.slice(0, index + 1))
                     }
                   >
-                    {capacity?.name}
+                    {capacity?.name || `Capacity ${pathId}`}
                   </span>
                 </React.Fragment>
               );
@@ -180,8 +292,8 @@ export default function CapacitySelectionModal({
           </div>
 
           {/* Capacity list */}
-          <div className="space-y-2 max-h-[60vh] overflow-y-auto">
-            {isLoading ? (
+          <div className="space-y-2 max-h-[65vh] overflow-y-auto p-1">
+            {isLoading?.root ? (
               <div
                 className={`text-center py-4 ${
                   darkMode ? "text-gray-400" : "text-gray-500"
@@ -190,42 +302,25 @@ export default function CapacitySelectionModal({
                 {pageContent["loading"]}
               </div>
             ) : getCurrentCapacities().length > 0 ? (
-              getCurrentCapacities().map((capacity) => (
-                <div
-                  key={capacity.id}
-                  className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                    darkMode
-                      ? "hover:bg-gray-700 bg-gray-800 border"
-                      : "hover:bg-gray-100 bg-gray-50 border"
-                  } ${
-                    selectedCapacity?.id === capacity.id
-                      ? darkMode
-                        ? "border-capx-primary-green shadow-lg"
-                        : "border-capx-primary-green shadow-md"
-                      : darkMode
-                      ? "border-gray-700"
-                      : "border-gray-200"
-                  }`}
-                  onClick={() => handleCategorySelect(capacity)}
-                >
-                  <div
-                    className={`font-medium ${
-                      darkMode ? "text-white" : "text-gray-900"
-                    }`}
-                  >
-                    {capacity.name}
-                  </div>
-                  {selectedCapacity?.id === capacity.id && (
-                    <div
-                      className={`text-sm mt-1 ${
-                        darkMode ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      Selected
+              <div className="grid gap-2">
+                {getCurrentCapacities().map((capacity) => {
+                  const isRoot = selectedPath.length === 0;
+                  return (
+                    <div key={capacity.code}>
+                      {renderCapacityCard(capacity, isRoot)}
+                      {selectedCapacity?.code === capacity.code && (
+                        <div
+                          className={`text-sm mt-1 text-center ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          Selected
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))
+                  );
+                })}
+              </div>
             ) : (
               <div
                 className={`text-center py-4 ${
