@@ -106,8 +106,6 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
           };
         });
 
-        console.log(formattedCapacities);
-
         setChildrenCapacities((prev) => ({
           ...prev,
           [parentCode]: formattedCapacities,
@@ -161,84 +159,81 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
   );
 
   const findParentCapacity = useCallback(
-    (childCapacity: Capacity) => {
-      console.log("Procurando parent para capacidade:", childCapacity);
-      console.log("skill_type:", childCapacity.skill_type);
+    (
+      childCapacity: Capacity | { code: string | number; skill_type?: string[] }
+    ) => {
+      const childCode = childCapacity.code.toString();
+      const skillTypes = childCapacity.skill_type || [];
 
-      if (!childCapacity.skill_type || childCapacity.skill_type.length === 0) {
-        console.log("Sem skill_type definido");
+      // if doesnt have skill_type, return undefined
+      if (!skillTypes.length) {
         return undefined;
       }
 
-      const parentId = childCapacity.skill_type[0];
-      console.log("ParentId:", parentId);
+      // first, check if it is a direct child capacity
+      const parentId = skillTypes[0].toString();
 
-      // Primeiro procura nas root capacities
+      // search for the parent capacity in the root capacities
       const rootParent = rootCapacities.find(
-        (root) => root.code.toString() === parentId.toString()
+        (root) => root.code.toString() === parentId
       );
-      console.log("Root capacities:", rootCapacities);
-      console.log("Encontrou nas roots?", rootParent);
 
       if (rootParent) {
         return rootParent;
       }
-
-      // Se não encontrou nas roots, procura em todos os filhos
-      console.log("Children capacities:", childrenCapacities);
+      // if it is not a direct child capacity, check if it is a grandchild capacity
+      // first, find the parent capacity
       for (const rootCode in childrenCapacities) {
-        console.log("Verificando filhos da root:", rootCode);
-        const children = childrenCapacities[rootCode];
-        const parent = children?.find(
-          (child) => child.code.toString() === parentId.toString()
+        const children = childrenCapacities[rootCode] || [];
+
+        const parent = children.find(
+          (child) => child.code.toString() === parentId
         );
-        console.log("Encontrou nos filhos?", parent);
 
         if (parent) {
           const grandparent = rootCapacities.find(
-            (root) => root.code.toString() === rootCode.toString()
+            (root) => root.code.toString() === rootCode
           );
-          console.log("Grandparent encontrado:", grandparent);
 
-          return {
-            ...parent,
-            parentCapacity: grandparent,
-            color: grandparent?.color || parent.color,
-            icon: getCapacityIcon(Number(rootCode)),
-          };
+          if (grandparent) {
+            return {
+              ...parent,
+              parentCapacity: grandparent,
+              color: parent.color || grandparent.color,
+              icon: parent.icon || grandparent.icon,
+            };
+          }
+
+          return parent;
         }
       }
 
-      // Se ainda não encontrou, pode ser uma capacidade neta
-      console.log("Procurando entre os netos...");
       for (const rootCode in childrenCapacities) {
-        const children = childrenCapacities[rootCode];
-        for (const child of children || []) {
-          console.log("Verificando filhos de:", child.code);
-          const grandChildren = childrenCapacities[child.code];
-          console.log("Netos encontrados:", grandChildren);
-          const grandChild = grandChildren?.find(
-            (gc) => gc.code.toString() === childCapacity.code.toString()
+        const children = childrenCapacities[rootCode] || [];
+        for (const child of children) {
+          const grandChildren = childrenCapacities[child.code.toString()] || [];
+
+          const grandChild = grandChildren.find(
+            (gc) => gc.code.toString() === childCode
           );
-          console.log("É este neto?", grandChild);
 
           if (grandChild) {
             const grandparent = rootCapacities.find(
-              (root) => root.code.toString() === rootCode.toString()
+              (root) => root.code.toString() === rootCode
             );
-            console.log("Encontrou avô:", grandparent);
 
-            return {
-              ...child,
-              parentCapacity: grandparent,
-              color: grandparent?.color || child.color,
-              icon: getCapacityIcon(Number(rootCode)),
-            };
+            if (grandparent) {
+              return {
+                ...child,
+                parentCapacity: grandparent,
+                color: grandparent.color,
+                icon: grandparent.icon,
+              };
+            }
           }
         }
       }
 
-      console.log("Nenhum parent encontrado");
       return undefined;
     },
     [rootCapacities, childrenCapacities]
@@ -256,41 +251,137 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
 
         const validResults = response.filter((item: any) => item !== null);
 
-        const formattedResults = validResults.map((item: any): Capacity => {
-          const isRootCapacity = rootCapacities.some(
-            (root) => root.code.toString() === item.code.toString()
-          );
+        // first, process all results to identify root, child and grandchild capacities
+        const processedResults = await Promise.all(
+          validResults.map(async (item: any) => {
+            const isRootCapacity = rootCapacities.some(
+              (root) => root.code.toString() === item.code.toString()
+            );
 
-          const effectiveSkillType = isRootCapacity
-            ? [item.code.toString()]
-            : item.skill_type || [];
+            // if it is a root capacity, use its own information
+            if (isRootCapacity) {
+              const rootCapacity = rootCapacities.find(
+                (root) => root.code.toString() === item.code.toString()
+              );
 
-          const parentCapacity = findParentCapacity({
-            ...item,
-            code: item.code,
-            skill_type: effectiveSkillType,
-          });
+              return {
+                code: item.code,
+                name: item.name,
+                color: rootCapacity?.color || item.color,
+                icon: rootCapacity?.icon || item.icon,
+                hasChildren: true,
+                parentCapacity: undefined,
+                skill_type: [item.code.toString()],
+                skill_wikidata_item: item.skill_wikidata_item || "",
+              };
+            }
 
-          return {
-            code: item.code,
-            name: item.name,
-            color: isRootCapacity
-              ? item.color
-              : parentCapacity?.color || "gray-200",
-            icon: isRootCapacity ? item.icon : parentCapacity?.icon || "",
-            hasChildren: isRootCapacity,
-            parentCapacity: isRootCapacity ? undefined : parentCapacity,
-            skill_type: effectiveSkillType,
-            skill_wikidata_item: item.skill_wikidata_item || "",
-          };
-        });
+            // check if it is a direct child capacity
+            const parentId = item.skill_type?.[0];
+            if (parentId) {
+              // check if the parentId is a root capacity
+              const rootParent = rootCapacities.find(
+                (root) => root.code.toString() === parentId.toString()
+              );
 
-        setSearchResults(formattedResults);
+              if (rootParent) {
+                // it is a direct child capacity
+                return {
+                  code: item.code,
+                  name: item.name,
+                  color: rootParent.color,
+                  icon: rootParent.icon,
+                  hasChildren: false,
+                  parentCapacity: rootParent,
+                  skill_type: item.skill_type || [],
+                  skill_wikidata_item: item.skill_wikidata_item || "",
+                };
+              }
+
+              // if the parentId is not a root capacity, then it is a grandchild capacity
+              // search for the parent capacity in the children capacities
+              for (const rootCode in childrenCapacities) {
+                const children = childrenCapacities[rootCode] || [];
+                const parent = children.find(
+                  (child) => child.code.toString() === parentId.toString()
+                );
+
+                if (parent) {
+                  // found the parent, now find the grandparent
+                  const grandparent = rootCapacities.find(
+                    (root) => root.code.toString() === rootCode
+                  );
+
+                  if (grandparent) {
+                    // it is a grandchild capacity
+                    return {
+                      code: item.code,
+                      name: item.name,
+                      color: parent.color || grandparent.color || "gray-600",
+                      icon: grandparent.icon,
+                      hasChildren: false,
+                      parentCapacity: {
+                        ...parent,
+                        parentCapacity: grandparent,
+                      },
+                      skill_type: item.skill_type || [],
+                      skill_wikidata_item: item.skill_wikidata_item || "",
+                    };
+                  }
+                }
+              }
+
+              // if didnt find the parent, create a fake parent
+              console.log("Creating a fake parent for:", item.name);
+              return {
+                code: item.code,
+                name: item.name,
+                color: "gray-600", // dark gray for grandchild capacities
+                icon: "",
+                hasChildren: false,
+                parentCapacity: {
+                  code: Number(parentId),
+                  name: `Capacity ${parentId}`,
+                  color: "gray-600",
+                  icon: "",
+                  skill_type: [],
+                  skill_wikidata_item: "",
+                  hasChildren: false,
+                  parentCapacity: {
+                    code: 0,
+                    name: "Root",
+                    color: "gray-600",
+                    icon: "",
+                    skill_type: [],
+                    skill_wikidata_item: "",
+                    hasChildren: false,
+                  },
+                },
+                skill_type: item.skill_type || [],
+                skill_wikidata_item: item.skill_wikidata_item || "",
+              };
+            }
+
+            // fallback for any other case
+            return {
+              code: item.code,
+              name: item.name,
+              color: "gray-600", // dark gray for unknown capacities
+              icon: "",
+              hasChildren: false,
+              parentCapacity: undefined,
+              skill_type: item.skill_type || [],
+              skill_wikidata_item: item.skill_wikidata_item || "",
+            };
+          })
+        );
+
+        setSearchResults(processedResults);
       } catch (error) {
         console.error("Failed to fetch capacity search:", error);
       }
     },
-    [token, language, rootCapacities, findParentCapacity]
+    [token, language, rootCapacities, childrenCapacities]
   );
 
   return {

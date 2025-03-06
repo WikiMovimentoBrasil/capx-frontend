@@ -50,7 +50,9 @@ export function CapacityCard({
 
   useEffect(() => {
     if (childrenContainerRef.current) {
-      const hasHorizontalOverflow = childrenContainerRef.current.scrollWidth > childrenContainerRef.current.clientWidth;
+      const hasHorizontalOverflow =
+        childrenContainerRef.current.scrollWidth >
+        childrenContainerRef.current.clientWidth;
       setHasOverflow(hasHorizontalOverflow);
     }
   }, [isExpanded]);
@@ -66,7 +68,11 @@ export function CapacityCard({
     if (!showInfo) return null;
 
     return (
-      <div className="flex flex-col gap-6 mt-6 mb-16 px-16">
+      <div
+        className={`flex flex-col gap-6 mt-6 mb-16 ${
+          isRoot ? "px-3" : "px-12"
+        }`}
+      >
         {wd_code && (
           <a href={wd_code}>
             <div className="flex flex-row items-center gap-2">
@@ -86,8 +92,12 @@ export function CapacityCard({
         )}
         <BaseButton
           label={pageContent["capacity-card-explore-capacity"]}
-          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${parentCapacity?.color} text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
-          onClick={() => router.push(`/capacity/${code}`)}
+          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${
+            parentCapacity?.parentCapacity?.color ||
+            parentCapacity?.color ||
+            color
+          } text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
+          onClick={() => router.push(`/feed/${code}`)}
         />
       </div>
     );
@@ -168,11 +178,24 @@ export function CapacityCard({
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
+  // determine the button color - use the color of the grandparent if available
+  const getEffectiveColor = () => {
+    if (parentCapacity?.parentCapacity?.color) {
+      return parentCapacity.parentCapacity.color;
+    } else if (parentCapacity?.color) {
+      return parentCapacity.color;
+    }
+    return color;
+  };
+
   if ((isRoot && hasChildren) || isSearch) {
+    // root or search card
+    const cardColor = getEffectiveColor();
+
     return (
       <div className="w-full">
         <div
-          className={`flex flex-col w-full bg-${color} shadow-sm hover:shadow-md transition-shadow
+          className={`flex flex-col w-full bg-${cardColor} shadow-sm hover:shadow-md transition-shadow
           ${isMobile ? "rounded-[4px]" : "rounded-lg"}
           `}
         >
@@ -191,7 +214,7 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <Link href={`/capacity/${code}`}>
+                <Link href={`/feed/${code}`}>
                   <h3
                     className={`font-extrabold text-white ${
                       isMobile ? "text-[20px]" : "text-[48px]"
@@ -234,12 +257,14 @@ export function CapacityCard({
           )}
         </div>
         {isExpanded && !isSearch && (
-          <div 
+          <div
             ref={childrenContainerRef}
-            className={`mt-4 overflow-x-auto scrollbar-hide ${hasOverflow ? 'w-screen' : 'w-fit'}`}
+            className={`mt-4 overflow-x-auto scrollbar-hide ${
+              hasOverflow ? "w-screen" : "w-fit"
+            }`}
           >
             <div className="flex gap-4 pb-4">
-              {/* O conteúdo expandido será renderizado aqui pelo componente pai */}
+              {/* the expanded content will be rendered here by the parent component */}
             </div>
           </div>
         )}
@@ -248,47 +273,47 @@ export function CapacityCard({
   }
 
   return (
-    <div className={`flex flex-col w-full rounded-lg bg-capx-light-box-bg`}>
-      <div
-        className={`flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 ${
-          isMobile ? "px-4 mx-6" : "px-16"
-        }`}
-      >
-        <div
-          className={`flex items-center gap-4 ${isMobile ? "gap-12" : "gap-4"}`}
-        >
-          {icon && isMobile ? renderIcon(48, icon) : renderIcon(68, icon)}
+    <div className="w-full">
+      <div className="flex flex-col w-full rounded-lg bg-capx-light-box-bg">
+        <div className="flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 px-12">
           <div
-            className={`flex flex-row items-center justify-between ${
-              isMobile ? "w-max" : ""
+            className={`flex items-center gap-4 ${
+              isMobile ? "gap-12" : "gap-4"
             }`}
           >
-            <Link href={`/capacity/${code}`} className="w-full">
-              <h3
-                className={`font-extrabold ${
-                  isMobile ? "text-[20px]" : "text-[36px]"
-                }`}
-                style={{
-                  color: parentCapacity?.color
-                    ? getCapacityColor(parentCapacity.color)
-                    : "#000000",
-                }}
-              >
-                {capitalizeFirstLetter(name)}
-              </h3>
-            </Link>
+            {icon && isMobile ? renderIcon(48, icon) : renderIcon(68, icon)}
+            <div
+              className={`flex flex-row items-center justify-between ${
+                isMobile ? "w-max" : ""
+              }`}
+            >
+              <Link href={`/feed/${code}`} className="w-full">
+                <h3
+                  className={`font-extrabold ${
+                    isMobile ? "text-[20px]" : "text-[36px]"
+                  }`}
+                  style={{
+                    color: parentCapacity?.color
+                      ? getCapacityColor(parentCapacity.color)
+                      : "#000000",
+                  }}
+                >
+                  {capitalizeFirstLetter(name)}
+                </h3>
+              </Link>
+            </div>
           </div>
-        </div>
-        <div className={`flex items-center gap-4 mr-4`}>
-          {isMobile
-            ? renderInfoButton(24, InfoIcon)
-            : renderInfoButton(40, InfoIcon)}
-          {hasChildren &&
-            !isRoot &&
-            !isSearch &&
-            (isMobile
-              ? renderArrowButton(24, ArrowDownIcon)
-              : renderArrowButton(40, ArrowDownIcon))}
+          <div className={`flex items-center gap-4 mr-4`}>
+            {isMobile
+              ? renderInfoButton(24, InfoIcon)
+              : renderInfoButton(40, InfoIcon)}
+            {hasChildren &&
+              !isRoot &&
+              !isSearch &&
+              (isMobile
+                ? renderArrowButton(24, ArrowDownIcon)
+                : renderArrowButton(40, ArrowDownIcon))}
+          </div>
         </div>
       </div>
       {showInfo && renderExpandedContent()}

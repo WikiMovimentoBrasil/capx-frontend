@@ -40,7 +40,7 @@ export const getHueRotate = (color: string | undefined): string => {
   if (color.startsWith("#")) {
     return filterMap[color];
   }
-  // Pegar o filtro baseado no nome da categoria
+  // get the filter based on the category name
   const filter = filterMap[colorMap[color]];
 
   if (filter) {
@@ -51,7 +51,7 @@ export const getHueRotate = (color: string | undefined): string => {
 };
 
 export const getCapacityColor = (color: string): string => {
-  // Se a cor for uma categoria (ex: "communication"), pegue o hex do colorMap
+  // if the color is a category (ex: "communication"), get the hex from colorMap
   const hexColor = colorMap[color];
 
   return hexColor || color || "#000000";

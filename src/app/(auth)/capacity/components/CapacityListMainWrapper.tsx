@@ -100,11 +100,7 @@ export default function CapacityListMainWrapper() {
           {rootCapacities.map((capacity) => (
             <div
               key={capacity.code}
-              className={`${
-                isMobile 
-                  ? "w-screen max-w-[768px]" 
-                  : "w-full"
-              }`}
+              className={`${isMobile ? "w-screen max-w-[768px]" : "w-full"}`}
             >
               <CapacityCard
                 {...capacity}

@@ -1,18 +1,55 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/contexts/AppContext";
 import BaseInput from "@/components/BaseInput";
 import { CapacityCard } from "./CapacityCard";
 import SearchIcon from "@/public/static/images/search.svg";
 import { useCapacityList } from "@/hooks/useCapacityList";
-import { debounce } from "lodash";
 import LoadingState from "@/components/LoadingState";
 
 interface CapacitySearchProps {
   onSearchStart?: () => void;
   onSearchEnd?: () => void;
+}
+
+// simple debounce
+function useDebounce<T extends (...args: any[]) => any>(
+  callback: T,
+  delay: number
+) {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const debouncedFunction = useCallback(
+    (...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay]
+  );
+
+  // Function to cancel the debounce
+  const cancel = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
+  // Clear the timeout when the component is unmounted
+  useEffect(() => {
+    return () => {
+      cancel();
+    };
+  }, [cancel]);
+
+  return { debouncedFunction, cancel };
 }
 
 export function CapacitySearch({
@@ -33,10 +70,12 @@ export function CapacitySearch({
     fetchRootCapacities,
     fetchCapacitiesByParent,
     fetchCapacitySearch,
-    findParentCapacity,
     fetchCapacityDescription,
     wdCodes,
   } = useCapacityList(session?.user?.token, language);
+
+  // Store the last search term to avoid duplicate requests
+  const lastSearchRef = useRef<string>("");
 
   useEffect(() => {
     if (session?.user?.token) {
@@ -44,27 +83,41 @@ export function CapacitySearch({
     }
   }, [session?.user?.token, fetchRootCapacities]);
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (searchTerm) {
+  // Search function
+  const search = useCallback(
+    async (term: string) => {
+      // If the search term is the same as the last search, do nothing
+      if (term === lastSearchRef.current) {
+        return;
+      }
+
+      if (term) {
         setIsLoading(true);
         onSearchStart?.();
-        await fetchCapacitySearch(searchTerm);
+        await fetchCapacitySearch(term);
+        // Store the current search term
+        lastSearchRef.current = term;
         setIsLoading(false);
       } else {
         setSearchResults([]);
         onSearchEnd?.();
+        // Clear the last search
+        lastSearchRef.current = "";
       }
-    }, 300);
+    },
+    [fetchCapacitySearch, onSearchStart, onSearchEnd, setSearchResults]
+  );
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [
-    searchTerm,
-    fetchCapacitySearch,
-    onSearchStart,
-    onSearchEnd,
-    setSearchResults,
-  ]);
+  // Use the custom debounce hook
+  const { debouncedFunction: debouncedSearch, cancel } = useDebounce(
+    search,
+    300
+  );
+
+  // Effect to call the debounce function when the search term changes
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
 
   const toggleCapacity = useCallback(
     async (parentCode: string) => {
@@ -104,21 +157,16 @@ export function CapacitySearch({
           <LoadingState />
         ) : (
           searchResults.map((capacity) => {
-            const parentCode = capacity.parentCode;
-            const rootCapacity = findParentCapacity(capacity);
-            /*             const parentCapacity = findParentCapacity(capacity);
-            const grandParentCapacity = findParentCapacity(parentCode); */
-
             return (
               <div key={capacity.code} className="w-full">
                 <CapacityCard
                   {...capacity}
                   isExpanded={!!expandedCapacities[capacity.code]}
                   onExpand={() => toggleCapacity(capacity.code.toString())}
-                  isRoot={!parentCode}
-                  color={rootCapacity?.color || capacity.color}
-                  icon={rootCapacity?.icon || capacity.icon}
-                  parentCapacity={rootCapacity}
+                  isRoot={!capacity.parentCapacity}
+                  color={capacity.color}
+                  icon={capacity.icon}
+                  parentCapacity={capacity.parentCapacity}
                   description={descriptions[capacity.code] || ""}
                   wd_code={wdCodes[capacity.code] || ""}
                   onInfoClick={fetchCapacityDescription}
