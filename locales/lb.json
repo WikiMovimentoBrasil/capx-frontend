@@ -48,6 +48,7 @@
 	"footer-link-documentation": "Dokumentatioun",
 	"footer-link-wikimedia": "Meta-Wikimedia",
 	"footer-message": "Fir a vun der Wikimedia-Beweegung",
+	"footer-privacy-policy": "Dateschutzrichtlinnen",
 	"aria-language-input": "Sicht eng Sprooch eraus",
 	"sign-out-button": "Ausloggen",
 	"sign-in-button": "Aloggen",
@@ -74,6 +75,7 @@
 	"body-profile-languages-title": "Sproochen",
 	"body-profile-wikimedia-projects-title": "Wikimedia-Projeten",
 	"body-profile-contact-title": "Kontakt",
+	"body-profile-birthday-title": "Wiki-Gebuertsdag",
 	"edit-profile-confirm": "Confirméieren",
 	"edit-profile-update": "Aktualiséieren",
 	"edit-profile-welcome": "Wëllkomm!",
@@ -92,5 +94,8 @@
 	"edit-profile-wikidata-item": "Wikidata-Element",
 	"edit-profile-wikimedia-projects": "Informéiert d'Wikimedia-Projeten, un deenen Dir interesséiert sidd.",
 	"edit-profile-insert-project": "Projet asetzen",
-	"edit-profile-insert-link": "URL vum Dokument asetzen"
+	"edit-profile-insert-link": "URL vum Dokument asetzen",
+	"privacy-policy-link-toolforge": "Toolforge",
+	"privacy-policy-private-information-topic01": "Wikimedia-Benotzernimm;",
+	"privacy-policy-private-information-topic02-link": "OAuth"
 }

@@ -4,6 +4,7 @@
 			"Borichèt"
 		]
 	},
+	"empty-field": "A l'ha ancor nen completà 's camp-sì",
 	"loading": "A caria...",
 	"known": "conossù",
 	"available": "disponìbil",
@@ -106,6 +107,7 @@
 	"footer-link-documentation": "Documentassion",
 	"footer-link-wikimedia": "Meta-Wikimedia",
 	"footer-message": "Da e për ël moviment Wikimedia",
+	"footer-privacy-policy": "Régole ëd confidensialità",
 	"aria-language-input": "Serne na lenga",
 	"sign-out-button": "Seurte dal sistema",
 	"sign-in-button": "Intré ant ël sistema",
@@ -155,6 +157,7 @@
 	"body-profile-contact-title": "Contat",
 	"body-profile-contact-button": "Parloma",
 	"body-profile-choose-skills": "Ch'a serna j'abilità ch'a l'é disponìbil a partagé da le capassità ch'a conòss.",
+	"body-profile-birthday-title": "Festa dj'agn ant la wiki",
 	"edit-profile-confirm": "Confirmé",
 	"edit-profile-update": "Agiorné",
 	"edit-profile-welcome": "Bin ëvnù!",
@@ -199,5 +202,21 @@
 	"edit-profile-consent-wikidata-item": "I son d'acòrd a smon-e mè element Wikidata ansima al profil CapX (s'a esist).",
 	"edit-profile-wikimedia-projects": "Ch'a buta d'anformassion an sij proget ëd Wikimedia ch'a j'anteresso.",
 	"edit-profile-insert-project": "Anserì un proget",
-	"edit-profile-insert-link": "Anserì un document URL"
+	"edit-profile-insert-link": "Anserì un document URL",
+	"privacy-policy-icon": "Plancia dle régole ëd confidensialità",
+	"privacy-policy-title": "Régole ëd confidensialità ëd Barat ëd Capassità",
+	"privacy-policy-capacity-exchange-text": "Ës sit a l'é un proget antërnassional coordinà al moment da $1. A marcia an sij Servissi ëd Nìvola ëd Wikimedia, për la precision su $2, donca a lé soget al $3, e a deuvra ëd fasson limità dj'anformassion privà. Tut ël contnù a l'é sota CC-BY-SA. Le contribussion ëd còdes a son bin ëvnùe.",
+	"privacy-policy-link-wiki-moviment-brazil": "Wiki Movimento Brasil",
+	"privacy-policy-link-toolforge": "Fòrgia d'utiss",
+	"privacy-policy-link-cloud-service-terms-of-use": "Condission d'usagi dël servissi ëd nìvola",
+	"privacy-policy-private-information-title": "Anformassion privà",
+	"privacy-policy-private-information-intro-topics": "Ës sit a goerna coste anformassion privà:",
+	"privacy-policy-private-information-topic01": "Stranòm ëd Wikimedia;",
+	"privacy-policy-private-information-topic02": "Për utent rintrà ant ël sistema: $1 credensiaj ch'a përmëtto n'acess parsial a sò cont Wikimedia;",
+	"privacy-policy-private-information-topic02-link": "OAuth",
+	"privacy-policy-private-information-topic03": "Soa cita biografìa përsonal, scrivùa da chiel-midem su sò profil con ël but dë smon-e d'anformassion anteressante e amportante ansima a sò viagi Wikimedian. A l'é opsional e a peul esse lassà veuida, s'a preferiss.",
+	"privacy-policy-private-information-text01": "S'a veul, a peul eliminé j'anformassion su chiel-midem an ësgnacand ansima al boton ross «Dëscancelé ëd profil» ant la pàgina ëd modìfica dël profil dl'utent.",
+	"privacy-policy-private-information-text02": "Si chiel a l'é n'arpresentant ëd n'organisassion e a l'ha ij drit ëd modifichene ël profil, a peul eliminé ij sò dàit an modificand ël profil ëd l'organisassion e an lassand tut veuid. A peul gavesse dal ròl d'arpresentant e, na vira ch'a-i é pi gnun gropà a l'organisassion, ël profil a sarà nen ësmonù ant la lista dj'organisassion.",
+	"privacy-policy-private-information-text03": "L'usagi di dàit e soa conservassion a son goernà dal $1. St'utiss a l'é conforma al GPDR.",
+	"privacy-policy-private-information-text03-link": "Condission d'usagi dël servissi ëd nìvola ëd Wikimedia"
 }
