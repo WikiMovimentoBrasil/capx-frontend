@@ -31,6 +31,9 @@ export default function LanguageSelect({
   const [options, setOptions] = useState<LanguageOption[]>([]);
   const [isClient, setIsClient] = useState(false);
 
+  // Ensure language is never undefined
+  const currentLanguage = language || "en";
+
   useEffect(() => {
     async function loadLanguages() {
       const languageOptions = await fetchLanguages();
@@ -42,19 +45,21 @@ export default function LanguageSelect({
 
   useEffect(() => {
     async function loadTranslations() {
-      const translations = await fetchTranslations(language || 'en');
+      const translations = await fetchTranslations(currentLanguage);
       setPageContent(translations);
     }
     loadTranslations();
-  }, [language, setPageContent, fetchTranslations]);
+  }, [currentLanguage, setPageContent, fetchTranslations]);
 
   const handleSelection = async (selectedOption: any) => {
-    setLanguage(selectedOption.value);
-    await setCookie({
-      name: "language",
-      value: selectedOption.value,
-      options: { path: "/" },
-    });
+    if (selectedOption && selectedOption.value) {
+      setLanguage(selectedOption.value);
+      await setCookie({
+        name: "language",
+        value: selectedOption.value,
+        options: { path: "/" },
+      });
+    }
   };
 
   if (!isClient) return null;
@@ -63,9 +68,9 @@ export default function LanguageSelect({
     <BaseSelect
       name="language"
       options={options}
-      value={{ value: language || 'en', label: language || 'en' }}
+      value={{ value: currentLanguage, label: currentLanguage }}
       onChange={handleSelection}
-      ariaLabel={setPageContent["aria-language-input"]}
+      ariaLabel={setPageContent["aria-language-input"] || "Select language"}
       isMobile={isMobile}
       darkMode={darkMode}
       className={`${className} flex items-center`}
