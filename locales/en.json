@@ -221,5 +221,19 @@
   "privacy-policy-private-information-text01": "If you wish, you can remove information about yourself by clickingon the red bottom \"Delete Profile\" on the user's profile editing page.",
   "privacy-policy-private-information-text02": "If you are a representative of an organization and have  the rights to edit its profile, you can clean its data by editing the organization's profile and leaving all blank. You can remove yourself from the role or representative and, once there is no on linked to the organization, the profile will not be displayed on the list of organizations.",
   "privacy-policy-private-information-text03": "Data use and retention is governed by the $1. This tool is in compliance with the GPDR.",
-  "privacy-policy-private-information-text03-link": "Wikimedia Cloud Service Terms of use"
+  "privacy-policy-private-information-text03-link": "Wikimedia Cloud Service Terms of use",
+  "capacity-selection-modal-title": "Select a capacity",
+  "capacity-selection-modal-description": "Select the capacity you want to share from the Capacity Directory.",
+  "capacity-selection-modal-select-capacity": "Select capacity",
+  "capacity-selection-modal-no-capacities-found": "No capacities found for this category",
+  "capacity-selection-modal-see-more-information": "See more information",
+  "capacity-selection-modal-select-capacity-placeholder": "Search for a capacity",
+  "capacity-selection-modal-select-capacity-button": "Select capacity",
+  "capacity-selection-modal-select-capacity-button-loading": "Loading...",
+  "capacity-selection-modal-select-capacity-button-error": "Error selecting capacity",
+  "capacity-selection-modal-select-capacity-button-success": "Capacity selected successfully",
+  "capacity-selection-modal-select-capacity-button-cancel": "Cancel",
+  "capacity-selection-modal-selected": "Selected",
+  "capacity-selection-modal-root-capacities": "Root Capacities",
+  "capacity-selection-modal-loading": "Loading..."
 }
