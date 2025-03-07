@@ -1,7 +1,7 @@
 export interface Capacity {
   id?: number;
   code: number;
-  skill_type: string[];
+  skill_type: number;
   skill_wikidata_item: string;
   name: string;
   icon: string;

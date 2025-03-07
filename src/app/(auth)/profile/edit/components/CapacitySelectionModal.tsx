@@ -93,7 +93,10 @@ export default function CapacitySelectionModal({
     if (selectedCapacity) {
       const capacityToReturn: Capacity = {
         ...selectedCapacity,
-        skill_type: selectedPath.map((id) => id.toString()),
+        skill_type:
+          selectedPath.length > 0
+            ? selectedPath[selectedPath.length - 1]
+            : selectedCapacity.code,
       };
       onSelect(capacityToReturn);
       onClose();
@@ -456,7 +459,7 @@ export default function CapacitySelectionModal({
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                {pageContent["loading"]}
+                {pageContent["capacity-selection-modal-loading"]}
               </div>
             ) : getCurrentCapacities().length > 0 ? (
               <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
