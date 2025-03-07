@@ -5,7 +5,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import * as ThemeContext from "@/contexts/ThemeContext";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
 
-// Mock do Next.js Router
+// Next.js Router's mock
 jest.mock("next/navigation", () => ({
   useRouter() {
     return {
@@ -23,7 +23,7 @@ jest.mock("next/navigation", () => ({
   },
 }));
 
-// Mock do useTheme
+// useTheme's mock
 jest.mock("@/contexts/ThemeContext", () => ({
   ...jest.requireActual("@/contexts/ThemeContext"),
   useTheme: jest.fn().mockReturnValue({
@@ -32,7 +32,7 @@ jest.mock("@/contexts/ThemeContext", () => ({
   }),
 }));
 
-// Mock do useOrganization
+// useOrganization's mock
 jest.mock("@/hooks/useOrganizationProfile", () => ({
   useOrganization: jest.fn(),
 }));

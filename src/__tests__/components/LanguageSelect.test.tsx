@@ -7,13 +7,13 @@ import * as ThemeContext from "@/contexts/ThemeContext";
 import { useLanguageSelection } from "@/hooks/useLanguageSelection";
 import { setCookie } from "@/app/actions";
 
-// Mock do react-select
+// React-select's mock
 jest.mock("react-select", () => ({
   __esModule: true,
   default: jest.fn(({ onChange, options, value }) => {
-    // Simular o comportamento do react-select
+    // Simulate the react-select behavior
     React.useEffect(() => {
-      // Chamar onChange automaticamente para o teste
+      // Call onChange automatically for the test
       if (options && options.length > 0) {
         setTimeout(() => {
           onChange(options[0]);
@@ -39,12 +39,12 @@ jest.mock("react-select", () => ({
   }),
 }));
 
-// Mock do hook useLanguageSelection
+// Hook useLanguageSelection's mock
 jest.mock("@/hooks/useLanguageSelection", () => ({
   useLanguageSelection: jest.fn(),
 }));
 
-// Mock do useTheme
+// useTheme's mock
 jest.mock("@/contexts/ThemeContext", () => ({
   ...jest.requireActual("@/contexts/ThemeContext"),
   useTheme: jest.fn().mockReturnValue({
@@ -53,12 +53,12 @@ jest.mock("@/contexts/ThemeContext", () => ({
   }),
 }));
 
-// Mock do setCookie
+// setCookie's mock
 jest.mock("@/app/actions", () => ({
   setCookie: jest.fn().mockResolvedValue(undefined),
 }));
 
-// Mock do useApp
+// useApp's mock
 jest.mock("@/contexts/AppContext", () => ({
   ...jest.requireActual("@/contexts/AppContext"),
   useApp: jest.fn().mockReturnValue({
@@ -113,7 +113,7 @@ describe("LanguageSelect", () => {
       />
     );
 
-    // Aguarda o carregamento das opções
+    // Wait for the options to load
     await waitFor(() => {
       expect(useLanguageSelection().fetchLanguages).toHaveBeenCalled();
     });
@@ -137,14 +137,14 @@ describe("LanguageSelect", () => {
       );
     });
 
-    // Verifica se setPageContent foi chamado com as traduções
+    // Check if setPageContent was called with the translations
     await waitFor(() => {
       expect(mockSetPageContent).toHaveBeenCalled();
     });
   });
 
   test("deve chamar setLanguage quando uma opção é selecionada", async () => {
-    // Limpar os mocks antes do teste
+    // Clear the mocks before the test
     mockSetLanguage.mockClear();
     (setCookie as jest.Mock).mockClear();
 
@@ -157,17 +157,17 @@ describe("LanguageSelect", () => {
       />
     );
 
-    // Aguardar o efeito assíncrono que chama onChange
+    // Wait for the asynchronous effect that calls onChange
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
-    // Verifica se setLanguage foi chamado com o valor correto
+    // Check if setLanguage was called with the correct value
     await waitFor(() => {
       expect(mockSetLanguage).toHaveBeenCalledWith("pt-BR");
     });
 
-    // Verifica se setCookie foi chamado
+    // Check if setCookie was called
     await waitFor(() => {
       expect(setCookie).toHaveBeenCalled();
     });
@@ -184,7 +184,7 @@ describe("LanguageSelect", () => {
     );
 
     await waitFor(() => {
-      // Deve usar 'en' como fallback
+      // Should use 'en' as fallback
       expect(useLanguageSelection().fetchTranslations).toHaveBeenCalledWith(
         "en"
       );
