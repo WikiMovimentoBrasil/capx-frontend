@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
-import { ProfileType } from "../types";
+import { ProfileCapacityType } from "../types";
 import LanguageIcon from "@/public/static/images/language.svg";
 import LanguageIconWhite from "@/public/static/images/language_white.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 
 interface ProfileCardProps {
   username: string;
-  type: ProfileType;
+  type: ProfileCapacityType;
   capacities: (number | string)[];
   languages?: string[];
   territory?: string;
@@ -30,7 +30,7 @@ interface ProfileCardProps {
 
 export const ProfileCard = ({
   username,
-  type = ProfileType.Learner,
+  type = ProfileCapacityType.Learner,
   capacities = [],
   languages = [],
   territory = "",
