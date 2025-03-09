@@ -11,6 +11,7 @@ interface LanguageSelectProps {
   setPageContent: (pageContent: any) => void;
   isMobile: boolean;
   className?: string;
+  pageContent: any;
 }
 
 interface LanguageOption {
@@ -24,6 +25,7 @@ export default function LanguageSelect({
   setPageContent,
   isMobile,
   className = "w-max",
+  pageContent,
 }: LanguageSelectProps) {
   const { darkMode } = useTheme();
   const { setMobileMenuStatus } = useApp();
@@ -70,7 +72,7 @@ export default function LanguageSelect({
       options={options}
       value={{ value: currentLanguage, label: currentLanguage }}
       onChange={handleSelection}
-      ariaLabel={setPageContent["aria-language-input"] || "Select language"}
+      ariaLabel={pageContent?.["aria-language-input"]}
       isMobile={isMobile}
       darkMode={darkMode}
       className={`${className} flex items-center`}
