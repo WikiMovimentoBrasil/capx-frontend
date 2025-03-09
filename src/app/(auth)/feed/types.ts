@@ -1,4 +1,10 @@
-export enum ProfileType {
-  Learner = "learner",
-  Sharer = "sharer",
+export enum ProfileCapacityType {
+  Learner = 'learner',
+  Sharer = 'sharer',
+}
+
+export enum ProfileFilterType {
+  Both = 'both',
+  User = 'user',
+  Organization = 'organization'
 }
