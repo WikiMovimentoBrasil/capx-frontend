@@ -6,6 +6,7 @@
 			"Ykhwong"
 		]
 	},
+	"empty-field": "아직 이 필드를 채우지 않았습니다",
 	"loading": "불러오는 중...",
 	"auth-dialog-button-continue": "계속",
 	"auth-dialog-button-close": "탭 닫기",
@@ -112,5 +113,6 @@
 	"privacy-policy-private-information-title": "개인 정보",
 	"privacy-policy-private-information-intro-topics": "본 사이트는 다음의 개인 정보를 보관합니다.",
 	"privacy-policy-private-information-topic01": "위키미디어 사용자 이름;",
+	"privacy-policy-private-information-topic02-link": "OAuth",
 	"privacy-policy-private-information-text03-link": "위키미디어 클라우드 서비스 이용 약관"
 }

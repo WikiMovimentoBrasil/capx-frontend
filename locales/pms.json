@@ -4,6 +4,7 @@
 			"Borichèt"
 		]
 	},
+	"empty-field": "A l'ha ancor nen completà 's camp-sì",
 	"loading": "A caria...",
 	"known": "conossù",
 	"available": "disponìbil",
@@ -212,5 +213,10 @@
 	"privacy-policy-private-information-intro-topics": "Ës sit a goerna coste anformassion privà:",
 	"privacy-policy-private-information-topic01": "Stranòm ëd Wikimedia;",
 	"privacy-policy-private-information-topic02": "Për utent rintrà ant ël sistema: $1 credensiaj ch'a përmëtto n'acess parsial a sò cont Wikimedia;",
-	"privacy-policy-private-information-topic02-link": "OAuth"
+	"privacy-policy-private-information-topic02-link": "OAuth",
+	"privacy-policy-private-information-topic03": "Soa cita biografìa përsonal, scrivùa da chiel-midem su sò profil con ël but dë smon-e d'anformassion anteressante e amportante ansima a sò viagi Wikimedian. A l'é opsional e a peul esse lassà veuida, s'a preferiss.",
+	"privacy-policy-private-information-text01": "S'a veul, a peul eliminé j'anformassion su chiel-midem an ësgnacand ansima al boton ross «Dëscancelé ëd profil» ant la pàgina ëd modìfica dël profil dl'utent.",
+	"privacy-policy-private-information-text02": "Si chiel a l'é n'arpresentant ëd n'organisassion e a l'ha ij drit ëd modifichene ël profil, a peul eliminé ij sò dàit an modificand ël profil ëd l'organisassion e an lassand tut veuid. A peul gavesse dal ròl d'arpresentant e, na vira ch'a-i é pi gnun gropà a l'organisassion, ël profil a sarà nen ësmonù ant la lista dj'organisassion.",
+	"privacy-policy-private-information-text03": "L'usagi di dàit e soa conservassion a son goernà dal $1. St'utiss a l'é conforma al GPDR.",
+	"privacy-policy-private-information-text03-link": "Condission d'usagi dël servissi ëd nìvola ëd Wikimedia"
 }

@@ -214,5 +214,7 @@
   "privacy-policy-private-information-text01": "If you wish, you can remove information about yourself by clickingon the red bottom \"Delete Profile\" on the user's profile editing page.",
   "privacy-policy-private-information-text02": "If you are a representative of an organization and have  the rights to edit its profile, you can clean its data by editing the organization's profile and leaving all blank. You can remove yourself from the role or representative and, once there is no on linked to the organization, the profile will not be displayed on the list of organizations.",
   "privacy-policy-private-information-text03": "Data use and retention is governed by the $1. This tool is in compliance with the GPDR.",
-  "privacy-policy-private-information-text03-link": "Wikimedia Cloud Service Terms of use"
+  "privacy-policy-private-information-text03-link": "Wikimedia Cloud Service Terms of use",
+  "not-found-page": "404 | Page Not Found",
+  "not-found-page-back-home": "Back Home"
 }
