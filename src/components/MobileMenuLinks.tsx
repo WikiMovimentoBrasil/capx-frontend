@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { Link } from "react-scroll";
@@ -57,35 +57,55 @@ export default function MobileMenuLinks({
     return null;
   }, [pathname, organizations]);
 
-  const handleProfileChange = (path: string) => {
+  const [selectedProfile, setSelectedProfile] = useState<
+    "user" | "organization"
+  >(pathname === "/organization_profile" ? "organization" : "user");
+
+  const handleProfileChange = (type: "user" | "organization", path: string) => {
+    setSelectedProfile(type);
     handleMenuStatus();
     window.location.href = path;
   };
 
   const subMenuItems: SubMenuItem[] = [
+    ...(isOrgManager
+      ? [
+          {
+            title: "Organization Profile",
+            to: "/organization_profile",
+            image: darkMode
+              ? selectedProfile === "organization"
+                ? OrgProfileIconWhite
+                : UserProfileIconWhite
+              : selectedProfile === "organization"
+              ? OrgProfileIcon
+              : UserProfileIcon,
+            action: () =>
+              handleProfileChange("organization", "/organization_profile"),
+          },
+        ]
+      : []),
     {
       title: pageContent["navbar-user-profile"],
       to: "/profile",
-      image: darkMode ? UserProfileIconWhite : UserProfileIcon,
-      action: () => handleProfileChange("/profile"),
+      image: darkMode
+        ? selectedProfile === "user"
+          ? OrgProfileIconWhite
+          : UserProfileIconWhite
+        : selectedProfile === "user"
+        ? OrgProfileIcon
+        : UserProfileIcon,
+      action: () => handleProfileChange("user", "/profile"),
     },
-    ...(isOrgManager
-      ? organizations.map(org => ({
-          title: org.display_name || "Organization",
-          to: `/organization_profile/${org.id}`,
-          image: darkMode ? OrgProfileIconWhite : OrgProfileIcon,
-          action: () => handleProfileChange(`/organization_profile/${org.id}`),
-        }))
-      : []),
   ];
 
-  // Atualiza o ícone baseado na rota atual
-  const getCurrentIcon = () => {
-    if (currentOrganization) {
-      return darkMode ? OrgProfileIconWhite : OrgProfileIcon;
+  useEffect(() => {
+    if (pathname === "/organization_profile") {
+      setSelectedProfile("organization");
+    } else if (pathname === "/profile") {
+      setSelectedProfile("user");
     }
-    return darkMode ? UserProfileIconWhite : UserProfileIcon;
-  };
+  }, [pathname]);
 
   const menuDataLoggedIn: MenuItem[] = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
