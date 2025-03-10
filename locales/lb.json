@@ -97,5 +97,7 @@
 	"edit-profile-insert-link": "URL vum Dokument asetzen",
 	"privacy-policy-link-toolforge": "Toolforge",
 	"privacy-policy-private-information-topic01": "Wikimedia-Benotzernimm;",
-	"privacy-policy-private-information-topic02-link": "OAuth"
+	"privacy-policy-private-information-topic02-link": "OAuth",
+	"not-found-page": "404 | Säit net fonnt",
+	"not-found-page-back-home": "Zréck op d'Haaptsäit"
 }
