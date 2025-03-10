@@ -70,8 +70,6 @@ export default function CapacityListMainWrapper() {
         onSearchEnd={() => setIsSearching(false)}
       />
 
-      {/* Mostra os resultados da busca ou os cards originais */}
-
       {searchResults.length > 0 || isSearching ? (
         <div className="grid gap-4 w-full">
           {searchResults.map((capacity) => (
@@ -95,7 +93,7 @@ export default function CapacityListMainWrapper() {
           ))}
         </div>
       ) : (
-        /* Mostra os cards originais quando não houver resultados de busca */
+        /* Show original cards when there are no search results */
         <div className="grid gap-[40px] w-full">
           {rootCapacities.map((capacity) => (
             <div

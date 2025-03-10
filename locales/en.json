@@ -229,13 +229,12 @@
   "capacity-selection-modal-see-more-information": "See more information",
   "capacity-selection-modal-select-capacity-placeholder": "Search for a capacity",
   "capacity-selection-modal-select-capacity-button": "Select capacity",
-  "capacity-selection-modal-select-capacity-button-loading": "Loading...",
   "capacity-selection-modal-select-capacity-button-error": "Error selecting capacity",
   "capacity-selection-modal-select-capacity-button-success": "Capacity selected successfully",
   "capacity-selection-modal-select-capacity-button-cancel": "Cancel",
   "capacity-selection-modal-selected": "Selected",
   "capacity-selection-modal-root-capacities": "Root Capacities",
-  "capacity-selection-modal-loading": "Loading..."
-  "not-found-page":"404 | Page Not Found",
-  "not-found-page-back-home":"Back Home"
+  "capacity-selection-modal-loading": "Loading...",
+  "not-found-page": "404 | Page Not Found",
+  "not-found-page-back-home": "Back Home"
 }
