@@ -30,6 +30,7 @@ interface ProfileItemProps {
   icon: string;
   title: string;
   items: (number | string)[];
+  showEmptyDataText?: boolean;
   customClass?: string;
 }
 
@@ -37,6 +38,7 @@ export function ProfileItem({
   icon,
   title,
   items,
+  showEmptyDataText = true,
   customClass = "",
 }: ProfileItemProps) {
   const { getCapacityName } = useCapacityDetails(items);
@@ -46,6 +48,9 @@ export function ProfileItem({
   const containerRef = useRef<HTMLDivElement>(null);
   const [needsToggle, setNeedsToggle] = useState(false);
   const noDataMessage = pageContent["empty-field"];
+
+  // Won't render component if item list is empty and shouldn't show 'noDataMessage'
+  if (!showEmptyDataText && items.length == 0) return;
 
   // Check items overflow to show or hide expand button. Not working 100% for some reason
   useEffect(() => {
@@ -179,7 +184,7 @@ export function ProfileItem({
                 </p>
               </div>
             );
-          }) : <p className={`
+          }) : showEmptyDataText && <p className={`
             ${customClass}
             font-normal
             text-sm

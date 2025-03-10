@@ -126,6 +126,7 @@ export const ProfileCard = ({
               icon={capacitiesIcon}
               title={capacitiesTitle}
               items={capacities}
+              showEmptyDataText={false}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
 
@@ -134,6 +135,7 @@ export const ProfileCard = ({
               icon={darkMode ? LanguageIconWhite : LanguageIcon}
               title={pageContent["body-profile-languages-title"]}
               items={languages}
+              showEmptyDataText={false}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
 
@@ -143,6 +145,7 @@ export const ProfileCard = ({
               title={pageContent["body-profile-section-title-territory"]}
               items={territory ? [territory] : []}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+              showEmptyDataText={false}
             />
 
             <button
