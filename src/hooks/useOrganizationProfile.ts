@@ -4,14 +4,15 @@ import { useState, useCallback, useEffect } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 
-export function useOrganization(token?: string, forceManager = false) {
-  const [organization, setOrganization] = useState<Organization | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Iniciar como true
+export function useOrganization(token?: string, specificOrgId?: number) {
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isOrgManager, setIsOrgManager] = useState(forceManager);
-  const [organizationId, setOrganizationId] = useState<number | null>(null);
+  const [managedOrganizationIds, setManagedOrganizationIds] = useState<
+    number[]
+  >([]);
 
-  const fetchUserProfile = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     if (!token) {
       setIsLoading(false);
       return;
@@ -19,127 +20,80 @@ export function useOrganization(token?: string, forceManager = false) {
 
     try {
       setIsLoading(true);
-      const userProfile = await organizationProfileService.getUserProfile(
-        token
-      );
 
-      const isManager = userProfile.some(
-        (profile) => profile.is_manager && profile.is_manager.length > 0
-      );
-
-      if (isManager) {
-        const managedOrgId = userProfile.find(
-          (profile) => profile.is_manager && profile.is_manager.length > 0
-        )?.is_manager[0];
-        setOrganizationId(managedOrgId);
-        setIsOrgManager(true);
-
-        if (managedOrgId) {
-          const orgData = await organizationProfileService.getOrganizationById(
-            token,
-            managedOrgId
-          );
-          setOrganization(orgData);
-        }
+      if (specificOrgId) {
+        // Se temos um ID específico, buscamos apenas essa organização
+        const orgData = await organizationProfileService.getOrganizationById(
+          token,
+          specificOrgId
+        );
+        setOrganizations([orgData]);
+        setManagedOrganizationIds([specificOrgId]);
       } else {
-        setIsOrgManager(false);
-        setOrganizationId(null);
-        setOrganization(null);
+        // Caso contrário, buscamos todas as organizações gerenciadas
+        const userProfile = await organizationProfileService.getUserProfile(
+          token
+        );
+        const managedIds = userProfile.flatMap((profile) =>
+          profile.is_manager && profile.is_manager.length > 0
+            ? profile.is_manager
+            : []
+        );
+
+        setManagedOrganizationIds(managedIds);
+
+        if (managedIds.length > 0) {
+          const orgsData = await Promise.all(
+            managedIds.map((id) =>
+              organizationProfileService.getOrganizationById(token, id)
+            )
+          );
+          setOrganizations(orgsData);
+        }
       }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to fetch user profile"
       );
-      setIsOrgManager(false);
-      setOrganizationId(null);
-      setOrganization(null);
+      setOrganizations([]);
+      setManagedOrganizationIds([]);
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [token, specificOrgId]);
 
-  const fetchOrganizationById = useCallback(async () => {
-    if (!token || !organizationId) return;
-
-    try {
-      setIsLoading(true);
-      const data = await organizationProfileService.getOrganizationById(
-        token,
-        organizationId
-      );
-      setOrganization(data);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch organization"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, organizationId]);
+  // Função refetch exposta para componentes
+  const refetch = useCallback(() => {
+    return fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
-    if (token) {
-      fetchUserProfile();
-    }
-  }, [token, fetchUserProfile]);
+    fetchData();
+  }, [fetchData]);
 
-  useEffect(() => {
-    if (token && organizationId) {
-      fetchOrganizationById();
-    }
-  }, [token, organizationId, fetchOrganizationById]);
-
-  const updateOrganization = useCallback(
-    async (data: Partial<Organization>) => {
-      if (!token || !organizationId) {
-        throw new Error("Missing token or organization ID");
-      }
-
+  return {
+    organization: organizations[0],
+    organizations,
+    isLoading,
+    error,
+    isOrgManager: managedOrganizationIds.length > 0,
+    managedOrganizationIds,
+    refetch,
+    updateOrganization: async (data: Partial<Organization>) => {
+      if (!token || !specificOrgId) return;
       try {
-        setIsLoading(true);
         const updatedOrg =
           await organizationProfileService.updateOrganizationProfile(
             token,
-            organizationId,
+            specificOrgId,
             data
           );
-
-        const refreshedOrg =
-          await organizationProfileService.getOrganizationById(
-            token,
-            organizationId
-          );
-
-        setOrganization(refreshedOrg);
-        return refreshedOrg;
-      } catch (err: any) {
-        console.error("Full error:", err);
-        const errorMessage =
-          err.response?.data?.detail ||
-          err.message ||
-          "Failed to update organization";
-        setError(errorMessage);
-        throw new Error(errorMessage);
-      } finally {
-        setIsLoading(false);
+        setOrganizations([updatedOrg]);
+        return updatedOrg;
+      } catch (error) {
+        console.error("Error updating organization:", error);
+        throw error;
       }
     },
-    [token, organizationId]
-  );
-  /*   const refetch = useCallback(() => {
-    setIsLoading(true); // Garantir que loading seja true ao refetch
-    return fetchUserProfile();
-  }, [fetchUserProfile]); */
-
-  return {
-    organization,
-    isLoading,
-    error,
-    refetch: fetchOrganizationById,
-    isOrgManager,
-    organizationId,
-    fetchUserProfile,
-    updateOrganization,
-    fetchOrganizationById,
   };
 }

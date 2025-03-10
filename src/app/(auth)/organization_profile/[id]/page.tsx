@@ -7,7 +7,7 @@ import EditIcon from "@/public/static/images/edit.svg";
 import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
 import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import ReportActivityIcon from "@/public/static/images/report_of_activities.svg";
-import { ProfileItem } from "../../../components/ProfileItem";
+import { ProfileItem } from "@/components/ProfileItem";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import TargetIcon from "@/public/static/images/target.svg";
@@ -16,15 +16,15 @@ import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
 import TargetIconWhite from "@/public/static/images/target_white.svg";
 import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_white.svg";
 import EditIconWhite from "@/public/static/images/edit_white.svg";
-import { ProjectsEventsList } from "./components/ProjectsEventsList";
-import { ContactsSection } from "./components/ContactsSection";
-import { NewsSection } from "./components/NewsSection";
+import { ProjectsEventsList } from "../components/ProjectsEventsList";
+import { ContactsSection } from "../components/ContactsSection";
+import { NewsSection } from "../components/NewsSection";
 import { useApp } from "@/contexts/AppContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
-import { DocumentsList } from "./components/DocumentsList";
+import { DocumentsList } from "../components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 import LoadingState from "@/components/LoadingState";
@@ -40,13 +40,18 @@ export default function OrganizationProfilePage() {
   const token = session?.user?.token;
   const [showPopup, setShowPopup] = useState(false);
 
+  const params = useParams();
+  const organizationId = Number(params.id);
+
   const {
-    organization,
+    organizations,
     isLoading: isOrganizationLoading,
     error,
     isOrgManager,
     refetch,
   } = useOrganization(token);
+
+  const organization = organizations.find(org => org.id === organizationId);
 
   const {
     userProfile,
@@ -143,10 +148,8 @@ export default function OrganizationProfilePage() {
                   </div>
                   {isOrgManager && (
                     <BaseButton
-                      onClick={() => router.push("/organization_profile/edit")}
-                      label={
-                        pageContent["organization-profile-edit-org-profile"]
-                      }
+                      onClick={() => router.push(`/organization_profile/${organizationId}/edit`)}
+                      label={pageContent["body-profile-edit-organization-button"]}
                       customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                         darkMode
                           ? "border-white text-white"
@@ -333,7 +336,7 @@ export default function OrganizationProfilePage() {
 
                 {isOrgManager && (
                   <BaseButton
-                    onClick={() => router.push("/organization_profile/edit")}
+                    onClick={() => router.push(`/organization_profile/${organizationId}/edit`)}
                     label={pageContent["body-profile-edit-organization-button"]}
                     customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
