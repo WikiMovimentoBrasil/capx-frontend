@@ -47,7 +47,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
             : "gray-200",
           icon: getCapacityIcon(baseCode),
           hasChildren: true,
-          skill_type: [],
+          skill_type: Number(baseCode),
           skill_wikidata_item: "",
         };
       });
@@ -101,7 +101,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
             color: getCapacityColor(parentCapacity?.color || "gray-200"),
             icon: getCapacityIcon(Number(parentCode)),
             hasChildren: item.hasChildren,
-            skill_type: [],
+            skill_type: Number(parentCode),
             skill_wikidata_item: "",
           };
         });
@@ -160,18 +160,18 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
 
   const findParentCapacity = useCallback(
     (
-      childCapacity: Capacity | { code: string | number; skill_type?: string[] }
+      childCapacity: Capacity | { code: string | number; skill_type?: number }
     ) => {
       const childCode = childCapacity.code.toString();
-      const skillTypes = childCapacity.skill_type || [];
+      const skillType = childCapacity.skill_type;
 
       // if doesnt have skill_type, return undefined
-      if (!skillTypes.length) {
+      if (!skillType) {
         return undefined;
       }
 
       // first, check if it is a direct child capacity
-      const parentId = skillTypes[0].toString();
+      const parentId = skillType.toString();
 
       // search for the parent capacity in the root capacities
       const rootParent = rootCapacities.find(
@@ -271,13 +271,13 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
                 icon: rootCapacity?.icon || item.icon,
                 hasChildren: true,
                 parentCapacity: undefined,
-                skill_type: [item.code.toString()],
+                skill_type: Number(item.code),
                 skill_wikidata_item: item.skill_wikidata_item || "",
               };
             }
 
             // check if it is a direct child capacity
-            const parentId = item.skill_type?.[0];
+            const parentId = item.skill_type;
             if (parentId) {
               // check if the parentId is a root capacity
               const rootParent = rootCapacities.find(
@@ -293,7 +293,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
                   icon: rootParent.icon,
                   hasChildren: false,
                   parentCapacity: rootParent,
-                  skill_type: item.skill_type || [],
+                  skill_type: Number(item.skill_type) || 0,
                   skill_wikidata_item: item.skill_wikidata_item || "",
                 };
               }
@@ -324,7 +324,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
                         ...parent,
                         parentCapacity: grandparent,
                       },
-                      skill_type: item.skill_type || [],
+                      skill_type: Number(item.skill_type) || 0,
                       skill_wikidata_item: item.skill_wikidata_item || "",
                     };
                   }
@@ -344,7 +344,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
                   name: `Capacity ${parentId}`,
                   color: "gray-600",
                   icon: "",
-                  skill_type: [],
+                  skill_type: 0,
                   skill_wikidata_item: "",
                   hasChildren: false,
                   parentCapacity: {
@@ -352,12 +352,12 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
                     name: "Root",
                     color: "gray-600",
                     icon: "",
-                    skill_type: [],
+                    skill_type: 0,
                     skill_wikidata_item: "",
                     hasChildren: false,
                   },
                 },
-                skill_type: item.skill_type || [],
+                skill_type: Number(item.skill_type) || 0,
                 skill_wikidata_item: item.skill_wikidata_item || "",
               };
             }
@@ -370,7 +370,7 @@ export function useCapacityList(token?: string, language: string = "pt-br") {
               icon: "",
               hasChildren: false,
               parentCapacity: undefined,
-              skill_type: item.skill_type || [],
+              skill_type: Number(item.skill_type) || 0,
               skill_wikidata_item: item.skill_wikidata_item || "",
             };
           })

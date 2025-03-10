@@ -58,6 +58,12 @@ import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { getProfileImage } from "@/lib/utils/getProfileImage";
 import { useAvatars } from "@/hooks/useAvatars";
 
+interface ProfileOption {
+  value: string;
+  label: string;
+  image: any;
+}
+
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const params = useParams();
@@ -85,8 +91,7 @@ export default function EditOrganizationProfilePage() {
     organizations,
     isLoading: isOrganizationLoading,
     error: organizationError,
-    updateOrganization,
-    fetchUserProfile,
+    updateOrganization,    
   } = useOrganization(token);
 
   // Projects setters
@@ -827,35 +832,34 @@ export default function EditOrganizationProfilePage() {
 
   const { avatars } = useAvatars();
 
-  const [profileOptions, setProfileOptions] = useState([]);
-  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileOption | null>(null);
 
-  // Atualize o useEffect para usar as dependências corretas
   useEffect(() => {
     if (userProfile && organizations) {
-      const options = [
+      const options: ProfileOption[] = [
         {
           value: 'user',
-          label: userProfile.display_name || session?.user?.name,
+          label: userProfile.display_name || session?.user?.name || '',
           image: getProfileImage(userProfile?.profile_image, userProfile?.avatar, avatars),
         },
         ...(userProfile.is_manager || []).map((orgId) => {
           const org = organizations.find((o) => o.id === orgId);
-          return org ? {
+          if (!org) return null;
+          
+          return {
             value: `org_${org.id}`,
-            label: org.display_name,
+            label: org.display_name || '',
             image: org.profile_image ? formatWikiImageUrl(org.profile_image) : NoAvatarIcon,
-          } : null;
-        }).filter(Boolean),
+          };
+        }).filter((opt): opt is ProfileOption => opt !== null)
       ];
       
       setProfileOptions(options);
       
-      // Define o perfil selecionado baseado no ID da organização atual
+      // Encontra a opção atual e garante que é do tipo ProfileOption antes de definir
       const currentOrgOption = options.find(opt => opt.value === `org_${organizationId}`);
-      if (currentOrgOption) {
-        setSelectedProfile(currentOrgOption);
-      }
+      setSelectedProfile(currentOrgOption || null);
     }
   }, [userProfile, organizations, organizationId, session?.user?.name, avatars]);
 

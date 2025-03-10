@@ -61,6 +61,7 @@ export default function MobileNavbar({
                 language={language}
                 setLanguage={setLanguage}
                 setPageContent={setPageContent}
+                pageContent={pageContent}
               />
 
               <div className="flex items-center">
@@ -123,6 +124,7 @@ export default function MobileNavbar({
             language={language}
             setLanguage={setLanguage}
             setPageContent={setPageContent}
+            pageContent={pageContent}
           />
 
           <AuthButton
