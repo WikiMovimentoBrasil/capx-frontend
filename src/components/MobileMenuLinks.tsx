@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { Link } from "react-scroll";
@@ -61,42 +61,27 @@ export default function MobileMenuLinks({
     "user" | "organization"
   >(pathname === "/organization_profile" ? "organization" : "user");
 
-  const handleProfileChange = (type: "user" | "organization", path: string) => {
-    setSelectedProfile(type);
+
+  const handleProfileChange = (path: string) => {
     handleMenuStatus();
     window.location.href = path;
   };
 
   const subMenuItems: SubMenuItem[] = [
-    ...(isOrgManager
-      ? [
-          {
-            title: "Organization Profile",
-            to: "/organization_profile",
-            image: darkMode
-              ? selectedProfile === "organization"
-                ? OrgProfileIconWhite
-                : UserProfileIconWhite
-              : selectedProfile === "organization"
-              ? OrgProfileIcon
-              : UserProfileIcon,
-            action: () =>
-              handleProfileChange("organization", "/organization_profile"),
-          },
-        ]
-      : []),
     {
       title: pageContent["navbar-user-profile"],
       to: "/profile",
-      image: darkMode
-        ? selectedProfile === "user"
-          ? OrgProfileIconWhite
-          : UserProfileIconWhite
-        : selectedProfile === "user"
-        ? OrgProfileIcon
-        : UserProfileIcon,
-      action: () => handleProfileChange("user", "/profile"),
+      image: darkMode ? UserProfileIconWhite : UserProfileIcon,
+      action: () => handleProfileChange("/profile"),
     },
+    ...(isOrgManager
+      ? organizations.map(org => ({
+          title: org.display_name || "Organization",
+          to: `/organization_profile/${org.id}`,
+          image: darkMode ? OrgProfileIconWhite : OrgProfileIcon,
+          action: () => handleProfileChange(`/organization_profile/${org.id}`),
+        }))
+      : []),
   ];
 
   useEffect(() => {
@@ -106,6 +91,13 @@ export default function MobileMenuLinks({
       setSelectedProfile("user");
     }
   }, [pathname]);
+
+      const getCurrentIcon = () => {
+    if (currentOrganization) {
+      return darkMode ? OrgProfileIconWhite : OrgProfileIcon;
+    }
+    return darkMode ? UserProfileIconWhite : UserProfileIcon;
+  };
 
   const menuDataLoggedIn: MenuItem[] = [
     { title: pageContent["navbar-link-home"], to: "/home", active: true },

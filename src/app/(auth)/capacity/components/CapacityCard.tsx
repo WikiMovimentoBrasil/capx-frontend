@@ -117,7 +117,7 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot
+            filter: isRoot || isSearch || parentCapacity?.parentCapacity
               ? "brightness(0) invert(1)"
               : getHueRotate(parentCapacity?.color),
           }}
@@ -142,7 +142,7 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot
+            filter: isRoot || isSearch || parentCapacity?.parentCapacity
               ? "brightness(0) invert(1)"
               : getHueRotate(parentCapacity?.color || color),
           }}
@@ -165,7 +165,7 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot
+            filter: isRoot || isSearch || parentCapacity?.parentCapacity
               ? "brightness(0) invert(1)"
               : getHueRotate(parentCapacity?.color),
           }}
@@ -180,8 +180,8 @@ export function CapacityCard({
 
   // determine the button color - use the color of the grandparent if available
   const getEffectiveColor = () => {
-    if (parentCapacity?.parentCapacity?.color) {
-      return parentCapacity.parentCapacity.color;
+    if (parentCapacity?.parentCapacity) {
+      return "gray-600";
     } else if (parentCapacity?.color) {
       return parentCapacity.color;
     }
@@ -195,7 +195,11 @@ export function CapacityCard({
     return (
       <div className="w-full">
         <div
-          className={`flex flex-col w-full bg-${cardColor} shadow-sm hover:shadow-md transition-shadow
+          className={`flex flex-col w-full ${
+            isSearch && !isRoot 
+              ? `bg-${parentCapacity?.color || cardColor}`
+              : `bg-${cardColor}`
+          } shadow-sm hover:shadow-md transition-shadow
           ${isMobile ? "rounded-[4px]" : "rounded-lg"}
           `}
         >
@@ -274,7 +278,9 @@ export function CapacityCard({
 
   return (
     <div className="w-full">
-      <div className="flex flex-col w-full rounded-lg bg-capx-light-box-bg">
+      <div className={`flex flex-col w-full rounded-lg ${
+        parentCapacity?.parentCapacity ? "bg-gray-600 text-white" : "bg-capx-light-box-bg"
+      }`}>
         <div className="flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 px-12">
           <div
             className={`flex items-center gap-4 ${
@@ -291,11 +297,15 @@ export function CapacityCard({
                 <h3
                   className={`font-extrabold ${
                     isMobile ? "text-[20px]" : "text-[36px]"
+                  } ${
+                    parentCapacity?.parentCapacity ? "text-white" : ""
                   }`}
                   style={{
-                    color: parentCapacity?.color
-                      ? getCapacityColor(parentCapacity.color)
-                      : "#000000",
+                    color: parentCapacity?.parentCapacity 
+                      ? "#FFFFFF"
+                      : parentCapacity?.color 
+                        ? getCapacityColor(parentCapacity.color) 
+                        : "#000000",
                   }}
                 >
                   {capitalizeFirstLetter(name)}
