@@ -73,6 +73,7 @@ export default function DesktopNavbar({
             language={language}
             setLanguage={setLanguage}
             setPageContent={setPageContent}
+            pageContent={pageContent}
           />
 
           {session ? (
