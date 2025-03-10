@@ -8,20 +8,22 @@ import UserCircleIconWhite from "@/public/static/images/supervised_user_circle_w
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
-import { useMemo, useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAvatars } from "@/hooks/useAvatars";
 
 interface ProfileHeaderProps {
   username: string;
-  profileImage: string;
-  avatar: number;
+  profileImage?: string;
+  avatar?: number;
+  isSameUser: boolean;
 }
 
 export default function ProfileHeader({
   username,
   profileImage,
   avatar,
-}: ProfileHeaderProps) {
+  isSameUser,
+}: ProfileHeaderProps & { isSameUser: boolean }) {
   const router = useRouter();
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
@@ -86,19 +88,21 @@ export default function ProfileHeader({
             {username || pageContent["loading"]}
           </span>
         </div>
-        <BaseButton
-          onClick={() => router.push("/profile/edit")}
-          label={pageContent["body-profile-edit-user-button"]}
-          customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
-            darkMode
-              ? "text-capx-light-bg border-capx-light-bg"
-              : "text-capx-dark-box-bg border-capx-dark-box-bg"
-          }`}
-          imageUrl={darkMode ? EditIconWhite : EditIcon}
-          imageAlt="Edit icon"
-          imageWidth={20}
-          imageHeight={20}
-        />
+        {isSameUser && (
+          <BaseButton
+            onClick={() => router.push("/profile/edit")}
+            label={pageContent["body-profile-edit-user-button"]}
+            customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
+              darkMode
+                ? "text-capx-light-bg border-capx-light-bg"
+                : "text-capx-dark-box-bg border-capx-dark-box-bg"
+            }`}
+            imageUrl={darkMode ? EditIconWhite : EditIcon}
+            imageAlt="Edit icon"
+            imageWidth={20}
+            imageHeight={20}
+          />
+        )}
       </div>
     );
   }
@@ -138,19 +142,21 @@ export default function ProfileHeader({
             {username || pageContent["loading"]}
           </span>
         </div>
-        <BaseButton
-          onClick={() => router.push("/profile/edit")}
-          label={pageContent["body-profile-edit-user-button"]}
-          customClass={`w-full font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
-            darkMode
-              ? "text-capx-light-bg border-capx-light-bg"
-              : "text-capx-dark-box-bg border-capx-dark-box-bg"
-          }`}
-          imageUrl={darkMode ? EditIconWhite : EditIcon}
-          imageAlt="Edit icon"
-          imageWidth={42}
-          imageHeight={42}
-        />
+        {isSameUser && (
+          <BaseButton
+            onClick={() => router.push("/profile/edit")}
+            label={pageContent["body-profile-edit-user-button"]}
+            customClass={`w-full font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid]  ${
+              darkMode
+                ? "text-capx-light-bg border-capx-light-bg"
+                : "text-capx-dark-box-bg border-capx-dark-box-bg"
+            }`}
+            imageUrl={darkMode ? EditIconWhite : EditIcon}
+            imageAlt="Edit icon"
+            imageWidth={42}
+            imageHeight={42}
+          />
+        )}
       </div>
     </div>
   );

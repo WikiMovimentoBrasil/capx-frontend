@@ -16,7 +16,7 @@ export const fetchWikimediaProjects = async (
 };
 
 export const fetchWikimediaProjectImages = async (
-  projectId: string,
+  projectId: number,
   token: string | undefined
 ): Promise<string> => {
   if (!projectId) {
