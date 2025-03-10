@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useOrganization } from "@/hooks/useOrganizationProfile";
@@ -36,7 +36,7 @@ import ContactPortalIcon from "@/public/static/images/contact_captive_portal.svg
 import ContactPortalIconWhite from "@/public/static/images/contact_captive_portal_white.svg";
 import { Organization, OrganizationType } from "@/types/organization";
 import { Capacity } from "@/types/capacity";
-import CapacitySelectionModal from "../../../profile/edit/components/CapacitySelectionModal";
+import CapacitySelectionModal from "../../profile/edit/components/CapacitySelectionModal";
 import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import { useProject, useProjects } from "@/hooks/useProjects";
 import { useDocument } from "@/hooks/useDocument";
@@ -48,10 +48,10 @@ import { OrganizationDocument } from "@/types/document";
 import { Contacts } from "@/types/contacts";
 import { useTagDiff } from "@/hooks/useTagDiff";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import ProjectsFormItem from "../../components/ProjectsFormItem";
-import EventsFormItem from "../../components/EventsFormItem";
-import NewsFormItem from "../../components/NewsFormItem";
-import DocumentFormItem from "../../components/DocumentFormItem";
+import ProjectsFormItem from "../components/ProjectsFormItem";
+import EventsFormItem from "../components/EventsFormItem";
+import NewsFormItem from "../components/NewsFormItem";
+import DocumentFormItem from "../components/DocumentFormItem";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 import LoadingState from "@/components/LoadingState";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
@@ -60,8 +60,6 @@ import { useAvatars } from "@/hooks/useAvatars";
 
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
-  const params = useParams();
-  const organizationId = params.id as string;
   const { data: session } = useSession();
   const token = session?.user?.token;
   const { darkMode } = useTheme();
@@ -82,11 +80,12 @@ export default function EditOrganizationProfilePage() {
   // Organization setters
   const {
     organization,
-    organizations,
     isLoading: isOrganizationLoading,
     error: organizationError,
     updateOrganization,
     fetchUserProfile,
+    organizationId,
+    isOrgManager,
   } = useOrganization(token);
 
   // Projects setters
@@ -239,6 +238,8 @@ export default function EditOrganizationProfilePage() {
   // Use effect to initialize the form data
   useEffect(() => {
     if (organization && !isInitialized) {
+      // Merge existing projects with new projects
+
       setFormData({
         display_name: organization.display_name || "",
         profile_image: organization.profile_image || "",
@@ -328,6 +329,8 @@ export default function EditOrganizationProfilePage() {
     documents,
     tagDiff,
   ]);
+
+  console.log(documentsData);
 
   const validUpdatedIds = (updatedIds: number[]) => {
     return updatedIds.filter(
@@ -546,8 +549,7 @@ export default function EditOrganizationProfilePage() {
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Atualiza o redirecionamento para incluir o ID da organização
-      router.push(`/organization_profile/${organizationId}`);
+      router.push(`/organization_profile`);
     } catch (error) {
       console.error("Error processing form:", error);
     }
@@ -827,39 +829,12 @@ export default function EditOrganizationProfilePage() {
 
   const { avatars } = useAvatars();
 
-  const [profileOptions, setProfileOptions] = useState([]);
-  const [selectedProfile, setSelectedProfile] = useState(null);
+  if (isUserLoading || isOrganizationLoading) {
+    return <LoadingState />;
+  }
 
-  // Atualize o useEffect para usar as dependências corretas
-  useEffect(() => {
-    if (userProfile && organizations) {
-      const options = [
-        {
-          value: 'user',
-          label: userProfile.display_name || session?.user?.name,
-          image: getProfileImage(userProfile?.profile_image, userProfile?.avatar, avatars),
-        },
-        ...(userProfile.is_manager || []).map((orgId) => {
-          const org = organizations.find((o) => o.id === orgId);
-          return org ? {
-            value: `org_${org.id}`,
-            label: org.display_name,
-            image: org.profile_image ? formatWikiImageUrl(org.profile_image) : NoAvatarIcon,
-          } : null;
-        }).filter(Boolean),
-      ];
-      
-      setProfileOptions(options);
-      
-      // Define o perfil selecionado baseado no ID da organização atual
-      const currentOrgOption = options.find(opt => opt.value === `org_${organizationId}`);
-      if (currentOrgOption) {
-        setSelectedProfile(currentOrgOption);
-      }
-    }
-  }, [userProfile, organizations, organizationId, session?.user?.name, avatars]);
-
-  if (isOrganizationLoading) {
+  if (!token || !isOrgManager) {
+    router.replace("/organization_profile");
     return <LoadingState />;
   }
 
@@ -1345,7 +1320,7 @@ export default function EditOrganizationProfilePage() {
               <div className="flex flex-col w-full gap-2 mb-2">
                 {diffTagsData?.map((tag, index) => (
                   <NewsFormItem
-                    key={tag.id === 0 ? `new-${index}` : tag.id}
+                    key={index}
                     news={tag}
                     index={index}
                     onDelete={handleDeleteDiffTag}

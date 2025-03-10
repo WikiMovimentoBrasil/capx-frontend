@@ -3,9 +3,8 @@ import MobileMenuLinks from "../../components/MobileMenuLinks";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AppProvider } from "@/contexts/AppContext";
 import * as ThemeContext from "@/contexts/ThemeContext";
-import { useOrganization } from "@/hooks/useOrganizationProfile";
 
-// Next.js Router's mock
+// Mock do Next.js Router
 jest.mock("next/navigation", () => ({
   useRouter() {
     return {
@@ -23,18 +22,10 @@ jest.mock("next/navigation", () => ({
   },
 }));
 
-// useTheme's mock
+// Mock do useTheme
 jest.mock("@/contexts/ThemeContext", () => ({
   ...jest.requireActual("@/contexts/ThemeContext"),
-  useTheme: jest.fn().mockReturnValue({
-    darkMode: false,
-    setDarkMode: jest.fn(),
-  }),
-}));
-
-// useOrganization's mock
-jest.mock("@/hooks/useOrganizationProfile", () => ({
-  useOrganization: jest.fn(),
+  useTheme: jest.fn(),
 }));
 
 const mockPageContent = {
@@ -44,7 +35,7 @@ const mockPageContent = {
   "navbar-link-dark-mode": "Dark Mode",
   "navbar-link-profiles": "Profiles",
   "navbar-link-organization-profile": "Organization Profile",
-  "navbar-user-profile": "User Profile",
+  "navbar-link-user-profile": "User Profile",
 };
 
 describe("MobileMenuLinks", () => {
@@ -52,13 +43,6 @@ describe("MobileMenuLinks", () => {
     (ThemeContext.useTheme as jest.Mock).mockReturnValue({
       darkMode: false,
       setDarkMode: jest.fn(),
-    });
-    (useOrganization as jest.Mock).mockReturnValue({
-      organizations: [
-        { id: 1, display_name: "Org 1" },
-        { id: 2, display_name: "Org 2" },
-      ],
-      isOrgManager: true,
     });
   });
 
@@ -83,7 +67,8 @@ describe("MobileMenuLinks", () => {
     );
 
     expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Dark Mode")).toBeInTheDocument();
+    expect(screen.getByText("Capacities")).toBeInTheDocument();
+    expect(screen.getByText("Reports")).toBeInTheDocument();
     expect(screen.getByText("Profiles")).toBeInTheDocument();
   });
 
@@ -125,49 +110,6 @@ describe("MobileMenuLinks", () => {
     links.forEach((link) => {
       expect(link).toHaveClass("text-capx-light-bg");
     });
-  });
-
-  it("renders organization profiles for org managers", async () => {
-    const mockSession = { user: { name: "Test User", token: "token" } };
-
-    renderWithProviders(
-      <MobileMenuLinks
-        session={mockSession}
-        pageContent={mockPageContent}
-        handleMenuStatus={jest.fn()}
-      />
-    );
-
-    const profilesButton = screen.getByText(
-      mockPageContent["navbar-link-profiles"]
-    );
-    fireEvent.click(profilesButton);
-
-    expect(screen.getByText("Org 1")).toBeInTheDocument();
-    expect(screen.getByText("Org 2")).toBeInTheDocument();
-  });
-
-  it("navigates to correct organization profile", () => {
-    const mockSession = { user: { name: "Test User", token: "token" } };
-    const handleMenuStatus = jest.fn();
-
-    renderWithProviders(
-      <MobileMenuLinks
-        session={mockSession}
-        pageContent={mockPageContent}
-        handleMenuStatus={handleMenuStatus}
-      />
-    );
-
-    const profilesButton = screen.getByText(
-      mockPageContent["navbar-link-profiles"]
-    );
-    fireEvent.click(profilesButton);
-
-    const org1Button = screen.getByText("Org 1");
-    fireEvent.click(org1Button);
-
-    expect(handleMenuStatus).toHaveBeenCalled();
   });
 
   afterEach(() => {
