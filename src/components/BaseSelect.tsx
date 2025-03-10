@@ -20,6 +20,7 @@ interface BaseSelectProps {
   className?: string;
   onContainerClick?: () => void;
   onMenuOpen?: () => void;
+  placeholder?: string;
 }
 
 const DropdownIndicator = (isMobile: boolean, darkMode: boolean) => (
@@ -96,6 +97,7 @@ export default function BaseSelect({
   className = "",
   onContainerClick,
   onMenuOpen,
+  placeholder,
 }: BaseSelectProps) {
   return (
     <div onClick={onContainerClick}>
@@ -158,6 +160,7 @@ export default function BaseSelect({
         styles={customStyles(darkMode)}
         isSearchable={false}
         onMenuOpen={onMenuOpen}
+        placeholder={placeholder}
       />
     </div>
   );

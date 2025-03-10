@@ -58,6 +58,12 @@ import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { getProfileImage } from "@/lib/utils/getProfileImage";
 import { useAvatars } from "@/hooks/useAvatars";
 
+interface ProfileOption {
+  value: string;
+  label: string | null | undefined;
+  image: any | string;
+}
+
 export default function EditOrganizationProfilePage() {
   const router = useRouter();
   const params = useParams();
@@ -86,7 +92,6 @@ export default function EditOrganizationProfilePage() {
     isLoading: isOrganizationLoading,
     error: organizationError,
     updateOrganization,
-    fetchUserProfile,
   } = useOrganization(token);
 
   // Projects setters
@@ -827,10 +832,13 @@ export default function EditOrganizationProfilePage() {
 
   const { avatars } = useAvatars();
 
-  const [profileOptions, setProfileOptions] = useState([]);
-  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [profileOptions, setProfileOptions] = useState<Array<{
+    value: string;
+    label: string | null | undefined;
+    image: any | string;
+  } | null>>([]);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileOption | null>(null);
 
-  // Atualize o useEffect para usar as dependências corretas
   useEffect(() => {
     if (userProfile && organizations) {
       const options = [
@@ -851,8 +859,8 @@ export default function EditOrganizationProfilePage() {
       
       setProfileOptions(options);
       
-      // Define o perfil selecionado baseado no ID da organização atual
-      const currentOrgOption = options.find(opt => opt.value === `org_${organizationId}`);
+      const currentOrgOption = options.find(opt => opt !== null && opt.value === `org_${organizationId}`);
+
       if (currentOrgOption) {
         setSelectedProfile(currentOrgOption);
       }

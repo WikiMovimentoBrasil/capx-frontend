@@ -46,7 +46,7 @@ export default function MobileMenuLinks({
 }: MobileMenuLinksProps) {
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { darkMode } = useTheme();
+  const { darkMode, setDarkMode } = useTheme();
   const { organizations, isOrgManager } = useOrganization(session?.user?.token);
 
   // Encontra a organização atual se estivermos em uma página de organização
