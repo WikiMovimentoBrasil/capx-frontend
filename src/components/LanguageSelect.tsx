@@ -11,7 +11,6 @@ interface LanguageSelectProps {
   setPageContent: (pageContent: any) => void;
   isMobile: boolean;
   className?: string;
-  pageContent: any;
 }
 
 interface LanguageOption {
@@ -25,16 +24,12 @@ export default function LanguageSelect({
   setPageContent,
   isMobile,
   className = "w-max",
-  pageContent,
 }: LanguageSelectProps) {
   const { darkMode } = useTheme();
   const { setMobileMenuStatus } = useApp();
   const { fetchLanguages, fetchTranslations } = useLanguageSelection();
   const [options, setOptions] = useState<LanguageOption[]>([]);
   const [isClient, setIsClient] = useState(false);
-
-  // Ensure language is never undefined
-  const currentLanguage = language || "en";
 
   useEffect(() => {
     async function loadLanguages() {
@@ -47,21 +42,19 @@ export default function LanguageSelect({
 
   useEffect(() => {
     async function loadTranslations() {
-      const translations = await fetchTranslations(currentLanguage);
+      const translations = await fetchTranslations(language);
       setPageContent(translations);
     }
     loadTranslations();
-  }, [currentLanguage, setPageContent, fetchTranslations]);
+  }, [language, setPageContent, fetchTranslations]);
 
   const handleSelection = async (selectedOption: any) => {
-    if (selectedOption && selectedOption.value) {
-      setLanguage(selectedOption.value);
-      await setCookie({
-        name: "language",
-        value: selectedOption.value,
-        options: { path: "/" },
-      });
-    }
+    setLanguage(selectedOption.value);
+    await setCookie({
+      name: "language",
+      value: selectedOption.value,
+      options: { path: "/" },
+    });
   };
 
   if (!isClient) return null;
@@ -70,9 +63,9 @@ export default function LanguageSelect({
     <BaseSelect
       name="language"
       options={options}
-      value={{ value: currentLanguage, label: currentLanguage }}
+      defaultValue={{ value: language, label: language }}
       onChange={handleSelection}
-      ariaLabel={pageContent?.["aria-language-input"]}
+      ariaLabel={setPageContent["aria-language-input"]}
       isMobile={isMobile}
       darkMode={darkMode}
       className={`${className} flex items-center`}
