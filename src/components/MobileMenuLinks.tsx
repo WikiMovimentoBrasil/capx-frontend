@@ -49,7 +49,6 @@ export default function MobileMenuLinks({
   const { darkMode, setDarkMode } = useTheme();
   const { organizations, isOrgManager } = useOrganization(session?.user?.token);
 
-  // Encontra a organização atual se estivermos em uma página de organização
   const currentOrganization = useMemo(() => {
     const organizationId = pathname.match(/\/organization_profile\/(\d+)/)?.[1];
     if (organizationId && organizations) {
@@ -57,6 +56,11 @@ export default function MobileMenuLinks({
     }
     return null;
   }, [pathname, organizations]);
+
+  const [selectedProfile, setSelectedProfile] = useState<
+    "user" | "organization"
+  >(pathname === "/organization_profile" ? "organization" : "user");
+
 
   const handleProfileChange = (path: string) => {
     handleMenuStatus();
@@ -80,8 +84,15 @@ export default function MobileMenuLinks({
       : []),
   ];
 
-  // Atualiza o ícone baseado na rota atual
-  const getCurrentIcon = () => {
+  useEffect(() => {
+    if (pathname === "/organization_profile") {
+      setSelectedProfile("organization");
+    } else if (pathname === "/profile") {
+      setSelectedProfile("user");
+    }
+  }, [pathname]);
+
+      const getCurrentIcon = () => {
     if (currentOrganization) {
       return darkMode ? OrgProfileIconWhite : OrgProfileIcon;
     }
@@ -92,8 +103,8 @@ export default function MobileMenuLinks({
     { title: pageContent["navbar-link-home"], to: "/home", active: true },
     {
       title: pageContent["navbar-link-capacities"],
-      to: "/capacities",
-      active: false,
+      to: "/capacity",
+      active: true,
     },
     {
       title: pageContent["navbar-link-reports"],

@@ -74,6 +74,9 @@ export default function EditOrganizationProfilePage() {
   const { isMobile, pageContent } = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileOption | null>(null);
 
   // Documents setters
   const {
@@ -92,6 +95,7 @@ export default function EditOrganizationProfilePage() {
     isLoading: isOrganizationLoading,
     error: organizationError,
     updateOrganization,
+    isOrgManager,
   } = useOrganization(token);
 
   // Projects setters
@@ -741,7 +745,7 @@ export default function EditOrganizationProfilePage() {
         `${currentCapacityType}_capacities` as keyof typeof prev;
       const currentCapacities = (prev[capacityField] as number[]) || [];
 
-      if (!currentCapacities.includes(capacity.id)) {
+      if (capacity.id && !currentCapacities.includes(capacity.id)) {
         return {
           ...prev,
           [capacityField]: [...currentCapacities, capacity.id],
@@ -824,50 +828,42 @@ export default function EditOrganizationProfilePage() {
 
   // Load user profile data
   const { userProfile, isLoading: isUserLoading } = useUserProfile();
-
-  console.log("User profile:", userProfile);
-  const userImage = userProfile?.profile_image
-    ? formatWikiImageUrl(userProfile?.profile_image)
-    : NoAvatarIcon;
-
   const { avatars } = useAvatars();
-
-  const [profileOptions, setProfileOptions] = useState<Array<{
-    value: string;
-    label: string | null | undefined;
-    image: any | string;
-  } | null>>([]);
-  const [selectedProfile, setSelectedProfile] = useState<ProfileOption | null>(null);
 
   useEffect(() => {
     if (userProfile && organizations) {
-      const options = [
+      const managedOrgOptions = (userProfile.is_manager || [])
+        .map((orgId) => {
+          const org = organizations.find((o) => o.id === orgId);
+          if (!org) return null;
+          
+          return {
+            value: `org_${org.id}`,
+            label: org.display_name || '',
+            image: org.profile_image ? formatWikiImageUrl(org.profile_image) : NoAvatarIcon,
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null);
+      
+      const options: ProfileOption[] = [
         {
           value: 'user',
-          label: userProfile.display_name || session?.user?.name,
+          label: userProfile.display_name || session?.user?.name || '',
           image: getProfileImage(userProfile?.profile_image, userProfile?.avatar, avatars),
         },
-        ...(userProfile.is_manager || []).map((orgId) => {
-          const org = organizations.find((o) => o.id === orgId);
-          return org ? {
-            value: `org_${org.id}`,
-            label: org.display_name,
-            image: org.profile_image ? formatWikiImageUrl(org.profile_image) : NoAvatarIcon,
-          } : null;
-        }).filter(Boolean),
+        ...managedOrgOptions
       ];
       
       setProfileOptions(options);
       
-      const currentOrgOption = options.find(opt => opt !== null && opt.value === `org_${organizationId}`);
-
+      const currentOrgOption = options.find(opt => opt.value === `org_${organizationId}`);
       if (currentOrgOption) {
         setSelectedProfile(currentOrgOption);
       }
     }
   }, [userProfile, organizations, organizationId, session?.user?.name, avatars]);
-
-  if (isOrganizationLoading) {
+  
+  if (isUserLoading || isOrganizationLoading) {
     return <LoadingState />;
   }
 
