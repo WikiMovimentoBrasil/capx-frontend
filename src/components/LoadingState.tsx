@@ -10,6 +10,9 @@ export default function LoadingState() {
       className={`flex items-center justify-center min-h-screen ${
         darkMode ? "bg-capx-dark-box-bg" : "bg-capx-light-bg"
       }`}
+      role="status"
+      data-testid="loading-state"
+      aria-label="Loading"
     >
       <div className="relative w-16 h-16">
         <Image
