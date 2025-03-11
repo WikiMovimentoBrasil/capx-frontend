@@ -55,7 +55,7 @@ export default function AuthenticatedMainSection({
         </button>
         <button
           className="flex flex-col w-full h-full justify-center items-center"
-          onClick={() => setShowPopup(true)}
+          onClick={() => router.push("/capacity")}
         >
           <Image
             src={SecondarySectionIllustration02}
@@ -138,7 +138,7 @@ export default function AuthenticatedMainSection({
           <div className="flex items-center flex-col gap-[24px]">
             <button
               className="w-full h-full"
-              onClick={() => setShowPopup(true)}
+              onClick={() => router.push("/capacity")}
             >
               <Image
                 src={SecondarySectionIllustration02}
@@ -233,7 +233,7 @@ export default function AuthenticatedMainSection({
             <div className="flex flex-row gap-4 w-full justify-center items-center">
               <div className="flex items-center h-full">
                 <BaseButton
-                  onClick={() => setShowPopup(true)}
+                  onClick={() => router.push("/capacity")}
                   label={
                     pageContent["body-loggedin-home-main-section-button01"]
                   }
@@ -298,7 +298,7 @@ export default function AuthenticatedMainSection({
             <div className="flex flex-col sm:flex-row gap-4 w-full items-start mt-[24px]">
               <div className="flex items-center h-full">
                 <BaseButton
-                  onClick={() => setShowPopup(true)}
+                  onClick={() => router.push("/capacity")}
                   label={
                     pageContent["body-loggedin-home-main-section-button01"]
                   }

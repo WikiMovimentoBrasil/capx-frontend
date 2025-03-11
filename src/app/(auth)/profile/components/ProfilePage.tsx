@@ -176,13 +176,13 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
   // only renders empty fields for the logged user
   const shouldRenderEmptyField = (field: string | any[]) => {
     if (typeof field === "string") {
-        return isSameUser || field != "";
-      }
-      if (Array.isArray(field)) {
-        return isSameUser || field.length > 0;
-      }
-      return isSameUser;
-  }
+      return isSameUser || field != "";
+    }
+    if (Array.isArray(field)) {
+      return isSameUser || field.length > 0;
+    }
+    return isSameUser;
+  };
 
   if (isMobile) {
     return (
@@ -205,11 +205,9 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
               avatar={profile?.avatar}
               isSameUser={isSameUser}
             />
-            {shouldRenderEmptyField(profile?.about) &&
-                <MiniBio 
-                    about={profile?.about || ""}
-                />
-            }
+            {shouldRenderEmptyField(profile?.about) && (
+              <MiniBio about={profile?.about || ""} />
+            )}
             <div className="flex flex-col gap-2">
               <div className="flex flex-row gap-2 items-center">
                 <div className="relative h-[16px] w-[16px]">
@@ -241,128 +239,147 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
                 </p>
               </div>
             </div>
-            {shouldRenderEmptyField(profile?.skills_known.toString()) && <ProfileItem
-              icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-              title={pageContent["body-profile-known-capacities-title"]}
-              items={profile?.skills_known || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-            />}
-            {shouldRenderEmptyField(profile?.skills_available.toString()) && <ProfileItem
-              icon={darkMode ? EmojiIconWhite : EmojiIcon}
-              title={pageContent["body-profile-available-capacities-title"]}
-              items={profile?.skills_available || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-            />}
-            {shouldRenderEmptyField(profile?.skills_wanted.toString()) && <ProfileItem
-              icon={darkMode ? TargetIconWhite : TargetIcon}
-              title={pageContent["body-profile-wanted-capacities-title"]}
-              items={profile?.skills_wanted || []}
-              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-            />}
-            {shouldRenderEmptyField(profile?.language.toString()) && 
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={darkMode ? LanguageIconWhite : LanguageIcon}
-                  alt="Language icon"
-                  width={20}
-                  height={20}
-                />
-                <h2
-                  className={`font-[Montserrat] text-[14px] font-bold ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  {pageContent["body-profile-languages-title"]}
-                </h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {profile?.language?.map((lang, index) => (
-                  <div
-                    key={index}
-                    className={`rounded-[4px] px-[4px] py-[6px] ${
-                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+            {shouldRenderEmptyField(profile?.skills_known?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+                title={pageContent["body-profile-known-capacities-title"]}
+                items={profile?.skills_known || []}
+                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.skills_available?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? EmojiIconWhite : EmojiIcon}
+                title={pageContent["body-profile-available-capacities-title"]}
+                items={profile?.skills_available || []}
+                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.skills_wanted?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? TargetIconWhite : TargetIcon}
+                title={pageContent["body-profile-wanted-capacities-title"]}
+                items={profile?.skills_wanted || []}
+                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.language?.toString()) && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={darkMode ? LanguageIconWhite : LanguageIcon}
+                    alt="Language icon"
+                    width={20}
+                    height={20}
+                  />
+                  <h2
+                    className={`font-[Montserrat] text-[14px] font-bold ${
+                      darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    <span
-                      className={`font-[Montserrat] text-[14px] ${
-                        darkMode ? "text-white" : "text-[#053749]"
+                    {pageContent["body-profile-languages-title"]}
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profile?.language?.map((lang, index) => (
+                    <div
+                      key={index}
+                      className={`rounded-[4px] px-[4px] py-[6px] ${
+                        darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
                       }`}
                     >
-                      {languages[lang.id]} -{" "}
-                      {getProficiencyLabel(lang.proficiency)}
-                    </span>
-                  </div>
-                ))}
+                      <span
+                        className={`font-[Montserrat] text-[14px] ${
+                          darkMode ? "text-white" : "text-[#053749]"
+                        }`}
+                      >
+                        {languages[lang.id]} -{" "}
+                        {getProficiencyLabel(lang.proficiency)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>}
-            {shouldRenderEmptyField(profile?.wiki_alt) && <ProfileItemsComponent
-              icon={darkMode ? WikiIconWhite : WikiIcon}
-              title={pageContent["body-profile-box-title-alt-wiki-acc"]}
-              value={profile?.wiki_alt || ""}
-            />}
-            {shouldRenderEmptyField(profile?.affiliation) && <ProfileItemsComponent
-              icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
-              title={pageContent["body-profile-section-title-affiliation"]}
-              value={
-                profile?.affiliation
-                  ? affiliations[profile.affiliation[0]] || ""
-                  : ""
-              }
-            />}
-            {shouldRenderEmptyField(profile?.territory) &&  <ProfileItemsComponent
-              icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-              title={pageContent["body-profile-section-title-territory"]}
-              value={
-                profile?.territory
-                  ? territories[profile.territory[0]] || ""
-                  : ""
-              }
-            />}
-            {shouldRenderEmptyField(profile?.wikidata_qid) && <ProfileItemsComponent
-              icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
-              title={pageContent["body-profile-box-title-wikidata-item"]}
-              value={profile?.wikidata_qid || ""}
-            />}
-            {shouldRenderEmptyField(profile?.wikimedia_project) && <div className="flex flex-row gap-2">
-            <div className="flex flex-row gap-2">
-              <div className="relative h-[20px] w-[20px]">
-                <Image
-                  src={darkMode ? WikiIconWhite : WikiIcon}
-                  alt={"Wikidata Logo"}
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <p
-                className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
-                  darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
-                }`}
-              >
-                {pageContent["body-profile-wikimedia-projects-title"]}
-              </p>
-            </div>
-              {profile?.wikimedia_project?.map((projectId) =>
-                projectId ? (
-                  <div
-                    key={projectId}
-                    className={`relative h-[123px] w-[98px] rounded-[16px] flex items-center justify-center ${
-                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
-                    }`}
-                  >
+            )}
+            {shouldRenderEmptyField(profile?.wiki_alt) && (
+              <ProfileItemsComponent
+                icon={darkMode ? WikiIconWhite : WikiIcon}
+                title={pageContent["body-profile-box-title-alt-wiki-acc"]}
+                value={profile?.wiki_alt || ""}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.affiliation) && (
+              <ProfileItemsComponent
+                icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
+                title={pageContent["body-profile-section-title-affiliation"]}
+                value={
+                  profile?.affiliation
+                    ? affiliations[profile.affiliation[0]] || ""
+                    : ""
+                }
+              />
+            )}
+            {shouldRenderEmptyField(profile?.territory) && (
+              <ProfileItemsComponent
+                icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
+                title={pageContent["body-profile-section-title-territory"]}
+                value={
+                  profile?.territory
+                    ? territories[profile.territory[0]] || ""
+                    : ""
+                }
+              />
+            )}
+            {shouldRenderEmptyField(profile?.wikidata_qid) && (
+              <ProfileItemsComponent
+                icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
+                title={pageContent["body-profile-box-title-wikidata-item"]}
+                value={profile?.wikidata_qid || ""}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.wikimedia_project) && (
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-2">
+                  <div className="relative h-[20px] w-[20px]">
                     <Image
-                      src={
-                        wikimediaProjectImages[projectId] ||
-                        (darkMode ? WikiIconWhite : WikiIcon)
-                      }
-                      className="object-contain p-[12px]"
-                      alt={wikimediaProjects[projectId] || "Project icon"}
+                      src={darkMode ? WikiIconWhite : WikiIcon}
+                      alt={"Wikidata Logo"}
                       fill
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
-                ) : null
-              )}
-            </div>}
+                  <p
+                    className={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] ${
+                      darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+                    }`}
+                  >
+                    {pageContent["body-profile-wikimedia-projects-title"]}
+                  </p>
+                </div>
+                <div className="flex flex-row gap-2">
+                  {profile?.wikimedia_project?.map((projectId) =>
+                    projectId ? (
+                      <div
+                        key={projectId}
+                        className={`relative h-[123px] w-[98px] rounded-[16px] flex items-center justify-center ${
+                          darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                        }`}
+                      >
+                        <Image
+                          src={
+                            wikimediaProjectImages[projectId] ||
+                            (darkMode ? WikiIconWhite : WikiIcon)
+                          }
+                          className="object-contain p-[12px]"
+                          alt={wikimediaProjects[projectId] || "Project icon"}
+                          fill
+                        />
+                      </div>
+                    ) : null
+                  )}
+                </div>
+              </div>
+            )}
             <div className="flex flex-row gap-2">
               <div className="relative h-[20px] w-[20px]">
                 <Image
@@ -451,11 +468,9 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
               avatar={profile?.avatar}
               isSameUser={isSameUser}
             />
-            {shouldRenderEmptyField(profile?.about) && ( 
-                <MiniBio 
-                    about={profile?.about || ""}
-                />)
-            }
+            {shouldRenderEmptyField(profile?.about) && (
+              <MiniBio about={profile?.about || ""} />
+            )}
             <div className="flex flex-col gap-4 mb-6">
               <div className="flex flex-row gap-2 items-center">
                 <Image
@@ -488,129 +503,147 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
                 </p>
               </div>
             </div>
-            {shouldRenderEmptyField(profile?.skills_known.toString()) && <ProfileItem
-              icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-              title={pageContent["body-profile-known-capacities-title"]}
-              items={profile?.skills_known || []}
-              customClass={`font-[Montserrat] not-italic leading-[normal]`}
-            />}
-            {shouldRenderEmptyField(profile?.skills_available.toString()) && <ProfileItem
-              icon={darkMode ? EmojiIconWhite : EmojiIcon}
-              title={pageContent["body-profile-available-capacities-title"]}
-              items={profile?.skills_available || []}
-              customClass={`font-[Montserrat] not-italic leading-[normal] `}
-            />}
-            {shouldRenderEmptyField(profile?.skills_wanted.toString()) && <ProfileItem
-              icon={darkMode ? TargetIconWhite : TargetIcon}
-              title={pageContent["body-profile-wanted-capacities-title"]}
-              items={profile?.skills_wanted || []}
-              customClass={`font-[Montserrat] not-italic leading-[normal] `}
-            />}
-            {shouldRenderEmptyField(profile?.language.toString()) && 
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 items-center">
-                <Image
-                  src={darkMode ? LanguageIconWhite : LanguageIcon}
-                  alt="Language icon"
-                  width={42}
-                  height={42}
-                />
-                <h2
-                  className={`font-[Montserrat] text-[24px] font-bold ${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  }`}
-                >
-                  {pageContent["body-profile-languages-title"]}
-                </h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {profile?.language?.map((lang, index) => (
-                  <div
-                    key={index}
-                    className={`rounded-[4px] px-[4px] py-[6px] ${
-                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+            {shouldRenderEmptyField(profile?.skills_known?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+                title={pageContent["body-profile-known-capacities-title"]}
+                items={profile?.skills_known || []}
+                customClass={`font-[Montserrat] not-italic leading-[normal]`}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.skills_available?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? EmojiIconWhite : EmojiIcon}
+                title={pageContent["body-profile-available-capacities-title"]}
+                items={profile?.skills_available || []}
+                customClass={`font-[Montserrat] not-italic leading-[normal] `}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.skills_wanted?.toString()) && (
+              <ProfileItem
+                icon={darkMode ? TargetIconWhite : TargetIcon}
+                title={pageContent["body-profile-wanted-capacities-title"]}
+                items={profile?.skills_wanted || []}
+                customClass={`font-[Montserrat] not-italic leading-[normal] `}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.language?.toString()) && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 items-center">
+                  <Image
+                    src={darkMode ? LanguageIconWhite : LanguageIcon}
+                    alt="Language icon"
+                    width={42}
+                    height={42}
+                  />
+                  <h2
+                    className={`font-[Montserrat] text-[24px] font-bold ${
+                      darkMode ? "text-white" : "text-[#053749]"
                     }`}
                   >
-                    <span
-                      className={`font-[Montserrat] text-[24px] ${
-                        darkMode ? "text-white" : "text-[#053749]"
+                    {pageContent["body-profile-languages-title"]}
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profile?.language?.map((lang, index) => (
+                    <div
+                      key={index}
+                      className={`rounded-[4px] px-[4px] py-[6px] ${
+                        darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
                       }`}
                     >
-                      {languages[lang.id]} -{" "}
-                      {getProficiencyLabel(lang.proficiency)}
-                    </span>
-                  </div>
-                ))}
+                      <span
+                        className={`font-[Montserrat] text-[24px] ${
+                          darkMode ? "text-white" : "text-[#053749]"
+                        }`}
+                      >
+                        {languages[lang.id]} -{" "}
+                        {getProficiencyLabel(lang.proficiency)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>}
-            {shouldRenderEmptyField(profile?.wiki_alt) && <ProfileItemsComponent
-              icon={darkMode ? WikiIconWhite : WikiIcon}
-              title={pageContent["body-profile-box-title-alt-wiki-acc"]}
-              value={profile?.wiki_alt || ""}
-            />}
-            {shouldRenderEmptyField(profile?.affiliation) && <ProfileItemsComponent
-              icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
-              title={pageContent["body-profile-section-title-affiliation"]}
-              value={
-                profile?.affiliation
-                  ? affiliations[profile.affiliation[0]] || ""
-                  : ""
-              }
-            />}
-            {shouldRenderEmptyField(profile?.territory) && <ProfileItemsComponent
-              icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
-              title={pageContent["body-profile-section-title-territory"]}
-              value={
-                profile?.territory
-                  ? territories[profile.territory[0]] || ""
-                  : ""
-              }
-            />}
-            {shouldRenderEmptyField(profile?.wikidata_qid) && <ProfileItemsComponent
-              icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
-              title={pageContent["body-profile-box-title-wikidata-item"]}
-              value={profile?.wikidata_qid || ""}
-            />}
-            {shouldRenderEmptyField(profile?.wikimedia_project) && 
-            (<><div className="flex flex-row gap-2 mt-[80px] items-center">
-              <div className="relative h-[48px] w-[48px]">
-                <Image
-                  src={darkMode ? WikiIconWhite : WikiIcon}
-                  alt={"Wikidata Logo"}
-                  fill
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <p
-                className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
-                  darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
-                }`}
-              >
-                {pageContent["body-profile-wikimedia-projects-title"]}
-              </p>
-            </div>
-            <div className="flex flex-row gap-5 mt-[80px] items-center">
-              {profile?.wikimedia_project?.map((projectId) =>
-                projectId ? (
-                  <div
-                    key={projectId}
-                    className={`relative h-[250px] w-[180px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center ${
-                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
-                    }`}
-                  >
+            )}
+            {shouldRenderEmptyField(profile?.wiki_alt) && (
+              <ProfileItemsComponent
+                icon={darkMode ? WikiIconWhite : WikiIcon}
+                title={pageContent["body-profile-box-title-alt-wiki-acc"]}
+                value={profile?.wiki_alt || ""}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.affiliation) && (
+              <ProfileItemsComponent
+                icon={darkMode ? AffiliationIconWhite : AffiliationIcon}
+                title={pageContent["body-profile-section-title-affiliation"]}
+                value={
+                  profile?.affiliation
+                    ? affiliations[profile.affiliation[0]] || ""
+                    : ""
+                }
+              />
+            )}
+            {shouldRenderEmptyField(profile?.territory) && (
+              <ProfileItemsComponent
+                icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
+                title={pageContent["body-profile-section-title-territory"]}
+                value={
+                  profile?.territory
+                    ? territories[profile.territory[0]] || ""
+                    : ""
+                }
+              />
+            )}
+            {shouldRenderEmptyField(profile?.wikidata_qid) && (
+              <ProfileItemsComponent
+                icon={darkMode ? BarCodeIconWhite : BarCodeIcon}
+                title={pageContent["body-profile-box-title-wikidata-item"]}
+                value={profile?.wikidata_qid || ""}
+              />
+            )}
+            {shouldRenderEmptyField(profile?.wikimedia_project) && (
+              <>
+                <div className="flex flex-row gap-2 mt-[80px] items-center">
+                  <div className="relative h-[48px] w-[48px]">
                     <Image
-                      src={
-                        wikimediaProjectImages[projectId] ||
-                        (darkMode ? WikiIconWhite : WikiIcon)
-                      }
-                      alt={wikimediaProjects[projectId] || "Project icon"}
-                      className="object-contain p-[24px]"
+                      src={darkMode ? WikiIconWhite : WikiIcon}
+                      alt={"Wikidata Logo"}
                       fill
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
-                ) : null
-              )}
-            </div></>)}
+                  <p
+                    className={`font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] ${
+                      darkMode ? "text-capx-light-bg" : "text-capx-dark-box-bg"
+                    }`}
+                  >
+                    {pageContent["body-profile-wikimedia-projects-title"]}
+                  </p>
+                </div>
+                <div className="flex flex-row gap-5 mt-[80px] items-center">
+                  {profile?.wikimedia_project?.map((projectId) =>
+                    projectId ? (
+                      <div
+                        key={projectId}
+                        className={`relative h-[250px] w-[180px] bg-[#EFEFEF] rounded-[16px] flex items-center justify-center ${
+                          darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                        }`}
+                      >
+                        <Image
+                          src={
+                            wikimediaProjectImages[projectId] ||
+                            (darkMode ? WikiIconWhite : WikiIcon)
+                          }
+                          alt={wikimediaProjects[projectId] || "Project icon"}
+                          className="object-contain p-[24px]"
+                          fill
+                        />
+                      </div>
+                    ) : null
+                  )}
+                </div>
+              </>
+            )}
             <div className="flex flex-row gap-2 mt-[80px] items-center mb-[16px]">
               <div className="relative h-[48px] w-[48px]">
                 <Image
