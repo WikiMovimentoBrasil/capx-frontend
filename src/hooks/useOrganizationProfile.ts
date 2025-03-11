@@ -33,11 +33,10 @@ export function useOrganization(token?: string, specificOrgId?: number) {
             : []
         );
 
-        console.log("IDs de organizações gerenciadas:", managedIds);
         setManagedOrganizationIds(managedIds);
         setIsPermissionsLoaded(true);
       } catch (err) {
-        console.error("Erro ao buscar perfil do usuário:", err);
+        console.error("Error fetching user profile:", err);
         setManagedOrganizationIds([]);
         setIsPermissionsLoaded(true);
       }
@@ -50,10 +49,10 @@ export function useOrganization(token?: string, specificOrgId?: number) {
           );
           setOrganizations([orgData]);
         } catch (err) {
-          console.error(`Erro ao buscar organização ${specificOrgId}:`, err);
+          console.error(`Error fetching organization ${specificOrgId}:`, err);
           setOrganizations([]);
           setError(
-            `Erro ao buscar organização: ${err.message || "Erro desconhecido"}`
+            `Error fetching organization: ${err.message || "Unknown error"}`
           );
         }
       } else if (managedOrganizationIds.length > 0) {
@@ -83,20 +82,11 @@ export function useOrganization(token?: string, specificOrgId?: number) {
     fetchData();
   }, [fetchData]);
 
+  // Check if the user is a manager of the specific organization
   const isOrgManager =
     isPermissionsLoaded && specificOrgId
       ? managedOrganizationIds.includes(Number(specificOrgId))
       : false;
-
-  console.log("specificOrgId:", specificOrgId);
-  console.log("specificOrgId como número:", Number(specificOrgId));
-  console.log("managedOrganizationIds:", managedOrganizationIds);
-  console.log("isPermissionsLoaded:", isPermissionsLoaded);
-  console.log(
-    "Verificação includes:",
-    managedOrganizationIds.includes(Number(specificOrgId))
-  );
-  console.log("isOrgManager final:", isOrgManager);
 
   return {
     organization: organizations[0],

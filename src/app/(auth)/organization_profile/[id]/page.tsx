@@ -51,8 +51,6 @@ export default function OrganizationProfilePage() {
     refetch,
   } = useOrganization(token, organizationId);
 
-  console.log(organizations)
-  console.log(isOrgManager)
   const organization = organizations.find(org => org.id === organizationId);
 
   const {
@@ -336,7 +334,6 @@ export default function OrganizationProfilePage() {
                   TODO
                 </p> */}
 
-                  {console.log(isOrgManager)}
                 {isOrgManager && (
                   <BaseButton
                     onClick={() => router.push(`/organization_profile/${organizationId}/edit`)}

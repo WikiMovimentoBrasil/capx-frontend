@@ -89,8 +89,7 @@ export default function EditOrganizationProfilePage() {
   } = useDocument(token);
 
   // Organization setters
-  const hookId = "main-hook";
-  console.log(`[${hookId}] Chamando useOrganization com organizationId:`, organizationId);
+
 
   const {
     organization,
@@ -102,7 +101,6 @@ export default function EditOrganizationProfilePage() {
     updateOrganization,
   } = useOrganization(token, Number(organizationId));
 
-  console.log(`[${hookId}] Resultado de isOrgManager:`, isOrgManager);
 
   // Projects setters
   const {
