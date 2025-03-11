@@ -11,6 +11,7 @@ export function useOrganization(token?: string, specificOrgId?: number) {
   const [managedOrganizationIds, setManagedOrganizationIds] = useState<
     number[]
   >([]);
+  const [isPermissionsLoaded, setIsPermissionsLoaded] = useState(false);
 
   const fetchData = useCallback(async () => {
     if (!token) {
@@ -20,17 +21,9 @@ export function useOrganization(token?: string, specificOrgId?: number) {
 
     try {
       setIsLoading(true);
+      setIsPermissionsLoaded(false);
 
-      if (specificOrgId) {
-        // Se temos um ID específico, buscamos apenas essa organização
-        const orgData = await organizationProfileService.getOrganizationById(
-          token,
-          specificOrgId
-        );
-        setOrganizations([orgData]);
-        setManagedOrganizationIds([specificOrgId]);
-      } else {
-        // Caso contrário, buscamos todas as organizações gerenciadas
+      try {
         const userProfile = await organizationProfileService.getUserProfile(
           token
         );
@@ -41,15 +34,34 @@ export function useOrganization(token?: string, specificOrgId?: number) {
         );
 
         setManagedOrganizationIds(managedIds);
+        setIsPermissionsLoaded(true);
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        setManagedOrganizationIds([]);
+        setIsPermissionsLoaded(true);
+      }
 
-        if (managedIds.length > 0) {
-          const orgsData = await Promise.all(
-            managedIds.map((id) =>
-              organizationProfileService.getOrganizationById(token, id)
-            )
+      if (specificOrgId) {
+        try {
+          const orgData = await organizationProfileService.getOrganizationById(
+            token,
+            specificOrgId
           );
-          setOrganizations(orgsData);
+          setOrganizations([orgData]);
+        } catch (err) {
+          console.error(`Error fetching organization ${specificOrgId}:`, err);
+          setOrganizations([]);
+          setError(
+            `Error fetching organization: ${err.message || "Unknown error"}`
+          );
         }
+      } else if (managedOrganizationIds.length > 0) {
+        const orgsData = await Promise.all(
+          managedOrganizationIds.map((id) =>
+            organizationProfileService.getOrganizationById(token, id)
+          )
+        );
+        setOrganizations(orgsData);
       }
     } catch (err) {
       setError(
@@ -62,7 +74,6 @@ export function useOrganization(token?: string, specificOrgId?: number) {
     }
   }, [token, specificOrgId]);
 
-  // Função refetch exposta para componentes
   const refetch = useCallback(() => {
     return fetchData();
   }, [fetchData]);
@@ -71,16 +82,23 @@ export function useOrganization(token?: string, specificOrgId?: number) {
     fetchData();
   }, [fetchData]);
 
+  // Check if the user is a manager of the specific organization
+  const isOrgManager =
+    isPermissionsLoaded && specificOrgId
+      ? managedOrganizationIds.includes(Number(specificOrgId))
+      : false;
+
   return {
     organization: organizations[0],
     organizations,
     isLoading,
+    isPermissionsLoaded,
     error,
-    isOrgManager: managedOrganizationIds.length > 0,
+    isOrgManager,
     managedOrganizationIds,
     refetch,
     updateOrganization: async (data: Partial<Organization>) => {
-      if (!token || !specificOrgId) return;
+      if (!token || !specificOrgId || !isOrgManager) return;
       try {
         const updatedOrg =
           await organizationProfileService.updateOrganizationProfile(

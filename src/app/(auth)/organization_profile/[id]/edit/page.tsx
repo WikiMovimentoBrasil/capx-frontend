@@ -89,14 +89,18 @@ export default function EditOrganizationProfilePage() {
   } = useDocument(token);
 
   // Organization setters
+
+
   const {
     organization,
     organizations,
     isLoading: isOrganizationLoading,
     error: organizationError,
-    updateOrganization,
     isOrgManager,
-  } = useOrganization(token);
+    refetch,
+    updateOrganization,
+  } = useOrganization(token, Number(organizationId));
+
 
   // Projects setters
   const {
@@ -120,6 +124,8 @@ export default function EditOrganizationProfilePage() {
   const [editedProjects, setEditedProjects] = useState<{
     [key: number]: boolean;
   }>({});
+
+
 
   // Effect to load projects
   useEffect(() => {
@@ -269,14 +275,14 @@ export default function EditOrganizationProfilePage() {
         wanted_capacities: organization.wanted_capacities || [],
       });
 
-      // Inicializa os dados dos eventos
+      // Initialize events data
       if (organization.events && organization.events.length > 0) {
         if (events) {
           setEventsData(events);
         }
       }
 
-      // Inicializa os dados dos projetos
+      // Initialize projects data
       if (organization.tag_diff && organization.tag_diff.length > 0) {
         const fetchTagsData = async () => {
           try {
@@ -304,7 +310,7 @@ export default function EditOrganizationProfilePage() {
         fetchTagsData();
       }
 
-      // Inicializa os dados dos documentos
+      // Initialize documents data
       if (
         organization.documents &&
         organization.documents.length > 0 &&
@@ -317,7 +323,7 @@ export default function EditOrganizationProfilePage() {
         setDocumentsData(existingDocuments);
       }
 
-      // Inicializa os dados de contato
+      // Initialize contacts data
       if (organization) {
         setContactsData({
           id: organization.id?.toString() || "",
@@ -555,7 +561,7 @@ export default function EditOrganizationProfilePage() {
       await updateOrganization(updatedFormData as Partial<OrganizationType>);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Atualiza o redirecionamento para incluir o ID da organização
+      // Update the redirection to include the organization ID
       router.push(`/organization_profile/${organizationId}`);
     } catch (error) {
       console.error("Error processing form:", error);
@@ -678,17 +684,17 @@ export default function EditOrganizationProfilePage() {
       type_of_location: event.type_of_location || "virtual",
     };
 
-    // Primeiro atualiza no backend se for um evento existente
+    // First update in the backend if it's an existing event
     if (event.id > 0 && token) {
       try {
         await updateEvent(event.id, updatedEvent);
       } catch (error) {
         console.error("Error updating event:", error);
-        return; // Se falhar a atualização, não atualiza o estado local
+        return; // If the update fails, do not update the local state
       }
     }
 
-    // Depois atualiza o estado local
+    // Then update the local state
     setEventsData((prev) => {
       const updated = [...prev];
       updated[index] = updatedEvent;
