@@ -6,6 +6,7 @@
 			"Ykhwong"
 		]
 	},
+	"empty-field": "아직 이 필드를 채우지 않았습니다",
 	"loading": "불러오는 중...",
 	"auth-dialog-button-continue": "계속",
 	"auth-dialog-button-close": "탭 닫기",
@@ -55,6 +56,7 @@
 	"body-tag-user-list-title": "프로필에 이 태그가 있는 사용자:",
 	"body-tag-user-list-fallback-message": "프로필에 이 태그가 있는 사용자가 없습니다.",
 	"footer-link-documentation": "문서",
+	"footer-privacy-policy": "개인정보보호정책",
 	"aria-language-input": "언어 선택",
 	"sign-out-button": "로그아웃",
 	"sign-in-button": "로그인",
@@ -84,6 +86,7 @@
 	"body-profile-languages-title": "언어",
 	"body-profile-wikimedia-projects-title": "위키미디어 프로젝트",
 	"body-profile-contact-title": "연락하기",
+	"body-profile-birthday-title": "위키 생일",
 	"edit-profile-confirm": "확인",
 	"edit-profile-update": "업데이트",
 	"edit-profile-welcome": "환영합니다!",
@@ -102,5 +105,14 @@
 	"edit-profile-insert-item": "항목 넣기",
 	"edit-profile-wikidata-item": "위키데이터 항목",
 	"edit-profile-insert-project": "프로젝트 삽입",
-	"edit-profile-insert-link": "문서 URL 삽입"
+	"edit-profile-insert-link": "문서 URL 삽입",
+	"privacy-policy-icon": "아이콘 개인정보보호정책",
+	"privacy-policy-link-wiki-moviment-brazil": "위키 모비멘토 브라질",
+	"privacy-policy-link-toolforge": "툴포지",
+	"privacy-policy-link-cloud-service-terms-of-use": "클라우드 서비스 이용 약관",
+	"privacy-policy-private-information-title": "개인 정보",
+	"privacy-policy-private-information-intro-topics": "본 사이트는 다음의 개인 정보를 보관합니다.",
+	"privacy-policy-private-information-topic01": "위키미디어 사용자 이름;",
+	"privacy-policy-private-information-topic02-link": "OAuth",
+	"privacy-policy-private-information-text03-link": "위키미디어 클라우드 서비스 이용 약관"
 }

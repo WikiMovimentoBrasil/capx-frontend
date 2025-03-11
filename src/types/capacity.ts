@@ -1,10 +1,17 @@
 export interface Capacity {
-  id: number;
-  code?: number;
-  skill_type: string[];
+  id?: number;
+  code: number;
+  skill_type: number;
   skill_wikidata_item: string;
-  name?: string;
+  name: string;
+  icon: string;
+  color: string;
   children?: Capacity[];
+  parentCode?: string;
+  description?: string;
+  wd_code?: string;
+  parentCapacity?: Capacity;
+  hasChildren: boolean;
 }
 
 export interface CapacityResponse {
