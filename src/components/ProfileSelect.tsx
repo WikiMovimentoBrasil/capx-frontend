@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import BaseSelect from "./BaseSelect";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -21,32 +21,30 @@ export default function ProfileSelect() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  const { organizations, isOrgManager } = useOrganization(session?.user?.token);
+  const { organizations } = useOrganization(session?.user?.token);
 
-  // Encontra a organização atual se estivermos em uma página de organização
-  const currentOrganization = useMemo(() => {
-    if (organizationId && organizations) {
-      return organizations.find(org => org.id === Number(organizationId));
-    }
-    return null;
-  }, [organizationId, organizations]);
+  const profileOptions: ProfileOption[] = useMemo(
+    () => [
+      {
+        value: "user",
+        label: pageContent["navbar-user-profile"] || "User Profile",
+        path: "/profile",
+      },
+      ...(organizations.length > 0
+        ? organizations.map((org) => ({
+            value: `org-${org.id}`,
+            label: org.display_name || "Organization",
+            path: `/organization_profile/${org.id}`,
+          }))
+        : []),
+    ],
+    [organizations, pageContent]
+  );
 
-  const profileOptions: ProfileOption[] = [
-    { 
-      value: "user", 
-      label: pageContent["navbar-user-profile"] || "User Profile", 
-      path: "/profile" 
-    },
-    ...(isOrgManager
-      ? organizations.map(org => ({
-          value: `org-${org.id}`,
-          label: org.display_name || "Organization",
-          path: `/organization_profile/${org.id}`
-        }))
-      : []),
-  ];
-
-  const handleProfileChange = (selectedOption: { value: string; label: string }) => {
+  const handleProfileChange = (selectedOption: {
+    value: string;
+    label: string;
+  }) => {
     const selectedPath = profileOptions.find(
       (option) => option.value === selectedOption.value
     )?.path;
@@ -55,21 +53,18 @@ export default function ProfileSelect() {
     }
   };
 
-  // Define o valor inicial baseado na rota atual
+  // Define the initial value based on the current route
   const currentValue = useMemo(() => {
-    if (currentOrganization) {
-      return {
-        value: `org-${currentOrganization.id}`,
-        label: currentOrganization.display_name || "Organization",
-      };
+    if (organizationId && organizations) {
+      return organizations.find((org) => org.id === Number(organizationId));
     }
-    
-    if (pathname.includes('/profile')) {
+
+    if (pathname.includes("/profile")) {
       return profileOptions[0]; // User profile option
     }
-    
+
     return profileOptions[0]; // Default to user profile
-  }, [currentOrganization, pathname, profileOptions]);
+  }, [organizationId, pathname, profileOptions]);
 
   return (
     <BaseSelect
@@ -80,7 +75,7 @@ export default function ProfileSelect() {
       className="w-[200px] text-[20px] w-max"
       darkMode={darkMode}
       isMobile={isMobile}
-      placeholder={currentValue.label}
+      placeholder={currentValue?.label}
     />
   );
 }

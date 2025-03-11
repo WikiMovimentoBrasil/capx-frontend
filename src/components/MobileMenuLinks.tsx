@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
@@ -47,12 +47,17 @@ export default function MobileMenuLinks({
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
   const { darkMode, setDarkMode } = useTheme();
-  const { organizations, isOrgManager } = useOrganization(session?.user?.token);
+  const params = useParams();
+  const organizationId = params?.id;
+  const { organizations, isOrgManager } = useOrganization(
+    session?.user?.token,
+    Number(organizationId)
+  );
 
   const currentOrganization = useMemo(() => {
     const organizationId = pathname.match(/\/organization_profile\/(\d+)/)?.[1];
     if (organizationId && organizations) {
-      return organizations.find(org => org.id === Number(organizationId));
+      return organizations.find((org) => org.id === Number(organizationId));
     }
     return null;
   }, [pathname, organizations]);
@@ -60,7 +65,6 @@ export default function MobileMenuLinks({
   const [selectedProfile, setSelectedProfile] = useState<
     "user" | "organization"
   >(pathname === "/organization_profile" ? "organization" : "user");
-
 
   const handleProfileChange = (path: string) => {
     handleMenuStatus();
@@ -75,7 +79,7 @@ export default function MobileMenuLinks({
       action: () => handleProfileChange("/profile"),
     },
     ...(isOrgManager
-      ? organizations.map(org => ({
+      ? organizations.map((org) => ({
           title: org.display_name || "Organization",
           to: `/organization_profile/${org.id}`,
           image: darkMode ? OrgProfileIconWhite : OrgProfileIcon,
@@ -92,7 +96,7 @@ export default function MobileMenuLinks({
     }
   }, [pathname]);
 
-      const getCurrentIcon = () => {
+  const getCurrentIcon = () => {
     if (currentOrganization) {
       return darkMode ? OrgProfileIconWhite : OrgProfileIcon;
     }

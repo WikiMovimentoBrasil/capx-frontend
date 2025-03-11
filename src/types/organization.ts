@@ -20,6 +20,7 @@ export interface Organization {
   website?: string | null;
   mastodon?: string | null;
   meta_page?: string | null;
+  label?: string;
 }
 
 export interface OrganizationType {
