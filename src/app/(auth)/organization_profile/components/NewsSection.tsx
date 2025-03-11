@@ -58,7 +58,12 @@ export const NewsSection = ({ ids }: NewsProps) => {
           new Map(combinedPosts.map((post) => [post.ID, post])).values()
         );
 
-        setPosts(uniquePosts);
+        // Sort posts by date, from newest to oldest
+        const sortedPosts = uniquePosts.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+
+        setPosts(sortedPosts);
       } catch (error) {
         console.error("Erro ao buscar notícias:", error);
       } finally {
