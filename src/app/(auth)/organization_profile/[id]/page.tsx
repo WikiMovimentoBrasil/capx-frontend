@@ -49,7 +49,7 @@ export default function OrganizationProfilePage() {
     error,
     isOrgManager,
     refetch,
-  } = useOrganization(token);
+  } = useOrganization(token, organizationId);
 
   const organization = organizations.find(org => org.id === organizationId);
 
