@@ -5,7 +5,6 @@ import BaseButton from "@/components/BaseButton";
 import { useTheme } from "@/contexts/ThemeContext";
 import EditIcon from "@/public/static/images/edit.svg";
 import UserCircleIcon from "@/public/static/images/supervised_user_circle.svg";
-import WMBLogo from "@/public/static/images/wmb_logo.svg";
 import ReportActivityIcon from "@/public/static/images/report_of_activities.svg";
 import { ProfileItem } from "@/components/ProfileItem";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
@@ -51,7 +50,7 @@ export default function OrganizationProfilePage() {
     refetch,
   } = useOrganization(token, organizationId);
 
-  const organization = organizations.find(org => org.id === organizationId);
+  const organization = organizations.find((org) => org.id === organizationId);
 
   const {
     userProfile,
@@ -148,8 +147,14 @@ export default function OrganizationProfilePage() {
                   </div>
                   {isOrgManager && (
                     <BaseButton
-                      onClick={() => router.push(`/organization_profile/${organizationId}/edit`)}
-                      label={pageContent["body-profile-edit-organization-button"]}
+                      onClick={() =>
+                        router.push(
+                          `/organization_profile/${organizationId}/edit`
+                        )
+                      }
+                      label={
+                        pageContent["body-profile-edit-organization-button"]
+                      }
                       customClass={`w-full font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal] inline-flex px-[13px] py-[6px] pb-[6px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                         darkMode
                           ? "border-white text-white"
@@ -336,7 +341,11 @@ export default function OrganizationProfilePage() {
 
                 {isOrgManager && (
                   <BaseButton
-                    onClick={() => router.push(`/organization_profile/${organizationId}/edit`)}
+                    onClick={() =>
+                      router.push(
+                        `/organization_profile/${organizationId}/edit`
+                      )
+                    }
                     label={pageContent["body-profile-edit-organization-button"]}
                     customClass={`w-full md:w-2/3 sm:w-full font-[Montserrat] text-[20px] not-italic font-extrabold leading-[normal] inline-flex h-[64px] px-[32px] py-[16px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] border-[2px] border-[solid] ${
                       darkMode
