@@ -30,6 +30,11 @@ interface UserData {
   last_login: string;
 }
 
+interface Language {
+  id: number;
+  proficiency: string;
+}
+
 export interface UserProfile {
   user: UserData;
   profile_image: string;
@@ -40,7 +45,7 @@ export interface UserProfile {
   wikidata_qid: string;
   wiki_alt: string;
   territory: number[];
-  language: number[];
+  language: Language[];
   affiliation: number[];
   wikimedia_project: number[];
   team: string;

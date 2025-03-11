@@ -5,6 +5,7 @@
 			"Andrekowacs"
 		]
 	},
+	"empty-field": "Você ainda não completou este campo",
 	"loading": "A carregar...",
 	"known": "conhecida",
 	"available": "disponível",
@@ -107,6 +108,7 @@
 	"footer-link-documentation": "Documentação",
 	"footer-link-wikimedia": "Meta-wikimedia",
 	"footer-message": "Feito para e pelo Movimento Wikimedia",
+	"footer-privacy-policy": "Política de privacidade",
 	"aria-language-input": "Escolha um idioma",
 	"sign-out-button": "Sair",
 	"sign-in-button": "Entrar",
@@ -201,5 +203,21 @@
 	"edit-profile-consent-wikidata-item": "Concordo em exibir meu item Wikidata no meu perfil do CapX (se existente).",
 	"edit-profile-wikimedia-projects": "Informe os projetos Wikimedia que lhe interessam.",
 	"edit-profile-insert-project": "Inserir projeto",
-	"edit-profile-insert-link": "Inserir URL do documento"
+	"edit-profile-insert-link": "Inserir URL do documento",
+	"privacy-policy-icon": "Ícone de política de privacidade",
+	"privacy-policy-title": "Política de privacidade do Capacity Exchange",
+	"privacy-policy-capacity-exchange-text": "Este site é um projeto internacional atualmente coordenado pela $1. Ele roda no Wikimedia Cloud Services, especificamente no $2, e, portanto, está sujeito ao $3, fazendo uso limitado de Informações Privadas. Todo o conteúdo está em CC-BY-SA. Contribuições de código são bem-vindas.",
+	"privacy-policy-link-wiki-moviment-brazil": "Wikimedia Brasil",
+	"privacy-policy-link-toolforge": "Toolforge",
+	"privacy-policy-link-cloud-service-terms-of-use": "Termos de uso do Cloud Service",
+	"privacy-policy-private-information-title": "Informações privadas",
+	"privacy-policy-private-information-intro-topics": "Este site armazena as seguintes informações privadas:",
+	"privacy-policy-private-information-topic01": "Nomes de usuário(a) Wikimedia;",
+	"privacy-policy-private-information-topic02": "Para usuários(as) logados(as): credenciais de US$ 1 que permitem acesso parcial à sua conta Wikimedia;",
+	"privacy-policy-private-information-topic02-link": "OAuth",
+	"privacy-policy-private-information-topic03": "Sua mini biografia pessoal, escrita por você mesmo(a) em seu perfil com o propósito de divulgar informações interessantes e importantes sobre sua jornada Wikimedista. É um campo opcional e pode ser deixado em branco se quiser.",
+	"privacy-policy-private-information-text01": "Se desejar, você pode remover as informações sobre você clicando no botão vermelho \"Excluir perfil\" na página de edição do perfil de usuário(a).",
+	"privacy-policy-private-information-text02": "Se você for representante de uma organização e tiver direitos para editar seu perfil, você pode limpar os dados editando o perfil da organização e deixando tudo em branco. Você pode se remover da função de representante e, uma vez que não haja ninguém vinculado à organização, o perfil não será exibido na lista de organizações.",
+	"privacy-policy-private-information-text03": "O uso e o armazenamento de dados são regidos pelo $1. Esta ferramenta está em conformidade com a GPDR.",
+	"privacy-policy-private-information-text03-link": "Termos de uso do Wikimedia Cloud Service"
 }
