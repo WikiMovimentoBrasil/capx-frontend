@@ -1,8 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { Profile } from "@/types/profile";
 import { profileService } from "@/services/profileService";
-import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 
 export function useProfile(token: string | undefined, userId: number) {
@@ -12,6 +9,10 @@ export function useProfile(token: string | undefined, userId: number) {
       const response = await profileService.fetchUserProfile({
         headers: {
           Authorization: `Token ${token}`,
+        },
+        params: {
+          limit: 1,
+          offset: 0,
         },
       });
 
