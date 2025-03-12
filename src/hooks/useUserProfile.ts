@@ -3,6 +3,38 @@ import { useSession } from "next-auth/react";
 import { UserProfile } from "@/types/user";
 import { userService } from "@/services/userService";
 
+export function useUsers(limit?: number, offset?: number) {
+  const { data: session } = useSession();
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (session?.user?.id && session?.user?.token) {
+        try {
+          const data = await userService.fetchAllUsers(
+            session.user.token,
+            undefined,
+            limit,
+            offset
+          );
+          setUsers(data);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUsers();
+  }, [session, limit, offset]);
+
+  return { users, isLoading, error };
+}
+
 export function useUserProfile() {
   const { data: session } = useSession();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -34,7 +66,9 @@ export function useUserProfile() {
 
 export function useUserByUsename(search?: string) {
   const { data: session } = useSession();
-  const [userByUsername, setUserByUsername] = useState<UserProfile | null>(null);
+  const [userByUsername, setUserByUsername] = useState<UserProfile | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
