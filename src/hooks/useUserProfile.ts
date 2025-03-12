@@ -32,7 +32,7 @@ export function useUserProfile() {
   return { userProfile, isLoading, error };
 }
 
-export function useUserByUsename(search?: string) {
+export function useUserByUsername(search?: string, limit?: number, offset?: number) {
   const { data: session } = useSession();
   const [userByUsername, setUserByUsername] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
