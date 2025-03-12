@@ -1,15 +1,5 @@
 import "@testing-library/jest-dom";
 import React from "react";
-
-// Use web standard fetch API types
-global.Request = class extends Request {
-  constructor(input: RequestInfo | URL, init?: RequestInit) {
-    super(input, init);
-  }
-} as typeof Request;
-global.Response = Response as typeof Response;
-global.Headers = Headers as typeof Headers;
-
 // Mock do matchMedia
 Object.defineProperty(window, "matchMedia", {
   writable: true,
