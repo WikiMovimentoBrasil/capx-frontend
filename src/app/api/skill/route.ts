@@ -12,8 +12,8 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    if (response.data) {
-      return NextResponse.json(response.data);
+    if (response.data.results) {
+      return NextResponse.json(response.data.results);
     } else {
       return NextResponse.json(
         { error: "Failed to fetch skills" },
