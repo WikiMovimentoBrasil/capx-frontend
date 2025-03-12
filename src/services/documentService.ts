@@ -2,9 +2,16 @@ import axios from "axios";
 import { OrganizationDocument } from "@/types/document";
 
 export const documentService = {
-  async fetchAllDocuments(token: string): Promise<OrganizationDocument[]> {
+  async fetchAllDocuments(
+    token: string,
+    limit?: number,
+    offset?: number
+  ): Promise<OrganizationDocument[]> {
+    const headers = { Authorization: `Token ${token}` };
+    const params = { limit, offset };
     const response = await axios.get<OrganizationDocument[]>("/api/documents", {
-      headers: { Authorization: `Token ${token}` },
+      headers,
+      params,
     });
     return response.data;
   },
