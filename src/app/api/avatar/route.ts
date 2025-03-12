@@ -3,8 +3,10 @@ import axios from "axios";
 
 export async function GET(request: NextRequest) {
   try {
-    // Pega o token do header Authorization
     const authHeader = request.headers.get("Authorization");
+    const searchParams = request.nextUrl.searchParams;
+    const limit = searchParams.get("limit");
+    const offset = searchParams.get("offset");
 
     if (!authHeader) {
       return NextResponse.json(
@@ -13,10 +15,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Mudando para usar a rota correta do backend
     const response = await axios.get(`${process.env.BASE_URL}/avatar/`, {
       headers: {
         Authorization: authHeader,
+      },
+      params: {
+        limit,
+        offset,
       },
     });
 
@@ -24,7 +29,7 @@ export async function GET(request: NextRequest) {
       throw new Error("No data received from backend");
     }
 
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data.results);
   } catch (error: any) {
     console.error("Avatar fetch error:", {
       url: `${process.env.BASE_URL}/avatar/`,
