@@ -4,7 +4,12 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 
-export function useOrganization(token?: string, specificOrgId?: number) {
+export function useOrganization(
+  token?: string,
+  specificOrgId?: number,
+  limit?: number,
+  offset?: number
+) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
