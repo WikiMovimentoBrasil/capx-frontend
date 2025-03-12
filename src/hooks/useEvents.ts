@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { Event } from "@/types/event";
 import { eventsService } from "@/services/eventService";
 
-export function useEvent(eventId?: number, token?: string) {
+export function useEvent(
+  eventId?: number,
+  token?: string,
+  limit?: number,
+  offset?: number
+) {
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
