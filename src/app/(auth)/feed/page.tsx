@@ -114,32 +114,34 @@ export default function FeedPage() {
   const offset = (currentPage - 1) * itemsPerList; // Offset for both lists
 
   // Get data with limits and offsets
-  const { organizations, count: organizationsCount } = useOrganizations(itemsPerList, offset);
-  const { allUsers, count: usersCount } = useAllUsers(itemsPerList, offset);
-
-  // Calculate total of pages based on total of records
-  const totalRecords = organizationsCount + usersCount;
-  const numberOfPages = Math.ceil(totalRecords / itemsPerList);
+  const { organizations } = useOrganizations(itemsPerList, offset);
+  const { allUsers } = useAllUsers(itemsPerList, offset);
 
   // Create profiles from organizations and users
-  const profiles = useMemo(() => {
+  const filteredProfiles = useMemo(() => {
     const organizationProfiles = createProfilesFromOrganizations(organizations || []);
     const userProfiles = createProfilesFromUsers(allUsers || []);
 
-    return [
-      ...organizationProfiles,
-      ...userProfiles,
-    ];
-  }, [organizations, allUsers]);
+    // Filter based on activeFilters.profileFilter
+    switch (activeFilters.profileFilter) {
+      case ProfileFilterType.User:
+        return userProfiles;
+      case ProfileFilterType.Organization:
+       return organizationProfiles;
+      case ProfileFilterType.Both:
+      default:
+       return [...organizationProfiles, ...userProfiles];
+    }
+  }, [organizations, allUsers, activeFilters]);
 
+  // Calculate total of pages based on total profiles
+  const totalRecords = filteredProfiles.length;
+  const numberOfPages = Math.ceil(totalRecords / itemsPerList);
+
+  // Reset to first page when filters change
   useEffect(() => {
-    console.log({
-      currentPage,
-      offset,
-      totalRecords,
-      numberOfPages
-    });
-  }, [currentPage, organizations?.length, allUsers?.length]);
+    setCurrentPage(1);
+  }, [activeFilters]);
 
   const handleAddCapacity = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchCapacity.trim()) {
@@ -267,9 +269,9 @@ export default function FeedPage() {
             </button>
           </div>
 
-          {profiles.length > 0 ? (
+          {filteredProfiles.length > 0 ? (
           <div className="w-full mx-auto space-y-6">
-            {profiles.map((profile, index) => (
+            {filteredProfiles.map((profile, index) => (
               <ProfileCard 
                 id={profile.id}
                 key={index}
