@@ -1,12 +1,9 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useLanguage } from "@/hooks/useLanguage";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import { useAvatars } from "@/hooks/useAvatars";
-import { useWikimediaProject } from "@/hooks/useWikimediaProject";
-import { useTerritories } from "@/hooks/useTerritories";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CapacitySelectionModal from "./CapacitySelectionModal";
@@ -22,7 +19,6 @@ import CheckIcon from "@/public/static/images/check_box_outline_blank.svg";
 import CheckIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
-import UploadIcon from "@/public/static/images/upload.svg";
 import PersonIcon from "@/public/static/images/person_book.svg";
 import PersonIconWhite from "@/public/static/images/person_book_white.svg";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
@@ -48,12 +44,15 @@ import BarCodeIconWhite from "@/public/static/images/barcode_white.svg";
 import BarCodeIcon from "@/public/static/images/barcode.svg";
 import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
+import DeleteIcon from "@/public/static/images/delete.svg";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import SaveIcon from "@/public/static/images/save_as.svg";
 import BaseButton from "@/components/BaseButton";
 import AvatarSelectionPopup from "../../components/AvatarSelectionPopup";
-import { useAffiliation } from "@/hooks/useAffiliation";
 import { Profile } from "@/types/profile";
 import { Capacity } from "@/types/capacity";
 import { useState } from "react";
+import Popup from "@/components/Popup";
 
 interface ProfileEditMobileViewProps {
   selectedAvatar: any;
@@ -76,6 +75,8 @@ interface ProfileEditMobileViewProps {
   handleAddProject: () => void;
   handleSubmit: () => void;
   handleCancel: () => void;
+  handleDeleteProfile: () => void;
+  handleDeleteProject: (index: number) => void;
   formData: Partial<Profile>;
   setFormData: (data: Partial<Profile>) => void;
   territories: Record<string, string>;
@@ -108,6 +109,8 @@ export default function ProfileEditMobileView(
     handleAddProject,
     handleSubmit,
     handleCancel,
+    handleDeleteProfile,
+    handleDeleteProject,
     formData,
     setFormData,
     territories,
@@ -121,19 +124,11 @@ export default function ProfileEditMobileView(
 
   const router = useRouter();
   const { data: session } = useSession();
-  const token = session?.user?.token;
-
   const { darkMode } = useTheme();
   const { isMobile, pageContent } = useApp();
-  const { languages: languagesData, loading: languagesLoading } =
-    useLanguage(token);
-  const { affiliations: affiliationsData } = useAffiliation(token);
-  const { territories: territoriesData } = useTerritories(token);
-  const { wikimediaProjects: wikimediaProjectsData } =
-    useWikimediaProject(token);
-
   const username = session?.user?.name;
-  const userId = session?.user?.id;
+  const [showDeleteProfilePopup, setShowDeleteProfilePopup] = useState(false);
+  const [showProjectSelector, setShowProjectSelector] = useState(false);
 
   const { getAvatarById } = useAvatars();
   const [avatarUrl, setAvatarUrl] = useState<string>(
@@ -244,10 +239,10 @@ export default function ProfileEditMobileView(
                 <BaseButton
                   onClick={handleWikidataClick}
                   label={pageContent["edit-profile-use-wikidata"]}
-                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
+                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] font-extrabold rounded-[4px] font-[Montserrat] text-[12px] appearance-none mb-0 pb-[6px] ${
                     darkMode
-                      ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                      : "border-[#053749] text-[#829BA4]"
+                      ? "bg-transparent border-white text-white placeholder-capx-dark-box-bg"
+                      : "border-[#053749]"
                   } border`}
                   imageUrl={
                     isWikidataSelected
@@ -278,16 +273,16 @@ export default function ProfileEditMobileView(
                   <BaseButton
                     onClick={handleSubmit}
                     label={pageContent["edit-profile-save"]}
-                    customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
-                    imageUrl={UploadIcon}
-                    imageAlt="Upload icon"
+                    customClass="w-full flex items-center px-[13px] py-[6px] text-[14px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold !mb-0"
+                    imageUrl={SaveIcon}
+                    imageAlt="Save icon"
                     imageWidth={20}
                     imageHeight={20}
                   />
                   <BaseButton
                     onClick={() => router.back()}
                     label={pageContent["edit-profile-cancel"]}
-                    customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
+                    customClass={`w-full flex items-center px-[13px] py-[6px] pb-[6px] text-[14px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
                       darkMode
                         ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
                         : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
@@ -297,6 +292,34 @@ export default function ProfileEditMobileView(
                     imageWidth={20}
                     imageHeight={20}
                   />
+                  <BaseButton
+                    onClick={() => setShowDeleteProfilePopup(true)}
+                    label={pageContent["edit-profile-delete-profile"]}
+                    customClass={`w-full flex justify-between items-center px-[13px] py-[6px] pb-[6px] text-[14px] rounded-[4px] font-[Montserrat] font-extrabold text-capx-dark-box-bg mb-0 mt-2 bg-[#D43831] text-white`}
+                    imageUrl={DeleteIcon}
+                    imageAlt="Delete icon"
+                    imageWidth={20}
+                    imageHeight={20}
+                  />
+                  {showDeleteProfilePopup && (
+                    <Popup
+                      title={pageContent["edit-profile-delete-profile"]}
+                      image={capxPersonIcon}
+                      onClose={() => setShowDeleteProfilePopup(false)}
+                      onContinue={handleDeleteProfile}
+                      continueButtonLabel={
+                        pageContent["edit-profile-delete-profile-confirm"]
+                      }
+                      closeButtonLabel={
+                        pageContent["edit-profile-delete-profile-cancel"]
+                      }
+                      customClass={`${
+                        darkMode
+                          ? "bg-[#005B3F] text-white"
+                          : "bg-white text-[#053749]"
+                      }`}
+                    />
+                  )}
                 </div>
                 <div className="flex flex-row gap-2 mt-4">
                   <div className="relative w-[20px] h-[20px]">
@@ -326,7 +349,7 @@ export default function ProfileEditMobileView(
                     placeholder={
                       pageContent["edit-profile-mini-bio-placeholder"]
                     }
-                    className={`w-full font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] px-[4px] ${
+                    className={`w-full font-[Montserrat] text-[13px] not-italic font-normal leading-[normal] bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] py-2 px-2 scrollbar-hide ${
                       darkMode
                         ? "text-white placeholder-gray-400"
                         : "text-[#053749] placeholder-[#829BA4]"
@@ -375,7 +398,7 @@ export default function ProfileEditMobileView(
                       <BaseButton
                         onClick={() => handleRemoveCapacity("known", index)}
                         label={getCapacityName(capacity)}
-                        customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                        customClass="rounded-[4px] border-[1px] border-[solid] !mb-0 border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
                         imageUrl={CloseIcon}
                         imageAlt="Close icon"
                         imageWidth={16}
@@ -440,7 +463,7 @@ export default function ProfileEditMobileView(
                       <BaseButton
                         onClick={() => handleRemoveCapacity("available", index)}
                         label={getCapacityName(capacity)}
-                        customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                        customClass="rounded-[4px] border-[1px] border-[solid] !mb-0 border-[var(--Links-light-link,#05A300)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
                         imageUrl={CloseIcon}
                         imageAlt="Close icon"
                         imageWidth={16}
@@ -502,7 +525,7 @@ export default function ProfileEditMobileView(
                       <BaseButton
                         onClick={() => handleRemoveCapacity("wanted", index)}
                         label={getCapacityName(capacity)}
-                        customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                        customClass="rounded-[4px] border-[1px] border-[solid] !mb-0 border-[var(--Links-light-link,#D43831)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
                         imageUrl={CloseIcon}
                         imageAlt="Close icon"
                         imageWidth={16}
@@ -581,26 +604,72 @@ export default function ProfileEditMobileView(
                             ? "bg-transparent border-white text-white"
                             : "border-[#053749] text-[#829BA4]"
                         }`}
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
                       >
-                        <option value="0">
+                        <option
+                          value="0"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-not-proficient"]}
                         </option>
-                        <option value="1">
+                        <option
+                          value="1"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-basic"]}
                         </option>
-                        <option value="2">
+                        <option
+                          value="2"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-intermediate"]}
                         </option>
-                        <option value="3">
+                        <option
+                          value="3"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-advanced"]}
                         </option>
-                        <option value="4">
+                        <option
+                          value="4"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-almost-native"]}
                         </option>
-                        <option value="5">
+                        <option
+                          value="5"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-professional"]}
                         </option>
-                        <option value="n">
+                        <option
+                          value="n"
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {pageContent["profiency-level-native"]}
                         </option>
                       </select>
@@ -639,12 +708,23 @@ export default function ProfileEditMobileView(
                         ? "bg-transparent border-white text-white opacity-50"
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
+                    style={{
+                      backgroundColor: darkMode ? "#053749" : "white",
+                      color: darkMode ? "white" : "#053749",
+                    }}
                   >
                     <option value="">
                       {pageContent["edit-profile-add-language"]}
                     </option>
                     {Object.entries(languages).map(([id, name]) => (
-                      <option key={id} value={id}>
+                      <option
+                        key={id}
+                        value={id}
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {name}
                       </option>
                     ))}
@@ -741,12 +821,29 @@ export default function ProfileEditMobileView(
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
+                    style={{
+                      backgroundColor: darkMode ? "#053749" : "white",
+                      color: darkMode ? "white" : "#053749",
+                    }}
                   >
-                    <option value="">
+                    <option
+                      value=""
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
+                    >
                       {pageContent["edit-profile-insert-item"]}
                     </option>
                     {Object.entries(affiliations).map(([id, name]) => (
-                      <option key={id} value={id}>
+                      <option
+                        key={id}
+                        value={id}
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {name}
                       </option>
                     ))}
@@ -804,12 +901,29 @@ export default function ProfileEditMobileView(
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
+                    style={{
+                      backgroundColor: darkMode ? "#053749" : "white",
+                      color: darkMode ? "white" : "#053749",
+                    }}
                   >
-                    <option value="">
+                    <option
+                      value=""
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
+                    >
                       {pageContent["edit-profile-insert-item"]}
                     </option>
                     {Object.entries(territories).map(([id, name]) => (
-                      <option key={id} value={id}>
+                      <option
+                        key={id}
+                        value={id}
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {name}
                       </option>
                     ))}
@@ -910,70 +1024,79 @@ export default function ProfileEditMobileView(
                     {pageContent["body-profile-wikimedia-projects-title"]}
                   </h2>
                 </div>
-                <div className="relative">
-                  <select
-                    value={formData.wikimedia_project?.[0] || ""}
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setFormData({
-                          ...formData,
-                          wikimedia_project: [
+
+                {/* Display selected projects as tags with delete button */}
+                <div
+                  className={`flex flex-wrap gap-2 rounded-[4px] ${
+                    darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                  } w-full px-[4px] py-[6px] items-start gap-[12px]`}
+                >
+                  {formData?.wikimedia_project?.map((projectId, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-1 rounded-md"
+                    >
+                      <BaseButton
+                        onClick={() => {
+                          const newProjects = [
                             ...(formData.wikimedia_project || []),
-                            e.target.value,
-                          ],
-                        });
-                      }
-                    }}
-                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
-                      darkMode
-                        ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                        : "border-[#053749] text-[#829BA4]"
-                    } border`}
-                  >
-                    <option value="">
-                      {pageContent["edit-profile-insert-project"]}
-                    </option>
-                    {Object.entries(wikimediaProjects).map(([id, name]) => (
-                      <option key={id} value={id}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                    <Image
-                      src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
-                      alt="Select"
-                      width={20}
-                      height={20}
-                    />
-                  </div>
+                          ];
+                          newProjects.splice(index, 1);
+                          setFormData({
+                            ...formData,
+                            wikimedia_project: newProjects,
+                          });
+                        }}
+                        label={wikimediaProjects[projectId] || projectId}
+                        customClass="rounded-[4px] border-[1px] border-[solid] !mb-0 border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[12px] not-italic font-normal leading-[normal]"
+                        imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                        imageAlt="Remove project"
+                        imageWidth={16}
+                        imageHeight={16}
+                      />
+                    </div>
+                  ))}
                 </div>
 
-                {formData.wikimedia_project?.slice(1).map((project, index) => (
-                  <div key={index} className="relative">
+                {/* Selector for adding new projects - only shown when button is clicked */}
+                {showProjectSelector && (
+                  <div className="relative">
                     <select
-                      value={project || ""}
+                      value=""
                       onChange={(e) => {
-                        const newProjects = [
-                          ...(formData.wikimedia_project || []),
-                        ];
-                        newProjects[index + 1] = e.target.value;
-                        setFormData({
-                          ...formData,
-                          wikimedia_project: newProjects,
-                        });
+                        if (e.target.value) {
+                          setFormData({
+                            ...formData,
+                            wikimedia_project: [
+                              ...(formData.wikimedia_project || []),
+                              e.target.value,
+                            ],
+                          });
+                          setShowProjectSelector(false); // Hide selector after selection
+                        }
                       }}
                       className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[12px] appearance-none ${
                         darkMode
                           ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                           : "border-[#053749] text-[#829BA4]"
                       } border`}
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
                     >
                       <option value="">
                         {pageContent["edit-profile-insert-project"]}
                       </option>
                       {Object.entries(wikimediaProjects).map(([id, name]) => (
-                        <option key={id} value={id}>
+                        <option
+                          key={id}
+                          value={id}
+                          style={{
+                            backgroundColor: darkMode ? "#053749" : "white",
+                            color: darkMode ? "white" : "#053749",
+                          }}
+                        >
                           {name}
                         </option>
                       ))}
@@ -987,11 +1110,11 @@ export default function ProfileEditMobileView(
                       />
                     </div>
                   </div>
-                ))}
+                )}
 
                 <BaseButton
-                  onClick={handleAddProject}
-                  label={pageContent["edit-profile-add-more-projects"]}
+                  onClick={() => setShowProjectSelector(true)}
+                  label={pageContent["edit-profile-add-projects"]}
                   customClass={`w-full flex ${
                     darkMode
                       ? "bg-capx-light-box-bg text-[#04222F]"
@@ -1018,8 +1141,8 @@ export default function ProfileEditMobileView(
                 onClick={handleSubmit}
                 label={pageContent["edit-profile-save"]}
                 customClass="w-full flex items-center px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
-                imageUrl={UploadIcon}
-                imageAlt="Upload icon"
+                imageUrl={SaveIcon}
+                imageAlt="Save icon"
                 imageWidth={20}
                 imageHeight={20}
               />
