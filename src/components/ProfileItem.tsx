@@ -32,6 +32,7 @@ interface ProfileItemProps {
   items: (number | string)[];
   showEmptyDataText?: boolean;
   customClass?: string;
+  getItemName?: (id: string | number) => string;
 }
 
 export function ProfileItem({
@@ -40,8 +41,8 @@ export function ProfileItem({
   items,
   showEmptyDataText = true,
   customClass = "",
+  getItemName = (id) => String(id),
 }: ProfileItemProps) {
-  const { getCapacityName } = useCapacityDetails(items);
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -158,7 +159,7 @@ export function ProfileItem({
           `}
         >
           {items.length > 0 ? items.map((item, index) => {
-            const name = getCapacityName(item) || item;
+            const name = getItemName(item) || item;
             return (
               <div
                 key={index}

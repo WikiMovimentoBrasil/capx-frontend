@@ -34,11 +34,12 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useWikimediaProject } from "@/hooks/useWikimediaProject";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Popup from "@/components/Popup";
 
 import { getWikiBirthday } from "@/lib/utils/fetchWikimediaData";
 import { UserProfile } from "@/types/user";
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 
 interface ProfilePageProps {
   isSameUser: boolean;
@@ -134,6 +135,18 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
     profile?.wikimedia_project || []
   );
   const [wikiBirthday, setWikiBirthday] = useState<string | null>(null);
+
+  const capacityIds = useMemo(
+    () =>
+      [
+        ...(profile?.skills_known || []),
+        ...(profile?.skills_available || []),
+        ...(profile?.skills_wanted || []),
+      ].map((id) => Number(id)),
+    [profile]
+  );
+
+  const { getCapacityName } = useCapacityDetails(capacityIds);
 
   useEffect(() => {
     const fetchWikiBirthday = async () => {
@@ -239,68 +252,64 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
                 </p>
               </div>
             </div>
-            {shouldRenderEmptyField(profile?.skills_known?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                title={pageContent["body-profile-known-capacities-title"]}
-                items={profile?.skills_known || []}
-                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.skills_available?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title={pageContent["body-profile-available-capacities-title"]}
-                items={profile?.skills_available || []}
-                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.skills_wanted?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? TargetIconWhite : TargetIcon}
-                title={pageContent["body-profile-wanted-capacities-title"]}
-                items={profile?.skills_wanted || []}
-                customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.language?.toString()) && (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={darkMode ? LanguageIconWhite : LanguageIcon}
-                    alt="Language icon"
-                    width={20}
-                    height={20}
-                  />
-                  <h2
-                    className={`font-[Montserrat] text-[14px] font-bold ${
-                      darkMode ? "text-white" : "text-[#053749]"
+            {shouldRenderEmptyField(profile?.skills_known) && <ProfileItem
+              icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+              title={pageContent["body-profile-known-capacities-title"]}
+              items={profile?.skills_known || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
+            />}
+            {shouldRenderEmptyField(profile?.skills_available) && <ProfileItem
+              icon={darkMode ? EmojiIconWhite : EmojiIcon}
+              title={pageContent["body-profile-available-capacities-title"]}
+              items={profile?.skills_available || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+            />}
+            {shouldRenderEmptyField(profile?.skills_wanted) && <ProfileItem
+              icon={darkMode ? TargetIconWhite : TargetIcon}
+              title={pageContent["body-profile-wanted-capacities-title"]}
+              items={profile?.skills_wanted || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal] `}
+            />}
+            {shouldRenderEmptyField(profile?.language) &&  (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={darkMode ? LanguageIconWhite : LanguageIcon}
+                  alt="Language icon"
+                  width={20}
+                  height={20}
+                />
+                <h2
+                  className={`font-[Montserrat] text-[14px] font-bold ${
+                    darkMode ? "text-white" : "text-[#053749]"
+                  }`}
+                >
+                  {pageContent["body-profile-languages-title"]}
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {profile?.language?.map((lang, index) => (
+                  <div
+                    key={index}
+                    className={`rounded-[4px] px-[4px] py-[6px] ${
+                      darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
                     }`}
                   >
-                    {pageContent["body-profile-languages-title"]}
-                  </h2>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {profile?.language?.map((lang, index) => (
-                    <div
-                      key={index}
-                      className={`rounded-[4px] px-[4px] py-[6px] ${
-                        darkMode ? "bg-capx-dark-bg" : "bg-[#EFEFEF]"
+                    <span
+                      className={`font-[Montserrat] text-[14px] ${
+                        darkMode ? "text-white" : "text-[#053749]"
                       }`}
                     >
-                      <span
-                        className={`font-[Montserrat] text-[14px] ${
-                          darkMode ? "text-white" : "text-[#053749]"
-                        }`}
-                      >
-                        {languages[lang.id]} -{" "}
-                        {getProficiencyLabel(lang.proficiency)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                      {languages[lang.id]} -{" "}
+                      {getProficiencyLabel(lang.proficiency)}
+                    </span>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>)}
             {shouldRenderEmptyField(profile?.wiki_alt) && (
               <ProfileItemsComponent
                 icon={darkMode ? WikiIconWhite : WikiIcon}
@@ -503,31 +512,28 @@ export default function ProfilePage({ isSameUser, profile }: ProfilePageProps) {
                 </p>
               </div>
             </div>
-            {shouldRenderEmptyField(profile?.skills_known?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
-                title={pageContent["body-profile-known-capacities-title"]}
-                items={profile?.skills_known || []}
-                customClass={`font-[Montserrat] not-italic leading-[normal]`}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.skills_available?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? EmojiIconWhite : EmojiIcon}
-                title={pageContent["body-profile-available-capacities-title"]}
-                items={profile?.skills_available || []}
-                customClass={`font-[Montserrat] not-italic leading-[normal] `}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.skills_wanted?.toString()) && (
-              <ProfileItem
-                icon={darkMode ? TargetIconWhite : TargetIcon}
-                title={pageContent["body-profile-wanted-capacities-title"]}
-                items={profile?.skills_wanted || []}
-                customClass={`font-[Montserrat] not-italic leading-[normal] `}
-              />
-            )}
-            {shouldRenderEmptyField(profile?.language?.toString()) && (
+            {shouldRenderEmptyField(profile?.skills_known) && <ProfileItem
+              icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+              title={pageContent["body-profile-known-capacities-title"]}
+              items={profile?.skills_known || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] not-italic leading-[normal]`}
+            />}
+            {shouldRenderEmptyField(profile?.skills_available) && <ProfileItem
+              icon={darkMode ? EmojiIconWhite : EmojiIcon}
+              title={pageContent["body-profile-available-capacities-title"]}
+              items={profile?.skills_available || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] not-italic leading-[normal] `}
+            />}
+            {shouldRenderEmptyField(profile?.skills_wanted) && <ProfileItem
+              icon={darkMode ? TargetIconWhite : TargetIcon}
+              title={pageContent["body-profile-wanted-capacities-title"]}
+              items={profile?.skills_wanted || []}
+              getItemName={(id) => getCapacityName(id)}
+              customClass={`font-[Montserrat] not-italic leading-[normal] `}
+            />}
+            {shouldRenderEmptyField(profile?.language) && (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 items-center">
                   <Image
