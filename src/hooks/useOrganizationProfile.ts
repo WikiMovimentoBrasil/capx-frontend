@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
+import { useSession } from "next-auth/react";
 
 export function useOrganization(token?: string, specificOrgId?: number) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -129,4 +130,36 @@ export function useOrganization(token?: string, specificOrgId?: number) {
       }
     },
   };
+}
+
+export function useOrganizations(limit: number, offset: number) {
+  const { data: session } = useSession();
+  const [organizations, setOrganizations] = useState<Organization[] | null>([]);
+  const [count, setCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const getOrganizations = async () => {
+      if (session?.user?.id && session?.user?.token) {
+        try {
+          const data = await organizationProfileService.getOrganizations(
+            session.user.token,
+            limit,
+            offset
+          );
+          setOrganizations(data.results);
+          setCount(data.count);
+        } catch (error) {
+          console.error("Error fetching organizations:", error);
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    getOrganizations();
+  }, [session]);
+
+  return { organizations, count, isLoading, error };
 }
