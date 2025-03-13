@@ -221,7 +221,7 @@ export default function OrganizationProfilePage() {
               {/* Projects and Events */}
               <div className="space-y-6 mt-4">
                 <ProjectsEventsList
-                  title={pageContent["body-profile-section-main-projects"]}
+                  title={pageContent["body-profile-section-title-main-projects"]}
                   type="projects"
                   itemIds={organization?.projects || []}
                   token={token}
