@@ -28,7 +28,6 @@ import NeurologyIcon from "@/public/static/images/neurology.svg";
 import NeurologyIconWhite from "@/public/static/images/neurology_white.svg";
 import EmojiIcon from "@/public/static/images/emoji_objects.svg";
 import EmojiIconWhite from "@/public/static/images/emoji_objects_white.svg";
-import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
 import AddIconDark from "@/public/static/images/add_dark.svg";
 import AddIcon from "@/public/static/images/add.svg";
 import TargetIconWhite from "@/public/static/images/target_white.svg";
@@ -45,7 +44,8 @@ import TerritoryIconWhite from "@/public/static/images/territory_white.svg";
 import TerritoryIcon from "@/public/static/images/territory.svg";
 import BarCodeIconWhite from "@/public/static/images/barcode_white.svg";
 import BarCodeIcon from "@/public/static/images/barcode.svg";
-import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
+import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
+import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import DeleteIcon from "@/public/static/images/delete.svg";
 import BaseButton from "@/components/BaseButton";
 import AvatarSelectionPopup from "../../components/AvatarSelectionPopup";
@@ -134,6 +134,7 @@ export default function ProfileEditDesktopView(
 
   const username = session?.user?.name;
   const [showDeleteProfilePopup, setShowDeleteProfilePopup] = useState(false);
+  const [showProjectSelector, setShowProjectSelector] = useState(false);
 
   return (
     <div
@@ -345,7 +346,7 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
             </div>
-            <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[16px] border-[1px] border-[solid] border-capx-light-bg">
+            <div className="flex w-full px-3 py-6 flex-col items-start gap-[14px] rounded-[16px] border-[1px] border-[solid] border-capx-light-bg">
               <textarea
                 value={formData.about || ""}
                 onChange={(e) =>
@@ -400,8 +401,8 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("known", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] border-2 flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
-                      imageUrl={CloseIcon}
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] border-2 flex py-4 px-4 justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
                       imageHeight={24}
@@ -451,7 +452,7 @@ export default function ProfileEditDesktopView(
               <div
                 className={`flex flex-wrap gap-2 rounded-[16px] ${
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
+                } flex w-full px-3 py-6 items-start gap-[12px]`}
               >
                 {formData?.skills_available?.map((capacity, index) => (
                   <div
@@ -461,8 +462,8 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("available", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
-                      imageUrl={CloseIcon}
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#05A300)] flex py-4 px-4 justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
                       imageHeight={24}
@@ -512,7 +513,7 @@ export default function ProfileEditDesktopView(
               <div
                 className={`flex flex-wrap gap-2 rounded-[16px] ${
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                } flex w-full px-[4px] py-[6px] items-start gap-4`}
+                } flex w-full px-3 py-6 items-start gap-[12px]`}
               >
                 {formData?.skills_wanted?.map((capacity, index) => (
                   <div
@@ -522,8 +523,8 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("wanted", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
-                      imageUrl={CloseIcon}
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#D43831)] flex px-4 py-4 justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
                       imageHeight={24}
@@ -601,26 +602,72 @@ export default function ProfileEditDesktopView(
                           ? "bg-transparent border-white text-white"
                           : "border-[#053749] text-[#829BA4]"
                       }`}
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
                     >
-                      <option value="0">
+                      <option
+                        value="0"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-not-proficient"]}
                       </option>
-                      <option value="1">
+                      <option
+                        value="1"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-basic"]}
                       </option>
-                      <option value="2">
+                      <option
+                        value="2"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-intermediate"]}
                       </option>
-                      <option value="3">
+                      <option
+                        value="3"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-advanced"]}
                       </option>
-                      <option value="4">
+                      <option
+                        value="4"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-almost-native"]}
                       </option>
-                      <option value="5">
+                      <option
+                        value="5"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-professional"]}
                       </option>
-                      <option value="n">
+                      <option
+                        value="n"
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                      >
                         {pageContent["profiency-level-native"]}
                       </option>
                     </select>
@@ -659,12 +706,23 @@ export default function ProfileEditDesktopView(
                       ? "bg-transparent border-white text-white opacity-50"
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
+                  style={{
+                    backgroundColor: darkMode ? "#053749" : "white",
+                    color: darkMode ? "white" : "#053749",
+                  }}
                 >
                   <option value="">
                     {pageContent["edit-profile-add-language"]}
                   </option>
                   {Object.entries(languagesData).map(([id, name]) => (
-                    <option key={id} value={id}>
+                    <option
+                      key={id}
+                      value={id}
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
+                    >
                       {name}
                     </option>
                   ))}
@@ -761,12 +819,23 @@ export default function ProfileEditDesktopView(
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
+                  style={{
+                    backgroundColor: darkMode ? "#053749" : "white",
+                    color: darkMode ? "white" : "#053749",
+                  }}
                 >
                   <option value="">
                     {pageContent["edit-profile-insert-item"]}
                   </option>
                   {Object.entries(affiliationsData).map(([id, name]) => (
-                    <option key={id} value={id}>
+                    <option
+                      key={id}
+                      value={id}
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
+                    >
                       {name}
                     </option>
                   ))}
@@ -820,12 +889,23 @@ export default function ProfileEditDesktopView(
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
                   } border`}
+                  style={{
+                    backgroundColor: darkMode ? "#053749" : "white",
+                    color: darkMode ? "white" : "#053749",
+                  }}
                 >
                   <option value="">
                     {pageContent["edit-profile-insert-item"]}
                   </option>
                   {Object.entries(territoriesData).map(([id, name]) => (
-                    <option key={id} value={id}>
+                    <option
+                      key={id}
+                      value={id}
+                      style={{
+                        backgroundColor: darkMode ? "#053749" : "white",
+                        color: darkMode ? "white" : "#053749",
+                      }}
+                    >
                       {name}
                     </option>
                   ))}
@@ -914,74 +994,80 @@ export default function ProfileEditDesktopView(
                   {pageContent["body-profile-wikimedia-projects-title"]}
                 </h2>
               </div>
-              <div className="relative">
-                <select
-                  value={formData.wikimedia_project?.[0] || ""}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setFormData({
-                        ...formData,
-                        wikimedia_project: [
+
+              {/* Display selected projects as tags with delete button */}
+              <div
+                className={`flex flex-wrap gap-2 rounded-[16px] ${
+                  darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
+                } w-full px-3 py-6 items-start gap-[12px]`}
+              >
+                {formData?.wikimedia_project?.map((projectId, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-1 rounded-md"
+                  >
+                    <BaseButton
+                      onClick={() => {
+                        const newProjects = [
                           ...(formData.wikimedia_project || []),
-                          e.target.value,
-                        ],
-                      });
-                    }
-                  }}
-                  className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
-                    darkMode
-                      ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                      : "border-[#053749] text-[#829BA4]"
-                  } border`}
-                >
-                  <option value="">
-                    {pageContent["edit-profile-insert-project"]}
-                  </option>
-                  {Object.entries(wikimediaProjectsData).map(([id, name]) => (
-                    <option
-                      key={id}
-                      value={id}
-                      className="font-[Montserrat] text-[24px]"
-                    >
-                      {name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <Image
-                    src={darkMode ? ArrowDownIconWhite : ArrowDownIcon}
-                    alt="Select"
-                    width={24}
-                    height={24}
-                  />
-                </div>
+                        ];
+                        newProjects.splice(index, 1);
+                        setFormData({
+                          ...formData,
+                          wikimedia_project: newProjects,
+                        });
+                      }}
+                      label={wikimediaProjectsData[projectId] || projectId}
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex py-4 px-4 justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      imageUrl={darkMode ? CloseIconWhite : CloseIcon}
+                      imageAlt="Remove project"
+                      imageWidth={24}
+                      imageHeight={24}
+                    />
+                  </div>
+                ))}
               </div>
 
-              {formData.wikimedia_project?.slice(1).map((project, index) => (
-                <div key={index} className="relative">
+              {/* Selector for adding new projects - only shown when button is clicked */}
+              {showProjectSelector && (
+                <div className="relative">
                   <select
-                    value={project || ""}
+                    value=""
                     onChange={(e) => {
-                      const newProjects = [
-                        ...(formData.wikimedia_project || []),
-                      ];
-                      newProjects[index + 1] = e.target.value;
-                      setFormData({
-                        ...formData,
-                        wikimedia_project: newProjects,
-                      });
+                      if (e.target.value) {
+                        setFormData({
+                          ...formData,
+                          wikimedia_project: [
+                            ...(formData.wikimedia_project || []),
+                            e.target.value,
+                          ],
+                        });
+                        setShowProjectSelector(false); // Hide selector after selection
+                      }
                     }}
                     className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                       darkMode
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                         : "border-[#053749] text-[#829BA4]"
                     } border`}
+                    style={{
+                      backgroundColor: darkMode ? "#053749" : "white",
+                      color: darkMode ? "white" : "#053749",
+                    }}
                   >
                     <option value="">
                       {pageContent["edit-profile-insert-project"]}
                     </option>
                     {Object.entries(wikimediaProjectsData).map(([id, name]) => (
-                      <option key={id} value={id}>
+                      <option
+                        key={id}
+                        value={id}
+                        style={{
+                          backgroundColor: darkMode ? "#053749" : "white",
+                          color: darkMode ? "white" : "#053749",
+                        }}
+                        className="font-[Montserrat] text-[24px]"
+                      >
                         {name}
                       </option>
                     ))}
@@ -995,10 +1081,10 @@ export default function ProfileEditDesktopView(
                     />
                   </div>
                 </div>
-              ))}
+              )}
 
               <BaseButton
-                onClick={handleAddProject}
+                onClick={() => setShowProjectSelector(true)}
                 label={pageContent["edit-profile-add-projects"]}
                 customClass={`w-1/4 flex ${
                   darkMode
