@@ -17,8 +17,13 @@ import AccountCircle from "@/public/static/images/account_circle.svg";
 import AccountCircleWhite from "@/public/static/images/account_circle_white.svg";
 import { ProfileItem } from '@/components/ProfileItem';
 import { useRouter } from "next/navigation";
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
+import { useTerritories } from "@/hooks/useTerritories";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useSession } from "next-auth/react";
 
 interface ProfileCardProps {
+  id: string;
   username: string;
   type: ProfileCapacityType;
   capacities: (number | string)[];
@@ -26,19 +31,27 @@ interface ProfileCardProps {
   territory?: string;
   avatar?: string;
   pageContent?: Record<string, string>;
+  isOrganization?: boolean;
 }
 
 export const ProfileCard = ({
+  id,
   username,
   type = ProfileCapacityType.Learner,
   capacities = [],
   languages = [],
-  territory = "",
+  territory,
   avatar,
+  isOrganization = false
 }: ProfileCardProps) => {
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
   const router = useRouter();
+  const { getCapacityName } = useCapacityDetails(capacities);
+  const { data: session } = useSession();
+  const token = session?.user?.token;
+  const { languages: availableLanguages } = useLanguage(token);
+  const { territories: availableTerritories } = useTerritories(token);
 
   const capacitiesTitle =
     type === "learner"
@@ -61,7 +74,7 @@ export const ProfileCard = ({
       : "text-[#05A300] border-[#05A300]";
 
   const formattedUsername = username.replace(' ', '_');
-  
+
   return (
     <div
       className={`w-full rounded-lg border ${
@@ -127,6 +140,7 @@ export const ProfileCard = ({
               title={capacitiesTitle}
               items={capacities}
               showEmptyDataText={false}
+              getItemName={(id) => getCapacityName(id)}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
 
@@ -136,6 +150,7 @@ export const ProfileCard = ({
               title={pageContent["body-profile-languages-title"]}
               items={languages}
               showEmptyDataText={false}
+              getItemName={(id) => availableLanguages[id]}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
             />
 
@@ -144,6 +159,7 @@ export const ProfileCard = ({
               icon={darkMode ? TerritoryIconWhite : TerritoryIcon}
               title={pageContent["body-profile-section-title-territory"]}
               items={territory ? [territory] : []}
+              getItemName={(id) => availableTerritories[id]}
               customClass={`font-[Montserrat] text-[14px] not-italic leading-[normal]`}
               showEmptyDataText={false}
             />
@@ -153,7 +169,8 @@ export const ProfileCard = ({
                 darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
               }`}
               onClick={() => {
-                router.push(`/profile/${formattedUsername}`);
+                const routePath = isOrganization ? `/organization_profile/${id}` : `/"profile"}/${formattedUsername}`;
+                router.push(routePath);
               }}
             >
               <Image

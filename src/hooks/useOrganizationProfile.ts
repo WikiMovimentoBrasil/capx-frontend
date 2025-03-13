@@ -19,7 +19,9 @@ export function useOrganization(token?: string, specificOrgId?: number) {
       const userProfile = await organizationProfileService.getUserProfile(
         token
       );
-      const managedIds = userProfile.flatMap((profile) =>
+      // TODO we should ensure its always an array OR unique object
+      const profileArray = Array.isArray(userProfile) ? userProfile : [userProfile];
+      const managedIds = profileArray.flatMap((profile) =>
         profile.is_manager && profile.is_manager.length > 0
           ? profile.is_manager
           : []
@@ -159,7 +161,7 @@ export function useOrganizations(limit: number, offset: number) {
     };
 
     getOrganizations();
-  }, [session]);
+  }, [session, limit, offset]);
 
-  return { organizations, count, isLoading, error };
+  return { organizations, isLoading, error, count };
 }

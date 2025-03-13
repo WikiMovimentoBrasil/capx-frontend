@@ -92,7 +92,7 @@ export function useAllUsers(limit?: number, offset?: number) {
     };
 
     fetchAllUsers();
-  }, [session]);
+  }, [session, limit, offset]);
 
-  return { allUsers, count, isLoading, error };
+  return { allUsers, isLoading, error, count };
 }
