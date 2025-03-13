@@ -95,9 +95,16 @@
 	"edit-profile-wikimedia-projects": "Informéiert d'Wikimedia-Projeten, un deenen Dir interesséiert sidd.",
 	"edit-profile-insert-project": "Projet asetzen",
 	"edit-profile-insert-link": "URL vum Dokument asetzen",
+	"capacity-card-info": "Informatiounen",
 	"privacy-policy-link-toolforge": "Toolforge",
 	"privacy-policy-private-information-topic01": "Wikimedia-Benotzernimm;",
 	"privacy-policy-private-information-topic02-link": "OAuth",
+	"capacity-selection-modal-see-more-information": "Méi Informatioune weisen",
+	"capacity-selection-modal-select-capacity-button-cancel": "Ofbriechen",
+	"capacity-selection-modal-loading": "Lueden…",
 	"not-found-page": "404 | Säit net fonnt",
-	"not-found-page-back-home": "Zréck op d'Haaptsäit"
+	"not-found-page-back-home": "Zréck op d'Haaptsäit",
+	"filters-user-profile": "Benotzerprofil",
+	"filters-show-results": "Resultater weisen",
+	"filters-title": "Filteren"
 }
