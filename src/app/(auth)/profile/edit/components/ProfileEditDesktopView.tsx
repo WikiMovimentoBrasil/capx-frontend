@@ -21,7 +21,7 @@ import CheckIcon from "@/public/static/images/check_box_outline_blank.svg";
 import CheckIconWhite from "@/public/static/images/check_box_outline_blank_light.svg";
 import CancelIcon from "@/public/static/images/cancel.svg";
 import CancelIconWhite from "@/public/static/images/cancel_white.svg";
-import UploadIcon from "@/public/static/images/upload.svg";
+import SaveIcon from "@/public/static/images/save_as.svg";
 import PersonIcon from "@/public/static/images/person_book.svg";
 import PersonIconWhite from "@/public/static/images/person_book_white.svg";
 import NeurologyIcon from "@/public/static/images/neurology.svg";
@@ -46,12 +46,15 @@ import TerritoryIcon from "@/public/static/images/territory.svg";
 import BarCodeIconWhite from "@/public/static/images/barcode_white.svg";
 import BarCodeIcon from "@/public/static/images/barcode.svg";
 import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_light_mode.svg";
+import DeleteIcon from "@/public/static/images/delete.svg";
 import BaseButton from "@/components/BaseButton";
 import AvatarSelectionPopup from "../../components/AvatarSelectionPopup";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import Popup from "@/components/Popup";
 import { useAffiliation } from "@/hooks/useAffiliation";
 import { Profile } from "@/types/profile";
 import { Capacity } from "@/types/capacity";
-
+import { useState } from "react";
 interface ProfileEditDesktopViewProps {
   selectedAvatar: any;
   handleAvatarSelect: (avatarId: number) => void;
@@ -73,6 +76,7 @@ interface ProfileEditDesktopViewProps {
   handleAddProject: () => void;
   handleSubmit: () => void;
   handleCancel: () => void;
+  handleDeleteProfile: () => void;
   formData: Partial<Profile>;
   setFormData: (data: Partial<Profile>) => void;
   territories: Record<string, string>;
@@ -104,6 +108,7 @@ export default function ProfileEditDesktopView(
     handleAddProject,
     handleSubmit,
     handleCancel,
+    handleDeleteProfile,
     formData,
     setFormData,
     territories,
@@ -128,6 +133,7 @@ export default function ProfileEditDesktopView(
     useWikimediaProject(token);
 
   const username = session?.user?.name;
+  const [showDeleteProfilePopup, setShowDeleteProfilePopup] = useState(false);
 
   return (
     <div
@@ -136,46 +142,14 @@ export default function ProfileEditDesktopView(
       }`}
     >
       <section
-        className={`w-full max-w-screen-xl mx-auto px-4 py-8 ${
+        className={`w-full max-w-screen-xl mx-auto px-12 py-8 ${
           isMobile ? "mt-[80px]" : "mt-[64px]"
         }`}
       >
-        <div className={`flex flex-col gap-6mx-[80px] mx-auto`}>
+        <div className={`flex flex-col gap-6 mx-[80px] mx-auto`}>
           {/* Image Profile Section */}
-
-          <div className="flex flex-row gap-12">
-            <div className="flex flex-col gap-4 w-1/2">
-              <div className="flex flex-row gap-1 items-center">
-                <div className="relative w-[48px] h-[48px]">
-                  <Image
-                    src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
-                    alt="Account box icon"
-                    fill
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-                <h2
-                  className={`${
-                    darkMode ? "text-white" : "text-[#053749]"
-                  } font-[Montserrat] text-[24px] font-bold`}
-                >
-                  {pageContent["edit-profile-image-title"]}
-                </h2>
-              </div>
-
-              <div className="flex bg-gray-100 p-4 rounded-lg h-full items-center justify-center">
-                <div className="w-48 h-48 mx-auto mb-4 relative flex items-center justify-center">
-                  <Image
-                    src={selectedAvatar.src}
-                    alt="Selected avatar"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 w-1/2">
+          <div className="flex flex-col">
+            <div className="flex flex-col gap-4 mb-12">
               <div className="flex flex-col gap-2 items-start">
                 <h1
                   className={`font-[Montserrat] text-[48px] not-italic font-normal leading-[29px] ${
@@ -184,7 +158,7 @@ export default function ProfileEditDesktopView(
                 >
                   {pageContent["edit-profile-welcome"]}
                 </h1>
-                <div className="flex items-start gap-[6px] py-6">
+                <div className="flex items-center gap-[6px] py-6">
                   <div className="relative w-[48px] h-[48px]">
                     <Image
                       src={
@@ -205,35 +179,98 @@ export default function ProfileEditDesktopView(
                   </span>
                 </div>
               </div>
-              <BaseButton
-                onClick={() => setShowAvatarPopup(true)}
-                label={pageContent["edit-profile-choose-avatar"]}
-                customClass={`w-full flex px-[13px] py-[6px] pb-[6px] items-center rounded-[4px] ${
-                  darkMode
-                    ? "bg-capx-light-bg text-[#053749]"
-                    : "bg-[#053749] text-[#F6F6F6]"
-                } font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0`}
-                imageUrl={darkMode ? ChangeCircleIconWhite : ChangeCircleIcon}
-                imageAlt="Change circle icon"
-                imageWidth={24}
-                imageHeight={24}
-              />
-
-              {showAvatarPopup && (
-                <AvatarSelectionPopup
-                  onClose={() => setShowAvatarPopup(false)}
-                  onSelect={handleAvatarSelect}
-                  selectedAvatarId={selectedAvatar.id}
+              <div className="flex flex-row gap-6 mt-0 w-3/4">
+                <BaseButton
+                  onClick={handleSubmit}
+                  label={pageContent["edit-profile-save"]}
+                  customClass="w-full flex items-center text-[24px] px-8 py-4 bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
+                  imageUrl={SaveIcon}
+                  imageAlt="Save icon"
+                  imageWidth={30}
+                  imageHeight={30}
                 />
-              )}
-              <div className="flex flex-col items-start gap-6">
+                <BaseButton
+                  onClick={() => router.back()}
+                  label={pageContent["edit-profile-cancel"]}
+                  customClass={`w-full flex items-center text-[24px] px-8 py-4 border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
+                    darkMode
+                      ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
+                      : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
+                  }`}
+                  imageUrl={darkMode ? CancelIconWhite : CancelIcon}
+                  imageAlt="Cancel icon"
+                  imageWidth={30}
+                  imageHeight={30}
+                />
+              </div>
+            </div>
+            <div className="flex flex-row gap-12 w-4/5">
+              <div className="flex flex-col gap-4 w-1/2">
+                <div className="flex flex-row gap-1 items-center">
+                  <div className="relative w-[48px] h-[48px]">
+                    <Image
+                      src={darkMode ? AccountBoxIconWhite : AccountBoxIcon}
+                      alt="Account box icon"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <h2
+                    className={`${
+                      darkMode ? "text-white" : "text-[#053749]"
+                    } font-[Montserrat] text-[24px] font-bold`}
+                  >
+                    {pageContent["edit-profile-image-title"]}
+                  </h2>
+                </div>
+
+                <div className="flex bg-gray-100 p-4 rounded-lg h-full items-center justify-center">
+                  <div className="w-64 h-64 mx-auto mb-4 relative flex items-center justify-center">
+                    <Image
+                      src={selectedAvatar.src}
+                      alt="Selected avatar"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-start mt-12 gap-2 w-1/2">
+                <BaseButton
+                  onClick={() => setShowAvatarPopup(true)}
+                  label={pageContent["edit-profile-choose-avatar"]}
+                  customClass={`w-full flex px-8 py-4 items-center rounded-[8px] ${
+                    darkMode
+                      ? "bg-capx-light-bg text-[#053749]"
+                      : "bg-[#053749] text-[#F6F6F6]"
+                  } font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0`}
+                  imageUrl={darkMode ? ChangeCircleIconWhite : ChangeCircleIcon}
+                  imageAlt="Change circle icon"
+                  imageWidth={30}
+                  imageHeight={30}
+                />
+                <span
+                  className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
+                    darkMode ? "text-white" : "text-[#053749]"
+                  }`}
+                >
+                  {pageContent["edit-profile-choose-avatar-tooltip"]}
+                </span>
+                {showAvatarPopup && (
+                  <AvatarSelectionPopup
+                    onClose={() => setShowAvatarPopup(false)}
+                    onSelect={handleAvatarSelect}
+                    selectedAvatarId={selectedAvatar.id}
+                  />
+                )}
                 <BaseButton
                   onClick={handleWikidataClick}
                   label={pageContent["edit-profile-use-wikidata"]}
-                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[24px] appearance-none mb-0 pb-[6px] ${
+                  customClass={`w-full flex justify-between items-center px-8 py-4 rounded-[8px] font-[Montserrat] text-[24px] font-extrabold mb-0 mt-4 ${
                     darkMode
-                      ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
-                      : "border-[#053749] text-[#829BA4]"
+                      ? "bg-transparent border-white text-capx-light-bg placeholder-white"
+                      : "border-[#053749] text-capx-dark-box-bg"
                   } border`}
                   imageUrl={
                     isWikidataSelected
@@ -245,8 +282,8 @@ export default function ProfileEditDesktopView(
                       : CheckIcon
                   }
                   imageAlt="Check icon"
-                  imageWidth={24}
-                  imageHeight={24}
+                  imageWidth={30}
+                  imageHeight={30}
                 />
                 <span
                   className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
@@ -255,30 +292,34 @@ export default function ProfileEditDesktopView(
                 >
                   {pageContent["edit-profile-consent-wikidata"]}
                 </span>
-                <div className="flex flex-col gap-6 mt-0 w-full">
-                  <BaseButton
-                    onClick={handleSubmit}
-                    label={pageContent["edit-profile-save"]}
-                    customClass="w-full flex items-center text-[24px] px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
-                    imageUrl={UploadIcon}
-                    imageAlt="Upload icon"
-                    imageWidth={24}
-                    imageHeight={24}
-                  />
-                  <BaseButton
-                    onClick={() => router.back()}
-                    label={pageContent["edit-profile-cancel"]}
-                    customClass={`w-full flex items-center text-[24px] px-[13px] py-[6px] pb-[6px] border border-[#053749] text-[#053749] rounded-md py-3 font-bold mb-0 ${
+                <BaseButton
+                  onClick={() => setShowDeleteProfilePopup(true)}
+                  label={pageContent["edit-profile-delete-profile"]}
+                  customClass={`w-full flex justify-between items-center px-8 py-4 rounded-[8px] font-[Montserrat] text-[24px] font-extrabold text-capx-dark-box-bg mb-0 mt-8 bg-[#D43831] text-white`}
+                  imageUrl={DeleteIcon}
+                  imageAlt="Delete icon"
+                  imageWidth={30}
+                  imageHeight={30}
+                />
+                {showDeleteProfilePopup && (
+                  <Popup
+                    title={pageContent["edit-profile-delete-profile"]}
+                    image={capxPersonIcon}
+                    onClose={() => setShowDeleteProfilePopup(false)}
+                    onContinue={handleDeleteProfile}
+                    continueButtonLabel={
+                      pageContent["edit-profile-delete-profile-confirm"]
+                    }
+                    closeButtonLabel={
+                      pageContent["edit-profile-delete-profile-cancel"]
+                    }
+                    customClass={`${
                       darkMode
-                        ? "bg-transparent text-[#F6F6F6] border-[#F6F6F6] border-[2px]"
-                        : "bg-[#F6F6F6] border-[#053749] text-[#053749]"
+                        ? "bg-[#005B3F] text-white"
+                        : "bg-white text-[#053749]"
                     }`}
-                    imageUrl={darkMode ? CancelIconWhite : CancelIcon}
-                    imageAlt="Cancel icon"
-                    imageWidth={24}
-                    imageHeight={24}
                   />
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -304,14 +345,14 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
             </div>
-            <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[4px] border-[1px] border-[solid] border-capx-light-bg">
+            <div className="flex w-full px-[4px] py-[6px] flex-col items-start gap-[14px] rounded-[16px] border-[1px] border-[solid] border-capx-light-bg">
               <textarea
                 value={formData.about || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, about: e.target.value })
                 }
                 placeholder={pageContent["edit-profile-mini-bio-placeholder"]}
-                className={`w-full font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] p-2 bg-transparent resize-none min-h-[100px] rounded-[4px] border-[1px] border-[solid] border-[#053749] px-[4px] ${
+                className={`w-full font-[Montserrat] text-[24px] not-italic font-normal leading-[normal] p-6 bg-transparent resize-none min-h-[100px] rounded-[16px] border-[1px] border-[solid] border-[#053749] px-8 py-4 scrollbar-hide ${
                   darkMode
                     ? "text-white placeholder-gray-400"
                     : "text-[#053749] placeholder-[#829BA4]"
@@ -347,9 +388,9 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
               <div
-                className={`flex flex-wrap gap-2 rounded-[4px] ${
+                className={`flex flex-wrap gap-2 rounded-[16px] ${
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
-                } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
+                } flex w-full px-3 py-6 items-start gap-[12px]`}
               >
                 {formData?.skills_known?.map((capacity, index) => (
                   <div
@@ -359,7 +400,7 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("known", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] border-2 flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
                       imageUrl={CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
@@ -371,15 +412,15 @@ export default function ProfileEditDesktopView(
               <BaseButton
                 onClick={() => handleAddCapacity("known")}
                 label={pageContent["edit-profile-add-capacities"]}
-                customClass={`w-1/4 flex ${
+                customClass={`w-fit flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
                     : "bg-[#053749] text-white"
-                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 px-8 py-4 items-center gap-[4px]`}
                 imageUrl={darkMode ? AddIconDark : AddIcon}
                 imageAlt="Add capacity"
-                imageWidth={24}
-                imageHeight={24}
+                imageWidth={30}
+                imageHeight={30}
               />
               <span
                 className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
@@ -408,7 +449,7 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
               <div
-                className={`flex flex-wrap gap-2 rounded-[4px] ${
+                className={`flex flex-wrap gap-2 rounded-[16px] ${
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
                 } flex w-full px-[4px] py-[6px] items-start gap-[12px]`}
               >
@@ -420,7 +461,7 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("available", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
                       imageUrl={CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
@@ -432,15 +473,15 @@ export default function ProfileEditDesktopView(
               <BaseButton
                 onClick={() => handleAddCapacity("available")}
                 label={pageContent["edit-profile-add-capacities"]}
-                customClass={`w-1/4 flex ${
+                customClass={`w-fit flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
                     : "bg-[#053749] text-white"
-                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 px-8 py-4 items-center gap-[4px]`}
                 imageUrl={darkMode ? AddIconDark : AddIcon}
                 imageAlt="Add capacity"
-                imageWidth={24}
-                imageHeight={24}
+                imageWidth={30}
+                imageHeight={30}
               />
               <span
                 className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
@@ -469,7 +510,7 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
               <div
-                className={`flex flex-wrap gap-2 rounded-[4px] ${
+                className={`flex flex-wrap gap-2 rounded-[16px] ${
                   darkMode ? "bg-[#04222F]" : "bg-[#EFEFEF]"
                 } flex w-full px-[4px] py-[6px] items-start gap-4`}
               >
@@ -481,7 +522,7 @@ export default function ProfileEditDesktopView(
                     <BaseButton
                       onClick={() => handleRemoveCapacity("wanted", index)}
                       label={getCapacityName(capacity)}
-                      customClass="rounded-[4px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
+                      customClass="rounded-[16px] border-[1px] border-[solid] border-[var(--Links-light-link,#0070B9)] flex p-[4px] pb-[4px] justify-center items-center gap-[4px] font-[Montserrat] text-[24px] not-italic font-normal leading-[normal]"
                       imageUrl={CloseIcon}
                       imageAlt="Close icon"
                       imageWidth={24}
@@ -493,15 +534,15 @@ export default function ProfileEditDesktopView(
               <BaseButton
                 onClick={() => handleAddCapacity("wanted")}
                 label={pageContent["edit-profile-add-capacities"]}
-                customClass={`w-1/4 flex ${
+                customClass={`w-fit flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
                     : "bg-[#053749] text-white"
-                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 px-8 py-4 items-center gap-[4px]`}
                 imageUrl={darkMode ? AddIconDark : AddIcon}
                 imageAlt="Add capacity"
-                imageWidth={24}
-                imageHeight={24}
+                imageWidth={30}
+                imageHeight={30}
               />
               <span
                 className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
@@ -613,7 +654,7 @@ export default function ProfileEditDesktopView(
                       });
                     }
                   }}
-                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] appearance-none ${
+                  className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50"
                       : "border-[#053749] text-[#829BA4]"
@@ -674,7 +715,7 @@ export default function ProfileEditDesktopView(
                     wiki_alt: e.target.value,
                   })
                 }
-                className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] ${
+                className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] ${
                   darkMode
                     ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                     : "border-[#053749] text-[#829BA4]"
@@ -715,7 +756,7 @@ export default function ProfileEditDesktopView(
                       affiliation: e.target.value ? [e.target.value] : [],
                     })
                   }
-                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] appearance-none ${
+                  className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
@@ -774,7 +815,7 @@ export default function ProfileEditDesktopView(
                       territory: e.target.value ? [e.target.value] : [],
                     })
                   }
-                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] appearance-none ${
+                  className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
@@ -825,22 +866,10 @@ export default function ProfileEditDesktopView(
                 </h2>
               </div>
               <div className="flex items-center gap-2 py-[6px] ">
-                {/* <input
-                  type="checkbox"
-                  checked={formData.wikidata_qid}
-                  onChange={(e) =>
-                    setFormData({ ...formData, wikidata_qid: e.target.value })
-                  }
-                  className="mr-2"
-                />
-                <span className="font-[Montserrat] text-[14px]">
-                  Use Wikidata item
-                </span> */}
-
                 <BaseButton
                   onClick={handleWikidataClick}
                   label={pageContent["edit-profile-use-wikidata"]}
-                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[4px] font-[Montserrat] text-[24px] appearance-none mb-0 pb-[6px] ${
+                  customClass={`w-full flex justify-between items-center px-[13px] py-[6px] rounded-[16px] font-[Montserrat] text-[24px] appearance-none mb-0 pb-[6px] ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
@@ -860,7 +889,7 @@ export default function ProfileEditDesktopView(
                 />
               </div>
               <span
-                className={`text-[24px] font-[Montserrat] not-italic font-normal leading-normal ${
+                className={`text-[20px] font-[Montserrat] not-italic font-normal leading-normal ${
                   darkMode ? "text-white" : "text-[#053749]"
                 }`}
               >
@@ -899,7 +928,7 @@ export default function ProfileEditDesktopView(
                       });
                     }
                   }}
-                  className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] appearance-none ${
+                  className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                     darkMode
                       ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                       : "border-[#053749] text-[#829BA4]"
@@ -942,7 +971,7 @@ export default function ProfileEditDesktopView(
                         wikimedia_project: newProjects,
                       });
                     }}
-                    className={`w-full px-4 py-2 rounded-[4px] font-[Montserrat] text-[24px] appearance-none ${
+                    className={`w-full px-4 py-2 rounded-[16px] font-[Montserrat] text-[24px] appearance-none ${
                       darkMode
                         ? "bg-transparent border-white text-white opacity-50 placeholder-gray-400"
                         : "border-[#053749] text-[#829BA4]"
@@ -970,16 +999,16 @@ export default function ProfileEditDesktopView(
 
               <BaseButton
                 onClick={handleAddProject}
-                label={pageContent["edit-profile-add-more-projects"]}
+                label={pageContent["edit-profile-add-projects"]}
                 customClass={`w-1/4 flex ${
                   darkMode
                     ? "bg-capx-light-box-bg text-[#04222F]"
                     : "bg-[#053749] text-white"
-                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 pb-[6px] px-[13px] py-[6px] items-center gap-[4px]`}
+                } rounded-md py-2 font-[Montserrat] text-[24px] not-italic font-extrabold leading-[normal] mb-0 px-8 py-4 items-center gap-[4px]`}
                 imageUrl={darkMode ? AddIconDark : AddIcon}
                 imageAlt="Add project"
-                imageWidth={24}
-                imageHeight={24}
+                imageWidth={30}
+                imageHeight={30}
               />
               <span
                 className={`text-[24px] font-[Montserrat] not-italic font-normal leading-normal ${
@@ -996,24 +1025,24 @@ export default function ProfileEditDesktopView(
             <BaseButton
               onClick={handleSubmit}
               label={pageContent["edit-profile-save"]}
-              customClass="w-full flex items-center text-[24px] px-[13px] py-[6px] pb-[6px] bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
-              imageUrl={UploadIcon}
-              imageAlt="Upload icon"
-              imageWidth={24}
-              imageHeight={24}
+              customClass="w-full flex items-center text-[24px] px-8 py-4 bg-[#851970] text-white rounded-md py-3 font-bold mb-0"
+              imageUrl={SaveIcon}
+              imageAlt="Save icon"
+              imageWidth={30}
+              imageHeight={30}
             />
             <BaseButton
               onClick={() => router.back()}
               label={pageContent["edit-profile-cancel"]}
-              customClass={`w-full flex items-center text-[24px] px-[13px] py-[6px] pb-[6px] border ${
+              customClass={`w-full flex items-center text-[24px] px-8 py-4 border ${
                 darkMode
                   ? "border-white text-white"
                   : "border-[#053749] text-[#053749]"
               } rounded-md py-3 font-bold mb-0`}
               imageUrl={darkMode ? CancelIconWhite : CancelIcon}
               imageAlt="Cancel icon"
-              imageWidth={24}
-              imageHeight={24}
+              imageWidth={30}
+              imageHeight={30}
             />
           </div>
         </div>

@@ -77,10 +77,9 @@ export default function EditProfilePage() {
   const token = session?.user?.token;
   const userId = session?.user?.id;
 
-  const { profile, isLoading, error, updateProfile, refetch } = useProfile(
-    token,
-    Number(userId)
-  );
+  const { profile, isLoading, error, updateProfile, refetch, deleteProfile } =
+    useProfile(token, Number(userId));
+
   const { territories } = useTerritories(token);
   const { languages, loading: languagesLoading } = useLanguage(token);
   const { affiliations } = useAffiliation(token);
@@ -159,6 +158,20 @@ export default function EditProfilePage() {
       }
     }
   }, [profile]);
+
+  const handleDeleteProfile = async () => {
+    if (!token) {
+      console.error("No token available");
+      return;
+    }
+
+    try {
+      await deleteProfile();
+      router.push("/");
+    } catch (error) {
+      console.error("Error deleting profile:", error);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!token) {
@@ -400,6 +413,7 @@ export default function EditProfilePage() {
     getCapacityName,
     handleAddProject,
     handleSubmit,
+    handleDeleteProfile,
     handleCancel: () => router.back(),
     formData,
     setFormData,
