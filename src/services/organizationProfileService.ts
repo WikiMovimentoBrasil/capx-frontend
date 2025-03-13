@@ -2,8 +2,12 @@ import axios from "axios";
 import { Organization } from "@/types/organization";
 
 export const organizationProfileService = {
-  async getOrganizations(token: string) {
+  async getOrganizations(token: string, limit: number, offset: number) {
     const response = await axios.get("/api/organizations/", {
+      params: {
+        limit,
+        offset
+      },
       headers: { Authorization: `Token ${token}` },
     });
     return response.data;
