@@ -964,18 +964,6 @@ export default function ProfileEditMobileView(
                   </h2>
                 </div>
                 <div className="flex items-center gap-2 py-[6px] ">
-                  {/* <input
-                    type="checkbox"
-                    checked={formData.wikidata_qid}
-                    onChange={(e) =>
-                      setFormData({ ...formData, wikidata_qid: e.target.value })
-                    }
-                    className="mr-2"
-                  />
-                  <span className="font-[Montserrat] text-[14px]">
-                    Use Wikidata item
-                  </span> */}
-
                   <BaseButton
                     onClick={handleWikidataClick}
                     label={pageContent["edit-profile-use-wikidata"]}
