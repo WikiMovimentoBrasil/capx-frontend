@@ -5,10 +5,17 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
 
+  const limit = request.nextUrl.searchParams.get("limit");
+  const offset = request.nextUrl.searchParams.get("offset");
+
   try {
     const response = await axios.get(`${process.env.BASE_URL}/skill`, {
       headers: {
         Authorization: authHeader,
+      },
+      params: {
+        limit,
+        offset,
       },
     });
 

@@ -11,25 +11,12 @@ interface QueryData {
 export const skillService = {
   async fetchSkills(queryData: QueryData) {
     try {
-      // Construir URL com parâmetros de paginação
-      let url = `/api/skill`;
-      const params = new URLSearchParams();
-
-      if (queryData.limit !== undefined) {
-        params.append("limit", queryData.limit.toString());
-      }
-
-      if (queryData.offset !== undefined) {
-        params.append("offset", queryData.offset.toString());
-      }
-
-      // Adicionar parâmetros à URL se existirem
-      if (params.toString()) {
-        url += `?${params.toString()}`;
-      }
-
-      const response = await axios.get(url, {
+      const response = await axios.get("api/skill", {
         headers: queryData.headers,
+        params: {
+          limit: queryData.limit,
+          offset: queryData.offset,
+        },
       });
 
       return response.data;
