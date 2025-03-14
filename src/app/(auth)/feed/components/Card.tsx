@@ -169,7 +169,7 @@ export const ProfileCard = ({
                 darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
               }`}
               onClick={() => {
-                const routePath = isOrganization ? `/organization_profile/${id}` : `/"profile"}/${formattedUsername}`;
+                const routePath = isOrganization ? `/organization_profile/${id}` : `/profile/${formattedUsername}`;
                 router.push(routePath);
               }}
             >
