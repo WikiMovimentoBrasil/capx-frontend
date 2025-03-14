@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import ProfileCard from "./components/Card";
@@ -13,6 +13,11 @@ import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_dark_m
 import { Filters } from "./components/Filters";
 import { useApp } from "@/contexts/AppContext";
 import { ProfileCapacityType, ProfileFilterType } from "./types";
+import { useOrganizations } from "@/hooks/useOrganizationProfile";
+import { Organization } from "@/types/organization";
+import { UserProfile } from "@/types/user";
+import { useAllUsers } from "@/hooks/useUserProfile";
+import { PaginationButtons } from "./components/PaginationButtons";
 
 export interface FilterState {
   capacities: string[];
@@ -22,11 +27,79 @@ export interface FilterState {
   profileFilter: ProfileFilterType;
 }
 
+const createProfilesFromOrganizations = (organizations: Organization[]) => {
+  const profiles: any[] = [];
+
+  organizations.forEach(org => {
+    // Create card for available capacities (Sharer)
+    if (org.available_capacities && org.available_capacities.length > 0) {
+      profiles.push({
+        id: org.id,
+        username: org.display_name,
+        capacities: org.available_capacities,
+        type: ProfileCapacityType.Sharer,
+        territory: org.territory?.[0], // Assuming we want to show the first territory only
+        avatar: org.profile_image || undefined,
+        isOrganization: true
+      });
+    }
+
+    // Create card for desired capacities (Learner)
+    if (org.wanted_capacities && org.wanted_capacities.length > 0) {
+      profiles.push({
+        id: org.id,
+        username: org.display_name,
+        capacities: org.wanted_capacities,
+        type: ProfileCapacityType.Learner,
+        territory: org.territory?.[0],
+        avatar: org.profile_image || undefined,
+        isOrganization: true
+      });
+    }
+  });
+
+  return profiles;
+};
+
+const createProfilesFromUsers = (users: UserProfile[]) => {
+  const profiles: any[] = [];
+
+  users.forEach(user => {
+    // Create card for available capacities (Sharer)
+    if (user.skills_available?.length > 0) {
+      profiles.push({
+        id: user.user.id,
+        username: user.display_name,
+        capacities: user.skills_available,
+        type: ProfileCapacityType.Sharer,
+        territory: user.territory?.[0],
+        avatar: user.avatar,
+        isOrganization: false
+      });
+    }
+
+    // Create card for desired capacities (Learner)
+    if (user.skills_wanted?.length > 0) {
+      profiles.push({
+        id: user.user.id,
+        username: user.display_name,
+        capacities: user.skills_wanted,
+        type: ProfileCapacityType.Learner,
+        territory: user.territory?.[0],
+        avatar: user.avatar,
+        isOrganization: false
+      });
+    }
+  });
+
+  return profiles;
+};
 
 export default function FeedPage() {
-  const [showFilters, setShowFilters] = useState(false);
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
+
+  const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     capacities: [] as string[],
     profileCapacityTypes: [] as ProfileCapacityType[],
@@ -35,6 +108,40 @@ export default function FeedPage() {
     profileFilter: ProfileFilterType.Both
   });
   const [searchCapacity, setSearchCapacity] = useState('');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerList = 5; // Divide between organizations and users
+  const offset = (currentPage - 1) * itemsPerList; // Offset for both lists
+
+  // Get data with limits and offsets
+  const { organizations } = useOrganizations(itemsPerList, offset);
+  const { allUsers } = useAllUsers(itemsPerList, offset);
+
+  // Create profiles from organizations and users
+  const filteredProfiles = useMemo(() => {
+    const organizationProfiles = createProfilesFromOrganizations(organizations || []);
+    const userProfiles = createProfilesFromUsers(allUsers || []);
+
+    // Filter based on activeFilters.profileFilter
+    switch (activeFilters.profileFilter) {
+      case ProfileFilterType.User:
+        return userProfiles;
+      case ProfileFilterType.Organization:
+       return organizationProfiles;
+      case ProfileFilterType.Both:
+      default:
+       return [...organizationProfiles, ...userProfiles];
+    }
+  }, [organizations, allUsers, activeFilters]);
+
+  // Calculate total of pages based on total profiles
+  const totalRecords = filteredProfiles.length;
+  const numberOfPages = Math.ceil(totalRecords / itemsPerList);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilters]);
 
   const handleAddCapacity = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchCapacity.trim()) {
@@ -61,14 +168,13 @@ export default function FeedPage() {
     setShowFilters(false);
   };
 
-  // TODO: Its a temp mock here. Get actual data from API
-  const profiles = [
-    { username: "Learner 1", capacities: [], type: ProfileCapacityType.Learner, territory: "Brazil" },
-    { username: "Sharer 1", type: ProfileCapacityType.Sharer, capacities: [61] },
-    { username: "Org Sharer 2", capacities: [], type: ProfileCapacityType.Sharer, languages: ["português"], avatar: "https://upload.wikimedia.org/wikipedia/commons/4/45/Wiki_Movimento_Brasil_logo.svg" },
-    { username: "Sharer 3", capacities: [41, 43, 59, 61, 135], type: ProfileCapacityType.Sharer, territory: "Brazil", languages: ["português", "inglês", "espanhol", "japonês", "francês"], avatar: "https://commons.wikimedia.org/wiki/Special:Redirect/file/CapX_-_Avatar_-_3.svg" },
-    { username: "Sharer With A Huge Name To Test On Device 4", capacities: [41, 43, 59, 61, 135], type: ProfileCapacityType.Sharer, territory: "Brazil", languages: ["português", "inglês", "espanhol", "japonês", "francês"], avatar: "https://commons.wikimedia.org/wiki/Special:Redirect/file/CapX_-_Avatar_-_3.svg" }
-  ];
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= numberOfPages) {
+      setCurrentPage(newPage);
+      // Scroll to top of the page
+      window.scrollTo(0, 0);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col items-center pt-24 md:pt-8">
@@ -163,9 +269,11 @@ export default function FeedPage() {
             </button>
           </div>
 
+          {filteredProfiles.length > 0 ? (
           <div className="w-full mx-auto space-y-6">
-            {profiles.map((profile, index) => (
+            {filteredProfiles.map((profile, index) => (
               <ProfileCard 
+                id={profile.id}
                 key={index}
                 username={profile.username}
                 type={profile.type}
@@ -173,11 +281,29 @@ export default function FeedPage() {
                 avatar={profile.avatar}
                 languages={profile.languages}
                 territory={profile.territory}
+                isOrganization={profile.isOrganization}
               />
             ))}
           </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12">
+            <p className={`text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+              {pageContent["feed-no-data-message"]}
+            </p>
+            <p className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              {pageContent["feed-no-data-description"]}
+            </p>
+          </div>
+          )}
         </div>
       </div>
+      
+      {/* Pagination buttons */}
+      <PaginationButtons
+        currentPage={currentPage}
+        totalPages={numberOfPages || 1}
+        onPageChange={handlePageChange}
+      />
 
       {/* Filters Modal */}
       {showFilters && (

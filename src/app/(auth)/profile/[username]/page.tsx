@@ -2,7 +2,7 @@
 
 import ProfilePage from "../components/ProfilePage";
 
-import { useUserByUsename } from "@/hooks/useUserProfile";
+import { useUserByUsername } from "@/hooks/useUserProfile";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import LoadingState from "@/components/LoadingState";
@@ -12,7 +12,7 @@ export default function ProfileByUserName() {
   const username = params?.username.toString();
   const formattedUsername = username.replace(/_/g, " ");
 
-  const { userByUsername } = useUserByUsename(formattedUsername.toString());
+  const { userByUsername } = useUserByUsername(formattedUsername.toString());
   const { data: session } = useSession();
 
   const formattedUsernameToLower = formattedUsername?.toLowerCase().trim();
