@@ -8,10 +8,15 @@ export const avatarService = {
       "Content-Type": "application/json",
     };
 
+    const searchParams = config?.params;
+    const limit = searchParams?.limit;
+    const offset = searchParams?.offset;
+
     const response = await axios.get("/api/avatar", {
       ...config,
       headers,
       withCredentials: true,
+      params: { limit, offset },
     });
     return response.data;
   },

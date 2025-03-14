@@ -5,7 +5,12 @@ import { documentService } from "@/services/documentService";
 import { OrganizationDocument, WikimediaDocument } from "@/types/document";
 import { fetchWikimediaData } from "@/lib/utils/fetchWikimediaData";
 
-export const useDocument = (token?: string, id?: number) => {
+export const useDocument = (
+  token?: string,
+  id?: number,
+  limit?: number,
+  offset?: number
+) => {
   const [documents, setDocuments] = useState<WikimediaDocument[]>([]);
   const [document, setDocument] = useState<WikimediaDocument | null>(null);
   const [loading, setLoading] = useState(false);
@@ -16,9 +21,13 @@ export const useDocument = (token?: string, id?: number) => {
 
     try {
       setLoading(true);
-      const response = await documentService.fetchAllDocuments(token);
+      const response = await documentService.fetchAllDocuments(
+        token,
+        limit,
+        offset
+      );
 
-      // Map para garantir que os IDs e URLs estejam corretos
+      // Map to ensure IDs and URLs are correct
       const formattedDocs = response.map((doc) => ({
         ...doc,
         id: doc.id || 0,
@@ -26,7 +35,6 @@ export const useDocument = (token?: string, id?: number) => {
       }));
 
       setDocuments(formattedDocs);
-      console.log("Fetched documents:", formattedDocs); // Debug log
     } catch (error) {
       console.error("Error fetching documents:", error);
       setError(error as string);
@@ -98,7 +106,7 @@ export const useDocument = (token?: string, id?: number) => {
     }
   };
 
-  // Carregar todos os documentos ao inicializar
+  // Load all documents when the component is initialized
   useEffect(() => {
     if (token && !id) {
       console.log("Fetching documents with token:", token);
@@ -106,7 +114,7 @@ export const useDocument = (token?: string, id?: number) => {
     }
   }, [token]);
 
-  // Carregar documento específico quando o ID mudar
+  // Load document when the ID changes
   useEffect(() => {
     if (id) {
       fetchSingleDocument();
@@ -114,8 +122,8 @@ export const useDocument = (token?: string, id?: number) => {
   }, [id, token]);
 
   return {
-    documents, // Lista completa de documentos
-    document, // Documento único quando ID é fornecido
+    documents,
+    document,
     loading,
     error,
     fetchAllDocuments,

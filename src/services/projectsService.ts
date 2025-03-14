@@ -2,6 +2,14 @@ import { Project } from "@/types/project";
 import axios from "axios";
 
 export const projectsService = {
+  async getProjects(token: string, limit?: number, offset?: number) {
+    const response = await axios.get("/api/projects", {
+      headers: { Authorization: `Token ${token}` },
+      params: { limit, offset },
+    });
+    return response.data;
+  },
+
   async getProjectById(projectId: number, token: string): Promise<Project> {
     try {
       const response = await axios.get(`/api/projects/${projectId}`, {
