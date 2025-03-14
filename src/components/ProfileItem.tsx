@@ -50,9 +50,6 @@ export function ProfileItem({
   const [needsToggle, setNeedsToggle] = useState(false);
   const noDataMessage = pageContent["empty-field"];
 
-  // Won't render component if item list is empty and shouldn't show 'noDataMessage'
-  if (!showEmptyDataText && items.length == 0) return;
-
   // Check items overflow to show or hide expand button. Not working 100% for some reason
   useEffect(() => {
     const checkOverflow = () => {
@@ -95,6 +92,9 @@ export function ProfileItem({
       window.removeEventListener('resize', checkOverflow);
     };
   }, [items]);
+  
+  // Won't render component if item list is empty and shouldn't show 'noDataMessage'
+  if (!showEmptyDataText && items.length == 0) return;
 
   const getCapacityStyle = (title: string) => {
     if (title === pageContent["body-profile-known-capacities-title"]) {
