@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 interface SimpleButtonProps {
   children: React.ReactNode;
   type: "button" | "submit" | "reset";
@@ -8,6 +6,7 @@ interface SimpleButtonProps {
   class_name?: string;
   bg_color?: string;
   text_color?: string;
+  disabled?: boolean;
 }
 
 export default function SimpleButton({
@@ -15,6 +14,7 @@ export default function SimpleButton({
   type,
   onClick,
   to,
+  disabled = false,
   class_name,
   bg_color = "bg-capx-secondary-purple hover:bg-capx-primary-green",
   text_color = "text-[#F6F6F6] hover:text-capx-dark-bg",
@@ -22,6 +22,7 @@ export default function SimpleButton({
   return (
     <button
       type={type}
+      disabled={disabled}
       className={
         class_name
           ? class_name

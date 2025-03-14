@@ -5,6 +5,8 @@ interface QueryData {
     userId?: number;
     username?: string;
     language?: string;
+    limit?: number;
+    offset?: number;
   };
   headers: {
     Authorization: string;
@@ -19,7 +21,7 @@ export const profileService = {
         params: queryData.params,
         headers: queryData.headers,
       });
-      return response.data;
+      return response.data.results;
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
       throw error;

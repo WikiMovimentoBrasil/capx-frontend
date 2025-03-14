@@ -6,6 +6,8 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const reportId = searchParams.get("reportId");
   const authHeader = request.headers.get("authorization");
+  const limit = searchParams.get("limit");
+  const offset = searchParams.get("offset");
 
   try {
     const req_url = reportId ? `/bugs/${reportId}` : "/bugs";
@@ -13,9 +15,13 @@ export async function GET(request: NextRequest) {
       headers: {
         Authorization: authHeader,
       },
+      params: {
+        limit,
+        offset,
+      },
     });
 
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data.results);
   } catch (error: any) {
     return NextResponse.json(
       { error: "Failed to fetch report" },

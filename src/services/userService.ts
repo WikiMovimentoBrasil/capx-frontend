@@ -9,10 +9,17 @@ export const userService = {
     });
     return response.data;
   },
-  async fetchAllUsers(token: string, search?: string) {
+  async fetchAllUsers(
+    token: string,
+    search?: string,
+    limit?: number,
+    offset?: number
+  ) {
     const response = await axios.get(`/api/users/`, {
       params: {
         search,
+        limit,
+        offset,
       },
       headers: {
         Authorization: `Token ${token}`,

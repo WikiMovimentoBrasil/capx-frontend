@@ -265,5 +265,11 @@
   "filters-add-territory": "Add territory",
   "filters-exchange-with": "Exchange with",
   "filters-title": "Filters",
-  "filters-icon": "Filters icon"
+  "filters-icon": "Filters icon",
+  "pagination-previous": "Previous",
+  "pagination-next": "Next",
+  "pagination-page": "Page",
+  "pagination-of": "of",
+  "feed-no-data-message": "No data found",
+  "feed-no-data-description": "Try adjusting the filters or come back later"
 }
