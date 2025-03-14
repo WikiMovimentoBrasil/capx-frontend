@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
+			"Alicia Fagerving (WMSE)",
 			"Sabelöga"
 		]
 	},
+	"loading": "Läser in...",
 	"navbar-link-about": "Om",
 	"navbar-link-capacities": "Kapacitetskatalog",
 	"navbar-link-events": "Händelser",
@@ -12,6 +14,9 @@
 	"body-home-section01-title-carousel": "kapacitet, kunskap, färdigheter, tjänster",
 	"body-home-section01-description": "Få kontakt med kamrater, lär dig och dela kapacitet på en plattform gjord för och av Wikimedia-rörelsen.",
 	"body-home-section01-button": "Gå med i kapacitetsutbytet!",
+	"body-home-section01-about-button": "Om CapX",
+	"body-home-section01-call-to-action-button02": "Skapa konto",
+	"body-home-video-section-title": "Hur blev CapX till?",
 	"body-loggedin-home-main-section-button02": "Min profil",
 	"body-profile-gender-hehim": "Han/honom",
 	"body-profile-gender-sheher": "Hon/henne",
@@ -78,5 +83,7 @@
 	"form-report-number": "Rapport nr.",
 	"oh-no-message": "Ånej!",
 	"no-user-profile": "Det finns inga användare med detta användarnamn registrerade i CapX",
-	"no-report-rights": "Antingen har du inte behörighet att uppdatera den här rapporten eller så finns den inte!"
+	"no-report-rights": "Antingen har du inte behörighet att uppdatera den här rapporten eller så finns den inte!",
+	"body-profile-languages-title": "Språk",
+	"edit-profile-mini-bio-placeholder": "Skriv några ord om dig själv."
 }
