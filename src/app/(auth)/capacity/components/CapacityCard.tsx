@@ -117,9 +117,10 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot || isSearch || parentCapacity?.parentCapacity
-              ? "brightness(0) invert(1)"
-              : getHueRotate(parentCapacity?.color),
+            filter:
+              isRoot || isSearch || parentCapacity?.parentCapacity
+                ? "brightness(0) invert(1)"
+                : getHueRotate(parentCapacity?.color),
           }}
         />
       </div>
@@ -142,9 +143,10 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot || isSearch || parentCapacity?.parentCapacity
-              ? "brightness(0) invert(1)"
-              : getHueRotate(parentCapacity?.color || color),
+            filter:
+              isRoot || isSearch || parentCapacity?.parentCapacity
+                ? "brightness(0) invert(1)"
+                : getHueRotate(parentCapacity?.color || color),
           }}
         />
       </div>
@@ -165,9 +167,10 @@ export function CapacityCard({
           fill
           priority
           style={{
-            filter: isRoot || isSearch || parentCapacity?.parentCapacity
-              ? "brightness(0) invert(1)"
-              : getHueRotate(parentCapacity?.color),
+            filter:
+              isRoot || isSearch || parentCapacity?.parentCapacity
+                ? "brightness(0) invert(1)"
+                : getHueRotate(parentCapacity?.color),
           }}
         />
       </div>
@@ -193,10 +196,10 @@ export function CapacityCard({
     const cardColor = getEffectiveColor();
 
     return (
-      <div className="w-full">
+      <div className={`w-full`}>
         <div
           className={`flex flex-col w-full ${
-            isSearch && !isRoot 
+            isSearch && !isRoot
               ? `bg-${parentCapacity?.color || cardColor}`
               : `bg-${cardColor}`
           } shadow-sm hover:shadow-md transition-shadow
@@ -277,10 +280,14 @@ export function CapacityCard({
   }
 
   return (
-    <div className="w-full">
-      <div className={`flex flex-col w-full rounded-lg ${
-        parentCapacity?.parentCapacity ? "bg-gray-600 text-white" : "bg-capx-light-box-bg"
-      }`}>
+    <div className={`${isMobile ? "w-fit" : "w-full"}`}>
+      <div
+        className={`flex flex-col w-full rounded-lg ${
+          parentCapacity?.parentCapacity
+            ? "bg-gray-600 text-white"
+            : "bg-capx-light-box-bg"
+        }`}
+      >
         <div className="flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 px-12">
           <div
             className={`flex items-center gap-4 ${
@@ -297,15 +304,13 @@ export function CapacityCard({
                 <h3
                   className={`font-extrabold ${
                     isMobile ? "text-[20px]" : "text-[36px]"
-                  } ${
-                    parentCapacity?.parentCapacity ? "text-white" : ""
-                  }`}
+                  } ${parentCapacity?.parentCapacity ? "text-white" : ""}`}
                   style={{
-                    color: parentCapacity?.parentCapacity 
+                    color: parentCapacity?.parentCapacity
                       ? "#FFFFFF"
-                      : parentCapacity?.color 
-                        ? getCapacityColor(parentCapacity.color) 
-                        : "#000000",
+                      : parentCapacity?.color
+                      ? getCapacityColor(parentCapacity.color)
+                      : "#000000",
                   }}
                 >
                   {capitalizeFirstLetter(name)}
