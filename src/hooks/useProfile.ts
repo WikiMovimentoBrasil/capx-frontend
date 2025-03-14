@@ -52,6 +52,17 @@ export function useProfile(token: string | undefined, userId: number) {
     }
   };
 
+  const deleteProfile = async () => {
+    if (!token) {
+      throw new Error("No token available");
+    }
+
+    try {
+      await profileService.deleteProfile(userId.toString(), token);
+    } catch (err) {
+      throw err;
+    }
+  };
   return {
     profile: data,
     isLoading,
@@ -59,5 +70,6 @@ export function useProfile(token: string | undefined, userId: number) {
     refetch,
     ...rest,
     updateProfile,
+    deleteProfile,
   };
 }
