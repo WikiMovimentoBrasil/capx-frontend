@@ -11,15 +11,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const searchParams = request.nextUrl.searchParams;
+    const limit = searchParams.get("limit");
+    const offset = searchParams.get("offset");
+
     const backendUrl = process.env.BASE_URL;
     const response = await axios.get(`${backendUrl}/document/`, {
       headers: {
         Authorization: token,
         "Content-Type": "application/json",
       },
+      params: {
+        limit,
+        offset,
+      },
     });
 
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data.results);
   } catch (error: any) {
     return NextResponse.json(
       { error: "Failed to fetch documents", details: error.response?.data },

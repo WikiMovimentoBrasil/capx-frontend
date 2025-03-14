@@ -2,7 +2,12 @@ import { Event } from "@/types/event";
 import axios from "axios";
 
 export const eventsService = {
-  async getEventById(eventId: number, token: string): Promise<Event> {
+  async getEventById(
+    eventId: number,
+    token: string,
+    limit?: number,
+    offset?: number
+  ): Promise<Event> {
     try {
       const response = await axios.get(`/api/events/${eventId}`, {
         headers: {

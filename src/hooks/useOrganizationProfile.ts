@@ -3,8 +3,14 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
+import { useSession } from "next-auth/react";
 
-export function useOrganization(token?: string, specificOrgId?: number) {
+export function useOrganization(
+  token?: string,
+  specificOrgId?: number,
+  limit?: number,
+  offset?: number
+) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +24,9 @@ export function useOrganization(token?: string, specificOrgId?: number) {
       const userProfile = await organizationProfileService.getUserProfile(
         token
       );
-      const managedIds = userProfile.flatMap((profile) =>
+      // TODO we should ensure its always an array OR unique object
+      const profileArray = Array.isArray(userProfile) ? userProfile : [userProfile];
+      const managedIds = profileArray.flatMap((profile) =>
         profile.is_manager && profile.is_manager.length > 0
           ? profile.is_manager
           : []
@@ -129,4 +137,36 @@ export function useOrganization(token?: string, specificOrgId?: number) {
       }
     },
   };
+}
+
+export function useOrganizations(limit: number, offset: number) {
+  const { data: session } = useSession();
+  const [organizations, setOrganizations] = useState<Organization[] | null>([]);
+  const [count, setCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const getOrganizations = async () => {
+      if (session?.user?.id && session?.user?.token) {
+        try {
+          const data = await organizationProfileService.getOrganizations(
+            session.user.token,
+            limit,
+            offset
+          );
+          setOrganizations(data.results);
+          setCount(data.count);
+        } catch (error) {
+          console.error("Error fetching organizations:", error);
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    getOrganizations();
+  }, [session, limit, offset]);
+
+  return { organizations, isLoading, error, count };
 }

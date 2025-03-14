@@ -87,7 +87,12 @@ export function useProject(projectId: number, token?: string) {
   };
 }
 
-export function useProjects(projectIds?: number[], token?: string) {
+export function useProjects(
+  projectIds?: number[],
+  token?: string,
+  limit?: number,
+  offset?: number
+) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

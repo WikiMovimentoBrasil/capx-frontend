@@ -8,9 +8,14 @@ export const tagDiffService = {
     });
     return response.data;
   },
-  async fetchAllNews(token: string): Promise<tagDiff[]> {
+  async fetchAllNews(
+    token: string,
+    limit?: number,
+    offset?: number
+  ): Promise<tagDiff[]> {
     const response = await axios.get<tagDiff[]>("/api/tag_diff/", {
       headers: { Authorization: `Token ${token}` },
+      params: { limit, offset },
     });
     return response.data;
   },

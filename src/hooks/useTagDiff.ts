@@ -4,7 +4,12 @@ import { useState } from "react";
 import { tagDiffService } from "@/services/tagDiffService";
 import { tagDiff } from "@/types/tagDiff";
 
-export const useTagDiff = (token?: string, id?: number) => {
+export const useTagDiff = (
+  token?: string,
+  id?: number,
+  limit?: number,
+  offset?: number
+) => {
   const [tagDiff, setTagDiff] = useState<tagDiff[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +21,7 @@ export const useTagDiff = (token?: string, id?: number) => {
     }
     try {
       setLoading(true);
-      const tagDiff = await tagDiffService.fetchAllNews(token);
+      const tagDiff = await tagDiffService.fetchAllNews(token, limit, offset);
       setTagDiff(tagDiff);
     } catch (error) {
       console.error("Error fetching news:", error);

@@ -1,11 +1,17 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { OrganizationTypeService } from "@/services/organizationTypeService";
 import { OrganizationType } from "@/types/organizationType";
 
-export function useOrganizationType(token, id) {
-  const [organizationType, setOrganizationType] = useState<OrganizationType>();
+export function useOrganizationType(
+  token,
+  id,
+  limit?: number,
+  offset?: number
+) {
+  const [organizationType, setOrganizationType] =
+    useState<OrganizationType[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +20,11 @@ export function useOrganizationType(token, id) {
 
     try {
       setIsLoading(true);
-      const data = await OrganizationTypeService.getOrganizationType(token);
+      const data = await OrganizationTypeService.getOrganizationType(
+        token,
+        limit,
+        offset
+      );
       setOrganizationType(data);
       return data;
     } catch (error) {

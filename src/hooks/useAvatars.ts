@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { avatarService } from "@/services/avatarService";
 import { useSession } from "next-auth/react";
 
-export function useAvatars() {
+export function useAvatars(limit?: number, offset?: number) {
   const { data: session } = useSession();
   const token = session?.user?.token;
 
@@ -11,12 +11,13 @@ export function useAvatars() {
     isLoading: avatarsLoading,
     error: avatarsError,
   } = useQuery({
-    queryKey: ["avatars", token],
+    queryKey: ["avatars", token, limit, offset],
     queryFn: () =>
       avatarService.fetchAvatars({
         headers: {
           Authorization: `Token ${token}`,
         },
+        params: { limit, offset },
       }),
     enabled: !!token,
   });

@@ -4,7 +4,7 @@ import { skillService } from "@/services/skillService";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 
-export function useSkills() {
+export function useSkills(limit?: number, offset?: number) {
   const { data: session } = useSession();
   const token = session?.user?.token;
 
@@ -19,6 +19,8 @@ export function useSkills() {
         headers: {
           Authorization: `Token ${token}`,
         },
+        limit,
+        offset,
       }),
     enabled: !!token, // Only fetch skills if there is a token
   });
