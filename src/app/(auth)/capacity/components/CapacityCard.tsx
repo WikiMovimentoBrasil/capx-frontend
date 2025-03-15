@@ -57,11 +57,25 @@ export function CapacityCard({
     }
   }, [isExpanded]);
 
-  const handleInfoClick = async () => {
+  const handleInfoClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the click event from propagating to the card
     if (!showInfo && onInfoClick) {
       await onInfoClick(code);
     }
     setShowInfo(!showInfo);
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent default behavior to avoid navigation
+    e.preventDefault();
+    // Only expand/collapse the card
+    onExpand();
+  };
+
+  const handleTitleClick = (e: React.MouseEvent) => {
+    // Allow navigation when clicking on the title
+    e.stopPropagation();
+    router.push(`/feed/${code}`);
   };
 
   const renderExpandedContent = () => {
@@ -72,9 +86,15 @@ export function CapacityCard({
         className={`flex flex-col gap-6 mt-6 mb-16 ${
           isRoot ? "px-3" : "px-12"
         }`}
+        onClick={(e) => e.stopPropagation()} // Prevent clicks in the expanded content from triggering card selection
       >
         {wd_code && (
-          <a href={wd_code}>
+          <a
+            href={wd_code}
+            onClick={(e) => e.stopPropagation()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="flex flex-row items-center gap-2">
               <div className="relative w-[36px] h-[36px]">
                 <Image src={BarCodeIcon} alt="BarCode" fill priority />
@@ -97,7 +117,9 @@ export function CapacityCard({
             parentCapacity?.color ||
             color
           } text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
-          onClick={() => router.push(`/feed/${code}`)}
+          onClick={() => {
+            router.push(`/feed/${code}`);
+          }}
         />
       </div>
     );
@@ -154,7 +176,13 @@ export function CapacityCard({
   );
 
   const renderArrowButton = (size: number, icon: string) => (
-    <button onClick={onExpand} className="p-2 flex-shrink-0">
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onExpand();
+      }}
+      className="p-2 flex-shrink-0"
+    >
       <div
         style={{ width: `${size}px`, height: `${size}px` }}
         className={`relative transition-transform duration-300 ${
@@ -196,14 +224,16 @@ export function CapacityCard({
     const cardColor = getEffectiveColor();
 
     return (
-      <div className={`w-full`}>
+      <div className="w-full">
         <div
+          onClick={handleCardClick}
           className={`flex flex-col w-full ${
             isSearch && !isRoot
               ? `bg-${parentCapacity?.color || cardColor}`
               : `bg-${cardColor}`
           } shadow-sm hover:shadow-md transition-shadow
           ${isMobile ? "rounded-[4px]" : "rounded-lg"}
+          cursor-pointer
           `}
         >
           <div
@@ -221,15 +251,14 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <Link href={`/feed/${code}`}>
-                  <h3
-                    className={`font-extrabold text-white ${
-                      isMobile ? "text-[20px]" : "text-[48px]"
-                    }`}
-                  >
-                    {capitalizeFirstLetter(name)}
-                  </h3>
-                </Link>
+                <h3
+                  onClick={handleTitleClick}
+                  className={`font-extrabold text-white ${
+                    isMobile ? "text-[20px]" : "text-[48px]"
+                  } cursor-pointer`}
+                >
+                  {capitalizeFirstLetter(name)}
+                </h3>
               </div>
 
               {isSearch ? (
@@ -258,7 +287,10 @@ export function CapacityCard({
             </div>
           </div>
           {showInfo && (
-            <div className="bg-white rounded-b-lg p-8">
+            <div
+              className="bg-white rounded-b-lg p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
               {renderExpandedContent()}
             </div>
           )}
@@ -266,11 +298,9 @@ export function CapacityCard({
         {isExpanded && !isSearch && (
           <div
             ref={childrenContainerRef}
-            className={`mt-4 overflow-x-auto scrollbar-hide ${
-              hasOverflow ? "w-screen" : "w-fit"
-            }`}
+            className="mt-4 w-full overflow-x-auto scrollbar-hide"
           >
-            <div className="flex gap-4 pb-4">
+            <div className="flex flex-nowrap gap-4 pb-4">
               {/* the expanded content will be rendered here by the parent component */}
             </div>
           </div>
@@ -280,13 +310,14 @@ export function CapacityCard({
   }
 
   return (
-    <div className={`${isMobile ? "w-fit" : "w-full"}`}>
+    <div className="w-full">
       <div
+        onClick={handleCardClick}
         className={`flex flex-col w-full rounded-lg ${
           parentCapacity?.parentCapacity
             ? "bg-gray-600 text-white"
             : "bg-capx-light-box-bg"
-        }`}
+        } cursor-pointer`}
       >
         <div className="flex flex-row items-center w-full h-[144px] py-4 justify-between gap-4 px-12">
           <div
@@ -300,22 +331,23 @@ export function CapacityCard({
                 isMobile ? "w-max" : ""
               }`}
             >
-              <Link href={`/feed/${code}`} className="w-full">
-                <h3
-                  className={`font-extrabold ${
-                    isMobile ? "text-[20px]" : "text-[36px]"
-                  } ${parentCapacity?.parentCapacity ? "text-white" : ""}`}
-                  style={{
-                    color: parentCapacity?.parentCapacity
-                      ? "#FFFFFF"
-                      : parentCapacity?.color
-                      ? getCapacityColor(parentCapacity.color)
-                      : "#000000",
-                  }}
-                >
-                  {capitalizeFirstLetter(name)}
-                </h3>
-              </Link>
+              <h3
+                onClick={handleTitleClick}
+                className={`font-extrabold ${
+                  isMobile ? "text-[20px]" : "text-[36px]"
+                } ${
+                  parentCapacity?.parentCapacity ? "text-white" : ""
+                } cursor-pointer`}
+                style={{
+                  color: parentCapacity?.parentCapacity
+                    ? "#FFFFFF"
+                    : parentCapacity?.color
+                    ? getCapacityColor(parentCapacity.color)
+                    : "#000000",
+                }}
+              >
+                {capitalizeFirstLetter(name)}
+              </h3>
             </div>
           </div>
           <div className={`flex items-center gap-4 mr-4`}>
@@ -331,7 +363,14 @@ export function CapacityCard({
           </div>
         </div>
       </div>
-      {showInfo && renderExpandedContent()}
+      {showInfo && (
+        <div
+          className="bg-white rounded-b-lg p-8"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {renderExpandedContent()}
+        </div>
+      )}
     </div>
   );
 }

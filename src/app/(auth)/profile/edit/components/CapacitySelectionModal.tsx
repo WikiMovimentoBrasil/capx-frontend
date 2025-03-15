@@ -60,32 +60,53 @@ export default function CapacitySelectionModal({
   const handleCategorySelect = async (category: Capacity) => {
     try {
       const categoryId = category.code;
+
+      // Always set the selected capacity, regardless of whether it has children
+      setSelectedCapacity(category);
+
+      // If this category is already in the path, we don't need to do anything else
+      const currentPathIndex = selectedPath.indexOf(categoryId);
+      if (currentPathIndex !== -1) {
+        return;
+      }
+    } catch (err) {
+      console.error("Erro ao selecionar categoria:", err);
+    }
+  };
+
+  // New function to handle expansion separately
+  const handleCategoryExpand = async (
+    e: React.MouseEvent,
+    category: Capacity
+  ) => {
+    e.stopPropagation(); // Prevent selection when expanding
+
+    try {
+      const categoryId = category.code;
       const currentPathIndex = selectedPath.indexOf(categoryId);
 
       if (currentPathIndex !== -1) {
+        // If already in path, collapse it
         setSelectedPath((prev) => prev.slice(0, currentPathIndex + 1));
-        setSelectedCapacity(null);
         return;
       }
 
+      // Check if we need to fetch children
       if (!childrenCapacities[categoryId.toString()]) {
         const children = await fetchCapacitiesByParent(categoryId.toString());
 
         if (children && children.length > 0) {
           setSelectedPath((prev) => [...prev, categoryId]);
-          setSelectedCapacity(null);
           return;
         }
       }
 
+      // If it has children, expand it
       if (childrenCapacities[categoryId.toString()]?.length > 0) {
         setSelectedPath((prev) => [...prev, categoryId]);
-        setSelectedCapacity(null);
-      } else {
-        setSelectedCapacity(category);
       }
     } catch (err) {
-      console.error("Erro ao selecionar categoria:", err);
+      console.error("Erro ao expandir categoria:", err);
     }
   };
 
@@ -197,7 +218,9 @@ export default function CapacitySelectionModal({
           className={`flex flex-col w-full bg-${
             capacity.color
           } rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden h-full
-            ${isSelected ? "ring-2 ring-capx-primary-green" : ""}`}
+            ${
+              isSelected ? "ring-2 ring-capx-primary-green" : ""
+            } cursor-pointer`}
           onClick={() => handleCategorySelect(capacity)}
         >
           <div className="flex p-3 h-[80px] items-center justify-between">
@@ -213,19 +236,15 @@ export default function CapacitySelectionModal({
               </div>
             )}
             <div className="flex-1 mx-2 overflow-hidden">
-              <Link
-                href={`/feed/${capacity.code}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="font-bold text-white text-base truncate hover:underline">
-                  {capitalizeFirstLetter(capacity.name)}
-                </h3>
-              </Link>
+              <h3 className="font-bold text-white text-base truncate">
+                {capitalizeFirstLetter(capacity.name)}
+              </h3>
             </div>
             <div className="flex items-center">
               <button
                 onClick={(e) => toggleCapacityInfo(e, capacity)}
                 className="p-1 flex-shrink-0 mr-1"
+                aria-label="Info"
               >
                 <div className="relative w-[20px] h-[20px]">
                   <Image
@@ -238,21 +257,30 @@ export default function CapacitySelectionModal({
                 </div>
               </button>
               {capacity.hasChildren && (
-                <div className="flex-shrink-0 cursor-pointer w-[20px] h-[20px]">
-                  <Image
-                    src={ArrowDownIcon}
-                    alt="Expand"
-                    width={20}
-                    height={20}
-                    style={{ filter: "brightness(0) invert(1)" }}
-                  />
-                </div>
+                <button
+                  onClick={(e) => handleCategoryExpand(e, capacity)}
+                  className="p-1 flex-shrink-0"
+                  aria-label="Expand"
+                >
+                  <div className="relative w-[20px] h-[20px]">
+                    <Image
+                      src={ArrowDownIcon}
+                      alt="Expand"
+                      width={20}
+                      height={20}
+                      style={{ filter: "brightness(0) invert(1)" }}
+                    />
+                  </div>
+                </button>
               )}
             </div>
           </div>
 
           {showInfo && description && (
-            <div className="bg-white p-3 text-sm rounded-b-lg flex-grow">
+            <div
+              className="bg-white p-3 text-sm rounded-b-lg flex-grow"
+              onClick={(e) => e.stopPropagation()}
+            >
               <p className="text-gray-700 text-xs leading-relaxed">
                 {capitalizeFirstLetter(description)}
               </p>
@@ -277,7 +305,7 @@ export default function CapacitySelectionModal({
     return (
       <div
         className={`flex flex-col w-full bg-capx-light-box-bg rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden h-full
-          ${isSelected ? "ring-2 ring-capx-primary-green" : ""}`}
+          ${isSelected ? "ring-2 ring-capx-primary-green" : ""} cursor-pointer`}
         onClick={() => handleCategorySelect(capacity)}
       >
         <div className="flex p-3 h-[80px] items-center justify-between">
@@ -297,26 +325,22 @@ export default function CapacitySelectionModal({
             </div>
           )}
           <div className="flex-1 mx-2 overflow-hidden">
-            <Link
-              href={`/feed/${capacity.code}`}
-              onClick={(e) => e.stopPropagation()}
+            <h3
+              className="font-bold text-base truncate"
+              style={{
+                color: capacity.color
+                  ? getCapacityColor(capacity.color)
+                  : "#000000",
+              }}
             >
-              <h3
-                className="font-bold text-base truncate hover:underline"
-                style={{
-                  color: capacity.color
-                    ? getCapacityColor(capacity.color)
-                    : "#000000",
-                }}
-              >
-                {capitalizeFirstLetter(capacity.name)}
-              </h3>
-            </Link>
+              {capitalizeFirstLetter(capacity.name)}
+            </h3>
           </div>
           <div className="flex items-center">
             <button
               onClick={(e) => toggleCapacityInfo(e, capacity)}
               className="p-1 flex-shrink-0 mr-1"
+              aria-label="Info"
             >
               <div className="relative w-[20px] h-[20px]">
                 <Image
@@ -333,25 +357,34 @@ export default function CapacitySelectionModal({
               </div>
             </button>
             {capacity.hasChildren && (
-              <div className="flex-shrink-0 cursor-pointer w-[20px] h-[20px]">
-                <Image
-                  src={ArrowDownIcon}
-                  alt="Expand"
-                  width={20}
-                  height={20}
-                  style={{
-                    filter: parentCapacity
-                      ? getHueRotate(parentCapacity.color)
-                      : "",
-                  }}
-                />
-              </div>
+              <button
+                onClick={(e) => handleCategoryExpand(e, capacity)}
+                className="p-1 flex-shrink-0"
+                aria-label="Expand"
+              >
+                <div className="relative w-[20px] h-[20px]">
+                  <Image
+                    src={ArrowDownIcon}
+                    alt="Expand"
+                    width={20}
+                    height={20}
+                    style={{
+                      filter: parentCapacity
+                        ? getHueRotate(parentCapacity.color)
+                        : "",
+                    }}
+                  />
+                </div>
+              </button>
             )}
           </div>
         </div>
 
         {showInfo && description && (
-          <div className="bg-white p-3 text-sm rounded-b-lg flex-grow">
+          <div
+            className="bg-white p-3 text-sm rounded-b-lg flex-grow"
+            onClick={(e) => e.stopPropagation()}
+          >
             <p className="text-gray-700 text-xs leading-relaxed">
               {capitalizeFirstLetter(description)}
             </p>
