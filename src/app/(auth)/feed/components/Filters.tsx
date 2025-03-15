@@ -79,7 +79,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
   const handleClearAll = () => {
     setFilters({
       capacities: [],
-      profileCapacityTypes: [],
+      profileCapacityTypes: [ProfileCapacityType.Learner, ProfileCapacityType.Sharer],
       territories: [],
       languages: [],
       profileFilter: ProfileFilterType.Both

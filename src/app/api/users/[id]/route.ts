@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    return NextResponse.json(queryResponse.data);
+    return NextResponse.json(queryResponse.data.results);
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch user data" },
