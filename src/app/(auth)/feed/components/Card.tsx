@@ -75,6 +75,26 @@ export const ProfileCard = ({
 
   const formattedUsername = username.replace(' ', '_');
 
+  const defaultAvatar = darkMode ? NoAvatarIconWhite : NoAvatarIcon;
+  
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // To avoid image errors
+  const avatarSrc = React.useMemo(() => {
+    if (!avatar || typeof avatar !== 'string' || !avatar.trim()) {
+      return defaultAvatar;
+    }
+
+    return isValidUrl(avatar) ? avatar : defaultAvatar;
+  }, [avatar, darkMode, defaultAvatar]);
+
   return (
     <div
       className={`w-full rounded-lg border ${
@@ -108,14 +128,22 @@ export const ProfileCard = ({
               {/* Profile Image */}
               <div className="flex flex-col items-center mb-6">
                 <div className="relative w-[100px] h-[100px] md:w-[200px] md:h-[200px]">
+                {avatarSrc ? (
                   <Image
-                    priority
-                    src={avatar || noAvatarIcon}
-                    alt={pageContent["navbar-user-profile"]}
+                    src={avatarSrc}
+                    alt={username || "User profile"}
                     fill
                     className="object-cover rounded-[4px]"
                     unoptimized
+                    loading="lazy"
                   />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {React.createElement(defaultAvatar, {
+                      className: "w-full h-full"
+                    })}
+                  </div>
+                )}
                 </div>
               </div>
             </div>

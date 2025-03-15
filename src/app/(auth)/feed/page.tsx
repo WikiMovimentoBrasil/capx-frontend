@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import ProfileCard from "./components/Card";
@@ -27,71 +27,35 @@ export interface FilterState {
   profileFilter: ProfileFilterType;
 }
 
-const createProfilesFromOrganizations = (organizations: Organization[]) => {
+const createProfilesFromOrganizations = (organizations: Organization[], type: ProfileCapacityType) => {
   const profiles: any[] = [];
-
   organizations.forEach(org => {
-    // Create card for available capacities (Sharer)
-    if (org.available_capacities && org.available_capacities.length > 0) {
       profiles.push({
         id: org.id,
         username: org.display_name,
-        capacities: org.available_capacities,
-        type: ProfileCapacityType.Sharer,
-        territory: org.territory?.[0], // Assuming we want to show the first territory only
-        avatar: org.profile_image || undefined,
-        isOrganization: true
-      });
-    }
-
-    // Create card for desired capacities (Learner)
-    if (org.wanted_capacities && org.wanted_capacities.length > 0) {
-      profiles.push({
-        id: org.id,
-        username: org.display_name,
-        capacities: org.wanted_capacities,
-        type: ProfileCapacityType.Learner,
+        capacities: type === ProfileCapacityType.Learner ? org.wanted_capacities : org.available_capacities,
+        type,
         territory: org.territory?.[0],
         avatar: org.profile_image || undefined,
         isOrganization: true
       });
-    }
   });
-
   return profiles;
 };
 
-const createProfilesFromUsers = (users: UserProfile[]) => {
+const createProfilesFromUsers = (users: UserProfile[], type: ProfileCapacityType) => {
   const profiles: any[] = [];
-
   users.forEach(user => {
-    // Create card for available capacities (Sharer)
-    if (user.skills_available?.length > 0) {
-      profiles.push({
-        id: user.user.id,
-        username: user.display_name,
-        capacities: user.skills_available,
-        type: ProfileCapacityType.Sharer,
-        territory: user.territory?.[0],
-        avatar: user.avatar,
-        isOrganization: false
-      });
-    }
-
-    // Create card for desired capacities (Learner)
-    if (user.skills_wanted?.length > 0) {
-      profiles.push({
-        id: user.user.id,
-        username: user.display_name,
-        capacities: user.skills_wanted,
-        type: ProfileCapacityType.Learner,
-        territory: user.territory?.[0],
-        avatar: user.avatar,
-        isOrganization: false
-      });
-    }
+    profiles.push({
+      id: user.user.id,
+      username: user.display_name,
+      capacities: type === ProfileCapacityType.Sharer ? user.skills_available : user.skills_wanted,
+      type,
+      territory: user.territory?.[0],
+      avatar: user.avatar,
+      isOrganization: false
+    });
   });
-
   return profiles;
 };
 
@@ -102,7 +66,7 @@ export default function FeedPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     capacities: [] as string[],
-    profileCapacityTypes: [] as ProfileCapacityType[],
+    profileCapacityTypes: [ProfileCapacityType.Learner, ProfileCapacityType.Sharer] as ProfileCapacityType[],
     territories: [] as string[],
     languages: [] as string[],
     profileFilter: ProfileFilterType.Both
@@ -110,17 +74,87 @@ export default function FeedPage() {
   const [searchCapacity, setSearchCapacity] = useState('');
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerList = 5; // Divide between organizations and users
-  const offset = (currentPage - 1) * itemsPerList; // Offset for both lists
+  const itemsPerList = 5; // For each type of profile (user or organization)
+  const itemsPerPage = itemsPerList * 2; // Total of profiles per page
+  const offset = (currentPage - 1) * itemsPerList;
 
-  // Get data with limits and offsets
-  const { organizations } = useOrganizations(itemsPerList, offset);
-  const { allUsers } = useAllUsers(itemsPerList, offset);
+  const shouldFetchOrgs = activeFilters.profileFilter !== ProfileFilterType.User;
+  const { organizations: organizationsLearner, count: organizationsLearnerCount, isLoading: isOrganizationsLearnerLoading } = useOrganizations(
+    shouldFetchOrgs ? itemsPerList : 0,
+    shouldFetchOrgs ? offset : 0,
+    shouldFetchOrgs ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Learner]
+    } : undefined
+  );
 
-  // Create profiles from organizations and users
+  const shouldFetchUsers = activeFilters.profileFilter !== ProfileFilterType.Organization;
+  const { allUsers: usersLearner, count: usersLearnerCount, isLoading: isUsersLearnerLoading } = useAllUsers(
+    shouldFetchUsers ? itemsPerList : 0,
+    shouldFetchUsers ? offset : 0,
+    shouldFetchUsers ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Learner]
+    } : undefined
+  );
+
+  const shouldFetchSharerOrgs = activeFilters.profileFilter !== ProfileFilterType.User && activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer);
+  const { organizations: organizationsSharer, count: organizationsSharerCount, isLoading: isOrganizationsSharerLoading } = useOrganizations(
+    shouldFetchSharerOrgs ? itemsPerList : 0,
+    shouldFetchSharerOrgs ? offset : 0,
+    shouldFetchSharerOrgs ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Sharer]
+    } : undefined
+  );
+
+  const shouldFetchSharerUsers = activeFilters.profileFilter !== ProfileFilterType.Organization && activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer);
+  const { allUsers: usersSharer, count: usersSharerCount, isLoading: isUsersSharerLoading } = useAllUsers(
+    shouldFetchSharerUsers ? itemsPerList : 0,
+    shouldFetchSharerUsers ? offset : 0,
+    shouldFetchSharerUsers ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Sharer]
+    } : undefined
+  );
+
+  // Total of records according to the profileFilter
+  let totalRecords = 0;
+
+  switch(activeFilters.profileFilter) {
+    case ProfileFilterType.User:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? usersLearnerCount : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? usersSharerCount : 0);
+      break;
+    case ProfileFilterType.Organization:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? organizationsLearnerCount : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? organizationsSharerCount : 0);
+      break;
+    case ProfileFilterType.Both:
+    default:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? 
+                      (usersLearnerCount + organizationsLearnerCount) : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? 
+                      (usersSharerCount + organizationsSharerCount) : 0);
+  }
+
+  // Create profiles (to create cards) from organizations and users
   const filteredProfiles = useMemo(() => {
-    const organizationProfiles = createProfilesFromOrganizations(organizations || []);
-    const userProfiles = createProfilesFromUsers(allUsers || []);
+    const learnerOrgProfiles = createProfilesFromOrganizations(organizationsLearner || [], ProfileCapacityType.Learner);
+    const availableOrgProfiles = createProfilesFromOrganizations(organizationsSharer || [], ProfileCapacityType.Sharer);
+
+    // Filter organizations based on activeFilters.profileCapacityTypes
+    const orgProfilesLearner = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? learnerOrgProfiles : [];
+    const orgProfilesSharer = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? availableOrgProfiles : [];
+    const organizationProfiles = [...orgProfilesLearner, ...orgProfilesSharer];
+   
+    const wantedUserProfiles = createProfilesFromUsers(usersLearner || [], ProfileCapacityType.Learner);
+    const availableUserProfiles = createProfilesFromUsers(usersSharer || [], ProfileCapacityType.Sharer);
+  
+    // Filter users based on activeFilters.profileCapacityTypes
+    const userProfilesWanted = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? wantedUserProfiles : [];
+    const userProfilesAvailable = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? availableUserProfiles : [];
+    const userProfiles = [...userProfilesWanted, ...userProfilesAvailable];
 
     // Filter based on activeFilters.profileFilter
     switch (activeFilters.profileFilter) {
@@ -132,11 +166,10 @@ export default function FeedPage() {
       default:
        return [...organizationProfiles, ...userProfiles];
     }
-  }, [organizations, allUsers, activeFilters]);
+  }, [activeFilters, organizationsLearner, organizationsSharer, usersLearner, usersSharer]);
 
   // Calculate total of pages based on total profiles
-  const totalRecords = filteredProfiles.length;
-  const numberOfPages = Math.ceil(totalRecords / itemsPerList);
+  const numberOfPages = Math.ceil(totalRecords / (itemsPerPage));
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -175,6 +208,23 @@ export default function FeedPage() {
       window.scrollTo(0, 0);
     }
   };
+
+  useEffect(() => {
+    console.log("totalRecords", totalRecords)
+    console.log("numberOfPages", numberOfPages)
+    console.log("activeFilters", activeFilters)
+    console.log("filteredProfiles", filteredProfiles)
+    console.log("itemsPerList", itemsPerList)
+    console.log("currentPage", currentPage)
+    console.log("organizationsLearnerCount", organizationsLearnerCount)
+    console.log("organizationsSharerCount", organizationsSharerCount)
+    console.log("usersLearnerCount", usersLearnerCount)
+    console.log("usersSharerCount", usersSharerCount)
+  }, [totalRecords, numberOfPages, activeFilters, filteredProfiles, itemsPerList, currentPage, organizationsLearnerCount, organizationsSharerCount, usersLearnerCount, usersSharerCount]);
+
+  if (isOrganizationsLearnerLoading || isOrganizationsSharerLoading || isUsersLearnerLoading || isUsersSharerLoading) {
+    return <div className="flex justify-center items-center h-screen">{pageContent["loading"]}</div>;
+  }
 
   return (
     <div className="w-full flex flex-col items-center pt-24 md:pt-8">
