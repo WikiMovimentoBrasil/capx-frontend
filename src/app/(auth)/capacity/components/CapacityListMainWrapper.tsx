@@ -73,7 +73,7 @@ export default function CapacityListMainWrapper() {
       {searchResults.length > 0 || isSearching ? (
         <div className="grid gap-4 w-full">
           {searchResults.map((capacity) => (
-            <div key={capacity.code} className="w-full">
+            <div key={capacity.code} className="max-w-screen-xl mx-auto">
               <CapacityCard
                 {...capacity}
                 isExpanded={!!expandedCapacities[capacity.code]}
@@ -96,7 +96,7 @@ export default function CapacityListMainWrapper() {
         /* Show original cards when there are no search results */
         <div className="grid gap-[40px] w-full">
           {rootCapacities.map((capacity) => (
-            <div key={capacity.code} className="w-full max-w-[1190px]">
+            <div key={capacity.code} className={`w-screen max-w-[1190px]`}>
               <CapacityCard
                 {...capacity}
                 isExpanded={!!expandedCapacities[capacity.code]}
@@ -110,80 +110,60 @@ export default function CapacityListMainWrapper() {
                 onInfoClick={fetchCapacityDescription}
               />
               {expandedCapacities[capacity.code] && (
-                <div className="mt-4 w-full">
-                  <div className="overflow-x-auto scrollbar-hide">
-                    <div className="flex flex-nowrap gap-4 pb-4">
-                      {(childrenCapacities[capacity.code] || []).map(
-                        (child) => (
-                          <div
-                            key={child.code}
-                            className="flex-shrink-0"
-                            style={{ width: isMobile ? "280px" : "320px" }}
-                          >
-                            <CapacityCard
-                              {...child}
-                              isExpanded={!!expandedCapacities[child.code]}
-                              onExpand={() =>
-                                toggleChildCapacities(child.code.toString())
-                              }
-                              hasChildren={child.hasChildren}
-                              isRoot={false}
-                              parentCapacity={capacity}
-                              description={descriptions[child.code] || ""}
-                              wd_code={wdCodes[child.code] || ""}
-                              onInfoClick={fetchCapacityDescription}
-                            />
-                            {expandedCapacities[child.code] && (
-                              <div className="mt-4">
-                                <div className="overflow-x-auto scrollbar-hide">
-                                  <div className="flex flex-nowrap gap-4 pb-4">
-                                    {(childrenCapacities[child.code] || []).map(
-                                      (grandChild) => (
-                                        <div
-                                          key={grandChild.code}
-                                          className="flex-shrink-0"
-                                          style={{
-                                            width: isMobile ? "250px" : "280px",
-                                          }}
-                                        >
-                                          <CapacityCard
-                                            {...grandChild}
-                                            isExpanded={
-                                              !!expandedCapacities[
-                                                grandChild.code
-                                              ]
-                                            }
-                                            onExpand={() =>
-                                              toggleChildCapacities(
-                                                grandChild.code.toString()
-                                              )
-                                            }
-                                            hasChildren={grandChild.hasChildren}
-                                            isRoot={false}
-                                            parentCapacity={child}
-                                            description={
-                                              descriptions[grandChild.code] ||
-                                              ""
-                                            }
-                                            wd_code={
-                                              wdCodes[grandChild.code] || ""
-                                            }
-                                            onInfoClick={
-                                              fetchCapacityDescription
-                                            }
-                                            color={child.color}
-                                          />
-                                        </div>
-                                      )
-                                    )}
+                <div className="mt-4 overflow-x-auto scrollbar-hide w-full">
+                  <div className="flex gap-4 pb-4 w-fit max-w-screen-xl">
+                    {(childrenCapacities[capacity.code] || []).map((child) => (
+                      <div key={child.code} className="mt-4 max-w-[992px]">
+                        <CapacityCard
+                          {...child}
+                          isExpanded={!!expandedCapacities[child.code]}
+                          onExpand={() =>
+                            toggleChildCapacities(child.code.toString())
+                          }
+                          hasChildren={child.hasChildren}
+                          isRoot={false}
+                          parentCapacity={capacity}
+                          description={descriptions[child.code] || ""}
+                          wd_code={wdCodes[child.code] || ""}
+                          onInfoClick={fetchCapacityDescription}
+                        />
+                        {expandedCapacities[child.code] && (
+                          <div className="mt-4 overflow-x-auto scrollbar-hide">
+                            <div className="flex gap-4 pb-4 w-3/4">
+                              {(childrenCapacities[child.code] || []).map(
+                                (grandChild) => (
+                                  <div
+                                    key={grandChild.code}
+                                    className="mt-4 max-w-[992px]"
+                                  >
+                                    <CapacityCard
+                                      {...grandChild}
+                                      isExpanded={
+                                        !!expandedCapacities[grandChild.code]
+                                      }
+                                      onExpand={() =>
+                                        toggleChildCapacities(
+                                          grandChild.code.toString()
+                                        )
+                                      }
+                                      hasChildren={grandChild.hasChildren}
+                                      isRoot={false}
+                                      parentCapacity={child}
+                                      description={
+                                        descriptions[grandChild.code] || ""
+                                      }
+                                      wd_code={wdCodes[grandChild.code] || ""}
+                                      onInfoClick={fetchCapacityDescription}
+                                      color={child.color}
+                                    />
                                   </div>
-                                </div>
-                              </div>
-                            )}
+                                )
+                              )}
+                            </div>
                           </div>
-                        )
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
