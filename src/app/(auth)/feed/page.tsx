@@ -201,19 +201,6 @@ export default function FeedPage() {
     }
   };
 
-  useEffect(() => {
-    console.log("totalRecords", totalRecords)
-    console.log("numberOfPages", numberOfPages)
-    console.log("activeFilters", activeFilters)
-    console.log("filteredProfiles", filteredProfiles)
-    console.log("itemsPerList", itemsPerList)
-    console.log("currentPage", currentPage)
-    console.log("organizationsLearnerCount", organizationsLearnerCount)
-    console.log("organizationsSharerCount", organizationsSharerCount)
-    console.log("usersLearnerCount", usersLearnerCount)
-    console.log("usersSharerCount", usersSharerCount)
-  }, [totalRecords, numberOfPages, activeFilters, filteredProfiles, itemsPerList, currentPage, organizationsLearnerCount, organizationsSharerCount, usersLearnerCount, usersSharerCount]);
-
   if (isOrganizationsLearnerLoading || isOrganizationsSharerLoading || isUsersLearnerLoading || isUsersSharerLoading) {
     return <div className="flex justify-center items-center h-screen">{pageContent["loading"]}</div>;
   }
