@@ -218,7 +218,7 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <Link href={`/?capacityId=${code}`}>
+                <Link href={`/feed?capacityId=${code}`}>
                   <h3
                     className={`font-extrabold text-white ${
                       isMobile ? "text-[20px]" : "text-[48px]"
