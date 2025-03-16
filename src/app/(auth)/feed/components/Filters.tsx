@@ -56,10 +56,18 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
   const [showSkillModal, setShowSkillModal] = useState(false);
   
   const handleCapacitySelect = (capacity: Capacity) => {
+    const capacityExists = filters.capacities.some(
+      cap => cap.id === capacity.id
+    );
+
+    if(capacityExists) {
+      return;
+    }
+
     setFilters(prev => ({
       ...prev,
       capacities: [...prev.capacities, {
-        id: capacity.code,
+        id: Number(capacity.id),
         name: capacity.name,
       }]
     }));

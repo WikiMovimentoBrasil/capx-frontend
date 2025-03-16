@@ -19,6 +19,8 @@ import { UserProfile } from "@/types/user";
 import { useAllUsers } from "@/hooks/useUserProfile";
 import { PaginationButtons } from "./components/PaginationButtons";
 import CapacitySelectionModal from "../profile/edit/components/CapacitySelectionModal";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useCapacity } from "@/hooks/useCapacityDetails";
 import { Capacity } from "@/types/capacity";
 
 const createProfilesFromOrganizations = (organizations: Organization[], type: ProfileCapacityType) => {
@@ -56,6 +58,10 @@ const createProfilesFromUsers = (users: UserProfile[], type: ProfileCapacityType
 export default function FeedPage() {
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const capacityId = searchParams.get('capacityId');
 
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
@@ -72,6 +78,29 @@ export default function FeedPage() {
   const itemsPerList = 5; // For each type of profile (user or organization)
   const itemsPerPage = itemsPerList * 2; // Total of profiles per page
   const offset = (currentPage - 1) * itemsPerList;
+
+  const { capacity, isLoading: isLoadingCapacity } = useCapacity(capacityId);
+
+  // Get data from capacityById
+  useEffect(() => {
+    if (capacityId && capacity) {
+      const capacityExists = activeFilters.capacities.some(
+        cap => cap.id === Number(capacityId)
+      );
+  
+      if (capacityExists) {
+        return;
+      }
+  
+      setActiveFilters(prev => ({
+        ...prev,
+        capacities: [{
+          id: Number(capacityId),
+          name: capacity.name || `Capacity ${capacityId}`,
+        }]
+      }));
+    }
+  }, [capacityId, isLoadingCapacity]);
 
   const shouldFetchOrgs = activeFilters.profileFilter !== ProfileFilterType.User;
   const { organizations: organizationsLearner, count: organizationsLearnerCount, isLoading: isOrganizationsLearnerLoading } = useOrganizations(
@@ -172,10 +201,18 @@ export default function FeedPage() {
   }, [activeFilters]);
 
   const handleCapacitySelect = (capacity: Capacity) => {
+    const capacityExists = activeFilters.capacities.some(
+      cap => cap.id === capacity.code
+    );
+
+    if (capacityExists) {
+      return;
+    }
+
     setActiveFilters(prev => ({
       ...prev,
       capacities: [...prev.capacities, {
-        id: capacity.code,
+        id: Number(capacity.id),
         name: capacity.name,
       }]
     }));
@@ -186,6 +223,13 @@ export default function FeedPage() {
       ...prev,
       capacities: prev.capacities.filter(cap => cap.id !== capacityId)
     }));
+
+    const urlCapacityId = searchParams.get('capacityId');
+    
+    // If the capacity removed is the same as the URL, update the URL
+    if (urlCapacityId && urlCapacityId.toString() === capacityId.toString()) {
+      router.replace('/feed', { scroll: false });
+    }
   };
 
   const handleApplyFilters = (newFilters: FilterState) => {

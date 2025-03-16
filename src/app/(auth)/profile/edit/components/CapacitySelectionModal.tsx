@@ -214,7 +214,7 @@ export default function CapacitySelectionModal({
             )}
             <div className="flex-1 mx-2 overflow-hidden">
               <Link
-                href={`/feed/${capacity.code}`}
+                href={`/feed?capacityId=${capacity.code}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="font-bold text-white text-base truncate hover:underline">
@@ -298,7 +298,7 @@ export default function CapacitySelectionModal({
           )}
           <div className="flex-1 mx-2 overflow-hidden">
             <Link
-              href={`/feed/${capacity.code}`}
+              href={`/feed?capacityId=${capacity.code}`}
               onClick={(e) => e.stopPropagation()}
             >
               <h3
