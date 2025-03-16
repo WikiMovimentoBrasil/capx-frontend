@@ -57,6 +57,7 @@ import LoadingState from "@/components/LoadingState";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { getProfileImage } from "@/lib/utils/getProfileImage";
 import { useAvatars } from "@/hooks/useAvatars";
+import { useSnackbar } from "@/app/providers/SnackbarProvider";
 
 interface ProfileOption {
   value: string;
@@ -77,6 +78,7 @@ export default function EditOrganizationProfilePage() {
   
   const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<ProfileOption | null>(null);
+  const {showSnackbar} = useSnackbar();
 
   // Documents setters
   const {
@@ -96,11 +98,9 @@ export default function EditOrganizationProfilePage() {
     organizations,
     isLoading: isOrganizationLoading,
     error: organizationError,
-    isOrgManager,
     refetch,
     updateOrganization,
   } = useOrganization(token, Number(organizationId));
-
 
   // Projects setters
   const {
@@ -303,6 +303,7 @@ export default function EditOrganizationProfilePage() {
               }));
             setDiffTagsData(validTags);
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-fetch-tags-failed"],"error")
             console.error("Error fetching tags:", error);
           }
         };
@@ -357,11 +358,13 @@ export default function EditOrganizationProfilePage() {
   const handleSubmit = async () => {
     try {
       if (!token) {
+        showSnackbar(pageContent["snackbar-edit-profile-organization-not-authenticated"],"error")
         console.error("No authentication token found");
         return;
       }
 
       if (!organizationId) {
+        showSnackbar(pageContent["snackbar-edit-profile-organization-no-organization"],"error")
         console.error(
           "No organization ID found. User might not be a manager of any organization."
         );
@@ -380,9 +383,10 @@ export default function EditOrganizationProfilePage() {
               related_skills: project.related_skills,
               organization: Number(organizationId),
             });
-
+            showSnackbar(pageContent["snackbar-edit-profile-organization-success"],"success")
             return project.id;
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-update-project-failed"],"error")
             console.error(`Error updating project ${project.id}:`, error);
             return project.id;
           }
@@ -403,11 +407,15 @@ export default function EditOrganizationProfilePage() {
               organization: Number(organizationId),
             });
             if (!newProject || !newProject.id) {
+              // TODO confirm this snackbar error message
+              showSnackbar(pageContent["snackbar-edit-profile-organization-processing-document-failed"],"error")
               console.error("Invalid project response:", newProject);
               return null;
             }
+            showSnackbar(pageContent["snackbar-edit-profile-organization-success"],"success")
             return newProject?.id;
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-create-project-failed"],"error")
             console.error("Error creating project:", error);
             return null;
           }
@@ -436,8 +444,10 @@ export default function EditOrganizationProfilePage() {
               time_begin: event.time_begin,
               time_end: event.time_end,
             });
+            showSnackbar(pageContent["snackbar-edit-profile-organization-success"],"success")
             return event.id;
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-update-event-failed"],"error")
             console.error(`Error updating event ${event.id}:`, error);
             return event.id;
           }
@@ -463,11 +473,15 @@ export default function EditOrganizationProfilePage() {
             });
 
             if (!newEvent || !newEvent.id) {
+              // TODO confirm this snackbar error message
+              showSnackbar(pageContent["snackbar-edit-profile-organization-processing-document-failed"],"error")
               console.error("Invalid event response:", newEvent);
               return null;
             }
+            showSnackbar(pageContent["snackbar-edit-profile-organization-success"],"success")
             return newEvent.id;
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-create-event-failed"],"error")
             console.error("Error creating event:", error);
             return null;
           }
@@ -497,16 +511,18 @@ export default function EditOrganizationProfilePage() {
               const response = await createTag(tagPayload);
 
               if (!response || !response.id) {
+                showSnackbar(pageContent["snackbar-edit-profile-organization-create-tag-failed"],"error")
                 console.error("Invalid tag response:", response);
                 throw new Error("Invalid response from tag creation");
               }
-
+              showSnackbar(pageContent["snackbar-edit-profile-organization-success"],"success")
               return response.id;
             } else {
               // If it's an existing tag, just return its ID
               return tag.id;
             }
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-processing-tag-failed"],"error")
             console.error("Error processing tag:", error);
             return null;
           }
@@ -524,6 +540,7 @@ export default function EditOrganizationProfilePage() {
               const response = await createDocument(documentPayload);
 
               if (!response || !response.id) {
+                showSnackbar(pageContent["snackbar-edit-profile-organization-create-document-failed"],"error")
                 console.error("Invalid document response:", response);
                 throw new Error("Invalid response from document creation");
               }
@@ -533,6 +550,7 @@ export default function EditOrganizationProfilePage() {
               return document.id;
             }
           } catch (error) {
+            showSnackbar(pageContent["snackbar-edit-profile-organization-processing-document-failed"],"error")
             console.error("Error processing document:", error);
             return null;
           }
@@ -564,6 +582,11 @@ export default function EditOrganizationProfilePage() {
       // Update the redirection to include the organization ID
       router.push(`/organization_profile/${organizationId}`);
     } catch (error) {
+      if (error.response.status == 409){
+        showSnackbar(pageContent["snackbar-edit-profile-failed-capacities"],"error")
+      } else{
+        showSnackbar(pageContent["snackbar-edit-profile-organization-processing-form-failed"],"error")
+      }
       console.error("Error processing form:", error);
     }
   };
@@ -601,11 +624,11 @@ export default function EditOrganizationProfilePage() {
         });
         return;
       }
-
       await deleteProject(projectId);
-
       setProjectsData((prev) => prev.filter((p) => p.id !== projectId));
+      showSnackbar(pageContent["snackbar-edit-profile-organization-delete-project-success"],"success")
     } catch (error) {
+      showSnackbar(pageContent["snackbar-edit-profile-organization-delete-project-failed"],"error")
       console.error("Error deleting project:", error);
     }
   };
@@ -663,11 +686,11 @@ export default function EditOrganizationProfilePage() {
         });
         return;
       }
-
       await deleteEvent(eventId);
-
+      showSnackbar(pageContent["snackbar-edit-profile-organization-delete-event-success"],"success")
       setEventsData((prev) => prev.filter((e) => e.id !== eventId));
     } catch (error) {
+      showSnackbar(pageContent["snackbar-edit-profile-organization-delete-event-failed"],"error")
       console.error("Error deleting event:", error);
     }
   };
