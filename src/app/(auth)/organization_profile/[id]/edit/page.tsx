@@ -583,7 +583,7 @@ export default function EditOrganizationProfilePage() {
       // Update the redirection to include the organization ID
       router.push(`/organization_profile/${organizationId}`);
     } catch (error) {
-      if (error.status === 409){
+      if (error.response.status == 409){
         showSnackbar(pageContent["snackbar-edit-profile-failed-capacities"],"error")
       } else{
         showSnackbar(pageContent["snackbar-edit-profile-organization-processing-form-failed"],"error")

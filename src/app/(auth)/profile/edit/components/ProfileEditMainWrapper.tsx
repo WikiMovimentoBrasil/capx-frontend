@@ -186,7 +186,7 @@ export default function EditProfilePage() {
       showSnackbar(pageContent["snackbar-edit-profile-success"],"success")
       router.push("/profile");
     } catch (error) {
-      if (error.status === 409){
+      if (error.response.status == 409){
         showSnackbar(pageContent["snackbar-edit-profile-failed-capacities"],"error")
       }else{
         showSnackbar(pageContent["snackbar-edit-profile-failed-generic"],"error")
