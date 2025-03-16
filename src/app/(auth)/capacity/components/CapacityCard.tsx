@@ -97,7 +97,7 @@ export function CapacityCard({
             parentCapacity?.color ||
             color
           } text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
-          onClick={() => router.push(`/feed/${code}`)}
+          onClick={() => router.push(`/feed?capacityId=${code}`)}
         />
       </div>
     );
@@ -218,7 +218,7 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <Link href={`/feed/${code}`}>
+                <Link href={`/?capacityId=${code}`}>
                   <h3
                     className={`font-extrabold text-white ${
                       isMobile ? "text-[20px]" : "text-[48px]"
@@ -293,7 +293,7 @@ export function CapacityCard({
                 isMobile ? "w-max" : ""
               }`}
             >
-              <Link href={`/feed/${code}`} className="w-full">
+              <Link href={`/feed?capacityId${code}`} className="w-full">
                 <h3
                   className={`font-extrabold ${
                     isMobile ? "text-[20px]" : "text-[36px]"

@@ -214,7 +214,7 @@ export default function CapacitySelectionModal({
             )}
             <div className="flex-1 mx-2 overflow-hidden">
               <Link
-                href={`/feed/${capacity.code}`}
+                href={`/feed?capacityId=${capacity.code}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="font-bold text-white text-base truncate hover:underline">
@@ -298,7 +298,7 @@ export default function CapacitySelectionModal({
           )}
           <div className="flex-1 mx-2 overflow-hidden">
             <Link
-              href={`/feed/${capacity.code}`}
+              href={`/feed?capacityId=${capacity.code}`}
               onClick={(e) => e.stopPropagation()}
             >
               <h3
@@ -463,10 +463,12 @@ export default function CapacitySelectionModal({
               </div>
             ) : getCurrentCapacities().length > 0 ? (
               <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                {getCurrentCapacities().map((capacity) => {
+                {getCurrentCapacities().map((capacity, index) => {
                   const isRoot = selectedPath.length === 0;
+                  const uniqueKey = `${capacity.code}-${selectedPath.join('-')}-${index}`;
+
                   return (
-                    <div key={capacity.code} className="flex flex-col h-full">
+                    <div key={uniqueKey} className="flex flex-col h-full">
                       {renderCapacityCard(capacity, isRoot)}
                       {selectedCapacity?.code === capacity.code && (
                         <div
