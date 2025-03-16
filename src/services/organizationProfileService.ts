@@ -71,7 +71,8 @@ export const organizationProfileService = {
     const response = await axios.get("/api/profile/", {
       headers: { Authorization: `Token ${token}` },
     });
-    return response.data;
+    // return one user
+    return response.data[0];
   },
 
   async updateOrganizationProfile(
