@@ -61,7 +61,6 @@ export const ProfileCard = ({
   const availableCapacitiesIcon = darkMode ? EmojiIconWhite : EmojiIcon;
   const capacitiesIcon =
     type === "learner" ? wantedCapacitiesIcon : availableCapacitiesIcon;
-  const noAvatarIcon = darkMode ? NoAvatarIconWhite : NoAvatarIcon;
 
   const typeBadgeColorLightMode =
     type === "learner"
@@ -73,7 +72,25 @@ export const ProfileCard = ({
       ? "text-purple-200 border-purple-200"
       : "text-[#05A300] border-[#05A300]";
 
-  const formattedUsername = username.replace(' ', '_');
+  const defaultAvatar = darkMode ? NoAvatarIconWhite : NoAvatarIcon;
+  
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // To avoid image errors
+  const avatarSrc = React.useMemo(() => {
+    if (!avatar || typeof avatar !== 'string' || !avatar.trim()) {
+      return defaultAvatar;
+    }
+
+    return isValidUrl(avatar) ? avatar : defaultAvatar;
+  }, [avatar, darkMode, defaultAvatar]);
 
   return (
     <div
@@ -108,14 +125,22 @@ export const ProfileCard = ({
               {/* Profile Image */}
               <div className="flex flex-col items-center mb-6">
                 <div className="relative w-[100px] h-[100px] md:w-[200px] md:h-[200px]">
+                {avatarSrc ? (
                   <Image
-                    priority
-                    src={avatar || noAvatarIcon}
-                    alt={pageContent["navbar-user-profile"]}
+                    src={avatarSrc}
+                    alt={username || "User profile"}
                     fill
                     className="object-cover rounded-[4px]"
                     unoptimized
+                    loading="lazy"
                   />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {React.createElement(defaultAvatar, {
+                      className: "w-full h-full"
+                    })}
+                  </div>
+                )}
                 </div>
               </div>
             </div>
@@ -169,7 +194,8 @@ export const ProfileCard = ({
                 darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
               }`}
               onClick={() => {
-                const routePath = isOrganization ? `/organization_profile/${id}` : `/"profile"}/${formattedUsername}`;
+                const decodedUsername = decodeURIComponent(username);
+                const routePath = isOrganization ? `/organization_profile/${id}` : `/profile/${encodeURIComponent(username)}`;
                 router.push(routePath);
               }}
             >

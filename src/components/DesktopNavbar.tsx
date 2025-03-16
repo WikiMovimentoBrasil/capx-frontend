@@ -32,6 +32,11 @@ export default function DesktopNavbar({
       to: "/capacity",
       active: true,
     },
+    {
+      title: pageContent["navbar-link-feed"],
+      to: "/feed",
+      active: true,
+    },
   ];
 
   return (

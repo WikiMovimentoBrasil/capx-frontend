@@ -117,9 +117,7 @@ export function CapacityCard({
             parentCapacity?.color ||
             color
           } text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
-          onClick={() => {
-            router.push(`/feed/${code}`);
-          }}
+          onClick={() => router.push(`/feed?capacityId=${code}`)}
         />
       </div>
     );
@@ -251,14 +249,15 @@ export function CapacityCard({
               }`}
             >
               <div className="flex items-center w-[378px] h-full">
-                <h3
-                  onClick={handleTitleClick}
-                  className={`font-extrabold text-white ${
-                    isMobile ? "text-[20px]" : "text-[48px]"
-                  } cursor-pointer`}
-                >
-                  {capitalizeFirstLetter(name)}
-                </h3>
+                <Link href={`/?capacityId=${code}`}>
+                  <h3
+                    className={`font-extrabold text-white ${
+                      isMobile ? "text-[20px]" : "text-[48px]"
+                    }`}
+                  >
+                    {capitalizeFirstLetter(name)}
+                  </h3>
+                </Link>
               </div>
 
               {isSearch ? (
@@ -331,23 +330,22 @@ export function CapacityCard({
                 isMobile ? "w-max" : ""
               }`}
             >
-              <h3
-                onClick={handleTitleClick}
-                className={`font-extrabold ${
-                  isMobile ? "text-[20px]" : "text-[36px]"
-                } ${
-                  parentCapacity?.parentCapacity ? "text-white" : ""
-                } cursor-pointer`}
-                style={{
-                  color: parentCapacity?.parentCapacity
-                    ? "#FFFFFF"
-                    : parentCapacity?.color
-                    ? getCapacityColor(parentCapacity.color)
-                    : "#000000",
-                }}
-              >
-                {capitalizeFirstLetter(name)}
-              </h3>
+              <Link href={`/feed?capacityId${code}`} className="w-full">
+                <h3
+                  className={`font-extrabold ${
+                    isMobile ? "text-[20px]" : "text-[36px]"
+                  } ${parentCapacity?.parentCapacity ? "text-white" : ""}`}
+                  style={{
+                    color: parentCapacity?.parentCapacity
+                      ? "#FFFFFF"
+                      : parentCapacity?.color
+                      ? getCapacityColor(parentCapacity.color)
+                      : "#000000",
+                  }}
+                >
+                  {capitalizeFirstLetter(name)}
+                </h3>
+              </Link>
             </div>
           </div>
           <div className={`flex items-center gap-4 mr-4`}>
