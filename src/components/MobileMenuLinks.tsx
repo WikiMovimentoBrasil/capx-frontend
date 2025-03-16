@@ -111,6 +111,11 @@ export default function MobileMenuLinks({
       active: true,
     },
     {
+      title: pageContent["navbar-link-feed"],
+      to: "/feed",
+      active: true,
+    },
+    {
       title: pageContent["navbar-link-reports"],
       to: "/reports",
       active: false,
