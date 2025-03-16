@@ -102,7 +102,6 @@ export default function EditOrganizationProfilePage() {
     updateOrganization,
   } = useOrganization(token, Number(organizationId));
 
-  const isOrgManager = true
   // Projects setters
   const {
     projects,
