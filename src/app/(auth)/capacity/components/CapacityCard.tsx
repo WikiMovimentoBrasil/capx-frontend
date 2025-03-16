@@ -293,7 +293,7 @@ export function CapacityCard({
                 isMobile ? "w-max" : ""
               }`}
             >
-              <Link href={`/feed?capacityId${code}`} className="w-full">
+              <Link href={`/feed?capacityId=${code}`} className="w-full">
                 <h3
                   className={`font-extrabold ${
                     isMobile ? "text-[20px]" : "text-[36px]"
