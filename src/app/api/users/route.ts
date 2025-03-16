@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const params = {
       limit: searchParams.get("limit") || undefined,
       offset: searchParams.get("offset") || undefined,
-      search: searchParams.get("search") || undefined,
+      user__username: searchParams.get("username") || undefined,
       territory: searchParams.get("territory") || undefined,
       language: searchParams.get("language") || undefined,
       known_capacities: searchParams.get("known_capacities") || undefined,

@@ -9,15 +9,16 @@ import LoadingState from "@/components/LoadingState";
 
 export default function ProfileByUserName() {
   const params = useParams();
-  const username = params?.username.toString();
-  const formattedUsername = username.replace(/_/g, " ");
-
-  const { userByUsername } = useUserByUsername(formattedUsername.toString());
   const { data: session } = useSession();
+  const username = params?.username.toString();
 
-  const formattedUsernameToLower = formattedUsername?.toLowerCase().trim();
+  // Ensure the username is encoded and replace spaces with underscores
+  const decodedUsername = decodeURIComponent(username);
+  const { userByUsername } = useUserByUsername(decodedUsername);
+
+  const decodedUsernameToLower = decodedUsername?.toLowerCase().trim();
   const loggedUserNameToLower = session?.user?.name?.toLowerCase().trim() || "";
-  const isSameUser = formattedUsernameToLower === loggedUserNameToLower;
+  const isSameUser = decodedUsernameToLower === loggedUserNameToLower;
 
   if (!userByUsername) {
     return <LoadingState />;
