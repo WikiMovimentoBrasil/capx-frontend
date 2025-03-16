@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import Image from 'next/image';
-import { FilterState } from '../page';
+import { FilterState } from '../types';
 
 import ArrowBackIcon from '@/public/static/images/arrow_back_icon.svg';
 import ArrowBackIconWhite from '@/public/static/images/arrow_back_icon_white.svg';
@@ -35,6 +35,8 @@ import { LanguageSelector } from './LanguageSelector';
 import { CheckboxButton } from './CheckboxButton';
 import { TerritorySelector } from './TerritorySelector';
 import { ProfileCapacityType, ProfileFilterType } from '../types';
+import { Capacity } from '@/types/capacity';
+import CapacitySelectionModal from '../../profile/edit/components/CapacitySelectionModal';
 
 interface FiltersProps {
   onClose: () => void;
@@ -51,24 +53,22 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
   const { territories } = useTerritories(token);
   const [searchCapacity, setSearchCapacity] = useState('');
   const [filters, setFilters] = useState(initialFilters);
+  const [showSkillModal, setShowSkillModal] = useState(false);
   
-  const handleAddCapacity = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchCapacity.trim()) {
-      const trimmedCapacity = searchCapacity.trim();
-      if (!filters.capacities.includes(trimmedCapacity)) {
-        setFilters(prev => ({
-          ...prev,
-          capacities: [...prev.capacities, trimmedCapacity]
-        }));
-      }
-      setSearchCapacity('');
-    }
-  };
-
-  const handleRemoveCapacity = (capacity: string) => {
+  const handleCapacitySelect = (capacity: Capacity) => {
     setFilters(prev => ({
       ...prev,
-      capacities: prev.capacities.filter(cap => cap !== capacity)
+      capacities: [...prev.capacities, {
+        id: capacity.code,
+        name: capacity.name,
+      }]
+    }));
+  };
+
+  const handleRemoveCapacity = (capacityId: number) => {
+    setFilters(prev => ({
+      ...prev,
+      capacities: prev.capacities.filter(cap => cap.id !== capacityId)
     }));
   };
 
@@ -121,7 +121,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
         onClick={onClose}
       />
       
-      {/* Cotainer's Modal */}
+      {/* Container's Modal */}
       <div className={`
         relative w-full h-full md:w-[800px] md:max-h-[80vh] md:mt-20 md:rounded-lg
         ${darkMode ? 'bg-capx-dark-bg' : 'bg-white'}
@@ -163,9 +163,9 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
               <div className="relative">
                 <input
                   type="text"
+                  readOnly
                   value={searchCapacity}
-                  onChange={(e) => setSearchCapacity(e.target.value)}
-                  onKeyDown={handleAddCapacity}
+                  onFocus={() => setShowSkillModal(true)}
                   placeholder={pageContent["filters-search-by-capacities"]}
                   className={`
                     w-full p-2 rounded-lg border
@@ -197,9 +197,9 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
                         ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}
                       `}
                     >
-                      <span className="truncate" title={capacity}>{capacity}</span>
+                      <span className="truncate" title={capacity.name}>{capacity.name}</span>
                       <button
-                        onClick={() => handleRemoveCapacity(capacity)}
+                        onClick={() => handleRemoveCapacity(capacity.id)}
                         className="hover:opacity-80 flex-shrink-0"
                       >
                         <Image
@@ -214,6 +214,13 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
                 </div>
               )}
             </div>
+
+            <CapacitySelectionModal
+              isOpen={showSkillModal}
+              onClose={() => setShowSkillModal(false)}
+              onSelect={handleCapacitySelect}
+              title={pageContent["select-capacity"]}
+            />
 
           {/* Divider */}
           <div className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`} />

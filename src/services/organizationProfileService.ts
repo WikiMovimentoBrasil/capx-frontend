@@ -3,37 +3,55 @@ import { Organization } from "@/types/organization";
 
 export interface OrganizationFilters {
   territory?: string[];
-  known_capacities?: string[];
-  available_capacities?: string[];
-  wanted_capacities?: string[];
+  available_capacities?: number[];
+  wanted_capacities?: number[];
   limit?: number;
   offset?: number;
-  has_skills_available?: boolean;
-  has_skills_wanted?: boolean;
+  has_capacities_wanted?: boolean;
+  has_capacities_available?: boolean;
 }
 
 export const organizationProfileService = {
   async getOrganizations(token: string, filters: OrganizationFilters) {
     if (!token) return { count: 0, results: [] };
 
-    const cleanedFilters = {
-      ...filters,
-      territory: filters.territory?.length ? filters.territory.join(',') : undefined,
-      known_capacities: filters.known_capacities?.length ? filters.known_capacities.join(',') : undefined,
-      available_capacities: filters.available_capacities?.length ? filters.available_capacities.join(',') : undefined,
-      wanted_capacities: filters.wanted_capacities?.length ? filters.wanted_capacities.join(',') : undefined,
-      has_skills_available: filters.has_skills_available === true ? true : undefined,
-      has_skills_wanted: filters.has_skills_wanted === true ? true : undefined,
-    };
+    const params = new URLSearchParams();
 
-    const params = Object.fromEntries(
-      Object.entries(cleanedFilters).filter(([_, value]) => value !== undefined)
-    );
+    if (filters.territory?.length) {
+      filters.territory.forEach(t => params.append('territory', t));
+    }
+
+    if (filters.available_capacities?.length) {
+      filters.available_capacities.forEach(c => params.append('available_capacities', c.toString()));
+    }
+
+    if (filters.wanted_capacities?.length) {
+      filters.wanted_capacities.forEach(c => params.append('wanted_capacities', c.toString()));
+    }
+
+    if (filters.has_capacities_wanted === true) {
+      params.append('has_capacities_wanted', 'true');
+    }
+
+    if (filters.has_capacities_available === true) {
+      params.append('has_capacities_available', 'true');
+    }
+
+    if (filters.limit) {
+      params.append('limit', filters.limit.toString());
+    }
+
+    if (filters.offset) {
+      params.append('offset', filters.offset.toString());
+    }
 
     try {
       const response = await axios.get("/api/organizations/", {
         params,
         headers: { Authorization: `Token ${token}` },
+        paramsSerializer: {
+          indexes: null // Ensure arrays are serialized correctly
+        }
       });
       return response.data;
     } catch (error) {

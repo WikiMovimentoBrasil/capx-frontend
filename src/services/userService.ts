@@ -1,15 +1,20 @@
 import axios from "axios";
 
 export interface UserFilters {
+  username?: string;
   language?: string[];
   territory?: string[];
-  known_capacities?: string[];
-  available_capacities?: string[];
-  wanted_capacities?: string[];
+  skills_available?: number[];
+  skills_wanted?: number[];
   has_skills_wanted?: boolean;
   has_skills_available?: boolean;
+}
+
+export interface FetchAllUsersParams {
+  token: string;
   limit?: number;
   offset?: number;
+  filters?: UserFilters;
 }
 
 export const userService = {
@@ -21,29 +26,56 @@ export const userService = {
     });
     return response.data;
   },
-  async fetchAllUsers(token: string, search: string | undefined, limit: number | undefined, offset: number | undefined, filters: UserFilters) {
-    if (!token) return { count: 0, results: [] };
+  async fetchAllUsers(queryParams: FetchAllUsersParams) {
+    if (!queryParams.token) return { count: 0, results: [] };
 
-    const cleanedFilters = {
-      ...filters,
-      territory: filters.territory?.length ? filters.territory.join(',') : undefined,
-      known_capacities: filters.known_capacities?.length ? filters.known_capacities.join(',') : undefined,
-      available_capacities: filters.available_capacities?.length ? filters.available_capacities.join(',') : undefined,
-      wanted_capacities: filters.wanted_capacities?.length ? filters.wanted_capacities.join(',') : undefined,
-      has_skills_available: filters.has_skills_available === true ? true : undefined,
-      has_skills_wanted: filters.has_skills_wanted === true ? true : undefined,
-    };
+    const params = new URLSearchParams();
 
-    const params = Object.fromEntries(
-      Object.entries(cleanedFilters).filter(([_, value]) => value !== undefined)
-    );
+    if (queryParams?.filters?.territory?.length) {
+      queryParams.filters.territory.forEach(t => params.append('territory', t));
+    }
+
+    if (queryParams?.filters?.language?.length) {
+      queryParams.filters.language.forEach(t => params.append('language', t));
+    }
+
+    if (queryParams?.filters?.skills_available?.length) {
+      queryParams.filters.skills_available.forEach(c => params.append('skills_available', c.toString()));
+    }
+
+    if (queryParams?.filters?.skills_wanted?.length) {
+      queryParams.filters.skills_wanted.forEach(c => params.append('skills_wanted', c.toString()));
+    }
+
+    if (queryParams?.filters?.has_skills_available === true) {
+      params.append('has_skills_available', 'true');
+    }
+
+    if (queryParams?.filters?.has_skills_wanted === true) {
+      params.append('has_skills_wanted', 'true');
+    }
+
+    if (queryParams?.limit) {
+      params.append('limit', queryParams.limit.toString());
+    }
+
+    if (queryParams?.offset) {
+      params.append('offset', queryParams.offset.toString());
+    }1
+
+    if (queryParams?.filters?.username) {
+      params.append('username', queryParams.filters.username);
+    }
 
     try {
       const response = await axios.get(`/api/users/`, {
         params,
         headers: {
-          Authorization: `Token ${token}`,
+          Authorization: `Token ${queryParams.token}`,
         },
+        paramsSerializer: {
+          indexes: null // Ensure arrays are serialized correctly
+        }
       });
       return response.data;
     } catch (error) {

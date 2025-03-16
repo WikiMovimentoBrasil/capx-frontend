@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { OrganizationFilters, organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 import { useSession } from "next-auth/react";
-import { FilterState } from "@/app/(auth)/feed/page";
+import { FilterState } from "@/app/(auth)/feed/types";
 import { ProfileCapacityType } from "@/app/(auth)/feed/types";
 
 export function useOrganization(
@@ -159,17 +159,17 @@ export function useOrganizations(limit?: number, offset?: number, activeFilters?
           offset,
           ...(activeFilters?.capacities?.length && {
             available_capacities: activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) 
-              ? activeFilters.capacities 
+              ? activeFilters.capacities.map(cap => cap.id)
               : undefined,
             wanted_capacities: activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) 
-              ? activeFilters.capacities 
+              ? activeFilters.capacities.map(cap => cap.id)
               : undefined,
           }),
           ...(activeFilters?.territories?.length && {
             territory: activeFilters.territories
           }),
-          has_skills_available: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ?? undefined,
-          has_skills_wanted: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Learner) ?? undefined,
+          has_capacities_available: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ?? undefined,
+          has_capacities_wanted: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Learner) ?? undefined,
         };
 
         const data = await organizationProfileService.getOrganizations(

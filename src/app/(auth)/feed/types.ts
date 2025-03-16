@@ -8,3 +8,16 @@ export enum ProfileFilterType {
   User = 'user',
   Organization = 'organization'
 }
+
+export interface Skill {
+  id: number;
+  name: string;
+}
+
+export interface FilterState {
+  capacities: Skill[];
+  profileCapacityTypes: ProfileCapacityType[];
+  territories: string[];
+  languages: string[];
+  profileFilter: ProfileFilterType;
+}

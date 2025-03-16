@@ -16,8 +16,9 @@ export async function GET(request: NextRequest) {
       search: searchParams.get("search") || undefined,
       territory: searchParams.get("territory") || undefined,
       available_capacities: searchParams.get("available_capacities") || undefined,
-      has_capacities_wanted: searchParams.get("has_skills_wanted") === "true" ? true : undefined,
-      has_capacities_available: searchParams.get("has_skills_available") === "true" ? true : undefined,
+      wanted_capacities: searchParams.get("wanted_capacities") || undefined,
+      has_capacities_wanted: searchParams.get("has_capacities_wanted") === "true" ? true : undefined,
+      has_capacities_available: searchParams.get("has_capacities_available") === "true" ? true : undefined,
     };
 
     const cleanParams = Object.fromEntries(
