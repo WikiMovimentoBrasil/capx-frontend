@@ -24,14 +24,7 @@ export function useOrganization(
       const userProfile = await organizationProfileService.getUserProfile(
         token
       );
-      // TODO we should ensure its always an array OR unique object
-      const profileArray = Array.isArray(userProfile) ? userProfile : [userProfile];
-      const managedIds = profileArray.flatMap((profile) =>
-        profile.is_manager && profile.is_manager.length > 0
-          ? profile.is_manager
-          : []
-      );
-      return managedIds;
+      return userProfile.is_manager;
     } catch (err) {
       console.error("Error fetching user profile:", err);
       return [];
@@ -67,6 +60,7 @@ export function useOrganization(
     try {
       // First, fetch the IDs of the managed organizations
       const managedIds = await fetchUserProfile(token);
+      console.log("managedIds!!!!!!!!!!!!", managedIds)
       setManagedOrganizationIds(managedIds);
       setIsPermissionsLoaded(true);
 
