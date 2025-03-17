@@ -27,6 +27,9 @@ import { DocumentsList } from "../components/DocumentsList";
 import NoAvatarIcon from "@/public/static/images/no_avatar.svg";
 import { formatWikiImageUrl } from "@/lib/utils/fetchWikimediaData";
 import LoadingState from "@/components/LoadingState";
+import capxPersonIcon from "@/public/static/images/capx_person_icon.svg";
+import Popup from "@/components/Popup";
+import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 
 export default function OrganizationProfilePage() {
   const { darkMode } = useTheme();
@@ -47,6 +50,14 @@ export default function OrganizationProfilePage() {
   } = useOrganization(token, organizationId);
 
   const organization = organizations.find((org) => org.id === organizationId);
+
+  const allCapacityIds = [
+    ...(organization?.known_capacities || []),
+    ...(organization?.available_capacities || []),
+    ...(organization?.wanted_capacities || [])
+  ];
+  
+  const { getCapacityName } = useCapacityDetails(allCapacityIds);
 
   useEffect(() => {
     const refreshData = async () => {
@@ -189,18 +200,21 @@ export default function OrganizationProfilePage() {
                 <ProfileItem
                   items={organization?.known_capacities || []}
                   icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
+                  getItemName={(id) => getCapacityName(id)}
                   title={pageContent["body-profile-known-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]`}
                 />
                 <ProfileItem
                   items={organization?.available_capacities || []}
                   icon={darkMode ? EmojiIconWhite : EmojiIcon}
+                  getItemName={(id) => getCapacityName(id)}
                   title={pageContent["body-profile-available-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
                     `}
                 />
                 <ProfileItem
                   items={organization?.wanted_capacities || []}
+                  getItemName={(id) => getCapacityName(id)}
                   icon={darkMode ? TargetIconWhite : TargetIcon}
                   title={pageContent["body-profile-wanted-capacities-title"]}
                   customClass={`font-[Montserrat] text-[14px] not-italic font-extrabold leading-[normal]
@@ -371,6 +385,7 @@ export default function OrganizationProfilePage() {
                 items={organization?.known_capacities || []}
                 icon={darkMode ? NeurologyIconWhite : NeurologyIcon}
                 title={pageContent["body-profile-known-capacities-title"]}
+                getItemName={(id) => getCapacityName(id)}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
                 }`}
@@ -378,6 +393,7 @@ export default function OrganizationProfilePage() {
               <ProfileItem
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
+                getItemName={(id) => getCapacityName(id)}
                 title={
                   pageContent["body-profile-available-capacities-title"]
                 }
@@ -388,6 +404,7 @@ export default function OrganizationProfilePage() {
               <ProfileItem
                 items={organization?.wanted_capacities || []}
                 icon={darkMode ? TargetIconWhite : TargetIcon}
+                getItemName={(id) => getCapacityName(id)}
                 title={pageContent["body-profile-wanted-capacities-title"]}
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
