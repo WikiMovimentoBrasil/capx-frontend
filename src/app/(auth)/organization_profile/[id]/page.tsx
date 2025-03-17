@@ -393,7 +393,7 @@ export default function OrganizationProfilePage() {
                 items={organization?.available_capacities || []}
                 icon={darkMode ? EmojiIconWhite : EmojiIcon}
                 title={
-                  pageContent["body-profile-section-title-available-capacity"]
+                  pageContent["body-profile-available-capacities-title"]
                 }
                 customClass={`text-center text-[24px] not-italic font-extrabold leading-[29px] font-[Montserrat] ${
                   darkMode ? "text-white" : "text-capx-dark-box-bg"
