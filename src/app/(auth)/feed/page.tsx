@@ -73,7 +73,6 @@ export default function FeedPage() {
     languages: [] as string[],
     profileFilter: ProfileFilterType.Both
   });
-  const [searchCapacity, setSearchCapacity] = useState('');
   const [showSkillModal, setShowSkillModal] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,17 +86,18 @@ export default function FeedPage() {
   useEffect(() => {
     if (capacityId && capacity) {
       const capacityExists = activeFilters.capacities.some(
-        cap => cap.id === Number(capacityId)
+        cap => cap.id === Number(capacityId) || cap.code === Number(capacityId)
       );
   
       if (capacityExists) {
         return;
       }
-  
+
       setActiveFilters(prev => ({
         ...prev,
         capacities: [{
           id: Number(capacityId),
+          code: Number(capacity.code),
           name: capacity.name || `Capacity ${capacityId}`,
         }]
       }));
@@ -204,7 +204,7 @@ export default function FeedPage() {
 
   const handleCapacitySelect = (capacity: Capacity) => {
     const capacityExists = activeFilters.capacities.some(
-      cap => cap.id === capacity.code
+      cap => cap.code === capacity.code || cap.id === Number(capacity.id)
     );
 
     if (capacityExists) {
@@ -215,21 +215,22 @@ export default function FeedPage() {
       ...prev,
       capacities: [...prev.capacities, {
         id: Number(capacity.id),
+        code: capacity.code,
         name: capacity.name,
       }]
     }));
   };
 
-  const handleRemoveCapacity = (capacityId: number) => {
+  const handleRemoveCapacity = (capacityCode: number) => {
     setActiveFilters(prev => ({
       ...prev,
-      capacities: prev.capacities.filter(cap => cap.id !== capacityId)
+      capacities: prev.capacities.filter(cap => cap.code !== capacityCode)
     }));
 
     const urlCapacityId = searchParams.get('capacityId');
     
     // If the capacity removed is the same as the URL, update the URL
-    if (urlCapacityId && urlCapacityId.toString() === capacityId.toString()) {
+    if (urlCapacityId && urlCapacityId.toString() === capacityCode.toString() || urlCapacityId && urlCapacityId.toString() === capacityId?.toString()) {
       router.replace('/feed', { scroll: false });
     }
   };
@@ -292,7 +293,7 @@ export default function FeedPage() {
                     >
                       <span className="truncate">{capacity.name}</span>
                       <button
-                        onClick={() => handleRemoveCapacity(capacity.id)}
+                        onClick={() => handleRemoveCapacity(capacity.code)}
                         className="hover:opacity-80 flex-shrink-0"
                       >
                         <Image
@@ -310,7 +311,6 @@ export default function FeedPage() {
                     <input
                       readOnly
                       type="text"
-                      value={searchCapacity}
                       onFocus={() => setShowSkillModal(true)}
                       placeholder={activeFilters.capacities.length === 0 ? pageContent["filters-search-by-capacities"] : ''}
                       className={`

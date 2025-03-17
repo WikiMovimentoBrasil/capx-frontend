@@ -770,18 +770,20 @@ export default function EditOrganizationProfilePage() {
 
   const handleCapacitySelect = (capacity: Capacity) => {
     setFormData((prev) => {
-      const capacityField =
-        `${currentCapacityType}_capacities` as keyof typeof prev;
+      const capacityField = `${currentCapacityType}_capacities` as keyof typeof prev;
       const currentCapacities = (prev[capacityField] as number[]) || [];
 
-      if (capacity.id && !currentCapacities.includes(capacity.id)) {
+      if (capacity.code && !currentCapacities.includes(capacity.code)) {
         return {
           ...prev,
-          [capacityField]: [...currentCapacities, capacity.id],
+          [capacityField]: [...currentCapacities, capacity.code],
         };
       }
       return prev;
     });
+    
+    // Close modal after selection
+    setIsModalOpen(false);
   };
 
   const capacityIds = useMemo(
@@ -1010,6 +1012,91 @@ export default function EditOrganizationProfilePage() {
                 />
               </div>
             </div>
+
+      <div className="flex items-center gap-2 mb-2">
+        <Image
+          src={darkMode ? UserCircleIconWhite : UserCircleIcon}
+          alt="User circle icon"
+          style={{ width: "auto", height: "auto" }}
+          width={20}
+          height={20}
+        />
+        <span
+          className={`text-center font-[Montserrat] text-[20px] md:text-[24px] not-italic font-extrabold leading-[normal] pl-2 ${
+            darkMode ? "text-white" : "text-capx-dark-box-bg"
+          }`}
+        >
+          {organization?.display_name}
+        </span>
+      </div>
+
+      <div className="mt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="relative w-[48px] h-[48px]">
+              <Image
+                src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+                alt="Organization logo"
+                className="object-contain"
+              />
+            </div>
+            <h2 className={`font-[Montserrat] text-[14px] md:text-[24px] font-bold`}>
+              {pageContent["edit-profile-organization-logo"]}
+            </h2>
+          </div>
+
+          <div className={`flex flex-col gap-4 ${darkMode ? "text-white" : "text-[#053749]"}`}>
+            <input
+              type="text"
+              placeholder="Wikimedia Commons image's link (ex: File:Example.jpg)"
+              className={`w-full p-2 md:p-3 text-[14px] md:text-[24px] border rounded-md ${
+                darkMode
+                  ? "bg-transparent border-white text-white placeholder-gray-400"
+                  : "border-gray-300 text-[#829BA4]"
+              }`}
+              value={formData.profile_image || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  profile_image: e.target.value,
+                })
+              }
+            />
+            <p className={`text-[12px] md:text-[20px] ${darkMode ? "text-white" : "text-[#053749]"} mt-1`}>
+              {pageContent["edit-profile-organization-logo-help"]}
+            </p>
+
+            {/* Preview da imagem */}
+            <div className="w-full h-[200px] bg-[#EFEFEF] rounded-md flex items-center justify-center overflow-hidden">
+              {formData.profile_image ? (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={formatWikiImageUrl(formData.profile_image)}
+                    alt="Organization logo preview"
+                    className="object-contain"
+                    fill
+                    onError={(e) => {
+                      console.error('Erro ao carregar preview:', e);
+                      e.currentTarget.src = NoAvatarIcon;
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center">
+                  <Image
+                    src={NoAvatarIcon}
+                    alt="No image"
+                    width={100}
+                    height={100}
+                    className="opacity-50"
+                  />
+                  <span className="text-gray-500 mt-2">
+                    {pageContent["edit-profile-no-image"]}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
             {/* Report of Activities Section */}
             <div className="mt-6">
               <div className="flex items-center gap-2 mb-4">
@@ -1743,6 +1830,73 @@ export default function EditOrganizationProfilePage() {
               </div>
             </div>
           </div>
+          <div className="mt-6">
+  <div className="flex items-center gap-2 mb-4">
+    <div className="relative w-[48px] h-[48px]">
+      <Image
+        src={darkMode ? WikimediaIconWhite : WikimediaIcon}
+        alt="Organization logo"
+        className="object-contain"
+      />
+    </div>
+    <h2 className={`font-[Montserrat] text-[14px] md:text-[24px] font-bold`}>
+      {pageContent["edit-profile-organization-logo"]}
+    </h2>
+  </div>
+
+  <div className={`flex flex-col gap-4 ${darkMode ? "text-white" : "text-[#053749]"}`}>
+    <input
+      type="text"
+      placeholder="Wikimedia Commons image's link (ex: File:Example.jpg)"
+      className={`w-full p-2 md:p-3 text-[14px] md:text-[24px] border rounded-md ${
+        darkMode
+          ? "bg-transparent border-white text-white placeholder-gray-400"
+          : "border-gray-300 text-[#829BA4]"
+      }`}
+      value={formData.profile_image || ""}
+      onChange={(e) =>
+        setFormData({
+          ...formData,
+          profile_image: e.target.value,
+        })
+      }
+    />
+    <p className={`text-[12px] md:text-[20px] ${darkMode ? "text-white" : "text-[#053749]"} mt-1`}>
+      {pageContent["edit-profile-organization-logo-help"]}
+    </p>
+
+    {/* Preview da imagem */}
+    <div className="w-full h-[200px] bg-[#EFEFEF] rounded-md flex items-center justify-center overflow-hidden">
+      {formData.profile_image ? (
+        <div className="relative w-full h-full">
+          <Image
+            src={formatWikiImageUrl(formData.profile_image)}
+            alt="Organization logo preview"
+            className="object-contain"
+            fill
+            onError={(e) => {
+              console.error('Erro ao carregar preview:', e);
+              e.currentTarget.src = NoAvatarIcon;
+            }}
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center">
+          <Image
+            src={NoAvatarIcon}
+            alt="Sem imagem"
+            width={100}
+            height={100}
+            className="opacity-50"
+          />
+          <span className="text-gray-500 mt-2">
+            {pageContent["edit-profile-no-image"]}
+          </span>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
           {/* Report of Activities Section */}
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-4">
