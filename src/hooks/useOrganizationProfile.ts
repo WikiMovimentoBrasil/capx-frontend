@@ -60,7 +60,6 @@ export function useOrganization(
     try {
       // First, fetch the IDs of the managed organizations
       const managedIds = await fetchUserProfile(token);
-      console.log("managedIds!!!!!!!!!!!!", managedIds)
       setManagedOrganizationIds(managedIds);
       setIsPermissionsLoaded(true);
 
