@@ -770,18 +770,20 @@ export default function EditOrganizationProfilePage() {
 
   const handleCapacitySelect = (capacity: Capacity) => {
     setFormData((prev) => {
-      const capacityField =
-        `${currentCapacityType}_capacities` as keyof typeof prev;
+      const capacityField = `${currentCapacityType}_capacities` as keyof typeof prev;
       const currentCapacities = (prev[capacityField] as number[]) || [];
 
-      if (capacity.id && !currentCapacities.includes(capacity.id)) {
+      if (capacity.code && !currentCapacities.includes(capacity.code)) {
         return {
           ...prev,
-          [capacityField]: [...currentCapacities, capacity.id],
+          [capacityField]: [...currentCapacities, capacity.code],
         };
       }
       return prev;
     });
+    
+    // Close modal after selection
+    setIsModalOpen(false);
   };
 
   const capacityIds = useMemo(
