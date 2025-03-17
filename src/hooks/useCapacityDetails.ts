@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { capacityService } from "@/services/capacityService";
 import { useSession } from "next-auth/react";
-import { Capacity } from "@/types/capacity";
+import { Capacity, CapacityResponse } from "@/types/capacity";
 import { useApp } from "@/contexts/AppContext";
 
 export function useCapacityDetails(
@@ -61,5 +61,44 @@ export function useCapacityDetails(
       },
       [capacityNames]
     ),
+  };
+}
+
+export function useCapacity(capacityId?: string | null) {
+  const { data: session } = useSession();
+  const { language } = useApp();
+  const [capacity, setCapacity] = useState<CapacityResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  console.log("useCapacity")
+
+  useEffect(() => {
+    const fetchCapacity = async () => {
+      if (!capacityId || !session?.user?.token) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const data = await capacityService.fetchCapacityById(capacityId, {
+          params: { language },
+          headers: { Authorization: `Token ${session.user.token}` }
+        });
+        setCapacity(data);
+      } catch (err) {
+        console.error("Error fetching capacity:", err);
+        setError(err instanceof Error ? err : new Error("Failed to fetch capacity"));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCapacity();
+  }, [capacityId, session?.user?.token, language]);
+
+  return {
+    capacity,
+    isLoading,
+    error
   };
 }

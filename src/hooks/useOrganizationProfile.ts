@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { organizationProfileService } from "@/services/organizationProfileService";
+import { OrganizationFilters, organizationProfileService } from "@/services/organizationProfileService";
 import { Organization } from "@/types/organization";
 import { useSession } from "next-auth/react";
+import { FilterState } from "@/app/(auth)/feed/types";
+import { ProfileCapacityType } from "@/app/(auth)/feed/types";
 
 export function useOrganization(
   token?: string,
   specificOrgId?: number,
-  limit?: number,
-  offset?: number
 ) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,14 +24,7 @@ export function useOrganization(
       const userProfile = await organizationProfileService.getUserProfile(
         token
       );
-      // TODO we should ensure its always an array OR unique object
-      const profileArray = Array.isArray(userProfile) ? userProfile : [userProfile];
-      const managedIds = profileArray.flatMap((profile) =>
-        profile.is_manager && profile.is_manager.length > 0
-          ? profile.is_manager
-          : []
-      );
-      return managedIds;
+      return userProfile.is_manager;
     } catch (err) {
       console.error("Error fetching user profile:", err);
       return [];
@@ -139,34 +132,60 @@ export function useOrganization(
   };
 }
 
-export function useOrganizations(limit: number, offset: number) {
+export function useOrganizations(limit?: number, offset?: number, activeFilters?: FilterState) {
   const { data: session } = useSession();
   const [organizations, setOrganizations] = useState<Organization[] | null>([]);
   const [count, setCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
+    if (!session?.user?.token) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
     const getOrganizations = async () => {
-      if (session?.user?.id && session?.user?.token) {
-        try {
-          const data = await organizationProfileService.getOrganizations(
-            session.user.token,
-            limit,
-            offset
-          );
-          setOrganizations(data.results);
-          setCount(data.count);
-        } catch (error) {
-          console.error("Error fetching organizations:", error);
-          setError(error.message);
-        } finally {
-          setIsLoading(false);
-        }
+      try {
+        const filters: OrganizationFilters = {
+          limit,
+          offset,
+          ...(activeFilters?.capacities?.length && {
+            available_capacities: activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) 
+              ? activeFilters.capacities.map(cap => cap.id)
+              : undefined,
+            wanted_capacities: activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) 
+              ? activeFilters.capacities.map(cap => cap.id)
+              : undefined,
+          }),
+          ...(activeFilters?.territories?.length && {
+            territory: activeFilters.territories
+          }),
+          has_capacities_available: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ?? undefined,
+          has_capacities_wanted: activeFilters?.profileCapacityTypes.includes(ProfileCapacityType.Learner) ?? undefined,
+        };
+
+        const data = await organizationProfileService.getOrganizations(
+          session.user.token,
+          filters
+        );
+
+        setOrganizations(data.results);
+        setCount(data.count);
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getOrganizations();
-  }, [session, limit, offset]);
+  }, [session?.user?.token, limit, offset, 
+    JSON.stringify(activeFilters?.capacities),
+    JSON.stringify(activeFilters?.territories),
+    JSON.stringify(activeFilters?.profileCapacityTypes)
+  ]);
 
   return { organizations, isLoading, error, count };
 }

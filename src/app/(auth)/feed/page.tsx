@@ -12,115 +12,175 @@ import CloseIcon from "@/public/static/images/close_mobile_menu_icon_light_mode.
 import CloseIconWhite from "@/public/static/images/close_mobile_menu_icon_dark_mode.svg";
 import { Filters } from "./components/Filters";
 import { useApp } from "@/contexts/AppContext";
-import { ProfileCapacityType, ProfileFilterType } from "./types";
+import { Skill, FilterState, ProfileCapacityType, ProfileFilterType } from "./types";
 import { useOrganizations } from "@/hooks/useOrganizationProfile";
 import { Organization } from "@/types/organization";
 import { UserProfile } from "@/types/user";
 import { useAllUsers } from "@/hooks/useUserProfile";
 import { PaginationButtons } from "./components/PaginationButtons";
+import CapacitySelectionModal from "../profile/edit/components/CapacitySelectionModal";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useCapacity } from "@/hooks/useCapacityDetails";
+import { Capacity } from "@/types/capacity";
 
-export interface FilterState {
-  capacities: string[];
-  profileCapacityTypes: ProfileCapacityType[];
-  territories: string[];
-  languages: string[];
-  profileFilter: ProfileFilterType;
-}
-
-const createProfilesFromOrganizations = (organizations: Organization[]) => {
+const createProfilesFromOrganizations = (organizations: Organization[], type: ProfileCapacityType) => {
   const profiles: any[] = [];
-
   organizations.forEach(org => {
-    // Create card for available capacities (Sharer)
-    if (org.available_capacities && org.available_capacities.length > 0) {
       profiles.push({
         id: org.id,
         username: org.display_name,
-        capacities: org.available_capacities,
-        type: ProfileCapacityType.Sharer,
-        territory: org.territory?.[0], // Assuming we want to show the first territory only
-        avatar: org.profile_image || undefined,
-        isOrganization: true
-      });
-    }
-
-    // Create card for desired capacities (Learner)
-    if (org.wanted_capacities && org.wanted_capacities.length > 0) {
-      profiles.push({
-        id: org.id,
-        username: org.display_name,
-        capacities: org.wanted_capacities,
-        type: ProfileCapacityType.Learner,
+        capacities: type === ProfileCapacityType.Learner ? org.wanted_capacities : org.available_capacities,
+        type,
+        profile_image: org.profile_image,
         territory: org.territory?.[0],
         avatar: org.profile_image || undefined,
         isOrganization: true
       });
-    }
   });
-
   return profiles;
 };
 
-const createProfilesFromUsers = (users: UserProfile[]) => {
+const createProfilesFromUsers = (users: UserProfile[], type: ProfileCapacityType) => {
   const profiles: any[] = [];
-
   users.forEach(user => {
-    // Create card for available capacities (Sharer)
-    if (user.skills_available?.length > 0) {
-      profiles.push({
-        id: user.user.id,
-        username: user.display_name,
-        capacities: user.skills_available,
-        type: ProfileCapacityType.Sharer,
-        territory: user.territory?.[0],
-        avatar: user.avatar,
-        isOrganization: false
-      });
-    }
-
-    // Create card for desired capacities (Learner)
-    if (user.skills_wanted?.length > 0) {
-      profiles.push({
-        id: user.user.id,
-        username: user.display_name,
-        capacities: user.skills_wanted,
-        type: ProfileCapacityType.Learner,
-        territory: user.territory?.[0],
-        avatar: user.avatar,
-        isOrganization: false
-      });
-    }
+    profiles.push({
+      id: user.user.id,
+      username: user.user.username,
+      capacities: type === ProfileCapacityType.Sharer ? user.skills_available : user.skills_wanted,
+      type,
+      profile_image: user.profile_image,
+      territory: user.territory?.[0],
+      avatar: user.avatar,
+      isOrganization: false
+    });
   });
-
   return profiles;
 };
 
 export default function FeedPage() {
   const { darkMode } = useTheme();
   const { pageContent } = useApp();
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const capacityId = searchParams.get('capacityId');
 
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
-    capacities: [] as string[],
-    profileCapacityTypes: [] as ProfileCapacityType[],
+    capacities: [] as Skill[],
+    profileCapacityTypes: [ProfileCapacityType.Learner, ProfileCapacityType.Sharer] as ProfileCapacityType[],
     territories: [] as string[],
     languages: [] as string[],
     profileFilter: ProfileFilterType.Both
   });
   const [searchCapacity, setSearchCapacity] = useState('');
+  const [showSkillModal, setShowSkillModal] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerList = 5; // Divide between organizations and users
-  const offset = (currentPage - 1) * itemsPerList; // Offset for both lists
+  const itemsPerList = 5; // For each type of profile (user or organization)
+  const itemsPerPage = itemsPerList * 2; // Total of profiles per page
+  const offset = (currentPage - 1) * itemsPerList;
 
-  // Get data with limits and offsets
-  const { organizations } = useOrganizations(itemsPerList, offset);
-  const { allUsers } = useAllUsers(itemsPerList, offset);
+  const { capacity, isLoading: isLoadingCapacity } = useCapacity(capacityId);
 
-  // Create profiles from organizations and users
+  // Get data from capacityById
+  useEffect(() => {
+    if (capacityId && capacity) {
+      const capacityExists = activeFilters.capacities.some(
+        cap => cap.id === Number(capacityId)
+      );
+  
+      if (capacityExists) {
+        return;
+      }
+  
+      setActiveFilters(prev => ({
+        ...prev,
+        capacities: [{
+          id: Number(capacityId),
+          name: capacity.name || `Capacity ${capacityId}`,
+        }]
+      }));
+    }
+  }, [capacityId, isLoadingCapacity]);
+
+  const shouldFetchOrgs = activeFilters.profileFilter !== ProfileFilterType.User;
+  const { organizations: organizationsLearner, count: organizationsLearnerCount, isLoading: isOrganizationsLearnerLoading } = useOrganizations(
+    shouldFetchOrgs ? itemsPerList : 0,
+    shouldFetchOrgs ? offset : 0,
+    shouldFetchOrgs ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Learner]
+    } : undefined
+  );
+
+  const shouldFetchUsers = activeFilters.profileFilter !== ProfileFilterType.Organization;
+  const { allUsers: usersLearner, count: usersLearnerCount, isLoading: isUsersLearnerLoading } = useAllUsers({
+    limit: shouldFetchUsers ? itemsPerList : 0,
+    offset: shouldFetchUsers ? offset : 0,
+    activeFilters: shouldFetchUsers ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Learner]
+    } : undefined
+  });
+
+  const shouldFetchSharerOrgs = activeFilters.profileFilter !== ProfileFilterType.User && activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer);
+  const { organizations: organizationsSharer, count: organizationsSharerCount, isLoading: isOrganizationsSharerLoading } = useOrganizations(
+    shouldFetchSharerOrgs ? itemsPerList : 0,
+    shouldFetchSharerOrgs ? offset : 0,
+    shouldFetchSharerOrgs ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Sharer]
+    } : undefined
+  );
+
+  const shouldFetchSharerUsers = activeFilters.profileFilter !== ProfileFilterType.Organization && activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer);
+  const { allUsers: usersSharer, count: usersSharerCount, isLoading: isUsersSharerLoading } = useAllUsers({
+    limit: shouldFetchSharerUsers ? itemsPerList : 0,
+    offset: shouldFetchSharerUsers ? offset : 0,
+    activeFilters: shouldFetchSharerUsers ? {
+      ...activeFilters,
+      profileCapacityTypes: [ProfileCapacityType.Sharer]
+    } : undefined
+  });
+
+  // Total of records according to the profileFilter
+  let totalRecords = 0;
+
+  switch(activeFilters.profileFilter) {
+    case ProfileFilterType.User:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? usersLearnerCount : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? usersSharerCount : 0);
+      break;
+    case ProfileFilterType.Organization:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? organizationsLearnerCount : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? organizationsSharerCount : 0);
+      break;
+    case ProfileFilterType.Both:
+    default:
+      totalRecords = (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? 
+                      (usersLearnerCount + organizationsLearnerCount) : 0) +
+                    (activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? 
+                      (usersSharerCount + organizationsSharerCount) : 0);
+  }
+
+  // Create profiles (to create cards) from organizations and users
   const filteredProfiles = useMemo(() => {
-    const organizationProfiles = createProfilesFromOrganizations(organizations || []);
-    const userProfiles = createProfilesFromUsers(allUsers || []);
+    const learnerOrgProfiles = createProfilesFromOrganizations(organizationsLearner || [], ProfileCapacityType.Learner);
+    const availableOrgProfiles = createProfilesFromOrganizations(organizationsSharer || [], ProfileCapacityType.Sharer);
+
+    // Filter organizations based on activeFilters.profileCapacityTypes
+    const orgProfilesLearner = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? learnerOrgProfiles : [];
+    const orgProfilesSharer = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? availableOrgProfiles : [];
+    const organizationProfiles = [...orgProfilesLearner, ...orgProfilesSharer];
+   
+    const wantedUserProfiles = createProfilesFromUsers(usersLearner || [], ProfileCapacityType.Learner);
+    const availableUserProfiles = createProfilesFromUsers(usersSharer || [], ProfileCapacityType.Sharer);
+  
+    // Filter users based on activeFilters.profileCapacityTypes
+    const userProfilesWanted = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Learner) ? wantedUserProfiles : [];
+    const userProfilesAvailable = activeFilters.profileCapacityTypes.includes(ProfileCapacityType.Sharer) ? availableUserProfiles : [];
+    const userProfiles = [...userProfilesWanted, ...userProfilesAvailable];
 
     // Filter based on activeFilters.profileFilter
     switch (activeFilters.profileFilter) {
@@ -132,35 +192,46 @@ export default function FeedPage() {
       default:
        return [...organizationProfiles, ...userProfiles];
     }
-  }, [organizations, allUsers, activeFilters]);
+  }, [activeFilters, organizationsLearner, organizationsSharer, usersLearner, usersSharer]);
 
   // Calculate total of pages based on total profiles
-  const totalRecords = filteredProfiles.length;
-  const numberOfPages = Math.ceil(totalRecords / itemsPerList);
+  const numberOfPages = Math.ceil(totalRecords / (itemsPerPage));
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [activeFilters]);
 
-  const handleAddCapacity = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchCapacity.trim()) {
-      const trimmedCapacity = searchCapacity.trim();
-      if (!activeFilters.capacities.includes(trimmedCapacity)) {
-        setActiveFilters(prev => ({
-          ...prev,
-          capacities: [...prev.capacities, trimmedCapacity]
-        }));
-      }
-      setSearchCapacity('');
-    }
-  };
+  const handleCapacitySelect = (capacity: Capacity) => {
+    const capacityExists = activeFilters.capacities.some(
+      cap => cap.id === capacity.code
+    );
 
-  const handleRemoveCapacity = (capacity: string) => {
+    if (capacityExists) {
+      return;
+    }
+
     setActiveFilters(prev => ({
       ...prev,
-      capacities: prev.capacities.filter(cap => cap !== capacity)
+      capacities: [...prev.capacities, {
+        id: Number(capacity.id),
+        name: capacity.name,
+      }]
     }));
+  };
+
+  const handleRemoveCapacity = (capacityId: number) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      capacities: prev.capacities.filter(cap => cap.id !== capacityId)
+    }));
+
+    const urlCapacityId = searchParams.get('capacityId');
+    
+    // If the capacity removed is the same as the URL, update the URL
+    if (urlCapacityId && urlCapacityId.toString() === capacityId.toString()) {
+      router.replace('/feed', { scroll: false });
+    }
   };
 
   const handleApplyFilters = (newFilters: FilterState) => {
@@ -175,6 +246,10 @@ export default function FeedPage() {
       window.scrollTo(0, 0);
     }
   };
+
+  if (isOrganizationsLearnerLoading || isOrganizationsSharerLoading || isUsersLearnerLoading || isUsersSharerLoading) {
+    return <div className="flex justify-center items-center h-screen">{pageContent["loading"]}</div>;
+  }
 
   return (
     <div className="w-full flex flex-col items-center pt-24 md:pt-8">
@@ -215,9 +290,9 @@ export default function FeedPage() {
                         ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}
                       `}
                     >
-                      <span className="truncate">{capacity}</span>
+                      <span className="truncate">{capacity.name}</span>
                       <button
-                        onClick={() => handleRemoveCapacity(capacity)}
+                        onClick={() => handleRemoveCapacity(capacity.id)}
                         className="hover:opacity-80 flex-shrink-0"
                       >
                         <Image
@@ -233,10 +308,10 @@ export default function FeedPage() {
                   {/* Search Input */}
                   <div className="flex-1 min-w-[120px]">
                     <input
+                      readOnly
                       type="text"
                       value={searchCapacity}
-                      onChange={(e) => setSearchCapacity(e.target.value)}
-                      onKeyDown={handleAddCapacity}
+                      onFocus={() => setShowSkillModal(true)}
                       placeholder={activeFilters.capacities.length === 0 ? pageContent["filters-search-by-capacities"] : ''}
                       className={`
                         w-full outline-none overflow-ellipsis bg-transparent
@@ -247,6 +322,13 @@ export default function FeedPage() {
                 </div>
               </div>
             </div>
+
+            <CapacitySelectionModal
+              isOpen={showSkillModal}
+              onClose={() => setShowSkillModal(false)}
+              onSelect={handleCapacitySelect}
+              title={pageContent["select-capacity"]}
+            />
 
             {/* Filters Button */}
             <button
@@ -275,6 +357,7 @@ export default function FeedPage() {
               <ProfileCard 
                 id={profile.id}
                 key={index}
+                profile_image={profile.profile_image}
                 username={profile.username}
                 type={profile.type}
                 capacities={profile.capacities}
