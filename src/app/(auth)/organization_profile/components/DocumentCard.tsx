@@ -61,7 +61,7 @@ export const DocumentCard = ({ documentId, token }: DocumentCardProps) => {
         <BaseButton
           customClass="inline-flex h-[32px] px-[18px] py-[8px] justify-center items-center gap-[8px] flex-shrink-0 rounded-[8px] bg-[#851970] text-[#F6F6F6] text-center font-[Montserrat] text-[14px] md:text-[24px] h-[64px] not-italic font-extrabold leading-[normal]"
           label={pageContent["organization-profile-view-document"]}
-          onClick={() => window.open(document.url || "", "_blank")}
+          onClick={() => document.fullUrl && window.open(document.fullUrl, "_blank")}
         />
       </div>
     </div>
