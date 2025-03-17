@@ -57,7 +57,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
   
   const handleCapacitySelect = (capacity: Capacity) => {
     const capacityExists = filters.capacities.some(
-      cap => cap.id === capacity.id
+      cap => cap.id === capacity.code
     );
 
     if(capacityExists) {
@@ -67,7 +67,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
     setFilters(prev => ({
       ...prev,
       capacities: [...prev.capacities, {
-        id: Number(capacity.id),
+        id: Number(capacity.code),
         name: capacity.name,
       }]
     }));

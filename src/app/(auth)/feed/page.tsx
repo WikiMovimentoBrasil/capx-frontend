@@ -214,7 +214,7 @@ export default function FeedPage() {
     setActiveFilters(prev => ({
       ...prev,
       capacities: [...prev.capacities, {
-        id: Number(capacity.id),
+        id: Number(capacity.code),
         name: capacity.name,
       }]
     }));
