@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
@@ -21,10 +21,13 @@ import { useCapacityDetails } from "@/hooks/useCapacityDetails";
 import { useTerritories } from "@/hooks/useTerritories";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useSession } from "next-auth/react";
+import { useAvatars } from "@/hooks/useAvatars";
+import { getProfileImage } from "@/lib/utils/getProfileImage";
 
 interface ProfileCardProps {
   id: string;
   username: string;
+  profile_image: string;
   type: ProfileCapacityType;
   capacities: (number | string)[];
   languages?: string[];
@@ -37,6 +40,7 @@ interface ProfileCardProps {
 export const ProfileCard = ({
   id,
   username,
+  profile_image,
   type = ProfileCapacityType.Learner,
   capacities = [],
   languages = [],
@@ -52,6 +56,7 @@ export const ProfileCard = ({
   const token = session?.user?.token;
   const { languages: availableLanguages } = useLanguage(token);
   const { territories: availableTerritories } = useTerritories(token);
+  const { avatars } = useAvatars();
 
   const capacitiesTitle =
     type === "learner"
@@ -127,7 +132,11 @@ export const ProfileCard = ({
                 <div className="relative w-[100px] h-[100px] md:w-[200px] md:h-[200px]">
                 {avatarSrc ? (
                   <Image
-                    src={avatarSrc}
+                    src={getProfileImage(
+                      profile_image,
+                      avatar ? Number(avatar) : null,
+                      avatars
+                    )}
                     alt={username || "User profile"}
                     fill
                     className="object-cover rounded-[4px]"

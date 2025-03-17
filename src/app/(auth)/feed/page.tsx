@@ -31,6 +31,7 @@ const createProfilesFromOrganizations = (organizations: Organization[], type: Pr
         username: org.display_name,
         capacities: type === ProfileCapacityType.Learner ? org.wanted_capacities : org.available_capacities,
         type,
+        profile_image: org.profile_image,
         territory: org.territory?.[0],
         avatar: org.profile_image || undefined,
         isOrganization: true
@@ -47,6 +48,7 @@ const createProfilesFromUsers = (users: UserProfile[], type: ProfileCapacityType
       username: user.user.username,
       capacities: type === ProfileCapacityType.Sharer ? user.skills_available : user.skills_wanted,
       type,
+      profile_image: user.profile_image,
       territory: user.territory?.[0],
       avatar: user.avatar,
       isOrganization: false
@@ -355,6 +357,7 @@ export default function FeedPage() {
               <ProfileCard 
                 id={profile.id}
                 key={index}
+                profile_image={profile.profile_image}
                 username={profile.username}
                 type={profile.type}
                 capacities={profile.capacities}
