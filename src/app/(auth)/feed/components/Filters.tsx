@@ -57,7 +57,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
   
   const handleCapacitySelect = (capacity: Capacity) => {
     const capacityExists = filters.capacities.some(
-      cap => cap.id === capacity.code
+      cap => cap.code === capacity.code || cap.id === Number(capacity.id)
     );
 
     if(capacityExists) {
@@ -67,16 +67,17 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
     setFilters(prev => ({
       ...prev,
       capacities: [...prev.capacities, {
-        id: Number(capacity.code),
+        id: Number(capacity.id),
         name: capacity.name,
+        code: capacity.code,
       }]
     }));
   };
 
-  const handleRemoveCapacity = (capacityId: number) => {
+  const handleRemoveCapacity = (capacityCode: number) => {
     setFilters(prev => ({
       ...prev,
-      capacities: prev.capacities.filter(cap => cap.id !== capacityId)
+      capacities: prev.capacities.filter(cap => cap.code !== capacityCode)
     }));
   };
 
@@ -207,7 +208,7 @@ export function Filters({ onClose, onApplyFilters, initialFilters }: FiltersProp
                     >
                       <span className="truncate" title={capacity.name}>{capacity.name}</span>
                       <button
-                        onClick={() => handleRemoveCapacity(capacity.id)}
+                        onClick={() => handleRemoveCapacity(capacity.code)}
                         className="hover:opacity-80 flex-shrink-0"
                       >
                         <Image
