@@ -293,5 +293,9 @@
   "snackbar-edit-profile-organization-create-document-failed": "Error add document. Please check and try again",
   "snackbar-edit-profile-organization-processing-document-failed": "Error processing document",
   "snackbar-edit-profile-organization-processing-form-failed": "Error processing form. Please check and try again",
-  "snackbar-edit-profile-organization-fetch-tags-failed": "Error fetching tags. Please check and try again"
+  "snackbar-edit-profile-organization-fetch-tags-failed": "Error fetching tags. Please check and try again",
+  "edit-profile-organization-logo": "Organization Logo",
+  "edit-profile-organization-logo-help": "Enter the Wikimedia Commons image link. Ex: https://commons.wikimedia.org/wiki/File:Example.jpg",
+  "edit-profile-no-image": "No image selected",
+  "edit-profile-invalid-image-url": "Please enter a valid Wikimedia Commons URL"
 }
