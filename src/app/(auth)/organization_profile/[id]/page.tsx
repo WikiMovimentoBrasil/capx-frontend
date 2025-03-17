@@ -52,12 +52,6 @@ export default function OrganizationProfilePage() {
 
   const organization = organizations.find((org) => org.id === organizationId);
 
-  const {
-    userProfile,
-    isLoading: isUserLoading,
-    error: isUserError,
-  } = useUserProfile();
-
   useEffect(() => {
     const refreshData = async () => {
       await refetch();
@@ -72,7 +66,7 @@ export default function OrganizationProfilePage() {
     }
   }, [error, organization]);
 
-  if (isOrganizationLoading || isUserLoading) {
+  if (isOrganizationLoading) {
     return <LoadingState />;
   }
 
