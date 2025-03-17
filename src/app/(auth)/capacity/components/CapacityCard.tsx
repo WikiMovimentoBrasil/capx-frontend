@@ -81,16 +81,26 @@ export function CapacityCard({
   const renderExpandedContent = () => {
     if (!showInfo) return null;
 
+    let buttonBgColor = "#000000";
+    
+    if (parentCapacity?.parentCapacity) {
+      buttonBgColor = "#4B5563";
+    } else if (parentCapacity?.color) {
+      buttonBgColor = getCapacityColor(parentCapacity.color);
+    } else {
+      buttonBgColor = getCapacityColor(color);
+    }
+
     return (
       <div
         className={`flex flex-col gap-6 mt-6 mb-16 ${
           isRoot ? "px-3" : "px-12"
         }`}
-        onClick={(e) => e.stopPropagation()} // Prevent clicks in the expanded content from triggering card selection
+        onClick={(e) => e.stopPropagation()}
       >
         {wd_code && (
           <a
-            href={wd_code}
+            href={`https://www.wikidata.org/wiki/${wd_code}`}
             onClick={(e) => e.stopPropagation()}
             target="_blank"
             rel="noopener noreferrer"
@@ -110,15 +120,13 @@ export function CapacityCard({
             {capitalizeFirstLetter(description)}
           </p>
         )}
-        <BaseButton
-          label={pageContent["capacity-card-explore-capacity"]}
-          customClass={`w-[224px] flex justify-center items-center gap-2 px-3 py-3 rounded-lg bg-${
-            parentCapacity?.parentCapacity?.color ||
-            parentCapacity?.color ||
-            color
-          } text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]`}
-          onClick={() => router.push(`/feed?capacityId=${code}`)}
-        />
+        <div style={{ backgroundColor: buttonBgColor }} className="rounded-lg">
+          <BaseButton
+            label={pageContent["capacity-card-explore-capacity"]}
+            customClass="w-[224px] flex justify-center items-center gap-2 px-3 py-3 text-[#F6F6F6] font-extrabold text-3.5 sm:text-3.5 rounded-[4px] text-center text-[24px] not-italic leading-[normal]"
+            onClick={() => router.push(`/feed?capacityId=${code}`)}
+          />
+        </div>
       </div>
     );
   };
