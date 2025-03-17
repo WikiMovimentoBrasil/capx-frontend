@@ -333,6 +333,8 @@ export default function CapacitySelectionModal({
             <Link
               href={`/feed?capacityId=${capacity.code}`}
               onClick={(e) => e.stopPropagation()}
+              className={`text-gray-700
+              font-bold text-base truncate hover:underline`}
             >
               {capitalizeFirstLetter(capacity.name)}
             </Link>
