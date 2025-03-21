@@ -1,55 +1,7 @@
 import { getCapacityColor } from "@/lib/utils/capacitiesUtils";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-
-const fetchWikidata = async (codes: any, language: string) => {
-  // Continue with Wikidata query...
-  const wdCodeList = codes.map((code) => "wd:" + code.wd_code);
-  const queryText = `SELECT ?item ?itemLabel WHERE {VALUES ?item {${wdCodeList.join(
-    " "
-  )}} SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'.}}`;
-
-  const wikidataResponse = await axios.get(
-    `https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=${queryText}`
-  );
-
-  return wikidataResponse.data.results.bindings.map((wdItem) => ({
-    wd_code: wdItem.item.value.split("/").slice(-1)[0],
-    name: wdItem.itemLabel.value,
-  }));
-};
-
-const fetchMetabase = async (codes: any, language: string) => {
-  try {
-    const mbQueryText = `PREFIX wbt:<https://metabase.wikibase.cloud/prop/direct/>  
-  SELECT ?item ?itemLabel ?itemDescription ?value WHERE {  
-    VALUES ?value {${codes.map((code) => `"${code.wd_code}"`).join(" ")}}  
-    ?item wbt:P1 ?value.  
-    SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'. }}`;
-
-    const response = await axios.post(
-      "https://metabase.wikibase.cloud/query/sparql?format=json&query=" +
-        encodeURIComponent(mbQueryText),
-      {
-        headers: {
-          "Content-Type": "application/sparql-query",
-          Accept: "application/sparql-results+json",
-          "User-Agent": "CapX/1.0",
-        },
-      }
-    );
-
-    return response.data.results.bindings.map((mbItem) => ({
-      code: codes.find((c) => c.wd_code === mbItem.value.value)?.code,
-      wd_code: mbItem.value.value,
-      name: mbItem.itemLabel.value,
-    }));
-  } catch (error) {
-    console.error("Error in fetchMetabase:", error);
-    console.error("Error stack:", error.stack);
-    return [];
-  }
-};
+import { fetchMetabase, fetchWikidata } from "@/lib/utils/capacitiesUtils";
 
 export async function GET(req: NextRequest) {
   try {
