@@ -1,5 +1,55 @@
+import { getCapacityColor } from "@/lib/utils/capacitiesUtils";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+
+const fetchWikidata = async (codes: any, language: string) => {
+  // Continue with Wikidata query...
+  const wdCodeList = codes.map((code) => "wd:" + code.wd_code);
+  const queryText = `SELECT ?item ?itemLabel WHERE {VALUES ?item {${wdCodeList.join(
+    " "
+  )}} SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'.}}`;
+
+  const wikidataResponse = await axios.get(
+    `https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=${queryText}`
+  );
+
+  return wikidataResponse.data.results.bindings.map((wdItem) => ({
+    wd_code: wdItem.item.value.split("/").slice(-1)[0],
+    name: wdItem.itemLabel.value,
+  }));
+};
+
+const fetchMetabase = async (codes: any, language: string) => {
+  try {
+    const mbQueryText = `PREFIX wbt:<https://metabase.wikibase.cloud/prop/direct/>  
+  SELECT ?item ?itemLabel ?itemDescription ?value WHERE {  
+    VALUES ?value {${codes.map((code) => `"${code.wd_code}"`).join(" ")}}  
+    ?item wbt:P1 ?value.  
+    SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'. }}`;
+
+    const response = await axios.post(
+      "https://metabase.wikibase.cloud/query/sparql?format=json&query=" +
+        encodeURIComponent(mbQueryText),
+      {
+        headers: {
+          "Content-Type": "application/sparql-query",
+          Accept: "application/sparql-results+json",
+          "User-Agent": "CapX/1.0",
+        },
+      }
+    );
+
+    return response.data.results.bindings.map((mbItem) => ({
+      code: codes.find((c) => c.wd_code === mbItem.value.value)?.code,
+      wd_code: mbItem.value.value,
+      name: mbItem.itemLabel.value,
+    }));
+  } catch (error) {
+    console.error("Error in fetchMetabase:", error);
+    console.error("Error stack:", error.stack);
+    return [];
+  }
+};
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,29 +82,24 @@ export async function GET(req: NextRequest) {
         code: Number(key),
         wd_code: value,
       }));
+    const metabaseResponse = await fetchMetabase(codes, language ?? "en");
 
-    // Continue with Wikidata query...
-    const wdCodeList = codes.map((code) => "wd:" + code.wd_code);
-    const queryText = `SELECT ?item ?itemLabel WHERE {VALUES ?item {${wdCodeList.join(
-      " "
-    )}} SERVICE wikibase:label { bd:serviceParam wikibase:language '${language},en'.}}`;
-
-    const wikidataResponse = await axios.get(
-      `https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=${queryText}`
-    );
-
-    const organizedData = wikidataResponse.data.results.bindings.map(
-      (wdItem) => ({
-        wd_code: wdItem.item.value.split("/").slice(-1)[0],
-        name: wdItem.itemLabel.value,
-      })
-    );
+    const wikidataResponse = await fetchWikidata(codes, language ?? "en");
 
     const codesWithNames = codes.map((obj1) => {
-      const obj2 = organizedData.find((obj2) => obj2.wd_code === obj1.wd_code);
-      return obj2 ? { ...obj1, ...obj2 } : { ...obj1, name: obj1.wd_code };
-    });
+      const metabaseMatch = metabaseResponse.find(
+        (mb) => mb.wd_code === obj1.wd_code
+      );
+      const wikidataMatch = wikidataResponse.find(
+        (wd) => wd.wd_code === obj1.wd_code
+      );
 
+      return {
+        ...obj1,
+        name: metabaseMatch?.name || wikidataMatch?.name || obj1.wd_code,
+        color: getCapacityColor(obj1.code.toString()),
+      };
+    });
     return NextResponse.json(codesWithNames);
   } catch (error) {
     console.error("Error details:", error);
